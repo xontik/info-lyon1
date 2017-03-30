@@ -8,13 +8,13 @@
         <?php
         if(isset($css)) {
             foreach ($css as $c) {
-                echo '<link rel="stylesheet" type="text/css" href="./assets/css/' .url_css($c) . '.css">';
+                echo '<link rel="stylesheet" type="text/css" href="'.css_url($c) . '">';
             }
         }
 
         if(isset($js)){
             foreach ($js as $j) {
-                echo '<script src="' . url_js($j) . '.js"></script>';
+                echo '<script src="' . js_url($j) . '.js"></script>';
 
             }
         }
