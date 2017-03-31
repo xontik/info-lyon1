@@ -6,12 +6,15 @@ class Test extends CI_Controller {
     public function index()
     {
         $css = array("test");
+        $js = array("test");
         $title = "Premier essai !";
+        $data = array("a" => "donnée a","b" => "donnée b","c" => "donnée c");
+        $var = array(   "css" => $css,
+                        "js" => $js,
+                        "title" => $title,
+                        "data" => $data);
 
-        $data = array(  "css" => $css,
-                        "title" => $title);
-        
-        show("testv",$data);
+        show("testv",$var);
 
     }
 }
