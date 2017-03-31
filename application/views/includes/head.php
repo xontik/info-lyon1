@@ -12,9 +12,12 @@
                 echo '<link rel="stylesheet" type="text/css" href="'.css_url($c) . '">';
             }
         }
-
+        $debug = false;
         if(isset($js)){
             foreach ($js as $j) {
+                if($j == "debug"){
+                    $debug = true;
+                }
                 echo '<script src="' . js_url($j) . '"></script>';
 
             }
@@ -23,9 +26,11 @@
 
     </head>
     <body>
-        <div>
-            <?php if(isset($data)){print_r($data);}?>
+        <?php if(isset($data) && $debug){ ?>
+        <div id="debug">
+            <?php print_r($data);?>
         </div>
+        <?php }?>
         <nav>
             <p>Menu here</p>
         </nav>
