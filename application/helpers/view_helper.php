@@ -12,7 +12,7 @@ function show($view, $var = array())
 
 function show_head($var = array())
 {
-    get_instance()->load->view("include/head", $var);
+    get_instance()->load->view("includes/head", $var);
 }
 
 function show_part($view, $var = array())
@@ -22,5 +22,5 @@ function show_part($view, $var = array())
 
 function show_foot($var = array())
 {
-    get_instance()->load->view("include/foot", $var);
+    get_instance()->load->view("includes/foot", $var);
 }
