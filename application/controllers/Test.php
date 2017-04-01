@@ -17,4 +17,13 @@ class Test extends CI_Controller {
         show("testv",$var);
 
     }
+
+    public function calendar($ressource = 9305){
+        $this->load->helper("calendar");
+        $cal = getCalendar($ressource,"2017-03-27","2017-03-31");
+        echo "<pre>";
+        print_r($cal);
+        echo "</pre>";
+
+    }
 }

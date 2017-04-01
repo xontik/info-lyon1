@@ -156,19 +156,24 @@ function _icsToArray($ics_filepath) {
 		&& endsWith($content, 'END:VCALENDAR'))
 	{
 		$VERSION_SUPPORTED = array('2.0');
-		
+
 		$ics = _strToIcs($content);
 		$array = array();
-		
+
+
 		// Check if file version is supported
-		if ( !in_array($ics['VERSION'], $VERSION_SUPPORTED) ) {
-			trigger_error('ICS File: Unsopported calendar version', E_USER_WARNING);
+
+        if ( !in_array(trim($ics['VERSION']), $VERSION_SUPPORTED) ) { //add trim to read correct version number without \n
+			trigger_error('ICS File: Unsopported calendar version : <'.$ics['VERSION'].'>', E_USER_WARNING);
 			return array();
 		}
-		
-		if ( array_key_exists('VEVENT', $ics)) {		
+
+
+		if ( array_key_exists('VEVENT', $ics)) {
+
 			// Sort each event at it's place, week then day
 			foreach ($ics['VEVENT'] as $event) {
+
 				$start_time = strtotime($event['DTSTART']);
 				$year = date('Y', $start_time);
 				if (!array_key_exists($year, $array))
@@ -214,7 +219,7 @@ function _strToIcs($str) {
 	{
 		return array();
 	}
-	
+
 	// Skip first and last lines, they're BEGIN and END of ics element
 	for ($i = 1; $i < $len; $i++) {
 		$curr_line = explode(':', $str[$i], 2);
@@ -230,10 +235,10 @@ function _strToIcs($str) {
 					$element_lines .= $element_curr_line . PHP_EOL;
 				} while($element_curr_line !== 'END:'.$element_type && $i++);
 	
-				if ( !array_key_exists($element_type, $ics))
-					$ics[$element_type] = array();
+				if ( !array_key_exists(trim($element_type), $ics)) // trim
+					$ics[trim($element_type)] = array(); // trim
 				// Compute it
-				$ics[$element_type][] = _strToIcs($element_lines);
+				$ics[trim($element_type)][] = _strToIcs($element_lines);// trim to delete the last \n after vevent
 				
 			} else {
 				// Add attribute value
@@ -250,7 +255,7 @@ function _strToIcs($str) {
 
 function _test_date(&$date) {
 	static $DATE_FORMAT = 'Y-m-d';
-	static $REGEX_DATE_FORMAT = '/^/d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]/d|3[01])$/';
+	static $REGEX_DATE_FORMAT = '/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/'; // c'etait des backslash dans laregex
 	
 	if ($date === NULL) {
 		// By default, $date is today
