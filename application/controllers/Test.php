@@ -27,7 +27,7 @@ class Test extends CI_Controller {
 
     }
 
-    public function abcense($ressource = 9305){
+    public function absence($ressource = 9305){
         
 
     }
