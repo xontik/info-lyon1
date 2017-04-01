@@ -91,9 +91,10 @@ function getCalendar($resources, $firstDate = NULL, $lastDate = NULL)
 			
 			//Make sure datas are up-to-date (2 days old max)
 			if ( $firstDate == $lastDate ) {
-				
+				$dayinweek = date('N', strtotime($firstDate));
 				// If content was updated before two days ago
-				if ( strtotime($calendar[$year][$week][ date('N', strtotime($firstDate) ]['updated'])
+				if ( array_key_exists($dayinweek, $calendar[$year][$week]) &&
+					strtotime($calendar[$year][$week][$dayinweek]['updated'])
 					< mktime(date('H'), date('i'), date('s'), date('m'), date('d') - 2, date('y')))
 				{
 					$calendar = array_merge( $calendar, _icsToArray(
