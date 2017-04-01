@@ -235,10 +235,10 @@ function _strToIcs($str) {
 				
 				// Read the whole element
 				do {
-					$element_curr_line = $str[$i];
-					$element_lines .= $element_curr_line . PHP_EOL;
-				} while($element_curr_line !== 'END:'.$element_type && $i++);
-	
+					$element_lines .= $str[$i] . PHP_EOL;
+				} while ($element_curr_line !== 'END:'.$element_type && $i++);
+				
+				$element_type = trim($element_type);
 				if ( !array_key_exists($element_type, $ics))
 					$ics[$element_type] = array();
 				// Compute it
