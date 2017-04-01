@@ -53,11 +53,12 @@ function getCalendar($resources, $firstDate = NULL, $lastDate = NULL)
 			swap($firstDate, $lastDate);
 	}
 	
+	
 	$calendar = array();
 	$updated = false;
 	
 	//TODO Dev: Check if exists in database
-	if ( file_exists('assets/calendar' . $resources . '.json')) {
+	if ( file_exists('assets/calendar' . $resources . '.json') ) {
 		//TODO Dev: Load from database
 		$calendar = file_get_contents('assets/calendar' . $resources . '.json');
 		
@@ -75,18 +76,18 @@ function getCalendar($resources, $firstDate = NULL, $lastDate = NULL)
 		$beginYear = date('Y', strtotime($firstDate));
 		$endYear = date('Y', strtotime($lastDate));
 		
-		for ($i = 0, $len = $endYear - $beginYear; $i < $len; $i++) {
-			if ( !array_key_exists($beginYear + $i, $calendar)) {
+		for ($i = $beginYear; $i < $endYear; $i++) {
+			if ( !array_key_exists($i, $calendar)) {
 				$exist = false;
 				break;
 			} else {
 				// if first year, take week if first date, else begin to first week of year
-				$beginWeek = ($i == 0) ? date('W', strtotime($firstDate)) : 0;
+				$beginWeek = ($i == $beginYear) ? date('W', strtotime($firstDate)) : 0;
 				// if last year, take week of last date, else end to last week of year
-				$endWeek = ($i == $len) ? date('W', strtotime($lastDate)) : 52;
+				$endWeek = ($i == $endYear) ? date('W', strtotime($lastDate)) : 51;
 				
-				for ($j = 0, $length = $endWeek - $beginWeek; $j < $length; $j++) {
-					if ( !array_key_exists( $beginWeek + $j, $calendar[$beginYear + $i] ) ) {
+				for ($j = $beginWeek; $j < $endYear; $j++) {
+					if ( !array_key_exists( $j, $calendar[$i] ) ) {
 						$exist = false;
 						break;
 					}
@@ -99,38 +100,41 @@ function getCalendar($resources, $firstDate = NULL, $lastDate = NULL)
 		
 		if ( !$exist )
 		{
-			$calendar = _icsToArray(getAdeRequest($resources, $firstDate, $lastDate)) + $calendar;
+			$calendar = _icsToArray(_getAdeRequest($resources, $firstDate, $lastDate)) + $calendar;
 			$updated = true;
 			
 		} else {
 			
 			//Make sure datas are up-to-date (2 days old max)
 			if ( $firstDate == $lastDate ) {
+				
 				$year = date('Y', strtotime($firstDate));
 				$week = date('W', strtotime($firstDate));
 				$dayinweek = date('N', strtotime($firstDate));
 				// If content was updated before two days ago
-				if ( array_key_exists($dayinweek, $calendar[$year][$week]) &&
+				if ( !array_key_exists($dayinweek, $calendar[$year][$week]) ||
 					$calendar[$year][$week][$dayinweek]['updated']
 					< mktime(date('H'), date('i'), date('s'), date('m'), date('d') - 2, date('y')))
 				{
-					$calendar = _icsToArray(getAdeRequest($resources, $firstDate, $lastDate)) + $calendar;
+					$calendar = _icsToArray(_getAdeRequest($resources, $firstDate, $lastDate)) + $calendar;
 					$updated = true;
 				}
 			} else {
 				$temp = $firstDate;
 				
 				while ( $temp != $lastDate ) {
-					$year = date('Y', $temp);
-					$week = date('W', $temp);
+					$year = date('Y', strtotime($temp));
+					$week = date('W', strtotime($temp));
 					$dayinweek = date('N', strtotime($temp));
 					
 					// If one day isn't up-to-date, update entire period
-					if ( !array_key_exists($dayinweek, $calendar[$year][$week]) ||
+					if ( !array_key_exists($year, $calendar) || 
+						!array_key_exists($week, $calendar[$year]) ||
+						!array_key_exists($dayinweek, $calendar[$year][$week]) ||
 						$calendar[$year][$week][$dayinweek]['updated']
 						< mktime(date('H'), date('i'), date('s'), date('m'), date('d') - 2, date('y')) )
 					{
-						$calendar = _icsToArray(getAdeRequest($resources, $firstDate, $lastDate)) + $calendar;
+						$calendar = _icsToArray(_getAdeRequest($resources, $firstDate, $lastDate)) + $calendar;
 						$updated = true;
 						break;
 					}
@@ -142,18 +146,19 @@ function getCalendar($resources, $firstDate = NULL, $lastDate = NULL)
 	}
 	// If no preexisting data was found
 	else {
-		$calendar = _icsToArray(getAdeRequest($resources, $firstDate, $lastDate));
+		$calendar = _icsToArray(_getAdeRequest($resources, $firstDate, $lastDate));
 		$updated = true;
 	}
 	
+	//TODO Dev: Save to database
 	if ( $updated && 
 		! file_put_contents('assets/calendar' . $resources . '.json', json_encode($calendar, JSON_PRETTY_PRINT)))
 	{
-		trigger_error('Could not write json file "assets/calendar' . $resources . '.json"', E_USER_WARNING);
+		trigger_error('Could not save the calendar to the database', E_USER_WARNING);
 		unlink('assets/calendar' . $resources . '.json');
 	}
 
-	return $calendar;
+	return _narrow($calendar, $firstDate, $lastDate);
 }
 
 function _icsToArray($ics_filepath) {
@@ -227,16 +232,23 @@ function _strToIcs($str) {
 	
 	// Skip first and last lines, they're BEGIN and END of ics element
 	for ($i = 1; $i < $len; $i++) {
+		
 		$curr_line = explode(':', $str[$i], 2);
 		if (count($curr_line) == 2) {
 			if ($curr_line[0] == 'BEGIN') {
 				// Create new ics element
 				$element_type = $curr_line[1];
-				$element_lines = "";
+				$element_lines = '';
 				
 				// Read the whole element
 				do {
 					$element_curr_line = $str[$i];
+										
+					if ( strlen($element_curr_line) >= 74 ) {
+						if ( count(explode(':', $str[$i+1]) != 2) )
+							$element_curr_line .= $str[++$i];
+					}
+					
 					$element_lines .= $element_curr_line . PHP_EOL;
 				} while ($element_curr_line !== 'END:'.$element_type && $i++);
 				
@@ -252,20 +264,57 @@ function _strToIcs($str) {
 					trigger_error('ICS File: Content "' . $curr_line[0] . '" overriden');
 				$ics[$curr_line[0]] = $curr_line[1];
 			}
+		//} else if ( trim($str[$i]) == '' ) {
+			//continue
 		} else {
-			trigger_error('ICS File: Line ' . ($i+1) . ' invalid');
+			trigger_error('ICS File: Line "' . $str[$i] . '" is invalid');
 		}
 	}
 	return $ics;
 }
 
-function _getAdeRequest($res, $firstDate, $lastDate) {
+function _getAdeRequest($resources, $firstDate, $lastDate) {
 	return 'http://adelb.univ-lyon1.fr/jsp/custom/modules/plannings/anonymous_cal.jsp?'
 				. 'calType=ical'
 				. '&resources=' . $resources
 				. '&projectId=3'
 				. '&firstDate=' . $firstDate
 				. '&lastDate=' . $lastDate;
+}
+
+function _narrow($array, $begin, $end) {
+	
+	$final = array();
+	
+	$beginYear = date('Y', strtotime($begin));
+	$beginWeek = date('W', strtotime($begin));
+	$beginDay = date('N', strtotime($begin));
+	
+	$endYear = date('Y', strtotime($end));
+	$endWeek = date('W', strtotime($end));
+	$endDay = date('N', strtotime($end));
+	
+	for ($i = $beginYear; $i <= $endYear; $i++) {
+		if ( !array_key_exists($i, $final) )
+			$final[$i] = array();
+		
+		$beginWeekInYear = ($i == $beginYear) ? $beginWeek : 0;
+		$endWeekInYear = ($i == $endYear) ? $endWeek : 51;
+		
+		for ($j = $beginWeekInYear; $j <= $endWeekInYear; $j++) {
+			if ( !array_key_exists($j, $final[$i]) )
+				$final[$i][$j] = array();
+			
+			$beginDayInWeek = ($i == $beginYear && $j == $beginWeek) ? $beginDay : 0;
+			$endDayInWeek = ($i == $endYear && $j == $endWeek) ? $endDay : 6;
+			
+			for ($k = $beginDayInWeek; $k <= $endDayInWeek; $k++)
+				if (array_key_exists($k, $array[$i][$j]))
+					$final[$i][$j][$k] = $array[$i][$j][$k];
+		}
+	}
+	
+	return $final;
 }
 
 function _test_date(&$date) {
