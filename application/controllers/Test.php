@@ -7,8 +7,9 @@ class Test extends CI_Controller {
     {
         $css = array("test");
         $js = array("debug");
-        $title = "Premier essai !";
+        $title = "Page de test !";
         $data = array("a" => "donnée a","b" => "donnée b","c" => "donnée c");
+		
         $var = array(   "css" => $css,
                         "js" => $js,
                         "title" => $title,

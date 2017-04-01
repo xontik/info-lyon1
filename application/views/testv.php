@@ -1,3 +1,3 @@
 <main>
-    <h1>YO</h1>
+    <h1>Page de test.</h1>
 </main>
