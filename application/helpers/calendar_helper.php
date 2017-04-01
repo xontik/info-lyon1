@@ -78,14 +78,14 @@ function getCalendar($resources, $firstDate = NULL, $lastDate = NULL)
 		if ( !array_key_exists($year, $calendar)
 			|| !array_key_exists($week, $calendar[$year]) )
 		{
-			$calendar = array_merge( $calendar, _icsToArray(
+			$calendar = _icsToArray(
 					'http://adelb.univ-lyon1.fr/jsp/custom/modules/plannings/anonymous_cal.jsp?'
 					. 'calType=ical'
 					. '&resources=' . $resources
 					. '&projectId=3'
 					. '&firstDate=' . $firstDate
 					. '&lastDate=' . $lastDate
-				));
+				) + $calendar;
 			$updated = true;
 		} else {
 			
@@ -97,37 +97,39 @@ function getCalendar($resources, $firstDate = NULL, $lastDate = NULL)
 					strtotime($calendar[$year][$week][$dayinweek]['updated'])
 					< mktime(date('H'), date('i'), date('s'), date('m'), date('d') - 2, date('y')))
 				{
-					$calendar = array_merge( $calendar, _icsToArray(
+					$calendar = _icsToArray(
 							'http://adelb.univ-lyon1.fr/jsp/custom/modules/plannings/anonymous_cal.jsp?'
 							. 'calType=ical'
 							. '&resources=' . $resources
 							. '&projectId=3'
 							. '&firstDate=' . $firstDate
 							. '&lastDate=' . $lastDate
-						));
+						) + $calendar;
 					$updated = true;
 				}
 			} else {
 				$temp = $firstDate;
 				
 				while ( $temp != $lastDate ) {
+					$dayinweek = date('N', strtotime($temp));
 					// If one day isn't up-to-date, update entire period
-					if ( $calendar[$year][$week][ date('N', strtotime($temp)) ]['updated']
+					if ( !array_key_exists($dayinweek, $calendar[$year][$week]) ||
+						$calendar[$year][$week][$dayinweek]['updated']
 						< mktime(date('H'), date('i'), date('s'), date('m'), date('d') - 2, date('y')) )
 					{
-						$calendar = array_merge($calendar, _icsToArray(
+						$calendar = _icsToArray(
 								'http://adelb.univ-lyon1.fr/jsp/custom/modules/plannings/anonymous_cal.jsp?'
 								. 'calType=ical'
 								. '&resources=' . $resources
 								. '&projectId=3'
 								. '&firstDate=' . $firstDate
 								. '&lastDate=' . $lastDate
-							));
+							) + $calendar;
 						$updated = true;
 						break;
 					}
 					
-					$temp = date('Y-m-d', strtotime('+1 day', $temp));
+					$temp = date('Y-m-d', mktime(0, 0, 0, date('m'), date('d') + 1, date('y')));
 				}
 			}
 		}
@@ -235,7 +237,8 @@ function _strToIcs($str) {
 				
 				// Read the whole element
 				do {
-					$element_lines .= $str[$i] . PHP_EOL;
+					$element_curr_line = $str[$i];
+					$element_lines .= $element_curr_line . PHP_EOL;
 				} while ($element_curr_line !== 'END:'.$element_type && $i++);
 				
 				$element_type = trim($element_type);
