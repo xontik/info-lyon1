@@ -4,8 +4,6 @@ function getCalendar($resources, $firstDate = NULL, $lastDate = NULL)
 {
 	global $DATE_FORMAT;
 	$DATE_FORMAT = 'Y-m-d';
-
-	date_default_timezone_set('Europe/Paris');
 	
 	// Test the optionnal parameters
 	// (res, 'day' [, date])
