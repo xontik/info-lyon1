@@ -69,60 +69,68 @@ function getCalendar($resources, $firstDate = NULL, $lastDate = NULL)
 			$calendar = json_decode($calendar, true);
 		}
 		
-		$year = date('Y', strtotime($firstDate));
-		$week = date('W', strtotime($firstDate));
-		
 		// Make sure datas exists
-		if ( !array_key_exists($year, $calendar)
-			|| !array_key_exists($week, $calendar[$year]) )
+		$exist = true;
+		
+		$beginYear = date('Y', strtotime($firstDate));
+		$endYear = date('Y', strtotime($lastDate));
+		
+		for ($i = 0, $len = $endYear - $beginYear; $i < $len; $i++) {
+			if ( !array_key_exists($beginYear + $i, $calendar)) {
+				$exist = false;
+				break;
+			} else {
+				// if first year, take week if first date, else begin to first week of year
+				$beginWeek = ($i == 0) ? date('W', strtotime($firstDate)) : 0;
+				// if last year, take week of last date, else end to last week of year
+				$endWeek = ($i == $len) ? date('W', strtotime($lastDate)) : 52;
+				
+				for ($j = 0, $length = $endWeek - $beginWeek; $j < $length; $j++) {
+					if ( !array_key_exists( $beginWeek + $j, $calendar[$beginYear + $i] ) ) {
+						$exist = false;
+						break;
+					}
+				}
+				
+				if (!$exist)
+					break;
+			}
+		}
+		
+		if ( !$exist )
 		{
-			$calendar = _icsToArray(
-					'http://adelb.univ-lyon1.fr/jsp/custom/modules/plannings/anonymous_cal.jsp?'
-					. 'calType=ical'
-					. '&resources=' . $resources
-					. '&projectId=3'
-					. '&firstDate=' . $firstDate
-					. '&lastDate=' . $lastDate
-				) + $calendar;
+			$calendar = _icsToArray(getAdeRequest($resources, $firstDate, $lastDate)) + $calendar;
 			$updated = true;
+			
 		} else {
 			
 			//Make sure datas are up-to-date (2 days old max)
 			if ( $firstDate == $lastDate ) {
+				$year = date('Y', strtotime($firstDate));
+				$week = date('W', strtotime($firstDate));
 				$dayinweek = date('N', strtotime($firstDate));
 				// If content was updated before two days ago
 				if ( array_key_exists($dayinweek, $calendar[$year][$week]) &&
-					strtotime($calendar[$year][$week][$dayinweek]['updated'])
+					$calendar[$year][$week][$dayinweek]['updated']
 					< mktime(date('H'), date('i'), date('s'), date('m'), date('d') - 2, date('y')))
 				{
-					$calendar = _icsToArray(
-							'http://adelb.univ-lyon1.fr/jsp/custom/modules/plannings/anonymous_cal.jsp?'
-							. 'calType=ical'
-							. '&resources=' . $resources
-							. '&projectId=3'
-							. '&firstDate=' . $firstDate
-							. '&lastDate=' . $lastDate
-						) + $calendar;
+					$calendar = _icsToArray(getAdeRequest($resources, $firstDate, $lastDate)) + $calendar;
 					$updated = true;
 				}
 			} else {
 				$temp = $firstDate;
 				
 				while ( $temp != $lastDate ) {
+					$year = date('Y', $temp);
+					$week = date('W', $temp);
 					$dayinweek = date('N', strtotime($temp));
+					
 					// If one day isn't up-to-date, update entire period
 					if ( !array_key_exists($dayinweek, $calendar[$year][$week]) ||
 						$calendar[$year][$week][$dayinweek]['updated']
 						< mktime(date('H'), date('i'), date('s'), date('m'), date('d') - 2, date('y')) )
 					{
-						$calendar = _icsToArray(
-								'http://adelb.univ-lyon1.fr/jsp/custom/modules/plannings/anonymous_cal.jsp?'
-								. 'calType=ical'
-								. '&resources=' . $resources
-								. '&projectId=3'
-								. '&firstDate=' . $firstDate
-								. '&lastDate=' . $lastDate
-							) + $calendar;
+						$calendar = _icsToArray(getAdeRequest($resources, $firstDate, $lastDate)) + $calendar;
 						$updated = true;
 						break;
 					}
@@ -134,14 +142,7 @@ function getCalendar($resources, $firstDate = NULL, $lastDate = NULL)
 	}
 	// If no preexisting data was found
 	else {
-		$calendar = _icsToArray(
-				'http://adelb.univ-lyon1.fr/jsp/custom/modules/plannings/anonymous_cal.jsp?'
-				. 'calType=ical'
-				. '&resources=' . $resources
-				. '&projectId=3'
-				. '&firstDate=' . $firstDate
-				. '&lastDate=' . $lastDate
-			);
+		$calendar = _icsToArray(getAdeRequest($resources, $firstDate, $lastDate));
 		$updated = true;
 	}
 	
@@ -256,6 +257,15 @@ function _strToIcs($str) {
 		}
 	}
 	return $ics;
+}
+
+function _getAdeRequest($res, $firstDate, $lastDate) {
+	return 'http://adelb.univ-lyon1.fr/jsp/custom/modules/plannings/anonymous_cal.jsp?'
+				. 'calType=ical'
+				. '&resources=' . $resources
+				. '&projectId=3'
+				. '&firstDate=' . $firstDate
+				. '&lastDate=' . $lastDate;
 }
 
 function _test_date(&$date) {
