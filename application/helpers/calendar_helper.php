@@ -2,57 +2,57 @@
 
 function getCalendar($resources, $firstDate = NULL, $lastDate = NULL)
 {
-	date_default_timezone_set('Europe/Paris');
+	global $DATE_FORMAT;
+	$DATE_FORMAT = 'Y-m-d';
 
-	//TODO Update the 'updated'
+	date_default_timezone_set('Europe/Paris');
 	
 	// Test the optionnal parameters
-	// getCalendar(res, 'day'...
+	// (res, 'day' [, date])
 	if ( strcasecmp($firstDate, 'day') === 0 )
 	{
 		_test_date($lastDate);
 		$firstDate = $lastDate;
 	}
+	// (res, date, 'day')
+	else if ( strcasecmp($lastDate, 'day') === 0 )
+	{
+		_test_date($firstDate);
+		$lastDate = $firstDate;
+	}
+	// (res, 'week' [, date])
 	else if ( strcasecmp($firstDate, 'week') === 0 )
 	{
 		_test_date($lastDate);
 		$time = strtotime($lastDate);
 		$dayofweek = date('N', $time);
 		
-		$firstDate = mktime(0, 0, 0, date('m', $time), date('d', $time) - ($dayofweek - 1), date('Y', $time));
-		$lastDate = mktime(0, 0, 0, date('m', $time), date('d', $time) + (7 - $dayofweek), date('Y', $time));
+		$firstDate = date($DATE_FORMAT, mktime(0, 0, 0, date('m', $time), date('d', $time) - ($dayofweek - 1), date('Y', $time)));
+		$lastDate = date($DATE_FORMAT, mktime(0, 0, 0, date('m', $time), date('d', $time) + (7 - $dayofweek), date('Y', $time)));
 	}
-	else if ( strcasecmp($lastDate, 'day') === 0 )
-	{
-		_test_date($firstDate);
-		$lastDate = $firstDate;
-	}
+	// (res, date, 'week')
 	else if ( strcasecmp($lastDate, 'week') === 0 )
 	{
 		_test_date($firstDate);
 		$time = strtotime($firstDate);
 		$dayofweek = date('N', $time);
 		
-		$firstDate = mktime(0, 0, 0, date('m', $time), date('d', $time) - ($dayofweek - 1), date('Y', $time));
-		$lastDate = mktime(0, 0, 0, date('m', $time), date('d', $time) + (7 - $dayofweek), date('Y', $time));
-	} else {
+		$firstDate = date($DATE_FORMAT, mktime(0, 0, 0, date('m', $time), date('d', $time) - ($dayofweek - 1), date('Y', $time)));
+		$lastDate = date($DATE_FORMAT, mktime(0, 0, 0, date('m', $time), date('d', $time) + (7 - $dayofweek), date('Y', $time)));
+	}
+	// (res [, beginDate [, endDate]])
+	else
+	{
 		_test_date($firstDate);
 		_test_date($lastDate);
 		
 		// Make dates in right order
 		// To give ADE a correct url
-
 		$firstTime = strtotime($firstDate);
 		$lastTime = strtotime($lastDate);
-
-
-		if ( $lastTime < $firstTime ) // change inequality
-			swap($firstDate, $lastDate);
 		
-		if ( date('W', $firstTime) != date('W', $lastTime) ) {
-			trigger_error('Dates are from different weeks');
-			return array();
-		}
+		if ( $firstTime > $lastTime )
+			swap($firstDate, $lastDate);
 	}
 	
 	$calendar = array();
@@ -62,6 +62,7 @@ function getCalendar($resources, $firstDate = NULL, $lastDate = NULL)
 	if ( file_exists('assets/calendar' . $resources . '.json')) {
 		//TODO Dev: Load from database
 		$calendar = file_get_contents('assets/calendar' . $resources . '.json');
+		
 		if ($calendar === FALSE) {
 			trigger_error('Could not read json file "assets/calendar' . $resources . '.json"', E_USER_WARNING);
 			unlink('assets/calendar' . $resources . '.json');
@@ -70,10 +71,10 @@ function getCalendar($resources, $firstDate = NULL, $lastDate = NULL)
 			$calendar = json_decode($calendar, true);
 		}
 		
-		//Make sure we got up-to-date (2 day old max) datas
 		$year = date('Y', strtotime($firstDate));
 		$week = date('W', strtotime($firstDate));
 		
+		// Make sure datas exists
 		if ( !array_key_exists($year, $calendar)
 			|| !array_key_exists($week, $calendar[$year]) )
 		{
@@ -87,27 +88,30 @@ function getCalendar($resources, $firstDate = NULL, $lastDate = NULL)
 				));
 			$updated = true;
 		} else {
+			
+			//Make sure datas are up-to-date (2 days old max)
 			if ( $firstDate == $lastDate ) {
-				$dayofweek = date('N', strtotime($firstDate));
-				if ( strtotime($calendar[$year][$week][$dayofweek]['updated'])
+				
+				// If content was updated before two days ago
+				if ( strtotime($calendar[$year][$week][ date('N', strtotime($firstDate) ]['updated'])
 					< mktime(date('H'), date('i'), date('s'), date('m'), date('d') - 2, date('y')))
 				{
-					$calendar[$year][$week][$dayofweek] = _icsToArray(
+					$calendar = array_merge( $calendar, _icsToArray(
 							'http://adelb.univ-lyon1.fr/jsp/custom/modules/plannings/anonymous_cal.jsp?'
 							. 'calType=ical'
 							. '&resources=' . $resources
 							. '&projectId=3'
 							. '&firstDate=' . $firstDate
 							. '&lastDate=' . $lastDate
-						)[$year][$week][$dayofweek];
+						));
 					$updated = true;
 				}
 			} else {
 				$temp = $firstDate;
 				
 				while ( $temp != $lastDate ) {
-					// If one day isn't up-to-date, update entire week
-					if ( $calendar[$year][$week][date('N', strtotime($temp))]['updated']
+					// If one day isn't up-to-date, update entire period
+					if ( $calendar[$year][$week][ date('N', strtotime($temp)) ]['updated']
 						< mktime(date('H'), date('i'), date('s'), date('m'), date('d') - 2, date('y')) )
 					{
 						$calendar = array_merge($calendar, _icsToArray(
@@ -126,7 +130,9 @@ function getCalendar($resources, $firstDate = NULL, $lastDate = NULL)
 				}
 			}
 		}
-	} else {
+	}
+	// If no preexisting data was found
+	else {
 		$calendar = _icsToArray(
 				'http://adelb.univ-lyon1.fr/jsp/custom/modules/plannings/anonymous_cal.jsp?'
 				. 'calType=ical'
@@ -152,30 +158,25 @@ function _icsToArray($ics_filepath) {
 	
 	// Remove whitespace chars if there are
 	$content = trim( file_get_contents($ics_filepath) );
-
+	
 	// Check if file is valid
 	if (startsWith($content, 'BEGIN:VCALENDAR')
 		&& endsWith($content, 'END:VCALENDAR'))
 	{
 		$VERSION_SUPPORTED = array('2.0');
-
+		
 		$ics = _strToIcs($content);
 		$array = array();
-
-
+		
 		// Check if file version is supported
-
-        if ( !in_array(trim($ics['VERSION']), $VERSION_SUPPORTED) ) { //add trim to read correct version number without \n
-			trigger_error('ICS File: Unsopported calendar version : <'.$ics['VERSION'].'>', E_USER_WARNING);
+		if ( !in_array( trim($ics['VERSION']), $VERSION_SUPPORTED) ) {
+			trigger_error('ICS File: Unsupported calendar version', E_USER_WARNING);
 			return array();
 		}
-
-
+		
 		if ( array_key_exists('VEVENT', $ics)) {
-
 			// Sort each event at it's place, week then day
 			foreach ($ics['VEVENT'] as $event) {
-
 				$start_time = strtotime($event['DTSTART']);
 				$year = date('Y', $start_time);
 				if (!array_key_exists($year, $array))
@@ -221,7 +222,7 @@ function _strToIcs($str) {
 	{
 		return array();
 	}
-
+	
 	// Skip first and last lines, they're BEGIN and END of ics element
 	for ($i = 1; $i < $len; $i++) {
 		$curr_line = explode(':', $str[$i], 2);
@@ -237,10 +238,10 @@ function _strToIcs($str) {
 					$element_lines .= $element_curr_line . PHP_EOL;
 				} while($element_curr_line !== 'END:'.$element_type && $i++);
 	
-				if ( !array_key_exists(trim($element_type), $ics)) // trim
-					$ics[trim($element_type)] = array(); // trim
+				if ( !array_key_exists($element_type, $ics))
+					$ics[$element_type] = array();
 				// Compute it
-				$ics[trim($element_type)][] = _strToIcs($element_lines);// trim to delete the last \n after vevent
+				$ics[$element_type][] = _strToIcs($element_lines);
 				
 			} else {
 				// Add attribute value
@@ -256,8 +257,8 @@ function _strToIcs($str) {
 }
 
 function _test_date(&$date) {
-	static $DATE_FORMAT = 'Y-m-d';
-	static $REGEX_DATE_FORMAT = '/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/'; // c'etait des backslash dans laregex
+	static $REGEX_DATE_FORMAT = '/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/';
+	global $DATE_FORMAT;
 	
 	if ($date === NULL) {
 		// By default, $date is today
