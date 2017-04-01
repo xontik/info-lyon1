@@ -41,10 +41,12 @@ function getCalendar($resources, $firstDate = NULL, $lastDate = NULL)
 		
 		// Make dates in right order
 		// To give ADE a correct url
+
 		$firstTime = strtotime($firstDate);
 		$lastTime = strtotime($lastDate);
-		
-		if ( $lastTime > $firstTime )
+
+
+		if ( $lastTime < $firstTime ) // change inequality
 			swap($firstDate, $lastDate);
 		
 		if ( date('W', $firstTime) != date('W', $lastTime) ) {
@@ -150,7 +152,7 @@ function _icsToArray($ics_filepath) {
 	
 	// Remove whitespace chars if there are
 	$content = trim( file_get_contents($ics_filepath) );
-	
+
 	// Check if file is valid
 	if (startsWith($content, 'BEGIN:VCALENDAR')
 		&& endsWith($content, 'END:VCALENDAR'))
@@ -273,7 +275,7 @@ if ( !function_exists('swap') )
 	function swap(&$x, &$y) {
 		$tmp = $x;
 		$x = $y;
-		$y = $x;
+		$y = $tmp;
 	}
 }
 
