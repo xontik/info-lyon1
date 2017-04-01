@@ -20,10 +20,15 @@ class Test extends CI_Controller {
 
     public function calendar($ressource = 9305){
         $this->load->helper("calendar");
-        $cal = getCalendar($ressource,"2017-03-27","2017-03-31");
+        $cal = getCalendar($ressource,"2017-03-31","2017-03-27");
         echo "<pre>";
         print_r($cal);
         echo "</pre>";
+
+    }
+
+    public function abcense($ressource = 9305){
+        
 
     }
 }
