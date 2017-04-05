@@ -283,34 +283,42 @@ function _getAdeRequest($resources, $firstDate, $lastDate) {
 }
 
 function _narrow($array, $begin, $end) {
-	
 	$final = array();
 	
-	$beginYear = date('Y', strtotime($begin));
-	$beginWeek = date('W', strtotime($begin));
-	$beginDay = date('N', strtotime($begin));
+	$beginTime = strtotime($begin);
+	$endTime = strtotime($end);
 	
-	$endYear = date('Y', strtotime($end));
-	$endWeek = date('W', strtotime($end));
-	$endDay = date('N', strtotime($end));
+	if ($beginTime > $endTime)
+		swap($beginTime, $endTime);
+	
+	$beginYear = date('Y', $beginTime);
+	$beginWeek = date('W', $beginTime) % 52;
+	$beginDay = date('N', $beginTime);
+	
+	$endYear = date('Y', $endTime);
+	$endWeek = date('W', $endTime);
+	$endDay = date('N', $endTime);
 	
 	for ($i = $beginYear; $i <= $endYear; $i++) {
-		if ( !array_key_exists($i, $final) )
-			$final[$i] = array();
-		
 		$beginWeekInYear = ($i == $beginYear) ? $beginWeek : 0;
 		$endWeekInYear = ($i == $endYear) ? $endWeek : 51;
 		
 		for ($j = $beginWeekInYear; $j <= $endWeekInYear; $j++) {
-			if ( !array_key_exists($j, $final[$i]) )
-				$final[$i][$j] = array();
-			
 			$beginDayInWeek = ($i == $beginYear && $j == $beginWeek) ? $beginDay : 0;
 			$endDayInWeek = ($i == $endYear && $j == $endWeek) ? $endDay : 6;
 			
-			for ($k = $beginDayInWeek; $k <= $endDayInWeek; $k++)
-				if (array_key_exists($k, $array[$i][$j]))
+			for ($k = $beginDayInWeek; $k <= $endDayInWeek; $k++) {
+				if ( array_key_exists($i, $array) &&
+					array_key_exists($j, $array[$i]) && 
+					array_key_exists($k, $array[$i][$j]) )
+				{
+					if ( !array_key_exists($i, $final) )
+						$final[$i] = array();
+					if ( !array_key_exists($j, $final[$i]) )
+						$final[$i][$j] = array();
 					$final[$i][$j][$k] = $array[$i][$j][$k];
+				}
+			}
 		}
 	}
 	
