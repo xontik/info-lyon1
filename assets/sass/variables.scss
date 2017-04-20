@@ -1,0 +1,19 @@
+// Media queries
+$device-break:		980px;		    // Break between computer and phone screens
+
+// TODO Find large screen break
+$largeScreen-break: 0px;            // Break between really large screens and smaller ones
+                                    // Useful for column/lines break in dashboards
+
+// Theme
+$title-font:		"Open Sans";    // Font for titles
+$text-font:			"Roboto";       // Font for text
+$text-font-family:  $text-font, helvetica, arial, sans-serif;
+
+// TODO Discuss colors with group
+$bgcolor:			#fafafa; 		// Background color
+$menucolor: 		#36bbce;		// Menus color
+$fgcolor:			#038997; 		// Foreground color
+
+$text-color: 		#202020;		// Font color for text
+$title-color:		#015965;		// Font color for titles

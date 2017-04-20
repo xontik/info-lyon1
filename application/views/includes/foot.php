@@ -1,3 +1,4 @@
+        </main>
         <footer>
             <p> Footer here</p>
         </footer>

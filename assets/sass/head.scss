@@ -1,0 +1,43 @@
+@import "variables";
+
+#debug {
+  background-color: #dedede;
+  padding-left: 16px;
+}
+
+body {
+  > header, > nav, > main, > footer {
+    padding: 0 3%;
+  }
+
+  > header {
+    padding-top: 1%;
+    background-color: $bgcolor;
+
+    img {
+      display: inline-block;
+      width: 9%;
+    }
+
+    h1 {
+      display: inline;
+      position: relative;
+      bottom: .4em; left: .2em;
+
+      font-size: 4em;
+    }
+  }
+
+  > nav {
+
+  }
+
+  > main {
+
+  }
+
+  > footer {
+
+  }
+
+}

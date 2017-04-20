@@ -1,0 +1,20 @@
+#debug {
+  background-color: #dedede;
+  padding-left: 16px; }
+
+body > header, body > nav, body > main, body > footer {
+  padding: 0 3%; }
+body > header {
+  padding-top: 1%;
+  background-color: #fafafa; }
+body > header img {
+  display: inline-block;
+  width: 9%; }
+body > header h1 {
+  display: inline;
+  position: relative;
+  bottom: .4em;
+  left: .2em;
+  font-size: 4em; }
+
+/*# sourceMappingURL=head.css.map */

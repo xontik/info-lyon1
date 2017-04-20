@@ -1,0 +1,26 @@
+/* Not definitive */
+@import url("https://fonts.googleapis.com/css?family=Open+Sans|Roboto");
+* {
+  padding: 0;
+  margin: 0; }
+
+body {
+  font-family: "Roboto", helvetica, arial, sans-serif;
+  color: #202020;
+  background-color: #fafafa; }
+body #body:after {
+  content: '';
+  display: table;
+  clear: both; }
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Open Sans", "Roboto", helvetica, arial, sans-serif;
+  color: #015965; }
+
+a {
+  text-decoration: none; }
+
+li {
+  list-style-type: none; }
+
+/*# sourceMappingURL=style.css.map */
