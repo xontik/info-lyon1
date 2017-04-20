@@ -48,9 +48,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 <body>
 
 <div id="container">
-	<h1>Work In Progress !</h1><img src="assets/images/teckmeb_logo.jpg" alt="Logo Teckmeb"/>
+	<h1>Work In Progress !</h1><?php echo html_img('teckmeb_logo', 'Teckmeb', '213'); ?>
 
-	<div id="body">
+    <div id="body">
 		<p>Le site web que vous recherchez est en cours de développement !</p>
 		<p>Un prototype devrait être prêt en Juin,</p>
 		<p>Et le site sera en état de fonctionner fin 2017 (même avant, si les dev' sont motivés !)</p>

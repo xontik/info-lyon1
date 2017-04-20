@@ -7,15 +7,15 @@
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         <?php
-        if(isset($css)) {
+        if (isset($css)) {
             foreach ($css as $c) {
                 echo '<link rel="stylesheet" type="text/css" href="'.css_url($c) . '">';
             }
         }
         $debug = false;
-        if(isset($js)){
+        if (isset($js)) {
             foreach ($js as $j) {
-                if($j == "debug"){
+                if ($j == "debug") {
                     $debug = true;
                 }
                 echo '<script src="' . js_url($j) . '"></script>';
@@ -26,11 +26,14 @@
 
     </head>
     <body>
-        <?php if(isset($data) && $debug){ ?>
-        <div id="debug">
-            <?php print_r($data);?>
-        </div>
-        <?php }?>
+        <?php if (isset($data) && $debug) { ?>
+        <pre id="debug">
+            <?php print_r($data); ?>
+        </pre>
+        <?php } ?>
+        <header>
+            <p>Header</p>
+        </header>
         <nav>
             <p>Menu here</p>
         </nav>
