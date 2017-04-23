@@ -5,6 +5,7 @@ class Test extends CI_Controller {
 
     public function index()
     {
+
         $css = array("test");
         $js = array("debug");
         $title = "Premier essai !";
@@ -15,6 +16,17 @@ class Test extends CI_Controller {
                         "data" => $data);
 
         show("testv",$var);
+
+    }
+
+    public function control(){
+
+        $this->load->model('control_model','ctrlMod');
+        $this->ctrlMod->addControl(2,20,"redfc",null,null);
+
+
+
+
 
     }
 }

@@ -6,6 +6,8 @@
  * Date: 13/04/2017
  * Time: 15:42
  */
+defined('BASEPATH') OR exit('No direct script access allowed');
+
 class Mark_model extends CI_Model {
 
 
