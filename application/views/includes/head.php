@@ -30,7 +30,12 @@
         <div id="debug">
             <?php print_r($data);?>
         </div>
-        <?php }?>
+        <?php }
+        if(isset($_SESSION["notif"])){
+            foreach ($_SESSION["notif"] as $notif){
+                echo "<p>".$notif."</p>";
+            }
+        }?>
         <nav>
             <p>Menu here</p>
         </nav>
