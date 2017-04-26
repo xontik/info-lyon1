@@ -11,7 +11,7 @@
 body {
   font-family: $text-font-family;
   color: $text-color;
-  background-color: $bgcolor;
+  background-color: $background-color;
 
   // Clear any kind of floating element
   #body:after {
@@ -27,7 +27,12 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 a {
+  color: lighten( $text-color, 5 );
   text-decoration: none;
+}
+
+h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
+  color: darken( $title-color, 5 );
 }
 
 li {

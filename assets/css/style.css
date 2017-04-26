@@ -15,10 +15,14 @@ body #body:after {
 
 h1, h2, h3, h4, h5, h6 {
   font-family: "Open Sans", "Roboto", helvetica, arial, sans-serif;
-  color: #015965; }
+  color: #e7bd26; }
 
 a {
+  color: #2d2d2d;
   text-decoration: none; }
+
+h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
+  color: #dbb118; }
 
 li {
   list-style-type: none; }

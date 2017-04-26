@@ -6,29 +6,118 @@
 }
 
 body {
-  > header, > nav, > main, > footer {
+  > header, > main, > footer {
     padding: 0 3%;
   }
 
   > header {
-    padding-top: 1%;
-    background-color: $bgcolor;
 
-    img {
-      display: inline-block;
-      width: 9%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding-top: 1%;
+    padding-bottom: .5%;
+    background-color: $second-color;
+
+    color: $header-text-color;
+
+    a { color: $header-text-color; }
+
+    > * { margin: 0 1em; }
+
+    #header_logo {
+      flex-grow: 1;
+      width: 100px;
+      vertical-align: bottom;
     }
 
     h1 {
-      display: inline;
-      position: relative;
-      bottom: .4em; left: .2em;
+      display: inline-block;
+      vertical-align: 10px;
 
-      font-size: 4em;
+      color: $header-text-color;
+      text-transform: uppercase;
+
+      #teck {
+        letter-spacing: 1px;
+      }
+
+      #meb {
+        text-align: center;
+        letter-spacing: 2px;
+      }
     }
-  }
 
-  > nav {
+    > nav {
+      flex-grow: 5;
+
+      ul {
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: space-around;
+        align-items: center;
+
+        li {
+          width: 100%;
+          height: 4em;
+          line-height: 4em;
+
+          margin: 0 1px;
+
+          text-align: center;
+          font-size: 1.4em;
+          text-transform: uppercase;
+
+          a {
+            display: inline-block;
+            width: 100%;
+            height: 100%;
+          }
+
+        }
+
+        li:hover {
+          margin: 0;
+          border-left:  1px SOLID $background-color;
+          border-right: 1px SOLID $background-color;
+        }
+      }
+    }
+
+    #header_profile {
+      flex-grow: 1;
+
+      text-align: center;
+
+      img {
+        width: 57px;
+        margin-bottom: 5px;
+      }
+
+      div {
+        display: inline;
+      }
+
+      div::after {
+        content: '';
+        width: 0;
+        height: 0;
+
+        position: relative;
+        left: 5px;
+        top: 14px;
+
+        border-left: 6px solid transparent;
+        border-right: 6px solid transparent;
+        border-top: 9px solid #ffffff;
+      }
+
+      ul {
+        display: none;
+      }
+
+    }
 
   }
 
