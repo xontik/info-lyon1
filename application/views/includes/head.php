@@ -13,18 +13,10 @@
                 echo '<link rel="stylesheet" type="text/css" href="'.css_url($c) . '">';
             }
         }
-        ?>
 
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-        <?php
         $debug = false;
         if (isset($js)) {
-            foreach ($js as $j) {
-                if ($j == "debug") {
-                    $debug = true;
-                }
-                echo '<script src="' . js_url($j) . '"></script>';
-            }
+            $debug = in_array('debug', $js);
         }
         ?>
 
@@ -36,11 +28,11 @@
             </pre>
         <?php } ?>
         <header>
-            <a href="<?php
+            <a id="header_title" href="<?php
                 // If connect, link to dashboard, else to welcome page
                 echo ( isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === TRUE ? 'dashboard' : '/' );
             ?>">
-                <?php echo html_img('teckmeb_logo.png', 'Logo Teckmeb', '', 'header_logo') ?>
+                <?php echo html_img('teckmeb_logo.png', 'Logo Teckmeb', '') ?>
                 <h1>
                     <div id="teck">Teck</div>
                     <div id="meb">meb</div>
@@ -76,17 +68,30 @@
                 </ul>
             </nav>
             <div id="header_profile">
+                <?php
+                    if ( isset($_SESSION['logged_in']) &&
+                    $_SESSION['logged_in'] === TRUE ) {
+                ?>
                 <a href="">
                     <p><?php echo html_img('header_account.png', 'account'); ?></p>
-                    <div> <?php echo 'p1111111'; //$_SESSION['user_code']; ?> </div>
+                    <div class="dropdown">
+                        <?php
+                        if ( isset($_SESSION['user_code']) )
+                            echo $_SESSION['user_code'];
+                        else
+                            trigger_error('User logged in but user_code not set');
+                        ?>
+                    </div>
                 </a>
                 <ul>
                     <li>NOM Prénom</li>
                     <li>Déconnexion</li>
                 </ul>
-
+                <?php } else { ?>
+                <a href="/connect">
+                    <p><?php echo html_img('header_account.png', 'account') ?></p>
+                    <div>Connexion</div>
+                </a>
+                <?php } ?>
             </div>
         </header>
-        
-        <main>
-<!-- content start here -->

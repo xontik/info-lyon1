@@ -14,22 +14,25 @@ body > header {
   color: #ffffff; }
 body > header a {
   color: #ffffff; }
-body > header > * {
-  margin: 0 1em; }
-body > header #header_logo {
-  flex-grow: 1;
-  width: 100px;
+body > header #header_title {
+  margin: 0 3em 0 1em; }
+body > header #header_title img {
+  width: 6.3em;
   vertical-align: bottom; }
-body > header h1 {
+body > header #header_title h1 {
   display: inline-block;
   vertical-align: 10px;
   color: #ffffff;
   text-transform: uppercase; }
-body > header h1 #teck {
-  letter-spacing: 1px; }
-body > header h1 #meb {
-  text-align: center;
-  letter-spacing: 2px; }
+@media all and (max-width: 1450px) {
+  body > header #header_title h1 #teck {
+    letter-spacing: 1px; }
+  body > header #header_title h1 #meb {
+    text-align: center;
+    letter-spacing: 2px; } }
+@media all and (min-width: 1450px) {
+  body > header #header_title h1 #teck, body > header #header_title h1 #meb {
+    display: inline; } }
 body > header > nav {
   flex-grow: 5; }
 body > header > nav ul {
@@ -61,16 +64,10 @@ body > header #header_profile img {
   margin-bottom: 5px; }
 body > header #header_profile div {
   display: inline; }
-body > header #header_profile div::after {
-  content: '';
-  width: 0;
-  height: 0;
+body > header #header_profile div.dropdown::after {
   position: relative;
   left: 5px;
-  top: 14px;
-  border-left: 6px solid transparent;
-  border-right: 6px solid transparent;
-  border-top: 9px solid #ffffff; }
+  top: 14px; }
 body > header #header_profile ul {
   display: none; }
 

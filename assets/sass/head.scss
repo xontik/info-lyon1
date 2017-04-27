@@ -24,28 +24,34 @@ body {
 
     a { color: $header-text-color; }
 
-    > * { margin: 0 1em; }
+    #header_title {
+      margin: 0 3em 0 1em;
 
-    #header_logo {
-      flex-grow: 1;
-      width: 100px;
-      vertical-align: bottom;
-    }
-
-    h1 {
-      display: inline-block;
-      vertical-align: 10px;
-
-      color: $header-text-color;
-      text-transform: uppercase;
-
-      #teck {
-        letter-spacing: 1px;
+      img {
+        width: 6.3em;
+        vertical-align: bottom;
       }
 
-      #meb {
-        text-align: center;
-        letter-spacing: 2px;
+      h1 {
+        display: inline-block;
+        vertical-align: 10px;
+
+        color: $header-text-color;
+        text-transform: uppercase;
+
+        @media all and (max-width: $largeScreen-break) {
+          #teck {
+            letter-spacing: 1px;
+          }
+
+          #meb {
+            text-align: center;
+            letter-spacing: 2px;
+          }
+        }
+        @media all and (min-width: $largeScreen-break) {
+          #teck, #meb { display: inline; }
+        }
       }
     }
 
@@ -99,18 +105,10 @@ body {
         display: inline;
       }
 
-      div::after {
-        content: '';
-        width: 0;
-        height: 0;
-
+      div.dropdown::after {
         position: relative;
         left: 5px;
         top: 14px;
-
-        border-left: 6px solid transparent;
-        border-right: 6px solid transparent;
-        border-top: 9px solid #ffffff;
       }
 
       ul {
