@@ -1,4 +1,4 @@
-@import "variables";
+@import "style";
 
 #debug {
   background-color: #dedede;
@@ -93,26 +93,40 @@ body {
 
     #header_profile {
       flex-grow: 1;
+      position: relative;
 
       text-align: center;
+      cursor: pointer;
 
       img {
-        width: 57px;
-        margin-bottom: 5px;
+        display: block;
+        width: 3.5em;
+        margin: auto auto 5px;
       }
 
-      div {
-        display: inline;
-      }
-
-      div.dropdown::after {
+      > span.dropdown::after {
         position: relative;
-        left: 5px;
+        left: 3px;
         top: 14px;
       }
 
       ul {
         display: none;
+        padding-top: .4em;
+        max-width: 100%;
+        position: absolute;
+
+        background-color: $second-color;
+
+        li {
+          padding: .8em 1.3em;
+          font-size: 1.2em;
+          word-wrap: break-word;
+
+          &:not(:last-of-type) {
+            border-bottom: 1px SOLID #000000;
+          }
+        }
       }
 
     }

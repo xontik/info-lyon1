@@ -72,24 +72,25 @@
                     if ( isset($_SESSION['logged_in']) &&
                     $_SESSION['logged_in'] === TRUE ) {
                 ?>
-                <a href="">
-                    <p><?php echo html_img('header_account.png', 'account'); ?></p>
-                    <div class="dropdown">
-                        <?php
-                        if ( isset($_SESSION['user_code']) )
-                            echo $_SESSION['user_code'];
-                        else
-                            trigger_error('User logged in but user_code not set');
-                        ?>
-                    </div>
-                </a>
+                <?php echo html_img('header_account.png', 'account'); ?>
+                <span class="dropdown">
+                    <?php
+                    if ( isset($_SESSION['user_code']) )
+                        echo 'p1111111';//$_SESSION['user_code'];
+                    else
+                        trigger_error('User logged in but user_code not set');
+                    ?>
+                </span>
                 <ul>
-                    <li>NOM Prénom</li>
-                    <li>Déconnexion</li>
+                    <li>
+                        <div>NOM</div>
+                        <div>Prénom</div>
+                    </li>
+                    <li><a href="/user/disconnect">Déconnexion</a></li>
                 </ul>
                 <?php } else { ?>
-                <a href="/connect">
-                    <p><?php echo html_img('header_account.png', 'account') ?></p>
+                <a href="/user/connect">
+                    <?php echo html_img('header_account.png', 'account') ?>
                     <div>Connexion</div>
                 </a>
                 <?php } ?>
