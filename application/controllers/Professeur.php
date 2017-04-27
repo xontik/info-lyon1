@@ -47,9 +47,11 @@ class Professeur extends CI_Controller {
         $bool = false;
         if($promo == ""){
             $select =  $this->ctrlMod->getEnseignements($_SESSION['profId']);
-        }else{
+        }else if($promo == "promo"){
             $bool = true;
             $select = $this->ctrlMod->getMatieres($_SESSION['profId']);
+        }else{
+            show_404();
         }
 
 
@@ -64,12 +66,22 @@ class Professeur extends CI_Controller {
 
         show("P_addControl",$var);
     }
-    public function editControl($id){
+    public function editControl($id = ""){
+        if($id == ""){
+            show_404();
+        }
         $this->load->model('control_model','ctrlMod');
-        //TODO check si id ok (droit)
+
+
         $control = $this->ctrlMod->getControl($id);
-
-
+        if(empty($control)){
+            $this->session->set_flashdata("notif", array("Controle Introuvable"));
+            redirect("professeur/control");
+        }
+        if(!$this->ctrlMod->checkProfessorRightOnControl($_SESSION['profId'],$id)){
+            $this->session->set_flashdata("notif", array("Vous n'avez pas les droit sur ce controle"));
+            redirect("professeur/control");
+        }
 
         $css = array("test");
         $js = array("debug");

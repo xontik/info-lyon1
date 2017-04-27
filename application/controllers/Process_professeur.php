@@ -14,7 +14,6 @@ class Process_professeur extends CI_Controller {
         $this->load->model('control_model','ctrlMod');
 
 
-        //TODO check enseignement
         if($promo=="") {
             if (isset($_POST['enseignement']) && isset($_POST['nom']) && isset($_POST['coeff']) && isset($_POST['diviseur'])
                 && isset($_POST['date']) && isset($_POST['type'])
@@ -22,7 +21,10 @@ class Process_professeur extends CI_Controller {
                 if ($_POST["enseignement"] != "" && $_POST["nom"] != "" && $_POST["coeff"] != "" && $_POST["diviseur"] != ""
                     && $_POST["date"] != "" && $_POST["type"] != ""
                 ) {
-
+                    if(!$this->ctrlMod->checkEnseignementProf($_POST["enseignement"],$_SESSION['profId'])){
+                        $this->session->set_flashdata("notif", array("Vous n'avez pas les droit sur cet enseignement"));
+                        redirect("professeur/control");
+                    }
                     if ($this->ctrlMod->addControl($_POST['nom'], $_POST['coeff'], $_POST['diviseur'], $_POST['type'], $_POST['date'], $_POST['enseignement'])) {
                         $this->session->set_flashdata("notif", array("Controle ajoutée avec succes"));
                         redirect("professeur/control");
@@ -33,15 +35,17 @@ class Process_professeur extends CI_Controller {
             }
             $this->session->set_flashdata("notif", array("Erreur controle pas add"));
             redirect("professeur/control");
-        }else {
+        }else if ($promo=="promo"){
+
             if (isset($_POST['matiere']) && isset($_POST['nom']) && isset($_POST['coeff']) && isset($_POST['diviseur'])
-                && isset($_POST['date']) && isset($_POST['type'])
+                && isset($_POST['date'])
             ) {
                 if ( $_POST["matiere"] != "" && $_POST["nom"] != "" && $_POST["coeff"] != "" && $_POST["diviseur"] != ""
-                    && $_POST["date"] != "" && $_POST["type"] != ""
+                    && $_POST["date"] != ""
                 ) {
-
-                    if ($this->ctrlMod->addDsPromo($_POST['nom'], $_POST['coeff'], $_POST['diviseur'], $_POST['type'], $_POST['date'],$_POST['matiere'])) {
+                    $ens = $this->ctrlMod->getEnseignementWithMatiere($_SESSION['profId'],$_POST['matiere']);
+                    
+                    if ($this->ctrlMod->addDsPromo($_POST['nom'], $_POST['coeff'], $_POST['diviseur'], "DS Promo", $_POST['date'],$_POST['matiere'],$ens->idEnseignement)) {
                         $this->session->set_flashdata("notif", array("Controle promo ajoutée avec succes"));
                         redirect("professeur/control");
                     }
@@ -51,15 +55,23 @@ class Process_professeur extends CI_Controller {
             }
             $this->session->set_flashdata("notif", array("Erreur controle promo pas add"));
             redirect("professeur/control");
+        }else{
+            show_404();
         }
 
     }
-    public function editcontrol($id){
+    public function editcontrol($id = ""){
+        if($id == ""){
+            show_404();
+        }
         $this->load->model('control_model','ctrlMod');
 
+        if(!$this->ctrlMod->checkProfessorRightOnControl($_SESSION['profId'],$id)){
+            $this->session->set_flashdata("notif", array("Vous n'avez pas les droit sur ce controle"));
+            redirect("professeur/control");
+        }
 
 
-        //TODO check control id
         if(isset($_POST['nom']) && isset($_POST['coeff']) && isset($_POST['diviseur'])
             && isset($_POST['date']) && isset($_POST['type']) ){
 
@@ -82,10 +94,17 @@ class Process_professeur extends CI_Controller {
 
     }
 
-    public function deletecontrol($id)
+    public function deletecontrol($id = "")
     {
-        //TODO check droit pour delete
-        $this->load->model('control_model', 'ctrlMod');
+        if($id == ""){
+            show_404();
+        }
+        $this->load->model('control_model','ctrlMod');
+
+        if(!$this->ctrlMod->checkProfessorRightOnControl($_SESSION['profId'],$id)){
+            $this->session->set_flashdata("notif", array("Vous n'avez pas les droit sur ce controle"));
+            redirect("professeur/control");
+        }
         if ($this->ctrlMod->deleteControl($id)) {
             $this->session->set_flashdata("notif", array("Controle supprimé avec succes"));
             redirect("professeur/control");

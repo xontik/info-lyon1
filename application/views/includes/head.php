@@ -28,7 +28,9 @@
     <body>
         <?php if(isset($data) && $debug){ ?>
         <div id="debug">
-            <?php print_r($data);?>
+            <pre>
+                 <?php print_r($data);?>
+            </pre>
         </div>
         <?php }
         if(isset($_SESSION["notif"])){
