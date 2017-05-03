@@ -6,7 +6,7 @@
 }
 
 body {
-  > header, > main, > footer {
+  > main, > footer {
     padding: 0 3%;
   }
 
@@ -16,8 +16,10 @@ body {
     justify-content: space-between;
     align-items: center;
 
-    padding-top: 1%;
-    padding-bottom: .5%;
+    padding-top: 0.1%;
+    padding-bottom: 0.1%;
+    margin-bottom: 1.2em;
+
     background-color: $second-color;
 
     color: $header-text-color;
@@ -25,34 +27,10 @@ body {
     a { color: $header-text-color; }
 
     #header_title {
-      margin: 0 3% 0 1%;
-
+      margin: 0 1%;
       img {
-        width: 5.5em;
+        width: 1.7em;
         vertical-align: bottom;
-      }
-
-      h1 {
-        display: inline-block;
-        vertical-align: 10px;
-
-        color: $header-text-color;
-        font-size: 1.8em;
-        text-transform: uppercase;
-
-        @media all and (max-width: $largeScreen-break) {
-          #teck {
-            letter-spacing: 1px;
-          }
-
-          #meb {
-            text-align: center;
-            letter-spacing: 2px;
-          }
-        }
-        @media all and (min-width: $largeScreen-break) {
-          #teck, #meb { display: inline; }
-        }
       }
     }
 
@@ -64,34 +42,35 @@ body {
         flex-flow: row nowrap;
         justify-content: space-around;
         align-items: center;
-        height: 4em;
 
         li {
           width: 100%;
-          height: 3.5em;
-          line-height: 3.5em;
+          height: 2em;
+          line-height: 2em;
 
           border-left: 2px SOLID $background-color;
 
           text-align: center;
-          font-size: 1.4em;
-          text-transform: uppercase;
+
+          &:last-child {
+            border-right: 2px SOLID $background-color;
+          }
+
+          &:hover a {
+            color: lighten($foreground-color, 5);
+          }
 
           a {
             display: inline-block;
             width: 100%;
             height: 100%;
           }
-
-          &:last-child {
-            border-right: 2px SOLID $background-color;
-          }
         }
       }
     }
 
     #header_profile {
-      flex-grow: 1;
+      margin: 0 1%;
       position: relative;
 
       text-align: center;
@@ -99,32 +78,24 @@ body {
 
       img {
         display: block;
-        width: 3.2em;
+        width: 1.4em;
         margin: auto auto 5px;
-      }
-
-      > span.dropdown::after {
-        position: relative;
-        left: 3px;
-        top: 14px;
       }
 
       ul {
         display: none;
-        padding-top: .4em;
-        max-width: 100%;
+
         position: absolute;
+        right: 0; top: 1.95em;
 
         background-color: $second-color;
 
         li {
-          padding: .8em 1.3em;
-          font-size: 1.2em;
-          word-wrap: break-word;
+          padding: .2em .5em;
+          border-top: 1px SOLID #000000;
 
-          &:not(:last-of-type) {
-            border-bottom: 1px SOLID #000000;
-          }
+          font-size: 1em;
+          word-wrap: break-word;
         }
       }
 

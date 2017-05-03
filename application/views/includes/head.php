@@ -28,15 +28,8 @@
             </pre>
         <?php } ?>
         <header>
-            <a id="header_title" href="<?php
-                // If connect, link to dashboard, else to welcome page
-                echo ( isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === TRUE ? 'dashboard' : '/' );
-            ?>">
+            <a id="header_title" href="/">
                 <?php echo html_img('teckmeb_logo.png', 'Logo Teckmeb', '') ?>
-                <h1>
-                    <div id="teck">Teck</div>
-                    <div id="meb">meb</div>
-                </h1>
             </a>
             <nav>
                 <ul>
@@ -44,9 +37,9 @@
                         if ( isset($_SESSION['type_user']) )
                         {
                             $nav = array(
-                                'student' => array( 'Absences', 'Notes', 'PTUT', 'Questions' ),
-                                'teacher' => array( 'Absences', 'Notes', 'PTUT', 'Questions' ),
-                                'secretariat' => array( 'Absences', 'Notes' )
+                                'student' => array( 'ABSENCES', 'NOTES', 'PTUT', 'QUESTIONS' ),
+                                'teacher' => array( 'ABSENCES', 'NOTES', 'PTUT', 'QUESTIONS' ),
+                                'secretariat' => array( 'ABSENCES', 'NOTES' )
                             );
 
                             if (in_array($_SESSION['type_user'], array('student', 'teacher', 'secretariat')))
@@ -60,27 +53,16 @@
                             }
                         } else {
                     ?>
-                        <li><a href="#">Absences</a></li>
-                        <li><a href="#">Notes</a></li>
+                        <li><a href="#">ABSENCES</a></li>
+                        <li><a href="#">NOTES</a></li>
                         <li><a href="#">PTUT</a></li>
-                        <li><a href="#">Questions</a></li>
+                        <li><a href="#">QUESTIONS</a></li>
+                            <!--<li> Bienvenue sur Teckmeb !</li>-->
                     <?php } //TODO Public menu ?>
                 </ul>
             </nav>
             <div id="header_profile">
-                <?php
-                    if ( isset($_SESSION['logged_in']) &&
-                    $_SESSION['logged_in'] === TRUE ) {
-                ?>
-                <?php echo html_img('header_account.png', 'account'); ?>
-                <span class="dropdown">
-                    <?php
-                    if ( isset($_SESSION['user_code']) )
-                        echo 'p1111111';//$_SESSION['user_code'];
-                    else
-                        trigger_error('User logged in but user_code not set');
-                    ?>
-                </span>
+                <?php echo html_img('header_account.png', 'account') ?>
                 <ul>
                     <li>
                         <div>NOM</div>
@@ -88,11 +70,5 @@
                     </li>
                     <li><a href="/user/disconnect">Déconnexion</a></li>
                 </ul>
-                <?php } else { ?>
-                <a href="/user/connect">
-                    <?php echo html_img('header_account.png', 'account') ?>
-                    <div>Connexion</div>
-                </a>
-                <?php } ?>
             </div>
         </header>
