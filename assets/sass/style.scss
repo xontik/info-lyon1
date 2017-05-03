@@ -3,10 +3,8 @@
 // ### VARIABLES
 // Media queries
 $device-break:		980px;		    // Break between computer and phone screens
-
-// TODO Find large screen break
 $largeScreen-break: 1450px;         // Break between really large screens and smaller ones
-// ==> column/line break in dashboard
+                                    // ==> column/line break in dashboard
 
 // Theme
 $background-color:	#fafafa;
@@ -51,6 +49,7 @@ a {
 
 h1, h2, h3, h4, h5, h6 {
   font-family: $title-font, $text-font-family;
+  font-size: 1.6em;
   color: $title-color;
 }
 

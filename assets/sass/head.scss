@@ -25,10 +25,10 @@ body {
     a { color: $header-text-color; }
 
     #header_title {
-      margin: 0 3em 0 1em;
+      margin: 0 3% 0 1%;
 
       img {
-        width: 6.3em;
+        width: 5.5em;
         vertical-align: bottom;
       }
 
@@ -37,6 +37,7 @@ body {
         vertical-align: 10px;
 
         color: $header-text-color;
+        font-size: 1.8em;
         text-transform: uppercase;
 
         @media all and (max-width: $largeScreen-break) {
@@ -63,11 +64,12 @@ body {
         flex-flow: row nowrap;
         justify-content: space-around;
         align-items: center;
+        height: 4em;
 
         li {
           width: 100%;
-          height: 4em;
-          line-height: 4em;
+          height: 3.5em;
+          line-height: 3.5em;
 
           border-left: 2px SOLID $background-color;
 
@@ -84,7 +86,6 @@ body {
           &:last-child {
             border-right: 2px SOLID $background-color;
           }
-
         }
       }
     }
@@ -98,7 +99,7 @@ body {
 
       img {
         display: block;
-        width: 3.5em;
+        width: 3.2em;
         margin: auto auto 5px;
       }
 
@@ -139,4 +140,15 @@ body {
 
   }
 
+}
+
+@keyframes grow {
+  from {
+    height: 3.5em;
+    line-height: 3.5em;
+  }
+  to {
+    height: 4em;
+    line-height: 4em;
+  }
 }
