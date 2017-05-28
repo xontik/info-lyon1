@@ -93,7 +93,6 @@ class Process_professeur extends CI_Controller {
         redirect("professeur/control");
 
     }
-
     public function deletecontrol($id = "")
     {
         if($id == ""){
@@ -114,4 +113,7 @@ class Process_professeur extends CI_Controller {
         redirect("professeur/control");
 
     }
+
+
+
 }

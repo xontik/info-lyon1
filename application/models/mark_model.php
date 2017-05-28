@@ -15,10 +15,22 @@ class Mark_model extends CI_Model {
     {
 
     }
-    public function getMarks($controlId){
+    public function getMarksFromSemester($etuId,$semestre){
+        $sql = "SELECT * FROM Notes JOIN Etudiants using(numEtudiant)
+ join Controles using (idControle)
+ join Enseignements using (idEnseignement)
+ join Matieres using(codeMatiere)
+ where numEtudiant = ?  and idGroupe = (
+   Select idGroupe from Etudiantgroupe
+   join Groupes USING (idGroupe)
+   join Semestres USING (idSemestre)
+   where numEtudiant = ? and typeSemestre = ?
+ ) ORDER BY idEnseignement";
+        return $this->db->query($sql, array($etuId,$etuId,$semestre))->result();
+
 
     }
-    public function addMark($controlId,$numStudent,$value){
+    public function add($controlId,$numStudent,$value){
 
     }
     public function addMarks($controlId,$a_numStudent,$a_value){

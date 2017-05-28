@@ -21,8 +21,9 @@ class Professeur extends CI_Controller {
     }
 
     public function index(){
-
+        redirect("professeur/control");
     }
+
     public function control(){
         $this->load->model('control_model','ctrlMod');
 
@@ -94,5 +95,8 @@ class Professeur extends CI_Controller {
 
         show("P_editControl",$var);
     }
+
+
+
 
 }

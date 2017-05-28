@@ -14,14 +14,14 @@
         <select name="enseignement" id="enseignement">
             <?php
             foreach ($data["select"] as $d) {
-                echo "<option value='" . $d->idEnseignement . "'>" . $d->nomGroupe . " en " . $d->nom . "</option>";
+                echo "<option value='" . $d->idEnseignement . "'>" . $d->nomGroupe . " en " . $d->nomMatiere . "</option>";
             }
             }else{ ?>
             <label for="matiere">Selectioner une matières : </label>
             <select name="matiere" id="matiere">
                 <?php
                 foreach ($data["select"] as $d) {
-                    echo "<option value='" . $d->codeMatière . "'>" . $d->codeMatière . " - " . $d->nom . "</option>";
+                    echo "<option value='" . $d->codeMatière . "'>" . $d->codeMatière . " - " . $d->nomMatiere . "</option>";
                 }
 
                 } ?>
