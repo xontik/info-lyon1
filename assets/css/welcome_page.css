@@ -1,0 +1,10 @@
+main { display: flex; width: 70%; height: 32em; margin-top: 5em; margin-left: 15%; }
+main section { border: 1.5px solid black; width: 50%; }
+main section:not(:first-of-type) { border-left: none; }
+main #rectangleDroit { text-align: center; }
+main #rectangleDroit #logo { width: 170px; margin-top: 10%; }
+main #rectangleDroit form div { margin: 1.2em 0; }
+main #rectangleDroit form div img { width: 45px; vertical-align: middle; }
+main #rectangleDroit form div input[type="text"], main #rectangleDroit form div input[type="password"] { margin-left: 1em; }
+
+/*# sourceMappingURL=welcome_page.css.map */
