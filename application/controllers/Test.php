@@ -13,4 +13,15 @@ class Test extends CI_Controller {
         show("testv", $var);
 
     }
+
+    public function control(){
+
+        $this->load->model('control_model','ctrlMod');
+        $this->ctrlMod->addControl(2,20,"redfc",null,null);
+
+
+
+
+
+    }
 }
