@@ -1,0 +1,75 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans|Roboto');
+
+// ### VARIABLES
+// Media queries
+$device-break:		980px;		    // Break between computer and phone screens
+$largeScreen-break: 1450px;         // Break between really large screens and smaller ones
+                                    // ==> column/line break in dashboard
+
+// Theme
+$background-color:	#fafafa;
+$second-color: 		#403e3f;
+$foreground-color:	#e7bd26;
+
+$title-font:		"Open Sans";
+$text-font:			"Roboto";
+$text-font-family:  $text-font, helvetica, arial, sans-serif;
+
+// TODO Discuss colors with group
+$text-color: 		#202020;
+$title-color:		$foreground-color;
+$header-text-color: #ffffff;      // Font color for <header>
+
+
+// ### GENERAL STYLE
+
+* {
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  font-family: $text-font-family;
+  color: $text-color;
+  background-color: $background-color;
+
+  // Clear any kind of floating element
+  #body:after {
+    content: '';
+    display: table;
+    clear: both;
+  }
+
+}
+
+a {
+  color: lighten( $text-color, 5 );
+  text-decoration: none;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: $title-font, $text-font-family;
+  font-size: 1.6em;
+  color: $title-color;
+}
+
+h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
+  color: darken( $title-color, 5 );
+}
+
+li {
+  list-style-type: none;
+}
+
+
+// ### CLASS
+
+.dropdown::after {
+  content: '';
+  width: 0;
+  height: 0;
+
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 9px solid #ffffff;
+}
