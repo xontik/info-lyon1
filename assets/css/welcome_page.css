@@ -1,0 +1,10 @@
+main { display: flex; width: 65%; height: 32em; margin-top: 5em; margin-left: 15%; border: 1.5px solid black; box-shadow: 1px 1px 8px #555; }
+main section { width: 50%; background-color: #f6f6f6; }
+main #blocDroit { width: 50%; background-color: #f6f6f6; border-left: 2px solid black; text-align: center; }
+main #blocDroit #logo { width: 12em; margin-bottom: 1.8em; }
+main #blocDroit img { width: 40px; vertical-align: middle; }
+main #blocDroit div { margin-bottom: 15px; }
+main #blocDroit input[type="text"], main #blocDroit input[type="password"] { height: 2em; width: 15em; padding: 0 2px; margin-left: 1em; }
+main #blocDroit #connect { margin-top: 10%; height: 2.5em; width: 8em; -webkit-border-radius: 6px; -moz-border-radius: 6px; border-radius: 4px; }
+
+/*# sourceMappingURL=welcome_page.css.map */
