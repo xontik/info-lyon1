@@ -22,13 +22,7 @@
 
     </head>
     <body>
-        <?php if(isset($data) && $debug){ ?>
-        <div id="debug">
-            <pre>
-                 <?php print_r($data);?>
-            </pre>
-        </div>
-        <?php }
+        <?php
         if(isset($_SESSION["notif"])){
             foreach ($_SESSION["notif"] as $notif){
                 echo "<p>".$notif."</p>";
