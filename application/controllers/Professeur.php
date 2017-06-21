@@ -63,8 +63,6 @@ class Professeur extends CI_Controller {
     }
 
 
-<?php
-
     public function __construct(){
         parent::__construct();
         $newdata = array(
