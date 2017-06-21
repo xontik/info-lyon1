@@ -9,7 +9,7 @@
 <main>
     <form method="post"
           action="<?php echo base_url("process_professeur/addcontrol/" . ($data['promo'] ? 'promo' : '')) ?>">
-        <?php if ($data['promo'] == false){ ?>
+        <?php if ($data['promo'] === false){ ?>
         <label for="enseignement">Selectioner un couple groupe/Matières : </label>
         <select name="enseignement" id="enseignement">
             <?php
@@ -42,6 +42,6 @@
             <?php } ?>
             <label for="date">Date du controle : </label>
             <input type="date" id="date" name="date"/><br>
-            <input type="submit" name="valid" value="Ajouter"><a href="<?php echo site_url("professeur/control")?>">Retour</a>
+            <input type="submit" name="valid" value="Ajouter"><a href="<?php echo site_url("professeur/controle")?>">Retour</a>
     </form>
 </main>

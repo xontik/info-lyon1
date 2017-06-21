@@ -20,6 +20,6 @@
         <input type="text" id="type"    name="type"    value="<?php echo $data['control']->typeControle; ?>"/><br >
         <label for="date">Date du controle : </label>
         <input type="date" id="date"    name="date"    value="<?php echo $data['control']->dateControle; ?>"/><br >
-        <input type="submit" name="valid" value="Editer"> <a href="<?php echo site_url("professeur/control")?>">Retour</a>
+        <input type="submit" name="valid" value="Editer"> <a href="<?php echo site_url("professeur/controle")?>">Retour</a>
     </form>
 </main>
