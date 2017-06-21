@@ -1,12 +1,3 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: xontik
- * Date: 28/05/2017
- * Time: 11:42
- */
-?>
-
 <main>
     <?php
     if(isset($data["marks"][0])){
@@ -19,11 +10,11 @@
                 $ens = $mark->idEnseignement;
             }
             ?>
-                <div>
-                    <h3><? echo $mark->nomControle." le ".$mark->dateControle; ?></h3>
-                    <p><? echo $mark->valeur."/".$mark->diviseur." coeff : ".$mark->coefficient."  moyenne : "
-                            .$mark->average." median : ".$mark->median;?></p>
-                </div>
+            <div>
+                <h3><? echo $mark->nomControle." le ".$mark->dateControle; ?></h3>
+                <p><? echo $mark->valeur."/".$mark->diviseur." coeff : ".$mark->coefficient."  moyenne : "
+                        .$mark->average." median : ".$mark->median;?></p>
+            </div>
             <?
         }
 
@@ -31,8 +22,5 @@
     }else{
         echo "Pas de Notes";
     }
-
-
     ?>
-
 </main>

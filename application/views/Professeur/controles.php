@@ -1,7 +1,7 @@
 <main>
     <p>
-        <a href="<?php echo base_url('professeur/addControl')?>" >Ajouter un controle</a><br>
-        <a href="<?php echo base_url('professeur/addControl/promo')?>" >Ajouter un DS de promo</a><br>
+        <a href="<?php echo base_url('professeur/addControle')?>" >Ajouter un controle</a><br>
+        <a href="<?php echo base_url('professeur/addControle/promo')?>" >Ajouter un DS de promo</a><br>
 
     </p>
     <?php
@@ -16,8 +16,8 @@
                 echo "<p>" . $control->nomMatiere . "</p>";
             }
             echo "<p>Controle du " . date_format($date, 'd/m/Y') . " Nom : ".$control->nomControle." Groupe : " . $control->nomGroupe . " Type : " . $control->typeControle . ($control->average != null ? ( " Moyenne : " . $control->average) : "") . ($control->median != null ? (" Medianne : " . $control->median): "") . " 
-            <a href='" . base_url("process_professeur/deletecontrol/" . $control->idControle) . "'>X</a>
-            <a href='" . base_url("professeur/editcontrol/" . $control->idControle) . "'>Edit</a></p>";
+            <a href='" . base_url("process_professeur/deletecontrole/" . $control->idControle) . "'>X</a>
+            <a href='" . base_url("professeur/editcontrole/" . $control->idControle) . "'>Edit</a></p>";
         }
     }
     if(isset($data['dspromo'])){
@@ -30,9 +30,9 @@
                 echo "<p>" . $control->nomMatiere . "</p>";
             }
             echo "<p>Controle du " . date_format($date, 'd/m/Y') ." Nom : ".$control->nomControle."  Type : " . $control->typeControle . ($control->average != null ? ( " Moyenne : " . $control->average) : "") . ($control->median != null ? (" Medianne : " . $control->median): "") . " 
-            <a href='" . base_url("process_professeur/deletecontrol/" . $control->idControle) . "'>X</a>
-            <a href='" . base_url("professeur/editcontrol/" . $control->idControle) . "'>Edit</a></p>";
+            <a href='" . base_url("process_professeur/deletecontrole/" . $control->idControle) . "'>X</a>
+            <a href='" . base_url("professeur/editcontrole/" . $control->idControle) . "'>Edit</a></p>";
         }
     }
-        ?>
+    ?>
 </main>

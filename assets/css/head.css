@@ -23,7 +23,7 @@ body > header #header_title { margin: 0 1%; }
 body > header #header_title img { width: 1.7em; vertical-align: bottom; }
 body > header > nav { flex-grow: 5; }
 body > header > nav ul { display: flex; flex-flow: row nowrap; justify-content: space-around; align-items: center; }
-body > header > nav ul li { width: 100%; height: 2em; line-height: 2em; border-left: 2px SOLID #fafafa; text-align: center; }
+body > header > nav ul li { width: 100%; height: 2em; line-height: 2em; border-left: 2px SOLID #fafafa; text-align: center; text-transform: uppercase; }
 body > header > nav ul li:last-child { border-right: 2px SOLID #fafafa; }
 body > header > nav ul li:hover a { color: #eac43d; }
 body > header > nav ul li a { display: inline-block; width: 100%; height: 100%; }

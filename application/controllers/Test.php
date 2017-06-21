@@ -7,7 +7,7 @@ class Test extends CI_Controller {
     {
         $var = array(   "css" => array(),
                         "js" => array(),
-                        "title" => 'Header design',
+                        "title" => 'Page de test',
                         "data" => array() );
 
         show("testv", $var);

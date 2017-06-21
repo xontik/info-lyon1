@@ -40,41 +40,42 @@
             <nav>
                 <ul>
                     <?php
-                        if ( isset($_SESSION['type_user']) )
+                        if ( isset($_SESSION['user_type']) &&
+                            in_array($_SESSION['user_type'], array('student', 'teacher', 'secretariat')))
                         {
-                            $nav = array(
-                                'student' => array( 'ABSENCES', 'NOTES', 'PTUT', 'QUESTIONS' ),
-                                'teacher' => array( 'ABSENCES', 'NOTES', 'PTUT', 'QUESTIONS' ),
-                                'secretariat' => array( 'ABSENCES', 'NOTES' )
-                            );
+                                $nav = array(
+                                    'student' => array( 'absences', 'note', 'ptut', 'questions' ),
+                                    'teacher' => array( 'absences', 'controles', 'ptut', 'questions' ),
+                                    'secretariat' => array( 'absences' )
+                                );
 
-                            if (in_array($_SESSION['type_user'], array('student', 'teacher', 'secretariat')))
-                            {
                                 // Display menu depending on the user
-                                foreach ($nav[$_SESSION['type_user']] as $item)
-                                    echo '<li><a href="' . strtolower($item) . '">' . $item . '</a></li>';
+                                foreach ($nav[$_SESSION['user_type']] as $item) {
+                                    echo '<li><a href="' . $item . '">' . $item . '</a></li>';
+                                }
 
-                            } else {
-                                trigger_error('SESSION[\'type_user\'] value error', E_USER_NOTICE);
-                            }
                         } else {
+                            unset($_SESSION['user_type']);
                     ?>
                         <li><a href="#">ABSENCES</a></li>
                         <li><a href="#">NOTES</a></li>
                         <li><a href="#">PTUT</a></li>
                         <li><a href="#">QUESTIONS</a></li>
-                            <!--<li> Bienvenue sur Teckmeb !</li>-->
-                    <?php } //TODO Public menu ?>
+                    <?php } ?>
                 </ul>
             </nav>
             <div id="header_profile">
-                <?php echo html_img('header_account.png', 'account') ?>
+                <?php
+                    echo html_img('header_account.png', 'account');
+                    if ( isset($_SESSION['user_type']) ) {
+                ?>
                 <ul>
                     <li>
-                        <div>NOM</div>
-                        <div>Prénom</div>
+                        <div><?php echo $_SESSION['surname']; ?></div>
+                        <div><?php echo $_SESSION['name']; ?></div>
                     </li>
                     <li><a href="/user/disconnect">Déconnexion</a></li>
                 </ul>
+                <?php } ?>
             </div>
         </header>
