@@ -1,56 +1,62 @@
 main {
   display: flex;
-  width: 70%;
+  width: 65%;
   height: 32em;
+
   margin-top: 5em;
   margin-left: 15%;
 
+  border: 1.5px solid black;
+  box-shadow: 1px 1px 8px #555;
+
   section {
-    border: 1.5px solid black;
     width: 50%;
-
-    &:not(:first-of-type) {
-      border-left: none;
-    }
+    background-color: #f6f6f6;
   }
 
-  #rectangleGauche {
-  }
+  #blocDroit {
+    width: 50%;
+    background-color: #f6f6f6;
+    border-left: 2px solid black;
 
-  #rectangleDroit {
     text-align: center;
 
     #logo {
-      width: 180px;
+      width: 12em;
+      margin-bottom: 1.8em;
+    }
+
+    img {
+      //Icones
+      width: 40px;
+      vertical-align: middle;
+    }
+
+    div {
+      margin-bottom: 15px;
+    }
+
+    input[type="text"], input[type="password"] {
+      height: 2em;
+      width: 15em;
+      padding: 0 2px;
+      margin-left: 1em;
+    }
+
+    input[type="checkbox"] {
+
+    }
+
+    #connect {
       margin-top: 10%;
+      height: 2.5em;
+      width: 8em;
+      -webkit-border-radius: 6px;
+      -moz-border-radius: 6px;
+      border-radius: 4px;
     }
-
-    form {
-
-      div {
-        margin: 1.2em 0;
-
-        img {
-          width: 40px;
-          vertical-align: middle;
-        }
-
-        input[type="text"], input[type="password"] {
-          height: 2em;
-          width: 15em;
-          margin-left: 1em;
-        }
-      }
-
-      input[type="submit"] {
-        //  margin-top: 10%;
-        height: 2.5em;
-        width: 8em;
-        -webkit-border-radius: 6px;
-        -moz-border-radius: 6px;
-        border-radius: 4px;
-      }
-    }
-
   }
+
 }
+
+

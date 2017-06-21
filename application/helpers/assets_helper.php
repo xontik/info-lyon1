@@ -22,9 +22,9 @@ if (!function_exists('img_url')) {
     }
 }
 
-if (!function_exists('img')) {
-    function html_img($name, $alt = '', $width = '')
+if (!function_exists('html_img')) {
+    function html_img($name, $alt = '', $width = '', $id = '')
     {
-        return '<img src="' . img_url($name) . '" alt="' . $alt . '" width="' . $width . '" />';
+        return '<img src="' . img_url($name) . '" id="' . $id . '" alt="' . $alt . '" width="' . $width . '" />';
     }
 }
