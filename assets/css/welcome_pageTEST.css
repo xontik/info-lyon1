@@ -1,0 +1,37 @@
+/* BODY */
+/* http://localhost/tests/formulaire.php */
+
+
+#conteneur {
+  display: flex;
+  width: 65%;
+  height: 32em;
+  margin-top: 5em;
+  margin-left: 15%;
+  border: 1.5px solid black;
+  box-shadow: 1px 1px 8px #555; }
+  #conteneur #blocGauche {
+    width: 50%;
+    background-color: #f6f6f6; }
+  #conteneur #blocDroit {
+    border-left: 1.5px solid black;
+    width: 50%;
+    background-color: #f6f6f6;
+    text-align: center; }
+    #conteneur #blocDroit #logo {
+      width: 180px;
+      height: 180px; }
+    #conteneur #blocDroit .icone {
+      width: 40px;
+      vertical-align: middle; }
+    #conteneur #blocDroit .texte {
+      height: 2em;
+      width: 15em;
+      margin-left: 1em; }
+    #conteneur #blocDroit #seConnecter {
+      margin-top: 10%;
+      height: 2.5em;
+      width: 8em;
+      -webkit-border-radius: 6px;
+      -moz-border-radius: 6px;
+      border-radius: 4px; }

@@ -1,47 +1,54 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-?><!DOCTYPE html>
+?>
+
+<!DOCTYPE html>
+
 <html>
-<head>
 
-	<meta charset="UTF-8"/>
-	<title>TECKMEB - Page d'acceuil</title>
-	<link rel="stylesheet" type="text/css" href="<?php echo css_url("welcome_page") ?>"/>
-	
-</head>
-<body>
-	<main>
-	
-		<section id="rectangleGauche">
+    <head>
 
-
+        <meta charset="utf-8" />
+        <title>TECKMEB - Page d'acceuil</title>
+		<link href='../../assets/css/welcome_pageTEST.css' rel='stylesheet' type='text/css'>
 		
-		</section>
-		<section id="rectangleDroit">
+    </head>
+
+
+    <body>
 		
-			<img id="logo" src="<?php echo img_url("teckmeb_logo.png") ?>">
+		<div id = "conteneur">
 			
-			<form action="index.php" method="post">
+			<div id = "blocGauche">
+		
 
-                <div>
-                    <label for="id"><?php echo html_img("id.png", "Identifiant"); ?></label>
-                    <input id="id" type="text" name="id" />
-                </div>
-                <div>
-                    <label for="password"><?php echo html_img("mdp.png", "Mot de passe"); ?></label>
-                    <input id="password" type="password" name="password" />
-                </div>
-                <div>
-                    <input id="stay_connected" type="checkbox" name="stay_connected">
-                    <label for="stay_connected">Rester connecté</label>
-                </div>
-
-				<input type="submit" value="Se connecter" />
+			
+			</div>
+		
+			<div id = "blocDroit">
+			
+				<img id = "logo" src = "../../assets/images/teckmeb_logo.png">
 				
-			</form>
-			
-		</section>
+				<form action = "index.php" method = "post" style = "margin-top: 7%">
+					
+					<img class = "icone" src = "../../assets/images/id.png"> 
+					<input class = "texte" type="text" name="identifiant" placeholder="Identifiant"/>
+	
+					<div style = "margin-top: 3em">
+					
+						<img class = "icone" src = "../../assets/images/mdp.png"> 
+						<input class = "texte" type="password" name="mdp" placeholder="Mot de passe"/>
+						
+					</div>
+
+					<input id = "seConnecter" type="submit" value="Se Connecter" />
 		
-	</main>
-</body>
+				</form>
+			
+			</div>
+			
+		</div>
+		
+    </body>
+
 </html>

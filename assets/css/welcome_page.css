@@ -1,4 +1,4 @@
-main { display: flex; width: 70%; height: 32em; margin-top: 5em; margin-left: 15%; }
+main { display: flex; width: 70%; height: 32em; margin-top: 5em; margin-left: 15%; box-shadow: 1px 1px 8px #555; }
 main section { border: 1.5px solid black; width: 50%; }
 main section:not(:first-of-type) { border-left: none; }
 main #rectangleDroit { text-align: center; }
