@@ -25,19 +25,19 @@ defined('BASEPATH') OR exit('No direct script access allowed'); ?>
 
             <section id = "blocDroit">
 
-                <?php echo html_img('teckmeb_logo.png', '', '', 'logo'); ?>
+                <?php echo html_img('teckmeb_logo.png', 'TECKMEB', 'logo'); ?>
 
                 <form action = "/" method = "post">
 
                     <div>
 
-                        <?php echo html_img('id.png'); ?>
+                        <?php echo html_img('id.png', "id"); ?>
                         <input type="text" name="id" placeholder="Identifiant"/>
 
                     </div>
                     <div>
 
-                        <?php echo html_img('mdp.png'); ?>
+                        <?php echo html_img('mdp.png', "pass"); ?>
                         <input type="password" name="password" placeholder="Mot de passe"/>
 
                     </div>
