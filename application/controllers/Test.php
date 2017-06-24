@@ -11,7 +11,7 @@ class Test extends CI_Controller {
                         "js" => array('debug'),
                         "title" => 'Page de test',
                         "data" => array(
-                            getCalendar(9306, "week")
+                            "edt" => getCalendar(9306, "week")
                         ) );
 
         show("testv", $var);

@@ -64,9 +64,10 @@ function getCalendar($resources, $firstDate = NULL, $lastDate = NULL)
 	
 	
 	$updated = false;
+	$existedInDB = true;
 	$calendar = $CI->calendar_model->getCalendarJSON($resources);
 
-	if ( isset($calendar) && !empty($calendar->text) ) {
+	if (!empty($calendar)) {
 
         $calendar = json_decode($calendar, true);
 
@@ -76,7 +77,7 @@ function getCalendar($resources, $firstDate = NULL, $lastDate = NULL)
         $beginYear = date('Y', strtotime($firstDate));
         $endYear = date('Y', strtotime($lastDate));
 
-        for ($i = $beginYear; $i < $endYear; $i++) {
+        for ($i = $beginYear; $i <= $endYear && $exists; $i++) {
             if (!array_key_exists($i, $calendar)) {
                 $exists = false;
                 break;
@@ -86,7 +87,7 @@ function getCalendar($resources, $firstDate = NULL, $lastDate = NULL)
                 // if last year, take week of last date, else end to last week of year
                 $endWeek = ($i == $endYear) ? date('W', strtotime($lastDate)) : 51;
 
-                for ($j = $beginWeek; $j < $endWeek; $j++) {
+                for ($j = $beginWeek; $j <= $endWeek; $j++) {
                     if (!array_key_exists($j, $calendar[$i])) {
                         $exists = false;
                         break;
@@ -104,75 +105,51 @@ function getCalendar($resources, $firstDate = NULL, $lastDate = NULL)
 
         } else {
 
-            //Make sure data is up-to-date (2 days old max)
-            if ($firstDate == $lastDate) {
+            //Make sure data is up-to-date
+            $temp = $firstDate;
+            $validTimeLimit = mktime(
+                date('H'),
+                date('i'),
+                date('s'),
+                date('m'),
+                date('d') - 1,
+                date('y')
+            );
 
-                $year = date('Y', strtotime($firstDate));
-                $week = date('W', strtotime($firstDate));
-                $dayOfWeek = date('N', strtotime($firstDate));
+            do {
+                $year = date('Y', strtotime($temp));
+                $week = date('W', strtotime($temp));
+                $dayOfWeek = date('N', strtotime($temp));
 
-                // If content was updated before two days ago
-                if (!array_key_exists($year, $calendar) ||
-                    !array_key_exists($week, $calendar[$year]) ||
-                    !array_key_exists($dayOfWeek, $calendar[$year][$week]) ||
-                    mktime(
-                        date('H'),
-                        date('i'),
-                        date('s'),
-                        date('m'),
-                        date('d') - 2,
-                        date('y')
-                    ) < $calendar[$year][$week][$dayOfWeek]['updated']
+                // If one day isn't up-to-date, update entire period
+                if (array_key_exists($year, $calendar) &&
+                    array_key_exists($week, $calendar[$year]) &&
+                    array_key_exists($dayOfWeek, $calendar[$year][$week]) &&
+                    $validTimeLimit > $calendar[$year][$week][$dayOfWeek]['updated']
                 ) {
                     $calendar = _icsToCalendar(_getAdeRequest($resources, $firstDate, $lastDate)) + $calendar;
                     $updated = true;
+                    break;
                 }
-            } else {
-                $temp = $firstDate;
 
-                do {
-                    $year = date('Y', strtotime($temp));
-                    $week = date('W', strtotime($temp));
-                    $dayOfWeek = date('N', strtotime($temp));
+                $temp = date('Y-m-d', strtotime($temp . '+1 day'));
+            } while ($temp < $lastDate);
 
-                    // If one day isn't up-to-date, update entire period
-                    if (!array_key_exists($year, $calendar) ||
-                        !array_key_exists($week, $calendar[$year]) ||
-                        !array_key_exists($dayOfWeek, $calendar[$year][$week]) ||
-                        mktime(
-                            date('H'),
-                            date('i'),
-                            date('s'),
-                            date('m'),
-                            date('d') - 2,
-                            date('y')
-                        )
-                        < $calendar[$year][$week][$dayOfWeek]['updated']
-                    ) {
-                        $calendar = _icsToCalendar(_getAdeRequest($resources, $firstDate, $lastDate)) + $calendar;
-                        $updated = true;
-                        break;
-                    }
-
-                    $temp = date('Y-m-d', strtotime($temp . '+1 day'));
-                } while ($temp != $lastDate);
-            }
         }
-	}
+
+    }
 	// If no preexisting data was found
 	else {
 		$calendar = _icsToCalendar(_getAdeRequest($resources, $firstDate, $lastDate));
+		$existedInDB = false;
 		$updated = true;
 	}
-	
-	if ( $updated )
-        if ( isset($calendar) ) {
-	        // Entry already existed in database
+
+	if ($updated === true)
+        if ($existedInDB)
             $CI->calendar_model->setCalendarJSON($resources, json_encode($calendar, JSON_PRETTY_PRINT));
-        } else {
-	        // Have to create entry
+        else
 	        $CI->calendar_model->createCalendar($resources, json_encode($calendar, JSON_PRETTY_PRINT));
-        }
 
 	return _narrow($calendar, $firstDate, $lastDate);
 }

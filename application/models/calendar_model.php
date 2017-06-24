@@ -7,7 +7,9 @@ class Calendar_model extends CI_Model
     public function getCalendarJSON($resources)
     {
         $query = 'SELECT * FROM edt WHERE ressource = ?';
-        return $this->db->query($query, array($resources))->row();
+        $result = $this->db->query($query, array($resources))->row();
+        if (isset($result))
+            return $result->edt;
     }
 
     public function setCalendarJSON($resources, $json)
