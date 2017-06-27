@@ -6,9 +6,6 @@
 }
 
 body {
-  > main, > footer {
-    padding: 0 3%;
-  }
 
   > header {
 
@@ -104,23 +101,4 @@ body {
 
   }
 
-  > main {
-
-  }
-
-  > footer {
-
-  }
-
-}
-
-@keyframes grow {
-  from {
-    height: 3.5em;
-    line-height: 3.5em;
-  }
-  to {
-    height: 4em;
-    line-height: 4em;
-  }
 }

@@ -1,0 +1,37 @@
+#edt_view {
+  display: flex;
+  flex-flow: row nowrap;
+  position: absolute;
+  top: 10%;
+  right: 3%;
+  background-color: rgba(0, 0, 0, 0.02);
+  border-radius: 10px; }
+#edt_view #edt_time_container {
+  display: flex;
+  flex-flow: column nowrap;
+  text-align: center;
+  border-radius: 10px 0 0 10px;
+  box-shadow: 3px 0 3px rgba(0, 0, 0, 0.02);
+  background-color: rgba(0, 0, 0, 0.02); }
+#edt_view #edt_time_container .column-content {
+  display: flex;
+  height: 600px;
+  flex-flow: column nowrap;
+  justify-content: space-around;
+  margin-top: 50px; }
+#edt_view #edt_time_container .column-content p {
+  font-size: 16px;
+  margin-left: 5px;
+  margin-right: 5px; }
+#edt_view #edt_content {
+  width: 19.5em;
+  text-align: center; }
+#edt_view #edt_content #edt_day_title {
+  height: 50px;
+  line-height: 50px;
+  font-size: 20px;
+  box-shadow: 3px 0 3px rgba(0, 0, 0, 0.02);
+  background-color: rgba(0, 0, 0, 0.02);
+  border-radius: 0 10px 0 0; }
+
+/*# sourceMappingURL=edt_day.css.map */
