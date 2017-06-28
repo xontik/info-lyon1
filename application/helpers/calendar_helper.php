@@ -364,6 +364,7 @@ function _narrow($array, $begin, $end, $period = 'UNDEFINED') {
 					if ( !array_key_exists($j, $final[$i]) )
 						$final[$i][$j] = array();
 					$final[$i][$j][$k] = $array[$i][$j][$k];
+					unset($final[$i][$j][$k]['updated']);
 				}
 			}
 		}
@@ -391,6 +392,15 @@ function _test_date(&$date) {
 		trigger_error('ICS ERROR: Date is wrongly formatted ( ' . $date . ' )', E_USER_NOTICE);
 		$date = date($DATE_FORMAT);
 	}
+}
+
+if (! function_exists('computeTimeToHeight')) {
+    function computeTimeToHeight($begin, $end) {
+        static $hoursNumber = 10 * 3600;
+        $interval = abs(strtotime($begin) - strtotime($end));
+
+        return ($interval / $hoursNumber * 100) . '%';
+    }
 }
 
 if (! function_exists('merge_arrays')) {
