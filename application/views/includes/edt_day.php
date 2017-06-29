@@ -1,3 +1,8 @@
+<!--
+DATAS NEEDED
+$date Date displayed, should date of the displayed timetable
+$calendar The timetable
+-->
 <div id="edt-view">
     <div id="edt-view-computer">
         <div id="edt-time-container">
@@ -27,13 +32,7 @@
         </div>
         <div id="edt-content">
             <div id="edt-day-title">
-                <?php
-                $days = array('Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi');
-                $months = array(
-                    'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre','Décembre');
-
-                $time = strtotime($date);
-                echo $days[ date('w', $time) ] . ' ' . date('j', $time) . ' ' . $months[ date('n', $time) - 1 ]; ?>
+                <?php echo $date ?>
             </div>
             <div class="column-content">
                 <?php

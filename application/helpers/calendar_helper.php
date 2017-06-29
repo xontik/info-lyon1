@@ -2,6 +2,40 @@
 
 /**
  * @param $resources int The resources number in ADE
+ * @param $period string The period you want (day or week)
+ * @param null $datetime At which date you want the calendar. Default is today.
+ * @return array Formatted calendar
+ */
+function getNextCalendar($resources, $period, &$datetime = NULL) {
+    if ($datetime === NULL) {
+        $datetime = date('Y-m-d H:i:s');
+    }
+
+    $originalDate = $datetime;
+    $date = date('Y-m-d', strtotime($datetime));
+    $limit = 0;
+
+    // If hour >= 18h, take next day calendar
+    if (date('H', strtotime($datetime)) >= 18) {
+        $date = date('Y-m-d', strtotime($date . ' +1 day'));
+        $limit = 1;
+    }
+
+    $calendar = getCalendar($resources, $date, $period);
+
+    while ($limit < 3 && empty($calendar)) {
+        $date = date('Y-m-d', strtotime($date . ' +1 day'));
+        $calendar = getCalendar($resources, $date, $period);
+        $limit++;
+    }
+
+    $datetime = empty($calendar) ? $originalDate : $date;
+
+    return $calendar;
+}
+
+/**
+ * @param $resources int The resources number in ADE
  * @param null $firstDate mixed The first limit date or 'DAY' or 'WEEK'
  * @param null $lastDate mixed The second limit date or 'DAY' or 'WEEK'
  * @return array The formatted calendar
