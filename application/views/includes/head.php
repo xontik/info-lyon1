@@ -18,18 +18,28 @@
         ?>
     </head>
     <body>
+        <pre id="debug">
         <?php
-        if (isset($_SESSION['notif'])) {
-            foreach ($_SESSION['notif'] as $notif) {
-                echo '<p class="notif">' . $notif . '</p>';
+        if (isset($data) && $debug) {
+            function makeReceivedDataPrintable(&$value) {
+                if (!is_array($value)) {
+                    $value = '"""' . htmlspecialchars($value, ENT_QUOTES, 'UTF-8') . '"""';
+                }
             }
+
+            array_walk($data, 'makeReceivedDataPrintable');
+            print_r($data);
         } ?>
-        <?php if (isset($data) && $debug) { ?>
-            <pre id="debug">
-                <?php print_r($data); ?>
-            </pre>
-        <?php } ?>
+        </pre>
+
         <header>
+            <?php
+            if (isset($_SESSION['notif'])) {
+                foreach ($_SESSION['notif'] as $notif) {
+                    echo '<div class="notif">' . $notif . '</div>';
+                }
+            } ?>
+
             <a id="header_title" href="/">
                 <?php echo html_img('teckmeb_logo.png', 'Logo Teckmeb'); ?>
             </a>

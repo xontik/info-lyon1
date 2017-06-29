@@ -1,4 +1,4 @@
-@import "style";
+@import "var";
 
 #debug {
   background-color: #dedede;
@@ -68,7 +68,7 @@ body {
     }
 
     #header_profile {
-      margin: 0 1%;
+      margin: 0 .9em;
       position: relative;
 
       text-align: center;

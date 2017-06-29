@@ -1,0 +1,19 @@
+// ### VARIABLES
+// Media queries
+$device-break:		980px;		    // Break between computer and phone screens
+$largeScreen-break: 1450px;         // Break between really large screens and smaller ones
+// ==> column/line break in dashboard
+
+// Theme
+$background-color:	#fafafa;
+$second-color: 		#403e3f;
+$foreground-color:	#e7bd26;
+
+$title-font:		"Open Sans";
+$text-font:			"Roboto";
+$text-font-family:  $text-font, helvetica, arial, sans-serif;
+
+// TODO Discuss colors with group
+$text-color: 		#202020;
+$title-color:		$foreground-color;
+$header-text-color: #ffffff;      // Font color for <header>

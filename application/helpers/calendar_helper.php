@@ -214,13 +214,18 @@ function _icsToCalendar($ics_filepath) {
 					$array[$year][$week][$day] = array();
 					$array[$year][$week][$day]['updated'] = time();
 				}
-				
+
+				$description = explode("\\n", $event['DESCRIPTION']);
+                $group = $description[1];
+                $teachers = implode(', ', array_slice($description, 2, -1));
+
 				$array[$year][$week][$day][] = array(
 						'name' => $event['SUMMARY'],
 						'time_start' => date('H:i', $start_time),
 						'time_end' => date('H:i', strtotime($event['DTEND'])),
 						'location' => $event['LOCATION'],
-						'description' => $event['DESCRIPTION']
+                        'group' => $group,
+                        'teachers' => $teachers
 					);
 			}
 		}
