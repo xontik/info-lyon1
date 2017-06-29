@@ -218,7 +218,7 @@ function _icsToCalendar($ics_filepath) {
 				$description = explode("\\n", $event['DESCRIPTION']);
 
 				$groupLimit = 1;
-				while ( preg_match('/^G[1-9]S[1-9]$/i', $description[$groupLimit]) ) {
+				while ( preg_match('/^(G[1-9])?S[1-9]$/i', $description[$groupLimit]) ) {
 				    $groupLimit++;
 				}
 				

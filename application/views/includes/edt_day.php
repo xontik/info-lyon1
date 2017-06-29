@@ -32,7 +32,8 @@
                 $months = array(
                     'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre','Décembre');
 
-                echo $days[ date('w') ] . ' ' . date('j') . ' ' . $months[ date('n') - 1 ]; ?>
+                $time = strtotime($date);
+                echo $days[ date('w', $time) ] . ' ' . date('j', $time) . ' ' . $months[ date('n', $time) - 1 ]; ?>
             </div>
             <div class="column-content">
                 <?php
@@ -44,21 +45,20 @@
                     $times = array();
 
                     foreach($calendar as $event) {
-                        $item = '';
                         $item = '<div class="edt-item" style="height: '
                             . computeTimeToHeight($event['time_start'], $event['time_end'])
                             . '; ">';
                         $item .= '<h2>' . $event['name'] . '</h2>';
-                        $item .= '<p>' . $event['groups'] . '</p>';
+                        $item .= '<p class="groups">' . $event['groups'] . '</p>';
 
                         if ( strpos($event['teachers'], ',') === FALSE) {
-                            $item .= '<p>' . $event['teachers'] . '</p>';
+                            $item .= '<p class="teachers">' . $event['teachers'] . '</p>';
                         } else {
                             $firstTeacher = explode(', ', $event['teachers'])[0];
-                            $item .= '<p title="' . $event['teachers'] . '">' . $firstTeacher . ', ...</p>';
+                            $item .= '<p class="teachers" title="' . $event['teachers'] . '">' . $firstTeacher . ', ...</p>';
                         }
-                        $item .= '<p>' . $event['time_start'] . ' → ' . $event['time_end'] . '</p>';
-                        $item .= '<p>' . html_img('location.png', 'salle') . $event['location'] . '</p>';
+                        $item .= '<p class="time">' . $event['time_start'] . ' → ' . $event['time_end'] . '</p>';
+                        $item .= '<p class="location">' . html_img('location.png', 'salle') . $event['location'] . '</p>';
                         $item .= '</div>' . PHP_EOL;
 
                         $items[ $event['time_start'] ] = $item;

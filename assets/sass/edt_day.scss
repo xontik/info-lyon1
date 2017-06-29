@@ -14,11 +14,13 @@ $shadow-color: rgba(0, 0, 0, .04);
     display: flex;
     flex-flow: row nowrap;
     height: 85%;
+    min-height: 500px;
     width: 20%;
-    max-width: 20%;
+    min-width: 250px;
 
     position: absolute;
     top: 10%;
+
     // Match "account" icon in header with
     // margin * 2 + width
     right: .9em * 2 + 1.4em;
@@ -59,14 +61,14 @@ $shadow-color: rgba(0, 0, 0, .04);
           font-weight: bold;
         }
 
-        @media screen and (min-height: $highScreen-break) {
+        @media screen and (min-height: 710px) {
           .half-hour {
             font-size: 13px;
             text-align: right;
           }
         }
 
-        @media screen and (max-height: $highScreen-break) {
+        @media screen and (max-height: 710px) {
           .half-hour { display: none; }
         }
       }
@@ -101,7 +103,7 @@ $shadow-color: rgba(0, 0, 0, .04);
 
         .edt-item, .fill {
 
-          box-shadow: 0 -2px 2px $shadow-color;
+          box-shadow: 0 -3px 3px $shadow-color;
           background-color: $edt-back-color;
 
           &:first-child {
@@ -115,18 +117,12 @@ $shadow-color: rgba(0, 0, 0, .04);
           flex-flow: column nowrap;
           justify-content: center;
 
-          h2 {
-            font-size: 19px;
+          h2, p {
+            padding-left: 5px;
+            padding-right: 5px;
           }
 
           p {
-            padding-left: 5px;
-            padding-right: 5px;
-
-            font-size: 18px;
-            line-height: 20px;
-            height: 20px;
-
             vertical-align: middle;
             overflow: hidden;
 
@@ -136,6 +132,40 @@ $shadow-color: rgba(0, 0, 0, .04);
               vertical-align: middle;
             }
           }
+
+          @media screen and (min-height: 875px) {
+            h2 {
+              font-size: 1.1em;
+            }
+
+            p {
+              font-size: 1em;
+              line-height: 20px;
+              height: 20px;
+            }
+          }
+
+          @media screen and (max-height: 875px) {
+            h2 {
+              font-size: 1em;
+            }
+
+            p {
+              font-size: .9em;
+            }
+
+            .groups {
+              display: none;
+            }
+          }
+          
+          @media screen and (max-height: 710px) {
+
+            .time {
+              display: none;
+            }
+          }
+
         }
       }
 

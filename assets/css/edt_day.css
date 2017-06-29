@@ -9,8 +9,9 @@
     display: flex;
     flex-flow: row nowrap;
     height: 85%;
+    min-height: 500px;
     width: 20%;
-    max-width: 20%;
+    min-width: 250px;
     position: absolute;
     top: 10%;
     right: 3.2em;
@@ -38,11 +39,11 @@
   #edt-view-computer #edt-time-container .column-content .full-hour {
     font-size: 16px;
     font-weight: bold; } }
-@media screen and (min-width: 980px) and (min-height: 800px) {
+@media screen and (min-width: 980px) and (min-height: 710px) {
   #edt-view-computer #edt-time-container .column-content .half-hour {
     font-size: 13px;
     text-align: right; } }
-@media screen and (min-width: 980px) and (max-height: 800px) {
+@media screen and (min-width: 980px) and (max-height: 710px) {
   #edt-view-computer #edt-time-container .column-content .half-hour {
     display: none; } }
 @media screen and (min-width: 980px) {
@@ -65,7 +66,7 @@
   #edt-view-computer #edt-content .column-content .error {
     font: bold 18px "Open Sans"; }
   #edt-view-computer #edt-content .column-content .edt-item, #edt-view-computer #edt-content .column-content .fill {
-    box-shadow: 0 -2px 2px rgba(0, 0, 0, 0.04);
+    box-shadow: 0 -3px 3px rgba(0, 0, 0, 0.04);
     background-color: rgba(0, 0, 0, 0.02); }
   #edt-view-computer #edt-content .column-content .edt-item:first-child, #edt-view-computer #edt-content .column-content .fill:first-child {
     box-shadow: 0 -3px 3px rgba(0, 0, 0, 0.04); }
@@ -74,20 +75,34 @@
     width: 100%;
     flex-flow: column nowrap;
     justify-content: center; }
-  #edt-view-computer #edt-content .column-content .edt-item h2 {
-    font-size: 19px; }
-  #edt-view-computer #edt-content .column-content .edt-item p {
+  #edt-view-computer #edt-content .column-content .edt-item h2, #edt-view-computer #edt-content .column-content .edt-item p {
     padding-left: 5px;
-    padding-right: 5px;
-    font-size: 18px;
-    line-height: 20px;
-    height: 20px;
+    padding-right: 5px; }
+  #edt-view-computer #edt-content .column-content .edt-item p {
     vertical-align: middle;
     overflow: hidden; }
   #edt-view-computer #edt-content .column-content .edt-item p img {
     height: 16px;
     margin-right: 3px;
     vertical-align: middle; } }
+@media screen and (min-width: 980px) and (min-height: 875px) {
+  #edt-view-computer #edt-content .column-content .edt-item h2 {
+    font-size: 1.1em; }
+  #edt-view-computer #edt-content .column-content .edt-item p {
+    font-size: 1em;
+    line-height: 20px;
+    height: 20px; } }
+@media screen and (min-width: 980px) and (max-height: 875px) {
+  #edt-view-computer #edt-content .column-content .edt-item h2 {
+    font-size: 1em; }
+  #edt-view-computer #edt-content .column-content .edt-item p {
+    font-size: .9em; }
+  #edt-view-computer #edt-content .column-content .edt-item .groups {
+    display: none; } }
+@media screen and (min-width: 980px) and (max-height: 710px) {
+  #edt-view-computer #edt-content .column-content .edt-item .time {
+    display: none; } }
+
 @media screen and (max-width: 980px) {
   #edt-view-computer {
     display: none; } }
