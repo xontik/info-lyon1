@@ -10,6 +10,7 @@
     flex-flow: row nowrap;
     height: 85%;
     width: 20%;
+    max-width: 20%;
     position: absolute;
     top: 10%;
     right: 3.2em;
@@ -36,10 +37,15 @@
     margin-bottom: 7px; }
   #edt-view-computer #edt-time-container .column-content .full-hour {
     font-size: 16px;
-    font-weight: bold; }
+    font-weight: bold; } }
+@media screen and (min-width: 980px) and (min-height: 800px) {
   #edt-view-computer #edt-time-container .column-content .half-hour {
     font-size: 13px;
-    text-align: right; }
+    text-align: right; } }
+@media screen and (min-width: 980px) and (max-height: 800px) {
+  #edt-view-computer #edt-time-container .column-content .half-hour {
+    display: none; } }
+@media screen and (min-width: 980px) {
   #edt-view-computer #edt-content {
     text-align: center;
     flex-grow: 2; }
@@ -65,17 +71,23 @@
     box-shadow: 0 -3px 3px rgba(0, 0, 0, 0.04); }
   #edt-view-computer #edt-content .column-content .edt-item {
     display: flex;
+    width: 100%;
     flex-flow: column nowrap;
-    justify-content: center;
-    width: 100%; }
+    justify-content: center; }
   #edt-view-computer #edt-content .column-content .edt-item h2 {
-    font-size: 18px;
-    margin-bottom: 8px; }
+    font-size: 19px; }
   #edt-view-computer #edt-content .column-content .edt-item p {
+    padding-left: 5px;
+    padding-right: 5px;
     font-size: 18px;
-    line-height: 18px; }
+    line-height: 20px;
+    height: 20px;
+    vertical-align: middle;
+    overflow: hidden; }
   #edt-view-computer #edt-content .column-content .edt-item p img {
-    width: 18px; } }
+    height: 16px;
+    margin-right: 3px;
+    vertical-align: middle; } }
 @media screen and (max-width: 980px) {
   #edt-view-computer {
     display: none; } }

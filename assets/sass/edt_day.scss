@@ -15,6 +15,7 @@ $shadow-color: rgba(0, 0, 0, .04);
     flex-flow: row nowrap;
     height: 85%;
     width: 20%;
+    max-width: 20%;
 
     position: absolute;
     top: 10%;
@@ -58,9 +59,15 @@ $shadow-color: rgba(0, 0, 0, .04);
           font-weight: bold;
         }
 
-        .half-hour {
-          font-size: 13px;
-          text-align: right;
+        @media screen and (min-height: $highScreen-break) {
+          .half-hour {
+            font-size: 13px;
+            text-align: right;
+          }
+        }
+
+        @media screen and (max-height: $highScreen-break) {
+          .half-hour { display: none; }
         }
       }
 
@@ -76,7 +83,6 @@ $shadow-color: rgba(0, 0, 0, .04);
 
         font-size: 20px;
         font-weight: bold;
-        //box-shadow: 0 3px 3px $shadow-color;
         background-color: $edt-back-color;
         border-radius: 0 $bradius 0 0;
       }
@@ -105,22 +111,29 @@ $shadow-color: rgba(0, 0, 0, .04);
 
         .edt-item {
           display: flex;
+          width: 100%;
           flex-flow: column nowrap;
           justify-content: center;
 
-          width: 100%;
-
           h2 {
-            font-size: 18px;
-            margin-bottom: 8px;
+            font-size: 19px;
           }
 
           p {
+            padding-left: 5px;
+            padding-right: 5px;
+
             font-size: 18px;
-            line-height: 18px;
+            line-height: 20px;
+            height: 20px;
+
+            vertical-align: middle;
+            overflow: hidden;
 
             img {
-              width: 18px;
+              height: 16px;
+              margin-right: 3px;
+              vertical-align: middle;
             }
           }
         }

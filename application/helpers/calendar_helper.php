@@ -216,15 +216,21 @@ function _icsToCalendar($ics_filepath) {
 				}
 
 				$description = explode("\\n", $event['DESCRIPTION']);
-                $group = $description[1];
-                $teachers = implode(', ', array_slice($description, 2, -1));
+
+				$groupLimit = 1;
+				while ( preg_match('/^G[1-9]S[1-9]$/i', $description[$groupLimit]) ) {
+				    $groupLimit++;
+				}
+				
+				$groups = implode(', ', array_slice($description, 1, $groupLimit - 1));
+				$teachers = implode(', ', array_slice($description, $groupLimit, -1));
 
 				$array[$year][$week][$day][] = array(
 						'name' => $event['SUMMARY'],
 						'time_start' => date('H:i', $start_time),
 						'time_end' => date('H:i', strtotime($event['DTEND'])),
 						'location' => $event['LOCATION'],
-                        'group' => $group,
+                        'groups' => $groups,
                         'teachers' => $teachers
 					);
 			}
@@ -375,11 +381,20 @@ function _narrow($array, $begin, $end, $period = 'UNDEFINED') {
 		}
 	}
 
-	if (in_array($period, array('DAY', 'WEEK')))
+	if (in_array($period, array('DAY', 'WEEK'))) {
+		if ( !isset($final[$beginYear]) ||
+        !isset($final[$beginYear][$beginWeek]) )
+			return array();
+		
 	    $final = $final[$beginYear][$beginWeek];
-
-	if ($period === 'DAY')
+	}
+	
+	if ($period === 'DAY') {
+		if ( !isset($final[$beginDay]) )
+			return array();
+		
         $final = $final[$beginDay];
+	}
 
     return $final;
 }

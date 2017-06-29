@@ -6,11 +6,9 @@ body > header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-top: 0.1%;
-  padding-bottom: 0.1%;
   margin-bottom: 1.2em;
-  background-color: #403e3f;
-  color: #ffffff; }
+  color: #ffffff;
+  background-color: #403e3f; }
 body > header a {
   color: #ffffff; }
 body > header #header_title {

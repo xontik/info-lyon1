@@ -1,4 +1,4 @@
-$(function () {
+$(function() {
 
     // #header_profile
     $('#header_profile').click( function() {

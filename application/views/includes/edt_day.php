@@ -37,7 +37,7 @@
             <div class="column-content">
                 <?php
                 if ( empty($calendar) ) { ?>
-                    <div class="error">Impossible de charger<br>l'emploi du temps d'aujourd'hui</div>
+                    <div class="error">Pas de cours</div>
                 <?php
                 } else {
                     $items = array();
@@ -49,8 +49,16 @@
                             . computeTimeToHeight($event['time_start'], $event['time_end'])
                             . '; ">';
                         $item .= '<h2>' . $event['name'] . '</h2>';
-                        $item .= '<p>' . html_img('location', 'Salle : ') . $event['location'] . '</p>';
+                        $item .= '<p>' . $event['groups'] . '</p>';
+
+                        if ( strpos($event['teachers'], ',') === FALSE) {
+                            $item .= '<p>' . $event['teachers'] . '</p>';
+                        } else {
+                            $firstTeacher = explode(', ', $event['teachers'])[0];
+                            $item .= '<p title="' . $event['teachers'] . '">' . $firstTeacher . ', ...</p>';
+                        }
                         $item .= '<p>' . $event['time_start'] . ' → ' . $event['time_end'] . '</p>';
+                        $item .= '<p>' . html_img('location.png', 'salle') . $event['location'] . '</p>';
                         $item .= '</div>' . PHP_EOL;
 
                         $items[ $event['time_start'] ] = $item;
@@ -60,11 +68,14 @@
                     ksort($items, SORT_STRING);
 
                     $lastTimeEnd = '';
+
                     foreach ($items as $time => $event) {
-                        if ($lastTimeEnd === '' && $time !== '08:00') {
-                            $items['08:00'] = '<div class="fill" style="height: '
-                                . computeTimeToHeight('08:00', $time)
-                                . ';"></div>' . PHP_EOL;
+                        if ($lastTimeEnd === '') {
+                            if ($time !== '08:00') {
+                                $items['08:00'] = '<div class="fill" style="height: '
+                                    . computeTimeToHeight('08:00', $time)
+                                    . ';"></div>' . PHP_EOL;
+                            }
                         }
                         else if ($lastTimeEnd !== $time) {
                             $items[$lastTimeEnd] = '<div class="fill" style="height: '
