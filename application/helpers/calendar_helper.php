@@ -8,102 +8,71 @@
  */
 function getNextCalendar($resources, $period, &$datetime = NULL) {
     if ($datetime === NULL) {
-        $datetime = date('Y-m-d H:i:s');
+        $datetime = new DateTime();
     }
 
-    $originalDate = $datetime;
-    $date = date('Y-m-d', strtotime($datetime));
+    $originalDate = clone $datetime;
     $limit = 0;
 
     // If hour >= 18h, take next day calendar
-    if (date('H', strtotime($datetime)) >= 18) {
-        $date = date('Y-m-d', strtotime($date . ' +1 day'));
+    if ($datetime->format('H') >= 18) {
+        $datetime->modify('+1 day');
         $limit = 1;
     }
 
-    $calendar = getCalendar($resources, $date, $period);
+    $calendar = getCalendar($resources, $period, $datetime);
 
     while ($limit < 3 && empty($calendar)) {
-        $date = date('Y-m-d', strtotime($date . ' +1 day'));
-        $calendar = getCalendar($resources, $date, $period);
+        $datetime->modify('+1 day');
+        $calendar = getCalendar($resources, $period, $datetime);
         $limit++;
     }
 
-    $datetime = empty($calendar) ? $originalDate : $date;
+    if (empty($calendar))
+        $datetime = $originalDate;
 
     return $calendar;
 }
 
 /**
  * @param $resources int The resources number in ADE
- * @param null $firstDate mixed The first limit date or 'DAY' or 'WEEK'
- * @param null $lastDate mixed The second limit date or 'DAY' or 'WEEK'
+ * @param $period string The period you want (day or week)
+ * @param null $datetime DateTime At which date you want the calendar. Default is today.
  * @return array The formatted calendar
  */
-function getCalendar($resources, $firstDate = NULL, $lastDate = NULL)
+function getCalendar($resources, $period, $datetime = NULL)
 {
+    global $DATE_FORMAT;
+    $DATE_FORMAT = 'Y-m-d';
+
     $CI = get_instance();
     $CI->load->model('calendar_model');
 
-	global $DATE_FORMAT;
-	$DATE_FORMAT = 'Y-m-d';
+	if ($datetime === NULL) {
+        $datetime = new DateTime();
+    }
 
-	$period = "UNDEFINED";
-	
-	// Test the optional parameters
-	// (res, 'day' [, date])
-	if ( strcasecmp($firstDate, 'day') === 0 )
-	{
-		_test_date($lastDate);
-		$firstDate = $lastDate;
-		$period = 'DAY';
-	}
-	// (res, date, 'day')
-	else if ( strcasecmp($lastDate, 'day') === 0 )
-	{
-		_test_date($firstDate);
-		$lastDate = $firstDate;
-		$period = 'DAY';
-	}
-	// (res, 'week' [, date])
-	else if ( strcasecmp($firstDate, 'week') === 0 )
-	{
-		_test_date($lastDate);
-		$time = strtotime($lastDate);
-		$dayOfWeek = date('N', $time);
-		$period = 'WEEK';
-		
-		$firstDate = date($DATE_FORMAT, mktime(0, 0, 0, date('m', $time), date('d', $time) - ($dayOfWeek - 1), date('Y', $time)));
-		$lastDate = date($DATE_FORMAT, mktime(0, 0, 0, date('m', $time), date('d', $time) + (7 - $dayOfWeek), date('Y', $time)));
-	}
-	// (res, date, 'week')
-	else if ( strcasecmp($lastDate, 'week') === 0 )
-	{
-		_test_date($firstDate);
-		$time = strtotime($firstDate);
-		$dayOfWeek = date('N', $time);
-        $period = 'WEEK';
-		
-		$firstDate = date($DATE_FORMAT, mktime(0, 0, 0, date('m', $time), date('d', $time) - ($dayOfWeek - 1), date('Y', $time)));
-		$lastDate = date($DATE_FORMAT, mktime(0, 0, 0, date('m', $time), date('d', $time) + (7 - $dayOfWeek), date('Y', $time)));
-	}
-	// (res [, beginDate [, endDate]])
-	else
-	{
-		_test_date($firstDate);
-		_test_date($lastDate);
-		
-		// Make dates in right order
-		// To give ADE a correct url
-		$firstTime = strtotime($firstDate);
-		$lastTime = strtotime($lastDate);
-		
-		if ( $firstTime > $lastTime )
-			swap($firstDate, $lastDate);
-	}
-	
-	
-	$updated = false;
+	if (strcasecmp($period, 'day') === 0) {
+
+        $firstDate = clone $datetime;
+        $lastDate = clone $datetime;
+    }
+    else if (strcasecmp($period, 'week') === 0) {
+
+	    $datetimeDay = $datetime->format('N');
+
+	    $firstDate = clone $datetime;
+	    $firstDate->modify('-' . ($datetimeDay - 1) . ' days');
+
+	    $lastDate = clone $datetime;
+	    $lastDate->modify('+' . abs(5 - $datetimeDay). ' days');
+
+    } else {
+	    trigger_error('Period isn\'t "day" nor "week"');
+	    return array();
+    }
+
+    $updated = false;
 	$existedInDB = true;
 	$calendar = $CI->calendar_model->getCalendarJSON($resources);
 
@@ -111,85 +80,41 @@ function getCalendar($resources, $firstDate = NULL, $lastDate = NULL)
 
         $calendar = json_decode($calendar, true);
 
-        // Make sure the data exists in the file
-        $exists = true;
+        $temp = clone $firstDate;
+        $validTimeLimit = new DateTime();
+        $validTimeLimit = $validTimeLimit->modify('-1 day')->getTimeStamp();
 
-        $beginYear = date('Y', strtotime($firstDate));
-        $endYear = date('Y', strtotime($lastDate));
+        do {
+            $year = $temp->format('Y');
+            $week = $temp->format('W');
+            $dayOfWeek = $temp->format('N');
 
-        for ($i = $beginYear; $i <= $endYear && $exists; $i++) {
-            if (!array_key_exists($i, $calendar)) {
-                $exists = false;
-            } else {
-                // if first year, take week of first date, else begin to first week of year
-                $beginWeek = ($i == $beginYear) ? date('W', strtotime($firstDate)) : 0;
-                // if last year, take week of last date, else end to last week of year
-                $endWeek = ($i == $endYear) ? date('W', strtotime($lastDate)) : 51;
-
-                for ($j = $beginWeek; $j <= $endWeek && $exists; $j++) {
-                    if (!array_key_exists($j, $calendar[$i])) {
-                        $exists = false;
-                    } else {
-                        $beginDayOfWeek = ($j == $beginWeek ? date('N', strtotime($firstDate)) : 0);
-                        $endDayOfWeek = ($j == $endWeek ? date('N', strtotime($lastDate)) : 6);
-
-                        for ($k = $beginDayOfWeek; $k <= $endDayOfWeek && $exists; $k++) {
-                            if (!array_key_exists($k, $calendar[$i][$j]))
-                                $exists = false;
-                        }
-
-                    }
-                }
-
-                if (!$exists)
-                    break;
+            // If one day isn't up-to-date, update entire period
+            if ( !( array_key_exists($year, $calendar) &&
+                array_key_exists($week, $calendar[$year]) &&
+                array_key_exists($dayOfWeek, $calendar[$year][$week]) &&
+                $validTimeLimit < $calendar[$year][$week][$dayOfWeek]['updated'] ))
+            {
+                $firstDateFormat = $firstDate->format($DATE_FORMAT);
+                $lastDateFormat = $lastDate->format($DATE_FORMAT);
+                $calendar = merge_arrays(_icsToCalendar(_getAdeRequest($resources, $firstDateFormat, $lastDateFormat)), $calendar);
+                $updated = true;
+                break;
             }
-        }
 
-        if (!$exists) {
-
-            $calendar = merge_arrays(_icsToCalendar(_getAdeRequest($resources, $firstDate, $lastDate)), $calendar);
-
-            $updated = true;
-
-        } else {
-
-            //Make sure data is up-to-date
-            $temp = $firstDate;
-            $validTimeLimit = mktime(
-                date('H'),
-                date('i'),
-                date('s'),
-                date('m'),
-                date('d') - 1,
-                date('y')
-            );
-
-            do {
-                $year = date('Y', strtotime($temp));
-                $week = date('W', strtotime($temp));
-                $dayOfWeek = date('N', strtotime($temp));
-
-                // If one day isn't up-to-date, update entire period
-                if (array_key_exists($year, $calendar) &&
-                    array_key_exists($week, $calendar[$year]) &&
-                    array_key_exists($dayOfWeek, $calendar[$year][$week]) &&
-                    $validTimeLimit > $calendar[$year][$week][$dayOfWeek]['updated']
-                ) {
-                    $calendar = _icsToCalendar(_getAdeRequest($resources, $firstDate, $lastDate)) + $calendar;
-                    $updated = true;
-                    break;
-                }
-
-                $temp = date('Y-m-d', strtotime($temp . '+1 day'));
-            } while ($temp < $lastDate);
-
-        }
+            $temp->modify('+1 day');
+            $diff = $temp->diff($lastDate);
+        } while ($diff->days != 0 && $diff->invert != 1);
 
     }
 	// If no preexisting data was found
 	else {
-		$calendar = _icsToCalendar(_getAdeRequest($resources, $firstDate, $lastDate));
+
+		$calendar = _icsToCalendar(_getAdeRequest(
+		    $resources,
+            $firstDate->format($DATE_FORMAT),
+            $lastDate->format($DATE_FORMAT))
+        );
 		$existedInDB = false;
 		$updated = true;
 	}
@@ -201,6 +126,92 @@ function getCalendar($resources, $firstDate = NULL, $lastDate = NULL)
 	        $CI->calendar_model->createCalendar($resources, json_encode($calendar, JSON_PRETTY_PRINT));
 
 	return _narrow($calendar, $firstDate, $lastDate, $period);
+}
+
+/**
+ * @param $date DateTime The date to be formatted
+ * @return string A string showing date formatted for display, in french
+ */
+function translateAndFormat($date) {
+    static $DAYS = array('Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi');
+    static $MONTHS = array(
+        'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre','Décembre');
+
+    return $DAYS[ $date->format('w') ] . ' '
+        . $date->format('j') . ' '
+        . $MONTHS[ $date->format('n') - 1 ];
+}
+
+/**
+ * Compute the height (in percentage) a DOM element should take
+ * comparing the hours it reprents to a day of 10h.
+ * @param $begin string The beginning of time
+ * @param $end string The end of time
+ * @return string Percentage the DOM element should take
+ */
+function computeTimeToHeight($begin, $end) {
+    static $hoursNumber = 10 * 3600;
+    $interval = abs(strtotime($begin) - strtotime($end));
+
+    return ($interval / $hoursNumber * 100) . '%';
+}
+
+/**
+ * Reduce the array from the beginning date to the end date
+ * @param $array array The complete array, to be restrained
+ * @param $begin DateTime The first limit date
+ * @param $end DateTime The second limit date
+ * @param $period string The period you want ('day', 'week')
+ * @return array Only the array element that are in the time limit.
+ * If $begin and $end don't correspond to $period, $period has priority and
+ * the result the period applied to $begin
+ */
+function _narrow($array, $begin, $end, $period) {
+    $final = array();
+
+    $temp = clone $begin;
+    do {
+        $year = $temp->format('Y');
+        $week = $temp->format('W');
+        $dayOfWeek = $temp->format('N');
+
+        if ( array_key_exists($year, $array) &&
+            array_key_exists($week, $array[$year]) &&
+            array_key_exists($dayOfWeek, $array[$year][$week]) )
+        {
+            if ( !array_key_exists($year, $final) )
+                $final[$year] = array();
+            if ( !array_key_exists($week, $final[$year]) )
+                $final[$year][$week] = array();
+
+            unset($array[$year][$week][$dayOfWeek]['updated']);
+            $final[$year][$week][$dayOfWeek] = $array[$year][$week][$dayOfWeek];
+        }
+
+        $temp->modify('+1 day');
+        $diff = $temp->diff($end);
+    } while ($diff->days != 0 && $diff->invert != 1);
+
+    $year = $begin->format('Y');
+    $week = $begin->format('W');
+    $dayOfWeek = $begin->format('N');
+
+
+    if (in_array(strtolower($period), array('day', 'week'))) {
+        if ( !isset($final[$year]) || !isset($final[$year][$week]) )
+            return array();
+
+        $final = $final[$year][$week];
+    }
+
+    if (strcasecmp($period, 'day') === 0) {
+        if ( !isset($final[$dayOfWeek]) )
+            return array();
+
+        $final = $final[$dayOfWeek];
+    }
+
+    return $final;
 }
 
 /**
@@ -362,99 +373,6 @@ function _getAdeRequest($resources, $firstDate, $lastDate) {
 				. '&projectId=3'
 				. '&firstDate=' . $firstDate
 				. '&lastDate=' . $lastDate;
-}
-
-/**
- * Reduce the array from the beginning date to the end date
- * @param $array array The complete array, to be restrained
- * @param $begin string The first limit date
- * @param $end string The second limit date
- * @param $period string What period you want ('DAY', 'WEEK', 'UNDEFINED')
- * @return array Only the array element that are in the time limit.
- * If $begin and $end don't correspond to $period, $period has priority and
- * the result the period applied to $begin
- */
-function _narrow($array, $begin, $end, $period = 'UNDEFINED') {
-	$final = array();
-	
-	$beginTime = strtotime($begin);
-	$endTime = strtotime($end);
-	
-	if ($endTime < $beginTime)
-		swap($beginTime, $endTime);
-	
-	$beginYear = date('Y', $beginTime);
-	$beginWeek = date('W', $beginTime) % 52;
-	$beginDay = date('N', $beginTime);
-	
-	$endYear = date('Y', $endTime);
-	$endWeek = date('W', $endTime) % 52;
-	$endDay = date('N', $endTime);
-	
-	for ($i = $beginYear; $i <= $endYear; $i++) {
-		$beginWeekInYear = ($i == $beginYear) ? $beginWeek : 0;
-		$endWeekInYear = ($i == $endYear) ? $endWeek : 51;
-		
-		for ($j = $beginWeekInYear; $j <= $endWeekInYear; $j++) {
-			$beginDayInWeek = ($i == $beginYear && $j == $beginWeek) ? $beginDay : 0;
-			$endDayInWeek = ($i == $endYear && $j == $endWeek) ? $endDay : 6;
-			
-			for ($k = $beginDayInWeek; $k <= $endDayInWeek; $k++) {
-				if ( array_key_exists($i, $array) &&
-					array_key_exists($j, $array[$i]) && 
-					array_key_exists($k, $array[$i][$j]) )
-				{
-					if ( !array_key_exists($i, $final) )
-						$final[$i] = array();
-					if ( !array_key_exists($j, $final[$i]) )
-						$final[$i][$j] = array();
-					$final[$i][$j][$k] = $array[$i][$j][$k];
-					unset($final[$i][$j][$k]['updated']);
-				}
-			}
-		}
-	}
-
-	if (in_array($period, array('DAY', 'WEEK'))) {
-		if ( !isset($final[$beginYear]) ||
-        !isset($final[$beginYear][$beginWeek]) )
-			return array();
-		
-	    $final = $final[$beginYear][$beginWeek];
-	}
-	
-	if ($period === 'DAY') {
-		if ( !isset($final[$beginDay]) )
-			return array();
-		
-        $final = $final[$beginDay];
-	}
-
-    return $final;
-}
-
-function _test_date(&$date) {
-	static $REGEX_DATE_FORMAT = '/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/';
-	global $DATE_FORMAT;
-	
-	if ($date === NULL) {
-		// By default, $date is today
-		$date = date($DATE_FORMAT);
-	}
-	else if ( !preg_match($REGEX_DATE_FORMAT, $date) )
-	{
-		trigger_error('ICS ERROR: Date is wrongly formatted ( ' . $date . ' )', E_USER_NOTICE);
-		$date = date($DATE_FORMAT);
-	}
-}
-
-if (! function_exists('computeTimeToHeight')) {
-    function computeTimeToHeight($begin, $end) {
-        static $hoursNumber = 10 * 3600;
-        $interval = abs(strtotime($begin) - strtotime($end));
-
-        return ($interval / $hoursNumber * 100) . '%';
-    }
 }
 
 if (! function_exists('merge_arrays')) {
