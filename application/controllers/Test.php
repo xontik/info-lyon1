@@ -7,7 +7,7 @@ class Test extends CI_Controller {
     {
         $this->load->helper('calendar');
 
-        $date = new DateTime('2017-06-13 12:30');
+        $date = new DateTime('2017-06-13 14:40');
         $calendar = getNextCalendar(9306, 'day', $date);
 
         $edt_view = $this->load->view('includes/edt_day',

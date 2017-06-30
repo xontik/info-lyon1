@@ -5,7 +5,7 @@ $calendar The timetable
 -->
 <div id="edt-view">
     <div id="edt-view-computer">
-        <div id="edt-time-container">
+        <div class="edt-time-container">
             <div class="column-content">
                 <div class="edt-item full-hour">8h</div>
                 <div class="edt-item half-hour">30</div>
@@ -30,8 +30,8 @@ $calendar The timetable
                 <div class="edt-item full-hour">18h</div>
             </div>
         </div>
-        <div id="edt-content">
-            <div id="edt-day-title">
+        <div class="edt-content">
+            <div class="edt-day-title">
                 <?php echo translateAndFormat($date) ?>
             </div>
             <div class="column-content">
@@ -127,6 +127,56 @@ $calendar The timetable
         </div>
     </div>
     <div id="edt-view-mobile">
-        <h1>Truc bidule machin</h1>
+        <div class="edt-content">
+            <div class="edt-day-title">
+                <?php echo translateAndFormat($date); ?>
+            </div>
+            <div class="column-content">
+                <?php
+                if (empty($calendar)) { ?>
+                    <div class="error">Pas de cours</div>
+                <?php
+                } else {
+                    usort($calendar, function($item1, $item2) {
+                        // There shouldn't be any equal terms
+                        return $item1['time_start'] < $item2['time_start'] ? -1 : 1;
+                    });
+
+                    $timeAtDate = $date->format('H:i');
+
+                    $currentEvent = NULL;
+                    $nextEvent = NULL;
+
+                    foreach ($calendar as $event) {
+                        if ($event['time_start'] <= $timeAtDate && $timeAtDate < $event['time_end']) {
+                            $currentEvent = $event;
+                        } else if ($event['time_start'] > $timeAtDate) {
+                            $nextEvent = $event;
+                            break;
+                        }
+                    }
+
+                    function echoEvent($event, $title) {
+                        if ($event !== NULL) {
+                            $item = '<div class="edt-item">';
+
+                            $item .= '<h1>' . $title . '</h1>';
+                            $item .= '<h2>' . $event['name'] . '</h2>';
+                            $item .= '<p class="groups">' . $event['groups'] . '</p>';
+                            $item .= '<p class="teachers">' . $event['teachers'] . '</p>';
+                            $item .= '<p class="time">' . $event['time_start'] . ' → ' . $event['time_end'] . '</p>';
+                            $item .= '<p class="location">' . html_img('location.png', 'salle') . $event['location'] . '</p>';
+
+                            $item .= '</div>' . PHP_EOL;
+                            echo $item;
+                        }
+                    }
+
+                    echoEvent($currentEvent, 'Actuellement');
+                    echoEvent($nextEvent,'Prochain cours');
+
+                } ?>
+            </div>
+        </div>
     </div>
 </div>

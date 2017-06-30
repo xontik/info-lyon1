@@ -4,172 +4,220 @@ $bradius: 10px;
 $edt-back-color: rgba(0, 0, 0, .02);
 $shadow-color: rgba(0, 0, 0, .04);
 
-@media screen and (min-width: $device-break) {
+#edt-view {
+  color: $second-color;
+  background-color: $edt-back-color;
+  border-radius: $bradius;
 
-  main { width: 70%; }
+  text-align: center;
 
-  #edt-view-mobile { display: none; }
-  #edt-view-computer {
-
-    display: flex;
-    flex-flow: row nowrap;
-    height: 85%;
-    min-height: 500px;
-    width: 20%;
-    min-width: 250px;
-
-    position: absolute;
-    top: 10%;
-
-    // Match "account" icon in header with
-    // margin * 2 + width
-    right: .9em * 2 + 1.4em;
-
-    color: $second-color;
+  .edt-day-title {
+    font-weight: bold;
     background-color: $edt-back-color;
-    border-radius: $bradius;
+    border-radius: 0 $bradius 0 0;
+  }
 
-    #edt-time-container {
-      padding-top: 42px;
+  .edt-content {
 
-      text-align: center;
-      border-radius: $bradius 0 0 $bradius;
-      box-shadow: 3px 0 3px $shadow-color;
-      background-color: $edt-back-color;
+    .column-content {
 
-      .column-content {
+      display: flex;
+      flex-flow: column nowrap;
+      align-items: center;
+      justify-content: center;
+
+      .error { font: bold 18px $title-font; }
+
+      .edt-item, .fill {
+
+        box-shadow: 0 -3px 3px $shadow-color;
+        background-color: $edt-back-color;
+
+        &:first-child {
+          box-shadow: 0 -3px 3px $shadow-color;
+        }
+      }
+
+      .edt-item {
         display: flex;
+        width: 100%;
         flex-flow: column nowrap;
-        justify-content: space-between;
-        height: 100%;
+        justify-content: center;
 
-        .edt-item {
+        h2, p {
           padding-left: 5px;
           padding-right: 5px;
+        }
 
-          &:first-of-type {
-            box-shadow: 0 -3px 3px $shadow-color;
-          }
+        p {
+          overflow: hidden;
 
-          &:last-of-type {
-            margin-bottom: 7px;
+          img {
+            height: 16px;
+            margin-right: 3px;
           }
         }
 
-        .full-hour {
-          font-size: 16px;
-          font-weight: bold;
+      }
+
+    }
+  }
+}
+
+#edt-view-computer {
+
+  display: flex;
+  flex-flow: row nowrap;
+  height: 85%;
+  min-height: 500px;
+  width: 20%;
+  min-width: 250px;
+
+  position: absolute;
+  top: 10%;
+  right: .9em * 2 + 1.4em;
+
+  .edt-time-container {
+    padding-top: 42px;
+
+    border-radius: $bradius 0 0 $bradius;
+    box-shadow: 3px 0 3px $shadow-color;
+    background-color: $edt-back-color;
+
+    .column-content {
+      display: flex;
+      flex-flow: column nowrap;
+      justify-content: space-between;
+      height: 100%;
+
+      .edt-item {
+        padding-left: 5px;
+        padding-right: 5px;
+
+        &:first-of-type {
+          box-shadow: 0 -3px 3px $shadow-color;
         }
 
-        @media screen and (min-height: 710px) {
-          .half-hour {
-            font-size: 13px;
-            text-align: right;
-          }
+        &:last-of-type {
+          margin-bottom: 7px;
+        }
+      }
+
+      .full-hour {
+        font-size: 16px;
+        font-weight: bold;
+      }
+
+      @media screen and (min-height: 710px) {
+        .half-hour {
+          font-size: 13px;
+          text-align: right;
+        }
+      }
+
+      @media screen and (max-height: 710px) {
+        .half-hour { display: none; }
+      }
+    }
+
+  } // #edt-time-container
+
+  .edt-content {
+    flex-grow: 2;
+
+    .edt-day-title {
+      height: 42px;
+      line-height: 42px;
+      font-size: 20px;
+    }
+
+    .column-content {
+
+      height: 93%;
+
+      .error {
+        font: bold 18px $title-font;
+      }
+
+      .edt-item {
+
+        p {
+          line-height: 20px;
+          height: 20px;
+        }
+
+        @media screen and (min-height: 875px) {
+          h2 { font-size: 1.1em; }
+          p { font-size: 1em; }
+        }
+
+        @media screen and (max-height: 875px) {
+          h2 { font-size: 1em; }
+          p { font-size: .9em; }
+          .groups { display: none; }
         }
 
         @media screen and (max-height: 710px) {
-          .half-hour { display: none; }
-        }
-      }
-
-    } // #edt-time-container
-
-    #edt-content {
-      text-align: center;
-      flex-grow: 2;
-
-      #edt-day-title {
-        height: 42px;
-        line-height: 42px;
-
-        font-size: 20px;
-        font-weight: bold;
-        background-color: $edt-back-color;
-        border-radius: 0 $bradius 0 0;
-      }
-
-      .column-content {
-
-        display: flex;
-        height: 93%;
-        flex-flow: column nowrap;
-        align-items: center;
-        justify-content: center;
-
-        .error {
-          font: bold 18px $title-font;
-        }
-
-        .edt-item, .fill {
-
-          box-shadow: 0 -3px 3px $shadow-color;
-          background-color: $edt-back-color;
-
-          &:first-child {
-            box-shadow: 0 -3px 3px $shadow-color;
-          }
-        }
-
-        .edt-item {
-          display: flex;
-          width: 100%;
-          flex-flow: column nowrap;
-          justify-content: center;
-
-          h2, p {
-            padding-left: 5px;
-            padding-right: 5px;
-          }
-
-          p {
-            vertical-align: middle;
-            overflow: hidden;
-
-            img {
-              height: 16px;
-              margin-right: 3px;
-              vertical-align: middle;
-            }
-          }
-
-          @media screen and (min-height: 875px) {
-            h2 { font-size: 1.1em; }
-
-            p {
-              font-size: 1em;
-              line-height: 20px;
-              height: 20px;
-            }
-          }
-
-          @media screen and (max-height: 875px) {
-            h2 { font-size: 1em; }
-            p { font-size: .9em; }
-            .groups { display: none; }
-          }
-          
-          @media screen and (max-height: 710px) {
-            .time { display: none; }
-          }
-
-        }
-
-        #current-item {
-          box-shadow: 0 0 8px $foreground-color;
+          .time { display: none; }
         }
 
       }
 
-    } // #edt-content
+      #current-item {
+        box-shadow: 0 0 8px $foreground-color;
+      }
 
-  } // #edt-view-computer
-} // @media
+    }
+
+  } // #edt-content
+
+} // #edt-view-computer
+
+#edt-view-mobile {
+
+  .edt-content {
+
+    .edt-day-title {
+      height: 2em;
+      line-height: 2em;
+      font-size: 1.4em;
+    }
+
+    .column-content {
+
+      .error {
+        padding: 15px 5px;
+      }
+
+      .edt-item {
+
+        padding-top: 5px;
+        padding-bottom: 10px;
+
+        h1 {
+          color: $second-color;
+        }
+
+        h2 {
+          font-size: 1.2em;
+        }
+
+        p {
+          font-size: 1.1em;
+        }
+      } // .edt-item
+    }
+  } // #edt-content
+} // #edt-view-mobile
+
+
+@media screen and (min-width: $device-break) {
+
+  main { width: 70%; }
+  #edt-view-mobile { display: none; }
+
+}
 
 @media screen and (max-width: $device-break) {
-
   #edt-view-computer { display: none; }
-  #edt-view-mobile {
-
-  } // #edt-view-mobile
-} // @media
+}
