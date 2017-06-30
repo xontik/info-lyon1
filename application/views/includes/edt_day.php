@@ -32,7 +32,7 @@ $calendar The timetable
         </div>
         <div id="edt-content">
             <div id="edt-day-title">
-                <?php echo $date ?>
+                <?php echo translateAndFormat($date) ?>
             </div>
             <div class="column-content">
                 <?php
@@ -40,13 +40,20 @@ $calendar The timetable
                     <div class="error">Pas de cours</div>
                 <?php
                 } else {
+                    $timeAtDate = $date->format('H:i');
                     $items = array();
                     $times = array();
 
                     foreach($calendar as $event) {
-                        $item = '<div class="edt-item" style="height: '
+                        $item = '<div class="edt-item" ';
+                        if (isset($timeAtDate) && $timeAtDate >= $event['time_start'] && $timeAtDate <= $event['time_end']) {
+                            $item .= 'id="current-item" ';
+                            unset($timeAtDate);
+                        }
+                        $item .= 'style="height: '
                             . computeTimeToHeight($event['time_start'], $event['time_end'])
                             . '; ">';
+
                         $item .= '<h2>' . $event['name'] . '</h2>';
                         $item .= '<p class="groups">' . $event['groups'] . '</p>';
 
@@ -66,10 +73,29 @@ $calendar The timetable
 
                     ksort($items, SORT_STRING);
 
+                    // If time in not in an edt-item
+                    // Select next event
+                    if ( isset($timeAtDate) ) {
+                        $value = reset($items);
+
+                        while ($value !== FALSE) {
+
+                            $time = key($items);
+
+                            if ($time > $timeAtDate) {
+                                $value = substr_replace($value, 'id="current-item" ', 5, 0);
+                                $items[$time] = $value;
+                                break;
+                            }
+                            $value = next($items);
+                        }
+                    }
+
                     $lastTimeEnd = '';
 
                     foreach ($items as $time => $event) {
                         if ($lastTimeEnd === '') {
+                            // Fill if day doesn't begin at 08:00
                             if ($time !== '08:00') {
                                 $items['08:00'] = '<div class="fill" style="height: '
                                     . computeTimeToHeight('08:00', $time)

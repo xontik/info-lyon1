@@ -102,7 +102,9 @@
 @media screen and (min-width: 980px) and (max-height: 710px) {
   #edt-view-computer #edt-content .column-content .edt-item .time {
     display: none; } }
-
+@media screen and (min-width: 980px) {
+  #edt-view-computer #edt-content .column-content #current-item {
+    box-shadow: 0 0 8px #e7bd26; } }
 @media screen and (max-width: 980px) {
   #edt-view-computer {
     display: none; } }

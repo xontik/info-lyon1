@@ -134,9 +134,7 @@ $shadow-color: rgba(0, 0, 0, .04);
           }
 
           @media screen and (min-height: 875px) {
-            h2 {
-              font-size: 1.1em;
-            }
+            h2 { font-size: 1.1em; }
 
             p {
               font-size: 1em;
@@ -146,27 +144,21 @@ $shadow-color: rgba(0, 0, 0, .04);
           }
 
           @media screen and (max-height: 875px) {
-            h2 {
-              font-size: 1em;
-            }
-
-            p {
-              font-size: .9em;
-            }
-
-            .groups {
-              display: none;
-            }
+            h2 { font-size: 1em; }
+            p { font-size: .9em; }
+            .groups { display: none; }
           }
           
           @media screen and (max-height: 710px) {
-
-            .time {
-              display: none;
-            }
+            .time { display: none; }
           }
 
         }
+
+        #current-item {
+          box-shadow: 0 0 8px $foreground-color;
+        }
+
       }
 
     } // #edt-content
