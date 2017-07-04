@@ -7,14 +7,21 @@ class Test extends CI_Controller {
     {
         $this->load->helper('calendar');
 
-        $var = array(   "css" => array(),
-                        "js" => array('debug'),
-                        "title" => 'Page de test',
-                        "data" => array(
-                            "edt" => getCalendar(9306, '2017-06-14', 'week')
+        $date = new DateTime('2017-06-13 14:40');
+        $calendar = getNextCalendar(9306, 'day', $date);
+
+        $edt_view = $this->load->view('includes/edt_day',
+            array('date' => $date, 'calendar' => $calendar), TRUE);
+
+        $var = array(   'css' => array('edt_day'),
+                        'js' => array('debug'),
+                        'title' => 'Page de test',
+                        'data' => array(
+                            'calendar' => $calendar,
+                            'edt_view' => $edt_view
                         ) );
 
-        show("testv", $var);
+        show('testv', $var);
 
     }
 
