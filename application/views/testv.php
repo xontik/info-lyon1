@@ -1,3 +1,3 @@
 <main>
-    <h1>YO</h1>
+    <?php echo $data['edt_view']; ?>
 </main>

@@ -5,30 +5,24 @@ class Test extends CI_Controller {
 
     public function index()
     {
-        $css = array("test");
-        $js = array("debug");
-        $title = "Premier essai !";
-        $data = array("a" => "donnée a","b" => "donnée b","c" => "donnée c");
-        $var = array(   "css" => $css,
-                        "js" => $js,
-                        "title" => $title,
-                        "data" => $data);
+        $this->load->helper('calendar');
 
-        show("testv",$var);
+        $date = new DateTime('2017-06-13 14:40');
+        $calendar = getNextCalendar(9306, 'day', $date);
 
-    }
+        $edt_view = $this->load->view('includes/edt_day',
+            array('date' => $date, 'calendar' => $calendar), TRUE);
 
-    public function calendar($ressource = 9305){
-        $this->load->helper("calendar");
-        $cal = getCalendar($ressource,"2017-03-31","2017-03-27");
-        echo "<pre>";
-        print_r($cal);
-        echo "</pre>";
+        $var = array(   'css' => array('edt_day'),
+                        'js' => array('debug'),
+                        'title' => 'Page de test',
+                        'data' => array(
+                            'calendar' => $calendar,
+                            'edt_view' => $edt_view
+                        ) );
+
+        show('testv', $var);
 
     }
 
-    public function absence($ressource = 9305){
-        
-
-    }
 }
