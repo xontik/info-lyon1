@@ -20,24 +20,17 @@ class Absence_model extends CI_Model {
 		return $this->db->insert('Absences');
     }
 	
-	public function getAbsencesFromSemester($etuId,$semestre){
+	public function getAbsencesFromSemester($etuId, $semestreId) {
+        $CI =& get_instance();
+        $CI->load->model("semester_model");
 
-		$selectIdG = $this->db->select('idGroupe')
-							->from('EtudiantGroupe')
-							->join('Groupes', 'EtudiantGroupe.idGroupe = Groupes.idGroupe')
-							->join('Semestres', 'Groupes.idSemestre = Semestres.idSemestre')
-							->where('typeSemestre', $semestre)
-							->where('numEtudiant', $etuId)
-							->get()
-							->result();
+        $semDates = $CI->semester_model->getSemesterBounds($semestreId);
 
-		return $this->db->select('*')
-						->from('Absences')
-						->join('Etudiants', 'Absences.numEtudiant = Etudiants.numEtudiant')
-						->join('EtudiantGroupe', 'Etudiants.numEtudiant = EtudiantGroupe.numEtudiant')
-						->where('numEtudiant', $etuId)
-						->where('idGroupe', $selectIdG)
-						->get()
-						->result();
+        return $this->db->select('*')
+                        ->from('Absences')
+                        ->where('numEtudiant', $etuId)
+                        ->where('dateDebut BETWEEN "' . $semDates[0] . '" AND "' . $semDates[1] . '"')
+                        ->get()
+                        ->result();
     }
 }
