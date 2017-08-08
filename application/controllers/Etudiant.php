@@ -34,19 +34,13 @@ class Etudiant extends CI_Controller {
         show("Etudiant/dashboard", $data);
     }
 
-    public function absence($semestre) {
-		
-		$this->load->model("absence_model","absenceMod");
-		$absences = $this->absenceMod->getAbsencesFromSemester($_SESSION['id'], $semestre);
-		
-		$var = array(
-            "css" => array("test"),
-            "js" => array("debug"),
-            "title" => "Absences",
-			"data" => array("absences" => $absences)
+    public function absence() {
+        $data = array(
+            "css" => array(),
+            "js" => array(),
+            "title" => "Absences"
         );
-		
-        show("Etudiant/absences", $var);
+        show("Etudiant/absences", $data);
     }
 
     public function note($semestre) {
