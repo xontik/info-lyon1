@@ -30,16 +30,15 @@ class Mark_model extends CI_Model {
 
 
     }
-    public function add($controlId = null,$numStudent = null,$value = null){
-		if($controlId != null AND $numStudent != null AND $value != null){
-			$this->db->set('idControle', $controlId)
-					->set('numEtudiant', $numStudent)
-					->set('valeur', $value);
-		}
+    public function add($controlId, $numStudent, $value) {
+        $this->db->set('idControle', $controlId)
+                ->set('numEtudiant', $numStudent)
+                ->set('valeur', $value);
+
 		return $this->db->insert('Notes');
     }
 	
-    public function addMarks($controlId,$a_numStudent,$a_value){
+    public function addMarks($controlId, $a_numStudent, $a_value){
 		$i = 0;
 		foreach ($a_numStudent as $numStudent) {
 			add($controlId,$numStudent,$a_value[$i]);
@@ -47,25 +46,18 @@ class Mark_model extends CI_Model {
 		}
     }
 	
-    public function editMark($controlId = null,$numStudent = null,$newValue = null){
-		if($controlId != null AND $numStudent != null AND $newValue != null){
-			$this->db->set('valeur', $newValue)
-					->where('idControle', $controlId)
-					->where('numEtudiant', $numStudent);
-		}
+    public function editMark($controlId, $numStudent, $newValue){
+        $this->db->set('valeur', $newValue)
+                ->where('idControle', $controlId)
+                ->where('numEtudiant', $numStudent);
+
 		return $this->db->update('Notes');
     }
 	
-    public function deleteMark($controlId = null,$numStudent = null){
-		if($controlId != null AND $numStudent != null){
-			return $this->db->where('idControle', $controlId)
-						->where('numEtudiant', $numStudent)
-						->delete('Notes');
-		}
-		else{
-			return false;
-		}
+    public function deleteMark($controlId, $numStudent){
+        return $this->db->where('idControle', $controlId)
+                    ->where('numEtudiant', $numStudent)
+                    ->delete('Notes');
     }
-
 
 }

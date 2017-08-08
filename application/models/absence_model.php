@@ -9,15 +9,14 @@ class Absence_model extends CI_Model {
 
     }
 	
-	public function add($absenceId = null,$absenceType = null,$numStudent = null,$justify = null,$startDate = null,$endDate = null){
-		if($absenceId != null AND $absenceType != null AND $numStudent != null AND $justify != null AND $startDate != null AND $endDate != null){
-			$this->db->set('idAbsence', $absenceId)
-					->set('typeAbsence', $absenceType)
-					->set('numEtudiant', $numStudent)
-					->set('justifiee', $justify)
-					->set('dateDebut', $startDate)
-					->set('dateFin', $endDate);
-		}
+	public function add($absenceId, $absenceType, $numStudent, $justify, $startDate, $endDate) {
+		$this->db->set('idAbsence', $absenceId)
+		    	->set('typeAbsence', $absenceType)
+			    ->set('numEtudiant', $numStudent)
+				->set('justifiee', $justify)
+				->set('dateDebut', $startDate)
+				->set('dateFin', $endDate);
+
 		return $this->db->insert('Absences');
     }
 	

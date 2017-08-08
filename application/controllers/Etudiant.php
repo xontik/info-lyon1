@@ -40,7 +40,7 @@ class Etudiant extends CI_Controller {
 		$absences = $this->absenceMod->getAbsencesFromSemester($_SESSION['id'], $semestre);
 		
 		$var = array(
-            "css" => array("test"),
+            "css" => array("absences_page"),
             "js" => array("debug"),
             "title" => "Absences",
 			"data" => array("absences" => $absences)
