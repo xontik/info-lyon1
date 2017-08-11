@@ -15,10 +15,16 @@ class semester_model extends CI_Model {
      * @return String The type (S1-4) of the semester
      */
     public function getSemesterTypeFromId($semesterId) {
-        $this->db->select('typeSemestre')
+         $semesterType = $this->db->select('typeSemestre')
             ->from('Semestres')
-            ->where('idSemestre', $semesterId);
-        return $this->db->get()->result()[0];
+            ->where('idSemestre', $semesterId)
+            ->get()
+            ->result();
+
+        if ( empty($semesterType) ) {
+            return FALSE;
+        }
+        return $semesterType[0]->typeSemestre;
     }
 
     /**
@@ -40,14 +46,14 @@ class semester_model extends CI_Model {
             case 'S1':
             case 'S3':
                 return array(
-                    '01-09-' . $row->anneeScolaire,
-                    '31-01-' . (intval($row->anneeScolaire)+1)
+                    $row->anneeScolaire . '-09-01',
+                    ( intval($row->anneeScolaire)+1 ) . '-01-31'
                 );
             case 'S2':
             case 'S4':
                 return array(
-                    '01-02-' . $row->anneeScolaire,
-                    '31-08-' . $row->anneeScolaire
+                    $row->anneeScolaire . '-02-01',
+                    $row->anneeScolaire . '-08-31'
                 );
             default:
                 return FALSE;
@@ -55,46 +61,64 @@ class semester_model extends CI_Model {
 
     }
 
-    public function getCurrentSemesterId($numEtudiant) {
-        $maxGroupId = $this->db->select_max('idGroupe')
+    /**
+     * @param $studentId String The id of the student
+     * @return int The highest semester the student got to.
+     * Should be the same as the current one.
+     */
+    public function getCurrentSemesterId($studentId) {
+        $maxGroupId = $this->db->select_max('Groupes.idGroupe')
             ->from('Groupes')
-            ->join('GroupeEtudiant', 'Groupes.idGroupe = GroupeEtudiant.idGroupe')
-            ->where('GroupeEtudiant.numEtudiant', $numEtudiant)
-            ->get_compiled_query();
+            ->join('EtudiantGroupe', 'Groupes.idGroupe = EtudiantGroupe.idGroupe')
+            ->where('EtudiantGroupe.numEtudiant', $studentId)
+            ->get()
+            ->result()[0]->idGroupe;
 
-        return $this->db->select('idSemestre')
+
+        $semesterId = $this->db->select('idSemestre')
             ->from('Groupes')
             ->where('idGroupe', $maxGroupId)
             ->get()
-            ->result()[0];
+            ->result();
+
+        if ( empty($semesterId) ) {
+            return FALSE;
+        }
+        return $semesterId[0]->idSemestre;
     }
 
     /**
      * Returns the id of the student's [type] semester
      * @param $semesterType String A type of semester (S1-4)
-     * @param $numEtudiant int The student id
+     * @param $studentId String The student id
      * @return int The id of the corresponding semester
      */
-    public function getLastSemesterOfType($semesterType, $numEtudiant) {
+    public function getLastSemesterOfType($semesterType, $studentId) {
 
         $compatibleSemesters = $this->db->select('idSemestre')
             ->from('Semestres')
             ->where('typeSemestre', $semesterType)
-            ->get_compiled_query();
+            ->get_compiled_select();
 
-        $groupId = $this->db->select_max('idGroupe')
+        $groupId = $this->db->select_max('Groupes.idGroupe')
             ->from('Groupes')
-            ->join('GroupeEtudiant', 'Groupes.idGroupe = GroupeEtudiant.idGroupe')
-            ->where('GroupeEtudiant.numEtudiant', $numEtudiant)
-            ->where('Groupe.idSemestre IN', $compatibleSemesters)
-            ->get_compiled_query();
+            ->join('EtudiantGroupe', 'Groupes.idGroupe = EtudiantGroupe.idGroupe')
+            ->where('EtudiantGroupe.numEtudiant', $studentId)
+            ->where('Groupes.idSemestre IN (' . $compatibleSemesters . ')')
+            ->get()
+            ->result()[0]->idGroupe;
 
-
-        return $this->db->select('idSemestre')
+        $semesterId = $this->db->select('idSemestre')
             ->from('Groupes')
             ->where('idGroupe', $groupId)
             ->get()
-            ->result()[0];
+            ->result();
+
+        if ( empty($semesterId) ) {
+            return FALSE;
+        }
+
+        return $semesterId[0]->idSemestre;
     }
 
 }

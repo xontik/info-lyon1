@@ -15,7 +15,7 @@ class Etudiant extends CI_Controller {
         $newdata = array(
             'username'  => 'johndoe',
             'email'     => 'johndoe@some-site.com',
-            'id' => 'p1111111'
+            'id' => 'p1600006'
         );
 
         $this->session->set_userdata($newdata);
@@ -47,8 +47,10 @@ class Etudiant extends CI_Controller {
                 $semestreId = $this->semesterMod->getCurrentSemesterId($_SESSION['id']);
         }
 
-		$absences = $this->absenceMod->getAbsencesFromSemester($_SESSION['id'], $semestreId);
-		
+        $absences = $semestreId !== FALSE ?
+            $this->absenceMod->getAbsencesFromSemester($_SESSION['id'], $semestreId) :
+            array();
+
 		$var = array(
             'css' => array('absences_page'),
             'js' => array('debug'),

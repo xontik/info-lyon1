@@ -10,18 +10,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Mark_model extends CI_Model {
 
-    public function __construct()
-    {
-
-    }
-
     /**
      * Returns all the marks of a student in a semester
-     * @param $etuId int The student id
+     * @param $studentId String The student id
      * @param $semestreId int The semester id
      * @return mixed The marks of the student during a semester
      */
-    public function getMarksFromSemester($etuId, $semestreId) {
+    public function getMarksFromSemester($studentId, $semestreId) {
         $CI =& get_instance();
         $CI->load->model("semester_model");
 
@@ -29,7 +24,7 @@ class Mark_model extends CI_Model {
 
         $this->db->from('Notes')
             ->join('Controles', 'Notes.idControle = Controles.idControle')
-            ->where('numEtudiant', $etuId)
+            ->where('numEtudiant', $studentId)
             ->where('dateControle BETWEEN "' . $semDates[0] . '" AND "' . $semDates[1] . '"');
 
         return $this->db->get()->result();
@@ -39,13 +34,13 @@ class Mark_model extends CI_Model {
     /**
      * Add a note for a student to a specified test
      * @param $controlId int The id of the test
-     * @param $numStudent int The id of the student
+     * @param $studentId String The id of the student
      * @param $value float The note
      */
-    public function add($controlId, $numStudent, $value) {
+    public function add($controlId, $studentId, $value) {
         $data = array(
             'idContole' => $controlId,
-            'numEtudiant' => $numStudent,
+            'numEtudiant' => $studentId,
             'valeur' => $value
         );
 
@@ -57,6 +52,7 @@ class Mark_model extends CI_Model {
      * @param $controlId int The test id
      * @param $studentsNotes array An associative array of the following shape :
      * { studentId1 => note1, studentId2 => note2, ... }
+     * with "studentId" being a string, and "note" a float
      */
     public function addMarks($controlId, $studentsNotes) {
         foreach ($studentsNotes as $student => $note)
@@ -66,13 +62,13 @@ class Mark_model extends CI_Model {
     /**
      * Modify the note of a student to a test
      * @param $controlId int The ID of the test
-     * @param $numStudent int The student id
+     * @param $studentId String The student id
      * @param $newValue float The new note
      */
-    public function editMark($controlId, $numStudent, $newValue){
+    public function editMark($controlId, $studentId, $newValue){
         $this->db->set('valeur', $newValue)
                 ->where('idControle', $controlId)
-                ->where('numEtudiant', $numStudent);
+                ->where('numEtudiant', $studentId);
 
 		$this->db->update('Notes');
     }
@@ -80,11 +76,11 @@ class Mark_model extends CI_Model {
     /**
      * Deletes the note of a student in a test
      * @param $controlId int The test id
-     * @param $numStudent int The student id
+     * @param $studentId String The student id
      */
-    public function deleteMark($controlId, $numStudent){
+    public function deleteMark($controlId, $studentId){
         $this->db->where('idControle', $controlId)
-                ->where('numEtudiant', $numStudent)
+                ->where('numEtudiant', $studentId)
                 ->delete('Notes');
     }
 

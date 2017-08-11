@@ -1,4 +1,4 @@
-#tabAbs{
+#tableauAbs {
 	border-collapse: collapse; 
 	margin-bottom: 2em; 
 	width: 90%; 
@@ -7,7 +7,11 @@
 	box-shadow: 1px 1px 2px #555;
 }
 
-.lignesAbs{
+#tableauAbs thead {
+    background-color: #4b4c4e;
+}
+
+#tableauAbs td {
 	border: 0.5px solid grey; 
 	height: 2em; 
 	width: 30%;
