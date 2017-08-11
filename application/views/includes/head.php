@@ -10,32 +10,38 @@
         <?php
         if (isset($css)) {
             foreach ($css as $c) {
-                echo '<link rel="stylesheet" type="text/css" href="'.css_url($c) . '">';
+                echo '<link rel="stylesheet" type="text/css" href="' . css_url($c) . '">';
             }
         }
 
-        $debug = false;
-        if (isset($js)) {
-            $debug = in_array('debug', $js);
-        }
+        $debug = isset($js) and in_array('debug', $js);
         ?>
-
     </head>
     <body>
+        <pre id="debug">
         <?php
-        if(isset($_SESSION["notif"])){
-            foreach ($_SESSION["notif"] as $notif){
-                echo "<p>".$notif."</p>";
+        if (isset($data) && $debug) {
+            function makeReceivedDataPrintable(&$value) {
+                if (!is_array($value)) {
+                    $value = '"""' . htmlspecialchars($value, ENT_QUOTES, 'UTF-8') . '"""';
+                }
             }
-        }?>
-        <?php if (isset($data) && $debug) { ?>
-            <pre id="debug">
-                <?php print_r($data); ?>
-            </pre>
-        <?php } ?>
+
+            array_walk($data, 'makeReceivedDataPrintable');
+            print_r($data);
+        } ?>
+        </pre>
+
         <header>
+            <?php
+            if (isset($_SESSION['notif'])) {
+                foreach ($_SESSION['notif'] as $notif) {
+                    echo '<div class="notif">' . $notif . '</div>';
+                }
+            } ?>
+
             <a id="header_title" href="/">
-                <?php echo html_img('teckmeb_logo.png', 'Logo Teckmeb', '') ?>
+                <?php echo html_img('teckmeb_logo.png', 'Logo Teckmeb'); ?>
             </a>
             <nav>
                 <ul>
@@ -55,6 +61,7 @@
                                 }
 
                         } else {
+                            //TODO Change once connection is done
                             unset($_SESSION['user_type']);
                     ?>
                         <li><a href="#">ABSENCES</a></li>
@@ -67,15 +74,14 @@
             <div id="header_profile">
                 <?php
                     echo html_img('header_account.png', 'account');
-                    if ( isset($_SESSION['user_type']) ) {
-                ?>
-                <ul>
-                    <li>
-                        <div><?php echo $_SESSION['surname']; ?></div>
-                        <div><?php echo $_SESSION['name']; ?></div>
-                    </li>
-                    <li><a href="/user/disconnect">Déconnexion</a></li>
-                </ul>
+                    if ( isset($_SESSION['name']) and isset($_SESSION['surname']) ) { ?>
+                    <ul>
+                        <li>
+                            <div><?php echo $_SESSION['surname']; ?></div>
+                            <div><?php echo $_SESSION['name']; ?></div>
+                        </li>
+                        <li><a href="/user/disconnect">Déconnexion</a></li>
+                    </ul>
                 <?php } ?>
             </div>
         </header>

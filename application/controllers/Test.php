@@ -5,23 +5,17 @@ class Test extends CI_Controller {
 
     public function index()
     {
-        $var = array(   "css" => array(),
-                        "js" => array(),
-                        "title" => 'Page de test',
-                        "data" => array() );
+        $this->load->model('absence_model', 'absm');
 
-        show("testv", $var);
+        $var = array(   'css' => array('edt_day'),
+                        'js' => array('debug'),
+                        'title' => 'Page de test',
+                        'data' => array(
+                            'absences' => $this->absm->getAbsencesFromSemester("p1600006", 1)
+                        ) );
 
-    }
-
-    public function control(){
-
-        $this->load->model('control_model','ctrlMod');
-        $this->ctrlMod->addControl(2,20,"redfc",null,null);
-
-
-
-
+        show('testv', $var);
 
     }
+
 }
