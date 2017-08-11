@@ -5,6 +5,29 @@
   padding-left: 16px;
 }
 
+$notif_height: 30px;
+#notifications {
+  height: $notif_height;
+  max-height: $notif_height;
+
+  padding-left: 15px;
+  overflow: hidden;
+
+  background-color: #dedede;
+
+  img {
+    position: absolute;
+    right: 20px; top: 3px;
+  }
+}
+
+.notif {
+  height: $notif_height;
+  line-height: $notif_height;
+
+  vertical-align: middle  ;
+}
+
 body {
 
   > header {
