@@ -1,2 +1,2 @@
 Do not modify this folder !
-Modifications are not by SASS.
+Modifications are made by SASS.
