@@ -24,6 +24,8 @@ class Mark_model extends CI_Model {
 
         $this->db->from('Notes')
             ->join('Controles', 'Notes.idControle = Controles.idControle')
+            ->join('Enseignements', 'Controles.idEnseignement = Enseignements.idEnseignement')
+            ->join('Matieres', "Enseignements.codeMatiere = Matieres.codeMatiere")
             ->where('numEtudiant', $studentId)
             ->where('dateControle BETWEEN "' . $semDates[0] . '" AND "' . $semDates[1] . '"');
 

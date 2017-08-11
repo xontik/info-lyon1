@@ -76,16 +76,12 @@ class Etudiant extends CI_Controller {
 
         $marks = $this->markMod->getMarksFromSemester($_SESSION['id'], $semestreId);
 
-        $css = array('test');
-        $js = array('debug');
-        $title = 'Notes';
-        $data = array('marks' => $marks);
-
         $var = array(
-            'css' => $css,
-            'js' => $js,
-            'title' => $title,
-            'data' => $data);
+            'css' => array(),
+            'js' => array('debug'),
+            'title' => 'Notes',
+            'data' => array('marks' => $marks)
+        );
 
         show('Etudiant/notes', $var);
     }
