@@ -77,7 +77,7 @@ class Etudiant extends CI_Controller {
         $marks = $this->markMod->getMarksFromSemester($_SESSION['id'], $semestreId);
 
         $var = array(
-            'css' => array(),
+            'css' => array('Etudiants/notes'),
             'js' => array('debug'),
             'title' => 'Notes',
             'data' => array('marks' => $marks)
