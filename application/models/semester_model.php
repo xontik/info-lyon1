@@ -9,6 +9,21 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class semester_model extends CI_Model {
+    
+    public function getSemesterId($semester) {
+
+        $semesterId = FALSE;
+        if ($semester === '') {
+            $semesterId = $this->getCurrentSemesterId($_SESSION['id']);
+        }
+        else if ( in_array($semester, array('S1', 'S2', 'S3', 'S4') ) ) {
+            $semesterId = $this->getLastSemesterOfType($semester, $_SESSION['id']);
+            if ($semesterId === FALSE)
+                $semesterId = $this->getCurrentSemesterId($_SESSION['id']);
+        }
+
+        return $semesterId;
+    }
 
     /**
      * @param $semesterId int The semester id
@@ -32,7 +47,7 @@ class semester_model extends CI_Model {
      * @return mixed An array of two dates, the beginning and the end of the semester
      */
     public function getSemesterBounds($semesterId) {
-        $this->db->select('typeSemestre, anneeScolaire')
+        $this->db->select('typeSemestre, anneeScolaire, differe')
             ->from('Semestres')
             ->where('idSemestre', $semesterId);
 
@@ -42,23 +57,20 @@ class semester_model extends CI_Model {
             return FALSE;
         }
 
-        switch ($row->typeSemestre) {
-            case 'S1':
-            case 'S3':
-                return array(
-                    $row->anneeScolaire . '-09-01',
-                    ( intval($row->anneeScolaire)+1 ) . '-01-31'
-                );
-            case 'S2':
-            case 'S4':
-                return array(
-                    $row->anneeScolaire . '-02-01',
-                    $row->anneeScolaire . '-08-31'
-                );
-            default:
-                return FALSE;
-        }
 
+        if (( ($row->typeSemestre === 'S1' || $row->typeSemestre === 'S3') && !$row->differe ) ||
+            ( ($row->typeSemestre === 'S2' || $row->typeSemestre === 'S4') && $row->differe ))
+        {
+            return array(
+                $row->anneeScolaire . '-09-01',
+                (intval($row->anneeScolaire) + 1) . '-01-31'
+            );
+        } else {
+            return array(
+                $row->anneeScolaire . '-02-01',
+                $row->anneeScolaire . '-08-31'
+            );
+        }
     }
 
     /**

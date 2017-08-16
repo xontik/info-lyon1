@@ -34,22 +34,18 @@ class Etudiant extends CI_Controller {
         show('Etudiant/dashboard', $data);
     }
 
-    public function absence($semestre = '') {
+    public function absence($semester = '') {
 		
 		$this->load->model('absence_model', 'absenceMod');
         $this->load->model('semester_model', 'semesterMod');
 
-        if ($semestre === '') {
-            $semestreId = $this->semesterMod->getCurrentSemesterId($_SESSION['id']);
-        } else {
-            $semestreId = $this->semesterMod->getLastSemesterOfType($semestre, $_SESSION['id']);
-            if ( empty($semestreId) )
-                $semestreId = $this->semesterMod->getCurrentSemesterId($_SESSION['id']);
+        $semesterId = $this->semesterMod->getSemesterId($semester);
+        if ($semesterId === FALSE) {
+            show_404();
+            return;
         }
 
-        $absences = $semestreId !== FALSE ?
-            $this->absenceMod->getAbsencesFromSemester($_SESSION['id'], $semestreId) :
-            array();
+        $absences = $this->absenceMod->getAbsencesFromSemester($_SESSION['id'], $semesterId);
 
 		$var = array(
             'css' => array('absences_page'),
@@ -61,20 +57,18 @@ class Etudiant extends CI_Controller {
         show('Etudiant/absences', $var);
     }
 
-    public function note($semestre = '') {
+    public function note($semester = '') {
 
         $this->load->model('mark_model','markMod');
         $this->load->model('semester_model', 'semesterMod');
 
-        if ($semestre === '') {
-            $semestreId = $this->semesterMod->getCurrentSemesterId($_SESSION['id']);
-        } else {
-            $semestreId = $this->semesterMod->getLastSemesterOfType($semestre, $_SESSION['id']);
-            if ( empty($semestreId) )
-                $semestreId = $this->semesterMod->getCurrentSemesterId($_SESSION['id']);
+        $semesterId = $this->semesterMod->getSemesterId($semester);
+        if ($semesterId === FALSE) {
+            show_404();
+            return;
         }
 
-        $marks = $this->markMod->getMarksFromSemester($_SESSION['id'], $semestreId);
+        $marks = $this->markMod->getMarksFromSemester($_SESSION['id'], $semesterId);
 
         $var = array(
             'css' => array('Etudiants/notes'),
