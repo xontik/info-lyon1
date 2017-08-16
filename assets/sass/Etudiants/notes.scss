@@ -61,12 +61,15 @@ main {
       padding: 5px 1em 8px;
     }
 
+    $note-article-height: 6em;
+    $note-title-height: 1.6em;
+    $note-content-height: $note-article-height - $note-title-height;
     article {
       display: flex;
       flex-flow: column nowrap;
 
       width: 30%;
-      height: 6em;
+      height: $note-article-height;
       padding: .3em .7em .4em;
 
       box-shadow: 0 0 3px rgba(0, 0, 0, .5);
@@ -75,6 +78,7 @@ main {
       text-align: center;
 
       h2 {
+        height: $note-title-height;
         font-size: 1.2em;
         margin-bottom: 3px;
       }
@@ -84,6 +88,7 @@ main {
         flex-flow: column wrap;
         align-items: flex-start;
         justify-content: space-around;
+        height: $note-content-height;
       }
 
       p:first-of-type {
