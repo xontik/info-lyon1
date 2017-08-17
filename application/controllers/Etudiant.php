@@ -41,7 +41,7 @@ class Etudiant extends CI_Controller {
 
         $semesterId = $this->semesterMod->getSemesterId($semester);
         if ($semesterId === FALSE) {
-            show_404();
+            redirect('/Etudiant/Absence/');
             return;
         }
 
@@ -64,7 +64,7 @@ class Etudiant extends CI_Controller {
 
         $semesterId = $this->semesterMod->getSemesterId($semester);
         if ($semesterId === FALSE) {
-            show_404();
+            redirect('/Etudiant/Note/');
             return;
         }
 

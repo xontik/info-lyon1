@@ -18,8 +18,6 @@ class semester_model extends CI_Model {
         }
         else if ( in_array($semester, array('S1', 'S2', 'S3', 'S4') ) ) {
             $semesterId = $this->getLastSemesterOfType($semester, $_SESSION['id']);
-            if ($semesterId === FALSE)
-                $semesterId = $this->getCurrentSemesterId($_SESSION['id']);
         }
 
         return $semesterId;
@@ -103,7 +101,7 @@ class semester_model extends CI_Model {
      * Returns the id of the student's [type] semester
      * @param $semesterType String A type of semester (S1-4)
      * @param $studentId String The student id
-     * @return int The id of the corresponding semester
+     * @return int The id of the corresponding semester, FALSE if it doesn't exists
      */
     public function getLastSemesterOfType($semesterType, $studentId) {
 
@@ -120,17 +118,17 @@ class semester_model extends CI_Model {
             ->get()
             ->result()[0]->idGroupe;
 
-        $semesterId = $this->db->select('idSemestre')
+        $semester = $this->db->select('idSemestre')
             ->from('Groupes')
             ->where('idGroupe', $groupId)
             ->get()
             ->result();
 
-        if ( empty($semesterId) ) {
+        if ( empty($semester) ) {
             return FALSE;
         }
 
-        return $semesterId[0]->idSemestre;
+        return $semester[0]->idSemestre;
     }
 
 }

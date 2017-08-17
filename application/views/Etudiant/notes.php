@@ -26,7 +26,7 @@
                     <p>Date : <?php echo $mark->dateControle; ?></p>
                     <p>Coefficient : <?php echo $mark->coefficient; ?></p>
                     <p>Moyenne : <?php echo !empty($mark->average) ? $mark->average : "Non calculée"; ?></p>
-                    <p>Médiane : <?php echo !empty($mark->median) ? $mark->median : "None calculée"; ?></p>
+                    <p>Médiane : <?php echo !empty($mark->median) ? $mark->median : "Non calculée"; ?></p>
                 </div>
             </article>
             <?php
