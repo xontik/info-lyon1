@@ -60,8 +60,8 @@ class user_model extends CI_Model {
 
         $data = $this->db->select('idProfesseur, nom, prenom, mail, password')
             ->from('Professeurs')
-            ->where('prenom', $search_data[0])
-            ->where('nom', $search_data[1])
+            ->where('LOWER(prenom)', $search_data[0])
+            ->where('LOWER(nom)', $search_data[1])
             ->get()
             ->result();
 
@@ -70,8 +70,8 @@ class user_model extends CI_Model {
             $is_teacher = false;
             $data = $this->db->select('idSecretaire, nom, prenom, mail, password')
                 ->from('Secretariat')
-                ->where('prenom', $search_data[0])
-                ->where('nom', $search_data[1])
+                ->where('LOWER(prenom)', $search_data[0])
+                ->where('LOWER(nom)', $search_data[1])
                 ->get()
                 ->result();
 
