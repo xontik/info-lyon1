@@ -58,24 +58,36 @@
                             in_array($_SESSION['user_type'], array('student', 'teacher', 'secretariat')))
                         {
                                 $nav = array(
-                                    'student' => array( 'absences', 'note', 'ptut', 'questions' ),
-                                    'teacher' => array( 'absences', 'controles', 'ptut', 'questions' ),
-                                    'secretariat' => array( 'absences' )
+                                    'student' => array(
+                                        'absences' => '/Etudiant/Absence',
+                                        'notes' => '/Etudiant/Note',
+                                        'ptut' => '/Etudiant/PTUT',
+                                        'questions' => '/Etudiant/Question'
+                                    ),
+                                    'teacher' => array(
+                                        'absences' => '/Professeur/Absence',
+                                        'controles' => '/Professeur/Controle',
+                                        'ptut' => '/Professeur/PTUT',
+                                        'questions' => '/Professeur/Question'
+                                    ),
+                                    'secretariat' => array(
+                                        'absences' => '/Secretariat/Absence'
+                                    )
                                 );
 
                                 // Display menu depending on the user
-                                foreach ($nav[$_SESSION['user_type']] as $item) {
-                                    echo '<li><a href="' . $item . '">' . $item . '</a></li>';
+                                foreach ($nav[$_SESSION['user_type']] as $item => $url) {
+                                    echo '<li><a href="' . $url . '">' . $item . '</a></li>';
                                 }
 
                         } else {
                             //TODO Change once connection is done
                             unset($_SESSION['user_type']);
                     ?>
-                        <li><a href="#">ABSENCES</a></li>
-                        <li><a href="#">NOTES</a></li>
-                        <li><a href="#">PTUT</a></li>
-                        <li><a href="#">QUESTIONS</a></li>
+                        <li><a href="/Absence">ABSENCES</a></li>
+                        <li><a href="/Note">NOTES</a></li>
+                        <li><a href="/Ptut">PTUT</a></li>
+                        <li><a href="/Question">QUESTIONS</a></li>
                     <?php } ?>
                 </ul>
             </nav>
