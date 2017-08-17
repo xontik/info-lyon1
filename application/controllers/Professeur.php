@@ -3,15 +3,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Professeur extends CI_Controller {
 
-    public function __construct(){
+    public function __construct() {
         parent::__construct();
-        $newdata = array(
-            'username'  => 'johndoe',
-            'email'     => 'johndoe@some-site.com',
-            'id' => 'e8888888'
-        );
+        if ( !isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'teacher')
+            redirect('/');
 
-        $this->session->set_userdata($newdata);
     }
 
     public function index() {

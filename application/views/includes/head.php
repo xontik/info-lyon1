@@ -54,9 +54,6 @@
             <nav>
                 <ul>
                     <?php
-                        if ( isset($_SESSION['user_type']) &&
-                            in_array($_SESSION['user_type'], array('student', 'teacher', 'secretariat')))
-                        {
                                 $nav = array(
                                     'student' => array(
                                         'absences' => '/Etudiant/Absence',
@@ -79,16 +76,7 @@
                                 foreach ($nav[$_SESSION['user_type']] as $item => $url) {
                                     echo '<li><a href="' . $url . '">' . $item . '</a></li>';
                                 }
-
-                        } else {
-                            //TODO Change once connection is done
-                            unset($_SESSION['user_type']);
                     ?>
-                        <li><a href="/Absence">ABSENCES</a></li>
-                        <li><a href="/Note">NOTES</a></li>
-                        <li><a href="/Ptut">PTUT</a></li>
-                        <li><a href="/Question">QUESTIONS</a></li>
-                    <?php } ?>
                 </ul>
             </nav>
             <div id="header_profile">
