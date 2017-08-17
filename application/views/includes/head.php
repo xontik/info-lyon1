@@ -14,13 +14,14 @@
             }
         }
 
-        $debug = isset($js) and in_array('debug', $js);
+        $debug = isset($js) && in_array('debug', $js) && isset($data);
         ?>
     </head>
     <body>
+        <?php
+        if ($debug) { ?>
         <pre id="debug">
         <?php
-        if (isset($data) && $debug) {
             function makeReceivedDataPrintable(&$value) {
                 if (!is_array($value)) {
                     $value = '"""' . htmlspecialchars($value, ENT_QUOTES, 'UTF-8') . '"""';
@@ -29,17 +30,24 @@
 
             array_walk($data, 'makeReceivedDataPrintable');
             print_r($data);
-        } ?>
+        ?>
         </pre>
+        <?php } ?>
+
+        <?php
+        if ( !empty($_SESSION['notif']) ) { ?>
+        <div id="notifications">
+            <?php
+            foreach ($_SESSION['notif'] as $notif) {
+                echo '<div class="notif">' . $notif . '</div>';
+            }
+            echo html_img('close_icon.png', 'close icon');
+            ?>
+        </div>
+        <?php } ?>
+
 
         <header>
-            <?php
-            if (isset($_SESSION['notif'])) {
-                foreach ($_SESSION['notif'] as $notif) {
-                    echo '<div class="notif">' . $notif . '</div>';
-                }
-            } ?>
-
             <a id="header_title" href="/">
                 <?php echo html_img('teckmeb_logo.png', 'Logo Teckmeb'); ?>
             </a>
@@ -50,24 +58,36 @@
                             in_array($_SESSION['user_type'], array('student', 'teacher', 'secretariat')))
                         {
                                 $nav = array(
-                                    'student' => array( 'absences', 'note', 'ptut', 'questions' ),
-                                    'teacher' => array( 'absences', 'controles', 'ptut', 'questions' ),
-                                    'secretariat' => array( 'absences' )
+                                    'student' => array(
+                                        'absences' => '/Etudiant/Absence',
+                                        'notes' => '/Etudiant/Note',
+                                        'ptut' => '/Etudiant/PTUT',
+                                        'questions' => '/Etudiant/Question'
+                                    ),
+                                    'teacher' => array(
+                                        'absences' => '/Professeur/Absence',
+                                        'controles' => '/Professeur/Controle',
+                                        'ptut' => '/Professeur/PTUT',
+                                        'questions' => '/Professeur/Question'
+                                    ),
+                                    'secretariat' => array(
+                                        'absences' => '/Secretariat/Absence'
+                                    )
                                 );
 
                                 // Display menu depending on the user
-                                foreach ($nav[$_SESSION['user_type']] as $item) {
-                                    echo '<li><a href="' . $item . '">' . $item . '</a></li>';
+                                foreach ($nav[$_SESSION['user_type']] as $item => $url) {
+                                    echo '<li><a href="' . $url . '">' . $item . '</a></li>';
                                 }
 
                         } else {
                             //TODO Change once connection is done
                             unset($_SESSION['user_type']);
                     ?>
-                        <li><a href="#">ABSENCES</a></li>
-                        <li><a href="#">NOTES</a></li>
-                        <li><a href="#">PTUT</a></li>
-                        <li><a href="#">QUESTIONS</a></li>
+                        <li><a href="/Absence">ABSENCES</a></li>
+                        <li><a href="/Note">NOTES</a></li>
+                        <li><a href="/Ptut">PTUT</a></li>
+                        <li><a href="/Question">QUESTIONS</a></li>
                     <?php } ?>
                 </ul>
             </nav>
