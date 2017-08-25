@@ -72,7 +72,7 @@ class Professeur extends CI_Controller {
         $this->load->model('control_model','ctrlMod');
 
         $controls = $this->ctrlMod->getControls($_SESSION['id']);
-        $dspromo = $this->ctrlMod->getDsPromo($_SESSION['id']);
+        $dspromo = $this->ctrlMod->getDsPromoForTeacherBoard($_SESSION['id']);
 
 
         $css = array("test");

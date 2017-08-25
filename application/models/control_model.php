@@ -28,12 +28,20 @@ class Control_model extends CI_Model
         return $this->db->query($sql, array($professorId))->result();
     }
 
+    public function getDsPromoForTeacherBoard($professorId)
+    {
+        $sql = "SELECT distinct codeMatiere,nomMatiere,idDsPromo,idControle,nomControle,coefficient,diviseur,typeControle,median,average,dateControle,coefficientMatiere FROM Controles join DsPromo using(idDsPromo) join matieres using(codeMatiere) 
+    join enseignements using(codeMatiere) join groupes using(idGroupe) WHERE idProfesseur = ? and actif = 1 ORDER BY codeMatiere, dateControle DESC";
+        return $this->db->query($sql, array($professorId))->result();
+    }
+
     public function getDsPromo($professorId)
     {
-        $sql = "SELECT distinct * FROM Controles join DsPromo using(idDsPromo) join matieres using(codeMatiere) 
+        $sql = "SELECT * FROM Controles join DsPromo using(idDsPromo) join matieres using(codeMatiere) 
 join enseignements using(codeMatiere) join groupes using(idGroupe) WHERE idProfesseur = ? and actif = 1 ORDER BY codeMatiere, dateControle DESC";
         return $this->db->query($sql, array($professorId))->result();
     }
+
 
     public function getControlWithMarks($controlId)
     {
