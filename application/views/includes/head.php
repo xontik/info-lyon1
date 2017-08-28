@@ -20,10 +20,10 @@
     <body>
         <?php
         if ($debug) { ?>
-        <pre id="debug">
+        <pre id="debug" style="display: none">
         <?php
             function makeReceivedDataPrintable(&$value) {
-                if (!is_array($value)) {
+                if (is_string($value)) {
                     $value = '"""' . htmlspecialchars($value, ENT_QUOTES, 'UTF-8') . '"""';
                 }
             }
