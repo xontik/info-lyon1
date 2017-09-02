@@ -9,7 +9,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class semester_model extends CI_Model {
-    
+
     public function getSemesterId($semester) {
 
         $semesterId = FALSE;
@@ -73,28 +73,19 @@ class semester_model extends CI_Model {
 
     /**
      * @param $studentId String The id of the student
-     * @return int The highest semester the student got to.
-     * Should be the same as the current one.
+     * @return int current activ semestre
      */
     public function getCurrentSemesterId($studentId) {
-        $maxGroupId = $this->db->select_max('Groupes.idGroupe')
-            ->from('Groupes')
-            ->join('EtudiantGroupe', 'Groupes.idGroupe = EtudiantGroupe.idGroupe')
-            ->where('EtudiantGroupe.numEtudiant', $studentId)
-            ->get()
-            ->result()[0]->idGroupe;
-
-
-        $semesterId = $this->db->select('idSemestre')
-            ->from('Groupes')
-            ->where('idGroupe', $maxGroupId)
-            ->get()
-            ->result();
-
-        if ( empty($semesterId) ) {
+        $sql = "SELECT idSemestre from Etudiantgroupe
+          join Groupes USING (idGroupe)
+          join Semestres USING (idSemestre)
+          where numEtudiant=? and actif = 1
+          ORDER BY idSemestre DESC";
+        $semestre = $this->db->query($sql,array($studentId))->row();
+        if (empty($semestre) ) {
             return FALSE;
         }
-        return $semesterId[0]->idSemestre;
+        return $semestre->idSemestre;
     }
 
     /**
