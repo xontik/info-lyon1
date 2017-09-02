@@ -8,7 +8,7 @@
 
 ?>
 <main>
-    <form method="post" action="<?php echo base_url("process_professeur/editcontrol/".$data['control']->idControle)?>" >
+    <form method="post" action="<?php echo base_url("process_professeur/editcontrole/".$data['control']->idControle)?>" >
 
         <label for="nom">Libellé : </label>
         <input type="text" id="nom"     name="nom"    value="<?php echo $data['control']->nomControle; ?>" /><br >

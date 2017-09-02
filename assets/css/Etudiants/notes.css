@@ -10,5 +10,6 @@ main section article { display: flex; flex-flow: column nowrap; width: 30%; heig
 main section article h2 { height: 1.6em; font-size: 1.2em; margin-bottom: 3px; }
 main section article div { display: flex; flex-flow: column wrap; align-items: flex-start; justify-content: space-around; height: 4.4em; }
 main section article p:first-of-type { margin-top: 8px; }
+main section article.dspromo { background-color: #a6a4a5; }
 
 /*# sourceMappingURL=notes.css.map */

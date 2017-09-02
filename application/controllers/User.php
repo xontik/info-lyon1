@@ -38,9 +38,12 @@ class User extends CI_Controller {
 
         $userdata = $this->userModel->getUserInformations($id, $password);
         if ($userdata !== FALSE) {
+            /*
+
             echo '<pre>';
             print_r($userdata);
             echo '</pre>';
+            //*/
 
             $this->session->set_userdata($userdata);
 
