@@ -3,144 +3,180 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Professeur extends CI_Controller {
 
-    public function __construct() {
-        parent::__construct();
-        if ( !isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'teacher')
-            redirect('/');
+  public function __construct() {
+    parent::__construct();
+    if ( !isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'teacher')
+    redirect('/');
 
-    }
+  }
 
-    public function index() {
-        $this->dashboard();
-    }
+  public function index() {
+    $this->dashboard();
+  }
 
-    public function dashboard() {
-        $data = array(
-            "css" => array(),
-            "js" => array(),
-            "title" => "Tableau de bord"
-        );
-        show("Professeur/dashboard", $data);
-    }
+  public function dashboard() {
+    $data = array(
+      "css" => array(),
+      "js" => array(),
+      "title" => "Tableau de bord"
+    );
+    show("Professeur/dashboard", $data);
+  }
 
-    public function absence() {
-        $data = array(
-            "css" => array(),
-            "js" => array(),
-            "title" => "Absences"
-        );
-        show("Professeur/absences", $data);
-    }
+  public function absence() {
+    $data = array(
+      "css" => array(),
+      "js" => array(),
+      "title" => "Absences"
+    );
+    show("Professeur/absences", $data);
+  }
 
-    public function note() {
-        $data = array(
-            "css" => array(),
-            "js" => array(),
-            "title" => "Notes"
-        );
-        show("Professeur/notes", $data);
-    }
+  public function note() {
+    $data = array(
+      "css" => array(),
+      "js" => array(),
+      "title" => "Notes"
+    );
+    show("Professeur/notes", $data);
+  }
 
-    public function ptut() {
-        $data = array(
-            "css" => array(),
-            "js" => array(),
-            "title" => "Projets tuteurés"
-        );
-        show("Professeur/ptut", $data);
-    }
+  public function ptut() {
+    $data = array(
+      "css" => array(),
+      "js" => array(),
+      "title" => "Projets tuteurés"
+    );
+    show("Professeur/ptut", $data);
+  }
 
-    public function edt() {
-        $data = array(
-            "css" => array(),
-            "js" => array(),
-            "title" => "Emploi du temps"
-        );
-        show("Professeur/edt", $data);
-    }
+  public function edt() {
+    $data = array(
+      "css" => array(),
+      "js" => array(),
+      "title" => "Emploi du temps"
+    );
+    show("Professeur/edt", $data);
+  }
 
-    public function question() {
-        $data = array(
-            "css" => array(),
-            "js" => array(),
-            "title" => "Questions / Réponses"
-        );
-        show("Professeur/questions", $data);
-    }
+  public function question() {
+    $data = array(
+      "css" => array(),
+      "js" => array(),
+      "title" => "Questions / Réponses"
+    );
+    show("Professeur/questions", $data);
+  }
 
-    public function controle() {
-        $this->load->model('control_model','ctrlMod');
+  public function controle() {
+    $this->load->model('control_model','ctrlMod');
 
-        $controls = $this->ctrlMod->getControls($_SESSION['id']);
-        $dspromo = $this->ctrlMod->getDsPromoForTeacherBoard($_SESSION['id']);
+    $controls = $this->ctrlMod->getControls($_SESSION['id']);
 
 
-        $css = array("test");
-        $js = array("debug");
-        $title = "Controles";
-        $data = array("controls" => $controls,"dspromo" => $dspromo);
-        $var = array(
-            "css" => $css,
-            "js" => $js,
-            "title" => $title,
-            "data" => $data);
+    $css = array("test");
+    $js = array("debug");
+    $title = "Controles";
+    $data = array("controls" => $controls);
+    $var = array(
+      "css" => $css,
+      "js" => $js,
+      "title" => $title,
+      "data" => $data);
 
-        show("Professeur/controles",$var);
+      show("Professeur/controles",$var);
     }
 
     public function addControle($promo = ""){
-        $this->load->model('control_model', 'ctrlMod');
-        $bool = false;
-        if($promo == ""){
-            $select =  $this->ctrlMod->getEnseignements($_SESSION['id']);
-        }else if($promo == "promo"){
-            $bool = true;
-            $select = $this->ctrlMod->getMatieres($_SESSION['id']);
-        }else{
-            show_404();
-            return;
-        }
+      $this->load->model('control_model', 'ctrlMod');
+      $bool = false;
+      if($promo == ""){
+        $select =  $this->ctrlMod->getEnseignements($_SESSION['id']);
+      }else if($promo == "promo"){
+        $bool = true;
+        $select = $this->ctrlMod->getMatieres($_SESSION['id']);
+      }else{
+        show_404();
+        return;
+      }
 
 
-        $css = array("test");
-        $js = array("debug");
-        $title = "Ajout de controles";
-        $data = array("select" => $select,"promo" => $bool);
-        $var = array(
-            "css" => $css,
-            "js" => $js,
-            "title" => $title,
-            "data" => $data);
+      $css = array("test");
+      $js = array("debug");
+      $title = "Ajout de controles";
+      $data = array("select" => $select,"promo" => $bool);
+      $var = array(
+        "css" => $css,
+        "js" => $js,
+        "title" => $title,
+        "data" => $data);
 
         show("Professeur/addControl",$var);
-    }
-    public function editControle($id = ""){
+      }
+      public function editControle($id = ""){
         if($id == ""){
-            show_404();
+          show_404();
         }
         $this->load->model('control_model','ctrlMod');
 
 
         $control = $this->ctrlMod->getControl($id);
         if(empty($control)){
-            $this->session->set_flashdata("notif", array("Controle Introuvable"));
-            redirect("professeur/control");
+          $this->session->set_flashdata("notif", array("Controle Introuvable"));
+          redirect("professeur/controle");
         }
         if(!$this->ctrlMod->checkProfessorRightOnControl($_SESSION['id'],$id)){
-            $this->session->set_flashdata("notif", array("Vous n'avez pas les droit sur ce controle"));
-            redirect("professeur/control");
+          $this->session->set_flashdata("notif", array("Vous n'avez pas les droit sur ce controle"));
+          redirect("professeur/controle");
         }
+
+
 
         $css = array("test");
         $js = array("debug");
         $title = "Ajout de controles";
         $data = array("control" => $control);
         $var = array(   "css" => $css,
-            "js" => $js,
-            "title" => $title,
-            "data" => $data);
+        "js" => $js,
+        "title" => $title,
+        "data" => $data);
 
         show("Professeur/editControl",$var);
-    }
+      }
 
-}
+      public function ajoutNotes($id = ""){
+        if($id == ""){
+          echo "d";
+
+          show_404();
+
+        }
+        $this->load->model('control_model','ctrlMod');
+        $this->load->model('mark_model','markMod');
+
+        $control = $this->ctrlMod->getControl($id);
+        if(empty($control)){
+          $this->session->set_flashdata("notif", array("Controle Introuvable"));
+          redirect("professeur/controle");
+        }
+        if(!$this->ctrlMod->checkProfessorRightOnControl($_SESSION['id'],$id)){
+          $this->session->set_flashdata("notif", array("Vous n'avez pas les droit sur ce controle"));
+          redirect("professeur/controle");
+        }
+
+        $marks = $this->markMod->getMarks($control,$_SESSION["id"]);
+
+
+        $matiere = $this->ctrlMod->getMatiere($id);
+        $js = array("debug");
+        $title = "Ajout de notes";
+        $data = array("control" => $control,"marks" => $marks,"matiere" => $matiere);
+        $var = array(   "css" => array("test"),
+        "js" => $js,
+        "title" => $title,
+        "data" => $data);
+
+        show("Professeur/addMarks",$var);
+      }
+
+    }

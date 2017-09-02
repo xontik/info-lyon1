@@ -14,6 +14,7 @@
                 <th>Matière</th>
                 <th>Libélé</th>
                 <th>Groupe</th>
+                <th>Type</th>
                 <th>Coeff</th>
                 <th>Div</th>
                 <th>Mediane</th>
@@ -21,6 +22,7 @@
                 <th>Date</th>
                 <th>Supprimer</th>
                 <th>Modifier</th>
+                <th>Ajouter Note</th>
             </tr>
 
         <?php
@@ -31,6 +33,7 @@
             echo "<td>". $control->codeMatiere." - ".$control->nomMatiere . "</td>";
             echo "<td>". $control->nomControle . "</td>";
             echo "<td>". $control->nomGroupe . "</td>";
+            echo "<td>". $control->typeControle . "</td>";
             echo "<td>". $control->coefficient . "</td>";
             echo "<td>". $control->diviseur . "</td>";
             echo "<td>". ($control->median != null ? ( $control->median) : "Non calculée") . "</td>";
@@ -38,6 +41,7 @@
             echo "<td>". $date->format("d/m/Y") . "</td>";
             echo "<td><a href='" . base_url("process_professeur/deletecontrole/" . $control->idControle) . "'>X</a></td>";
             echo "<td><a href='" . base_url("professeur/editcontrole/" . $control->idControle) . "'>Edit</a></td>";
+            echo "<td><a href='" . base_url("professeur/ajoutNotes/" . $control->idControle) . "'>Notes</a></td>";
             echo "</tr>";
 
         }
@@ -57,6 +61,8 @@
                     <th>Date</th>
                     <th>Supprimer</th>
                     <th>Modifier</th>
+                    <th>Ajouter Note</th>
+
 
                 </tr>
 
@@ -74,6 +80,8 @@
             echo "<td>". $date->format("d/m/Y") . "</td>";
             echo "<td><a href='" . base_url("process_professeur/deletecontrole/" . $control->idControle) . "'>X</a></td>";
             echo "<td><a href='" . base_url("professeur/editcontrole/" . $control->idControle) . "'>Edit</a></td>";
+            echo "<td><a href='" . base_url("professeur/ajoutNotes/" . $control->idControle) . "'>Notes</a></td>";
+
             echo "</tr>";
 
 

@@ -96,5 +96,8 @@ main {
       }
 
     }
+    article.dspromo{
+      background-color: lighten($second-color, 40);
+    }
   }
 }
