@@ -159,6 +159,8 @@ class Control_model extends CI_Model
 
     public function getEnseignements($profId)
     {
+      //TODO ajouter le cas avec prof referent
+      
       $sql = "SELECT nomGroupe,nomMatiere,idEnseignement FROM Enseignements join Groupes using(idGroupe) join Matieres using(codeMatiere) join Semestres using (idSemestre) WHERE idProfesseur = ? and actif = 1 ";
       return $this->db->query($sql, array($profId))->result();
     }
@@ -177,6 +179,7 @@ class Control_model extends CI_Model
 
   public function getMatieres($profId)
   {
+    //TODO ajouter le cas avec prof referent
     $sql = "SELECT distinct codeMatiere,nomMatiere FROM Enseignements join Groupes using(idGroupe) join Matieres using(codeMatiere) join Semestres using (idSemestre) WHERE idProfesseur = ? and actif = 1";
     return $this->db->query($sql, array($profId))->result();
 
