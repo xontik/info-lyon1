@@ -72,12 +72,77 @@ class Professeur extends CI_Controller {
     $this->load->model('control_model','ctrlMod');
 
     $controls = $this->ctrlMod->getControls($_SESSION['id']);
+    $matieres = $this->ctrlMod->getMatieres($_SESSION['id']);
+    $groupes = $this->ctrlMod->getEnseignements($_SESSION['id']);
+
+    $restrict = array("groupes" => array(),"matieres" => array(), "DS" => array()); //le filtre
+    /*
+    echo "<pre>";
+    var_dump($matieres);
+    echo "</pre>";
+    //*/
+    if(isset($_POST["filter"])){
+
+
+      $grp = array(); //from bd
+      $mat = array(); //from bd
+
+      foreach ($groupes as $groupe) {
+          array_push($grp,$groupe->nomGroupe);
+      }
+      foreach ($matieres as $matiere){
+          array_push($mat,$matiere->codeMatiere);
+      }
+
+      $restrict = array("groupes" => array(),"matieres" => array(), "DS" => array()); //le filtre
+      foreach ($_POST as $key => $value) {
+        if(in_array($key,$grp)){
+          array_push($restrict["groupes"],$key);
+        }
+        else if(in_array($key,$mat)){
+          array_push($restrict["matieres"],$key);
+        }
+      }
+      //TODO verifier ds promo ou non
+      if(isset($_POST["DSPROMO"])){
+          array_push($restrict["DS"],"DSPROMO");
+      }
+      if(isset($_POST["CC"])){
+        array_push($restrict["DS"],"CC");
+      }
+
+      /*
+      echo "<pre>";
+      var_dump($restrict);
+      echo "</pre>";
+      //*/
+      foreach ($controls as $key => $control) {
+          if(!is_null($control->nomGroupe) && !empty($restrict["groupes"]) && !in_array($control->nomGroupe, $restrict["groupes"]) ){
+            //echo $control->nomGroupe;
+            unset($controls[$key]);
+          }
+          if(!empty($restrict["matieres"] && !in_array($control->codeMatiere,$restrict["matieres"]) ) ){
+            //echo $control->codeMatiere;
+            unset($controls[$key]);
+          }
+          if(!empty($restrict["DS"])){
+            if(in_array("CC",$restrict["DS"]) && is_null($control->nomGroupe)){
+              unset($controls[$key]);
+            }
+            if(in_array("DSPROMO",$restrict["DS"]) && !is_null($control->nomGroupe)){
+              unset($controls[$key]);
+
+            }
+          }
+
+      }
+    }
 
 
     $css = array("test");
     $js = array("debug");
     $title = "Controles";
-    $data = array("controls" => $controls);
+    $data = array("controls" => $controls, "groupes" => $groupes, "matieres" => $matieres,"restrict" => $restrict);
     $var = array(
       "css" => $css,
       "js" => $js,
@@ -88,6 +153,7 @@ class Professeur extends CI_Controller {
     }
 
     public function addControle($promo = ""){
+      //TODO verifier isreferent
       $this->load->model('control_model', 'ctrlMod');
       $bool = false;
       if($promo == ""){
