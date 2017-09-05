@@ -73,7 +73,7 @@ class Professeur extends CI_Controller {
 
     $controls = $this->ctrlMod->getControls($_SESSION['id']);
     $matieres = $this->ctrlMod->getMatieres($_SESSION['id']);
-    $groupes = $this->ctrlMod->getEnseignements($_SESSION['id']);
+    $groupes = $this->ctrlMod->getGroupes($_SESSION['id']);
 
     $restrict = array("groupes" => array(),"matieres" => array(), "DS" => array()); //le filtre
     /*

@@ -30,29 +30,45 @@ class Control_model extends CI_Model
     from (
       Select codeMatiere,nomMatiere,idControle,nomControle,
       coefficient,diviseur,typeControle,median,average,
-      dateControle,coefficientMatiere,nomGroupe
-      FROM Controles JOIN Enseignements USING (idEnseignement) JOIN Matieres USING (codeMatiere)
-      JOIN Groupes USING (idGroupe) where idProfesseur = ?
+      dateControle,coefficientMatiere,nomGroupe FROM Controles
+        JOIN Enseignements USING (idEnseignement)
+        JOIN Matieres USING (codeMatiere)
+        JOIN Groupes USING (idGroupe)
+        join Semestres using (idSemestre)
+        where idProfesseur = ? and actif = 1
       UNION
       Select distinct codeMatiere,nomMatiere,idControle,nomControle,
       coefficient,diviseur,typeControle,median,average,
-      dateControle,coefficientMatiere,null as nomGroupe
-      FROM Controles JOIN DsPromo USING (idDsPromo)  join Matieres using (codeMatiere) join Enseignements USING (codeMatiere) where idProfesseur = ?
+      dateControle,coefficientMatiere,null as nomGroupe FROM Controles
+        JOIN DsPromo USING (idDsPromo)
+        join Matieres using (codeMatiere)
+        join Enseignements USING (codeMatiere)
+        join Semestres using (idSemestre)
+        where idProfesseur = ? and actif = 1
       UNION
       Select codeMatiere,nomMatiere,idControle,nomControle,
       coefficient,diviseur,typeControle,median,average,
-      dateControle,coefficientMatiere,nomGroupe
-      FROM Controles JOIN Enseignements USING (idEnseignement) JOIN Matieres USING (codeMatiere)
-      JOIN Groupes USING (idGroupe) JOIN Referents using (codeModule) where Referents.idProfesseur = ?
+      dateControle,coefficientMatiere,nomGroupe FROM Controles
+        JOIN Enseignements USING (idEnseignement)
+        JOIN Matieres USING (codeMatiere)
+        JOIN Groupes USING (idGroupe)
+        JOIN Referents using (codeModule,idSemestre)
+        join Semestres using (idSemestre)
+        where Referents.idProfesseur = ? and  actif = 1
       UNION
       Select codeMatiere,nomMatiere,idControle,nomControle,
       controles.coefficient,diviseur,typeControle,median,average,
-      dateControle,coefficientMatiere,null as nomGroupe
-      FROM Controles JOIN DsPromo USING (idDsPromo) join Matieres USING (codeMatiere) JOIN Modules using (codeModule)
-      JOIN Referents using (codeModule) where Referents.idProfesseur = ?
-    ) as foo JOIN Matieres using (codeMatiere) JOIN Modules USING (codeModule) join UE USING (codeUE) join Semestres using (typeSemestre) where actif = 1";
+      dateControle,coefficientMatiere,null as nomGroupe FROM Controles
+        JOIN DsPromo USING (idDsPromo)
+        join Matieres USING (codeMatiere)
+        JOIN Modules using (codeModule)
+        JOIN Referents using (codeModule,idSemestre)
+        join Semestres using (idSemestre)
 
+        where idProfesseur = ? and actif = 1
+    ) as foo ";
 
+    //TODO continuer de verifier les different cas pour les ds surtout via Referents
     return $this->db->query($sql, array($professorId,$professorId,$professorId,$professorId))->result();
   }
 
@@ -71,16 +87,11 @@ class Control_model extends CI_Model
       JOIN Enseignements using (idEnseignement)
       join groupes using (idGroupe)
       join Semestres using (idSemestre)
-
       where idProfesseur = ? and actif = 1
       UNION
       Select idControle from Controles
       join DsPromo USING (idDsPromo)
-      join Enseignements USING (codeMatiere)
-      JOIN Matieres using (codeMatiere)
-      JOIN Modules USING (codeModule)
-      join UE USING (codeUE)
-      join Semestres using (typeSemestre)
+      join Semestres using (idSemestre)
       where idProfesseur = ? and actif = 1) as foo";
       return $this->db->query($sql, array($profId,$profId))->result();
 
@@ -89,8 +100,7 @@ class Control_model extends CI_Model
       $sql = "SELECT idControle FRom Referents
       JOIN Matieres USING (codeModule)
       JOIN Modules USING (codeModule)
-      join UE USING (codeUE)
-      join Semestres using (typeSemestre)
+      join Semestres using (idSemestre)
       JOIN Enseignements using (codeMatiere)
       JOIN Controles USING (idEnseignement)
 
@@ -159,10 +169,40 @@ class Control_model extends CI_Model
 
     public function getEnseignements($profId)
     {
-      //TODO ajouter le cas avec prof referent
-      
-      $sql = "SELECT nomGroupe,nomMatiere,idEnseignement FROM Enseignements join Groupes using(idGroupe) join Matieres using(codeMatiere) join Semestres using (idSemestre) WHERE idProfesseur = ? and actif = 1 ";
-      return $this->db->query($sql, array($profId))->result();
+
+      $sql = "SELECT distinct * from (
+      SELECT nomGroupe,nomMatiere,idEnseignement FROM Enseignements
+  join Groupes using(idGroupe)
+  join Matieres using(codeMatiere)
+  join Semestres using (idSemestre)
+  WHERE idProfesseur = ? and actif = 1
+UNION
+  SELECT nomGroupe,nomMatiere,idEnseignement FROM Enseignements
+  JOIN Matieres using (codeMatiere)
+  join Referents using (codeModule)
+  join Semestres using (idSemestre)
+  JOIN Groupes using (idGroupe,idSemestre)
+  WHERE Referents.idProfesseur = ? and actif = 1) as foo ";
+
+      return $this->db->query($sql, array($profId,$profId))->result();
+    }
+
+    public function getGroupes($profId){
+      $sql = "SELECT distinct * from (
+      SELECT nomGroupe FROM Enseignements
+  join Groupes using(idGroupe)
+  join Matieres using(codeMatiere)
+  join Semestres using (idSemestre)
+  WHERE idProfesseur = ? and actif = 1
+  UNION
+  SELECT nomGroupe FROM Enseignements
+  JOIN Matieres using (codeMatiere)
+  join Referents using (codeModule)
+  join Semestres using (idSemestre)
+  JOIN Groupes using (idGroupe,idSemestre)
+  WHERE Referents.idProfesseur = ? and actif = 1) as foo ";
+
+      return $this->db->query($sql, array($profId,$profId))->result();
     }
     /*public function getEnseignementWithMatiere($profId,$codeMatiere)
     {
@@ -179,9 +219,18 @@ class Control_model extends CI_Model
 
   public function getMatieres($profId)
   {
-    //TODO ajouter le cas avec prof referent
-    $sql = "SELECT distinct codeMatiere,nomMatiere FROM Enseignements join Groupes using(idGroupe) join Matieres using(codeMatiere) join Semestres using (idSemestre) WHERE idProfesseur = ? and actif = 1";
-    return $this->db->query($sql, array($profId))->result();
+    $sql = "SELECT distinct codeMatiere,nomMatiere FROM Enseignements
+  join Groupes using(idGroupe)
+  join Matieres using(codeMatiere)
+  join Semestres using (idSemestre)
+  WHERE idProfesseur = ? and actif = 1
+  UNION
+    SELECT distinct codeMatiere,nomMatiere FROM Matieres
+      JOIN Referents using (codeModule)
+      join Semestres using (idSemestre)
+      where idProfesseur = ? and actif = 1";
+
+    return $this->db->query($sql, array($profId,$profId))->result();
 
   }
   public function getMatiere($idControle){
