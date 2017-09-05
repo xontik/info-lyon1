@@ -21,7 +21,7 @@
       if(in_array($matiere->codeMatiere,$data["restrict"]["matieres"])){
         $checked = "checked";
       }
-      echo '<label for="id'.$matiere->codeMatiere.'">'.$matiere->codeMatiere.'</label><input type="checkbox" id="id'.$matiere->codeMatiere.'" name="'.$matiere->codeMatiere.'" '.$checked.' >';
+      echo '<label for="id'.$matiere->codeMatiere.'">'.$matiere->nomMatiere.'</label><input type="checkbox" id="id'.$matiere->codeMatiere.'" name="'.$matiere->codeMatiere.'" '.$checked.' >';
     }
     //TODO verifier ds promo ou non in array restrict etc
 
