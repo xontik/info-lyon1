@@ -75,6 +75,7 @@ class Professeur extends CI_Controller {
     $matieres = $this->ctrlMod->getMatieres($_SESSION['id']);
     $groupes = $this->ctrlMod->getGroupes($_SESSION['id']);
 
+
     $restrict = array("groupes" => array(),"matieres" => array(), "DS" => array()); //le filtre
     /*
     echo "<pre>";
@@ -125,7 +126,8 @@ class Professeur extends CI_Controller {
             //echo $control->codeMatiere;
             unset($controls[$key]);
           }
-          if(!empty($restrict["DS"])){
+          //
+          if(!empty($restrict["DS"]) && count($restrict['DS']) < 2){
             if(in_array("CC",$restrict["DS"]) && is_null($control->nomGroupe)){
               unset($controls[$key]);
             }
