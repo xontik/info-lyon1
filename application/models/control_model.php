@@ -92,6 +92,7 @@ class Control_model extends CI_Model
       Select idControle from Controles
       join DsPromo USING (idDsPromo)
       join Semestres using (idSemestre)
+      join Enseignements using (codeMatiere)
       where idProfesseur = ? and actif = 1) as foo";
       return $this->db->query($sql, array($profId,$profId))->result();
 
