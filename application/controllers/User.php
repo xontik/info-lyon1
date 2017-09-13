@@ -12,8 +12,6 @@ class User extends CI_Controller {
 
         $this->load->model('user_model', 'userModel');
 
-        unset($_SESSION['form_errors']);
-
         if ( !(isset($_POST['id']) &&
             isset($_POST['password'])) )
         {
@@ -21,8 +19,8 @@ class User extends CI_Controller {
             return;
         }
 
-        $id = strtolower($_POST['id']);
-        $password = $_POST['password'];
+        $id = strtolower(htmlspecialchars($_POST['id']));
+        $password = htmlspecialchars($_POST['password']);
         $stay_connected = isset($_POST['stayConnected']) && $_POST['stayConnected'] === 'on';
 
         if ( empty($id) )
@@ -32,16 +30,13 @@ class User extends CI_Controller {
 
 
         if ( !empty($_SESSION['form_errors']) ) {
+            $this->session->mark_as_flash('form_errors');
             redirect('/');
             return;
         }
 
         $userdata = $this->userModel->getUserInformations($id, $password);
         if ($userdata !== FALSE) {
-            echo '<pre>';
-            print_r($userdata);
-            echo '</pre>';
-
             $this->session->set_userdata($userdata);
 
             if ($stay_connected) {
