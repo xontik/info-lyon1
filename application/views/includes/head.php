@@ -21,16 +21,16 @@
         <?php
         if ($debug) { ?>
         <pre id="debug" style="display: none">
-        <?php
-            function makeReceivedDataPrintable(&$value) {
-                if (is_string($value)) {
-                    $value = '"""' . htmlspecialchars($value, ENT_QUOTES, 'UTF-8') . '"""';
+            <?php
+                function makeReceivedDataPrintable(&$value) {
+                    if (is_string($value)) {
+                        $value = '"""' . htmlspecialchars($value, ENT_QUOTES, 'UTF-8') . '"""';
+                    }
                 }
-            }
 
-            array_walk($data, 'makeReceivedDataPrintable');
-            print_r($data);
-        ?>
+                array_walk($data, 'makeReceivedDataPrintable');
+                print_r($data);
+            ?>
         </pre>
         <?php } ?>
 
