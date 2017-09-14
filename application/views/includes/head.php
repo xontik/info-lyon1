@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title><?php echo isset($title) ? $title : 'Teckmeb'; ?></title>
+        <title><?= isset($title) ? $title : 'Teckmeb' ?></title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <link rel="stylesheet" type="text/css" href="<?php echo css_url('style') ?>">
-        <link rel="stylesheet" type="text/css" href="<?php echo css_url('head') ?>">
         <?php
-        if (isset($css)) {
+        if ( !empty($css) ) {
             foreach ($css as $c) {
                 echo '<link rel="stylesheet" type="text/css" href="' . css_url($c) . '">';
             }
+        } else {
+            echo '<link rel = "stylesheet" type = "text/css" href = "' . css_url('style') . '">';
         }
 
         $debug = isset($js) && in_array('debug', $js) && isset($data);
@@ -85,8 +85,8 @@
                     if ( isset($_SESSION['name']) and isset($_SESSION['surname']) ) { ?>
                     <ul>
                         <li>
-                            <div><?php echo $_SESSION['surname']; ?></div>
-                            <div><?php echo $_SESSION['name']; ?></div>
+                            <div><?= $_SESSION['surname']; ?></div>
+                            <div><?= $_SESSION['name']; ?></div>
                         </li>
                         <li><a href="/user/disconnect">Déconnexion</a></li>
                     </ul>
