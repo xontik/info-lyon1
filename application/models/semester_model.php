@@ -11,7 +11,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class semester_model extends CI_Model {
 
     public function getSemesterId($semester) {
-
         $semesterId = FALSE;
         if ($semester === '') {
             $semesterId = $this->getCurrentSemesterId($_SESSION['id']);
@@ -73,23 +72,26 @@ class semester_model extends CI_Model {
 
     /**
      * @param $studentId String The id of the student
-     * @return int current activ semestre
+     * @return int The current semester for the student
      */
     public function getCurrentSemesterId($studentId) {
-        $sql = "SELECT idSemestre from Etudiantgroupe
-          join Groupes USING (idGroupe)
-          join Semestres USING (idSemestre)
-          where numEtudiant=? and actif = 1
+        $sql = "SELECT idSemestre
+          FROM Etudiantgroupe
+          JOIN Groupes USING (idGroupe)
+          JOIN Semestres USING (idSemestre)
+          WHERE numEtudiant = ?
+          AND actif = 1
           ORDER BY idSemestre DESC";
-        $semestre = $this->db->query($sql,array($studentId))->row();
-        if (empty($semestre) ) {
+
+        $semester = $this->db->query($sql, array($studentId))->row();
+        if (empty($semester)) {
             return FALSE;
         }
-        return $semestre->idSemestre;
+        return $semester->idSemestre;
     }
 
     /**
-     * Returns the id of the student's [type] semester
+     * Returns the id of the student's `type` semester
      * @param $semesterType String A type of semester (S1-4)
      * @param $studentId String The student id
      * @return int The id of the corresponding semester, FALSE if it doesn't exists

@@ -13,8 +13,7 @@ class Etudiant extends CI_Controller {
   public function __construct() {
     parent::__construct();
     if ( !isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'student')
-    redirect('/');
-
+        redirect('/');
   }
 
   public function index() {
@@ -31,7 +30,6 @@ class Etudiant extends CI_Controller {
   }
 
   public function absence($semester = '') {
-
     $this->load->model('absence_model', 'absenceMod');
     $this->load->model('semester_model', 'semesterMod');
 
