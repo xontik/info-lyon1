@@ -54,19 +54,18 @@ class semester_model extends CI_Model {
             return FALSE;
         }
 
-
         if (( ($row->typeSemestre === 'S1' || $row->typeSemestre === 'S3') && !$row->differe ) ||
             ( ($row->typeSemestre === 'S2' || $row->typeSemestre === 'S4') && $row->differe ))
         {
-            return array(
-                $row->anneeScolaire . '-09-01',
-                (intval($row->anneeScolaire) + 1) . '-01-31'
-            );
+            $object = new stdClass;
+            $object->beginning = new DateTime($row->anneeScolaire . '-09-01');
+            $object->end = new DateTime((intval($row->anneeScolaire) + 1) . '-01-31');
+            return $object;
         } else {
-            return array(
-                $row->anneeScolaire . '-02-01',
-                $row->anneeScolaire . '-08-31'
-            );
+            $object = new stdClass;
+            $object->beginning = new DateTime($row->anneeScolaire . '-02-01');
+            $object->end = new DateTime($row->anneeScolaire . '-08-31');
+            return $object;
         }
     }
 
@@ -74,19 +73,21 @@ class semester_model extends CI_Model {
      * @param $studentId String The id of the student
      * @return int The current semester for the student
      */
-    public function getCurrentSemesterId($studentId) {
-        $sql = "SELECT idSemestre
-          FROM Etudiantgroupe
-          JOIN Groupes USING (idGroupe)
-          JOIN Semestres USING (idSemestre)
-          WHERE numEtudiant = ?
-          AND actif = 1
-          ORDER BY idSemestre DESC";
-
-        $semester = $this->db->query($sql, array($studentId))->row();
-        if (empty($semester)) {
-            return FALSE;
+    public function getCurrentSemesterId($studentId = '') {
+        if ($studentId !== '') {
+            $this->db->where('numEtudiant', $studentId);
         }
+        $semester = $this->db->select('idSemestre')
+            ->from('EtudiantGroupe')
+            ->join('Groupes', 'idGroupe')
+            ->join('Semestres', 'idSemestre')
+            ->where('actif', '1')
+            ->order_by('idSemestre', 'desc')
+            ->get()
+            ->row();
+
+        if (empty($semester))
+            return FALSE;
         return $semester->idSemestre;
     }
 
@@ -109,19 +110,17 @@ class semester_model extends CI_Model {
             ->where('EtudiantGroupe.numEtudiant', $studentId)
             ->where('Groupes.idSemestre IN (' . $compatibleSemesters . ')')
             ->get()
-            ->result()[0]->idGroupe;
+            ->row()->idGroupe;
 
         $semester = $this->db->select('idSemestre')
             ->from('Groupes')
             ->where('idGroupe', $groupId)
             ->get()
-            ->result();
+            ->row();
 
-        if ( empty($semester) ) {
+        if ( empty($semester) )
             return FALSE;
-        }
-
-        return $semester[0]->idSemestre;
+        return $semester->idSemestre;
     }
 
 }

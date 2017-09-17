@@ -34,12 +34,10 @@ class Etudiant extends CI_Controller {
     $this->load->model('semester_model', 'semesterMod');
 
     $semesterId = $this->semesterMod->getSemesterId($semester);
-    if ($semesterId === FALSE) {
-      redirect('/Etudiant/Absence/');
-      return;
-    }
+    if ($semesterId === FALSE)
+      $semesterId = $this->semesterMod->getSemestreId();
 
-    $absences = $this->absenceMod->getAbsencesFromSemester($_SESSION['id'], $semesterId);
+    $absences = $this->absenceMod->getStudentSemesterAbsences($_SESSION['id'], $semesterId);
 
     $var = array(
       'css' => array('absences_page'),
@@ -57,10 +55,8 @@ class Etudiant extends CI_Controller {
     $this->load->model('semester_model', 'semesterMod');
 
     $semesterId = $this->semesterMod->getSemesterId($semester);
-    if ($semesterId === FALSE) {
-      redirect('/Etudiant/Note/');
-      return;
-    }
+    if ($semesterId === FALSE)
+      $semesterId = $this->semesterMod->getSemesterId();
 
     $marks = $this->markMod->getMarksFromSemester($_SESSION['id'], $semesterId);
 

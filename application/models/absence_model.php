@@ -25,25 +25,62 @@ class Absence_model extends CI_Model {
     }
 
     /**
-     * Get the absence of a student during a semester
-     * @param $studentId String The id of the student
-     * @param $semestreId int The id of the semester
-     * @return array An array of absences
+     * Get the absences of all the students during the semester
+     * @param $semester mixed The id of the semester
+     * @return mixed The absences of all students in the period between
+     * the beginning and the end of the semester,
+     * or FALSE if an error happened with the semester's id
      */
-	public function getAbsencesFromSemester($studentId, $semestreId) {
+    public function getSemesterAbsences($semester) {
         $CI =& get_instance();
         $CI->load->model('semester_model');
 
-        $semDates = $CI->semester_model->getSemesterBounds($semestreId);
-
-        if ($semDates === FALSE) {
+        $bounds = $CI->semester_model->getSemesterBounds($semester);
+        if ($bounds === FALSE)
             return FALSE;
-        }
+        return $this->getAbsencesInPeriod($bounds->beginning, $bounds->end);
+    }
+
+    /**
+     * Get the absences of all students during a time period.
+     * @param $begin_date DateTime The begin date of the period
+     * @param $end_date DateTime The end date of the period
+     * @return array The absences of the students
+     */
+    public function getAbsencesInPeriod($begin_date, $end_date) {
+        return $this->db->select('numEtudiant, nom, prenom, mail,
+                idAbsence, dateDebut, dateFin, typeAbsence, justifiee')
+            ->from('absences')
+            ->join('etudiants', 'numEtudiant')
+            ->where('dateDebut BETWEEN "' . $begin_date->format('Y-m-d')
+                . '" AND "' . $end_date->format('Y-m-d') . '"')
+            ->order_by('etudiants.nom', 'asc')
+            ->order_by('etudiants.prenom', 'asc')
+            ->order_by('absences.dateDebut', 'asc')
+            ->get()
+            ->result();
+    }
+
+    /**
+     * Get the absence of a student during a semester
+     * @param $studentId String The id of the student
+     * @param $semesterId int The id of the semester
+     * @return mixed An array of absences,
+     * FALSE if there's an error with semesterId
+     */
+	public function getStudentSemesterAbsence($studentId, $semesterId) {
+        $CI =& get_instance();
+        $CI->load->model('semester_model');
+
+        $bounds = $CI->semester_model->getSemesterBounds($semesterId);
+        if ($bounds === FALSE)
+            return FALSE;
 
         return $this->db->select('*')
                         ->from('Absences')
                         ->where('numEtudiant', $studentId)
-                        ->where('dateDebut BETWEEN "' . $semDates[0] . '" AND "' . $semDates[1] . '"')
+                        ->where('dateDebut BETWEEN "' . $bounds->beginning->format('Y-m-d')
+                            . '" AND "' . $bounds->end->format('Y-m-d') . '"')
                         ->get()
                         ->result();
     }
