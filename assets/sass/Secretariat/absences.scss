@@ -1,0 +1,49 @@
+@import '../style';
+
+body main {
+  margin: 0;
+}
+
+#absences_table {
+  width: 100%;
+  overflow: auto;
+
+  header {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    align-items: flex-end;
+    width: inherit;
+
+    border-bottom: 2px SOLID $second-color;
+
+    div {
+      display: flex;
+      flex-flow: row nowrap;
+      justify-content: space-around;
+      align-items: flex-end;
+      width: 85%;
+
+      text-align: center;
+
+      &:not(:first-child) h2 {
+        border-left: 2px SOLID $second-color;
+      }
+
+      h2 {
+        box-sizing: content-box;
+        padding: .2em .8em;
+        border-right: 2px SOLID $second-color;
+        font-size: 1.4em;
+      }
+
+      p {
+        min-width: 30px;
+
+        &:not(:last-of-type) {
+          border-right: 1px solid $second-color;
+        }
+      }
+    }
+  }
+}
