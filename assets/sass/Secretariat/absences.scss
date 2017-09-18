@@ -4,46 +4,79 @@ body main {
   margin: 0;
 }
 
-#absences_table {
+#absences_table_wrapper {
   width: 100%;
   overflow: auto;
+}
 
-  header {
-    display: flex;
-    flex-flow: row nowrap;
-    justify-content: space-between;
-    align-items: flex-end;
-    width: inherit;
+#absences_table {
+  width: 100%;
 
+  border-spacing: 0;
+  border-collapse: collapse;
+
+  th {
+    min-width: 7em;
+    padding: .2em .8em;
+    border-right: 2px SOLID $second-color;
+  }
+
+  td {
+    border-right: 1px SOLID $second-color;
+  }
+
+  thead {
+    text-align: center;
     border-bottom: 2px SOLID $second-color;
 
-    div {
-      display: flex;
-      flex-flow: row nowrap;
-      justify-content: space-around;
-      align-items: flex-end;
-      width: 85%;
+    th, td.month-cell {
+      font-size: 1.4em;
+      font-weight: 600;
+      color: $foreground-color;
+    }
 
-      text-align: center;
+    td.month-cell {
+      font-size: 1.4em;
+    }
 
-      &:not(:first-child) h2 {
-        border-left: 2px SOLID $second-color;
+    td {
+      min-width: 1em;
+      padding: .2em;
+      border-right: 1px SOLID $second-color
+    }
+  }
+
+  tbody {
+    tr {
+      border-bottom: 1px SOLID $second-color;
+
+      &:last-child {
+        border-bottom: 2px SOLID $second-color;
       }
 
-      h2 {
-        box-sizing: content-box;
-        padding: .2em .8em;
-        border-right: 2px SOLID $second-color;
-        font-size: 1.4em;
-      }
-
-      p {
-        min-width: 30px;
-
-        &:not(:last-of-type) {
-          border-right: 1px solid $second-color;
-        }
+      &:nth-child(2n+1) {
+        background-color: darken($background-color, 20);
       }
     }
+
+    th {
+      text-align: left;
+    }
+  }
+
+  td.abs-justifiee {
+    background-color: lightgreen;
+  }
+
+  .abs-absence {
+    background-color: red;
+  }
+
+  .abs-retard {
+    background-color: orange;
+  }
+
+  .abs-infirmerie {
+    background-color: cyan;
   }
 }

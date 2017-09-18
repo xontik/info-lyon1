@@ -35,19 +35,27 @@ class Absence_model extends CI_Model {
         $CI =& get_instance();
         $CI->load->model('semester_model');
 
-        $bounds = $CI->semester_model->getSemesterBounds($semester);
-        if ($bounds === FALSE)
+        $period = $CI->semester_model->getSemesterPeriod($semester);
+        if ($period === FALSE)
             return FALSE;
-        return $this->getAbsencesInPeriod($bounds->beginning, $bounds->end);
+        return $this->getAbsencesInPeriod($period);
     }
 
     /**
      * Get the absences of all students during a time period.
-     * @param $begin_date DateTime The begin date of the period
-     * @param $end_date DateTime The end date of the period
+     * The period can be either expressed by two DateTime objects,
+     * corresponding to the beginning and the end of the period,
+     * or by a Period object.
+     * @param $begin_date mixed A period object or the datetime of the beginning of the period
+     * @param null $end_date DateTime The datetime of the end of the period
      * @return array The absences of the students
      */
-    public function getAbsencesInPeriod($begin_date, $end_date) {
+    public function getAbsencesInPeriod($begin_date, $end_date = null) {
+        if (is_null($end_date)) {
+            // $begin_date must be a period
+            $end_date = $begin_date->getEndDate();
+            $begin_date = $begin_date->getBeginDate();
+        }
         return $this->db->select('numEtudiant, nom, prenom, mail,
                 idAbsence, dateDebut, dateFin, typeAbsence, justifiee')
             ->from('absences')
@@ -72,15 +80,15 @@ class Absence_model extends CI_Model {
         $CI =& get_instance();
         $CI->load->model('semester_model');
 
-        $bounds = $CI->semester_model->getSemesterBounds($semesterId);
+        $bounds = $CI->semester_model->getSemesterPeriod($semesterId);
         if ($bounds === FALSE)
             return FALSE;
 
         return $this->db->select('*')
                         ->from('Absences')
                         ->where('numEtudiant', $studentId)
-                        ->where('dateDebut BETWEEN "' . $bounds->beginning->format('Y-m-d')
-                            . '" AND "' . $bounds->end->format('Y-m-d') . '"')
+                        ->where('dateDebut BETWEEN "' . $bounds->getBeginDate()->format('Y-m-d')
+                            . '" AND "' . $bounds->getEndDate()->format('Y-m-d') . '"')
                         ->get()
                         ->result();
     }

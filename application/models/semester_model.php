@@ -13,7 +13,7 @@ class semester_model extends CI_Model {
     public function getSemesterId($semester) {
         $semesterId = FALSE;
         if ($semester === '') {
-            $semesterId = $this->getCurrentSemesterId($_SESSION['id']);
+            $semesterId = $this->getCurrentSemesterId($_SESSION['user_type'] === 'student' ? $_SESSION['id'] : '');
         }
         else if ( in_array($semester, array('S1', 'S2', 'S3', 'S4') ) ) {
             $semesterId = $this->getLastSemesterOfType($semester, $_SESSION['id']);
@@ -43,29 +43,31 @@ class semester_model extends CI_Model {
      * @param $semesterId int The id of the semester
      * @return mixed An array of two dates, the beginning and the end of the semester
      */
-    public function getSemesterBounds($semesterId) {
-        $this->db->select('typeSemestre, anneeScolaire, differe')
-            ->from('Semestres')
-            ->where('idSemestre', $semesterId);
+    public function getSemesterPeriod($semesterId) {
+        require_once(APPPATH . 'libraries/Period.php');
 
-        $row = $this->db->get()->result()[0];
+        $row = $this->db->select('typeSemestre, anneeScolaire, differe')
+            ->from('Semestres')
+            ->where('idSemestre', $semesterId)
+            ->get()
+            ->row();
 
         if ( empty($row) ) {
             return FALSE;
         }
 
-        if (( ($row->typeSemestre === 'S1' || $row->typeSemestre === 'S3') && !$row->differe ) ||
-            ( ($row->typeSemestre === 'S2' || $row->typeSemestre === 'S4') && $row->differe ))
-        {
-            $object = new stdClass;
-            $object->beginning = new DateTime($row->anneeScolaire . '-09-01');
-            $object->end = new DateTime((intval($row->anneeScolaire) + 1) . '-01-31');
-            return $object;
+        if (   ( ($row->typeSemestre === 'S1' || $row->typeSemestre === 'S3') && !$row->differe )
+            || ( ($row->typeSemestre === 'S2' || $row->typeSemestre === 'S4') && $row->differe )
+        ) {
+            return new Period(
+                new DateTime($row->anneeScolaire . '-09-01'),
+                new DateTime((intval($row->anneeScolaire) + 1) . '-01-31')
+            );
         } else {
-            $object = new stdClass;
-            $object->beginning = new DateTime($row->anneeScolaire . '-02-01');
-            $object->end = new DateTime($row->anneeScolaire . '-08-31');
-            return $object;
+            return new Period(
+                new DateTime($row->anneeScolaire . '-02-01'),
+                new DateTime($row->anneeScolaire . '-08-31')
+            );
         }
     }
 
