@@ -18,6 +18,8 @@ class Secretariat extends CI_Controller {
         $this->load->model('semester_model');
         $this->load->model('students_model');
 
+        $this->load->helper('year');
+
         $period = $this->semester_model->getSemesterPeriod(
             $this->semester_model->getSemesterId($semester)
         );
@@ -61,7 +63,7 @@ class Secretariat extends CI_Controller {
 
         $data = array(
             'css' => array('Secretariat/absences'),
-            'js' => array('debug'),
+            'js' => array('debug', 'absences_table'),
             'title' => 'Absences',
             'data' => array(
                 'absences' => $assoc,

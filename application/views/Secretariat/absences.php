@@ -10,30 +10,28 @@
                         <?php
                         $curr_date = clone $data['begin_date'];
                         $last_month = null;
-                        for ($i = 0; $i < $data['day_number']; $i++) {
+                        for ($i = 0; $i <= $data['day_number']; $i++) {
                             $curr_month = $curr_date->format('F');
                             if ($last_month !== $curr_month) {
-                                $colspan = cal_days_in_month(
-                                    CAL_GREGORIAN,
-                                    $curr_date->format('n'),
-                                    $curr_date->format('Y')
-                                );
+                                $colspan = days_in_month($curr_date->format('n'), $curr_date->format('Y'));
                                 echo '<td colspan="' . $colspan . '">' . $curr_month . '</td>';
                             }
 
                             $last_month = $curr_month;
                             $curr_date->modify('+1 day');
                         }
+                        unset($last_month);
                         ?>
                     </tr>
                     <tr>
                         <?php
                         // table head
                         $curr_date = clone $data['begin_date'];
-                        for ($i = 0; $i < $data['day_number']; $i++) {
+                        for ($i = 0; $i <= $data['day_number']; $i++) {
                             echo('<td>' . $curr_date->format('j') . '</td>');
                             $curr_date->modify('+1 day');
                         }
+                        unset($curr_date);
                         ?>
                     </tr>
                 </thead>
@@ -42,22 +40,42 @@
                     foreach ($data['absences'] as $student) {
                         echo '<tr>';
                         echo '<th>' . $student['nom'] . ' ' . $student['prenom'] . '</th>';
-                        for($i = 0; $i < $data['day_number']; $i++) {
+
+                        for ($i = 0; $i <= $data['day_number']; $i++) {
                             $classes = array();
+                            $curr_absence = null;
                             if (isset($student['absences'][$i])) {
-                                $classes[] = 'abs-' . strtolower($student['absences'][$i]->typeAbsence);
-                                if ($student['absences'][$i]->justifiee) {
+                                $curr_absence = $student['absences'][$i];
+                                $classes[] = 'abs-' . strtolower($curr_absence->typeAbsence);
+                                if ($curr_absence->justifiee) {
                                     $classes[] = 'abs-justifiee';
                                 }
+
+                                $time_period = substr($curr_absence->dateDebut, -8, 5)
+                                    . ' - '
+                                    . substr($curr_absence->dateFin, -8, 5);
+                                $justify = $curr_absence->justifiee ? 'Oui' : 'Non';
+                                $absence_type = $curr_absence->typeAbsence;
                             }
 
                             echo '<td'
-                                . (!empty($classes) ? ' class="' . join(' ', $classes) . '"' : '')
-                                . '></td>';
-                        }
+                                . (!empty($classes)
+                                    ? ' class="' . join(' ', $classes) . '"': '')
+                                . '>';
+                            if (!is_null($curr_absence)) {
+                                ?><div>
+                                    <p>Horaire : <?= $time_period ?></p>
+                                    <p>Justifiée : <?= $justify ?></p>
+                                    <p><?= $absence_type ?></p>
+                                </div>
+                            <?php
+                            }
+                            echo '</td>';
+
+                        } // for each day
 
                         echo '</tr>';
-                    }
+                    } // for each student
                 ?>
             </table>
         </section>

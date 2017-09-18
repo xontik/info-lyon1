@@ -44,6 +44,8 @@ body main { margin: 0; }
 #absences_table { width: 100%; border-spacing: 0; border-collapse: collapse; }
 #absences_table th { min-width: 7em; padding: .2em .8em; border-right: 2px SOLID #403e3f; }
 #absences_table td { border-right: 1px SOLID #403e3f; }
+#absences_table td div { display: none; position: relative; top: 3em; left: 3em; padding: .4em; background-color: #ededed; border: 3px SOLID rgba(0, 0, 0, 0.6); border-radius: .2em; }
+#absences_table td div p:not(:last-child) { color: #202020; }
 #absences_table thead { text-align: center; border-bottom: 2px SOLID #403e3f; }
 #absences_table thead th, #absences_table thead td.month-cell { font-size: 1.4em; font-weight: 600; color: #e7bd26; }
 #absences_table thead td.month-cell { font-size: 1.4em; }
@@ -53,8 +55,10 @@ body main { margin: 0; }
 #absences_table tbody tr:nth-child(2n+1) { background-color: #c7c7c7; }
 #absences_table tbody th { text-align: left; }
 #absences_table td.abs-justifiee { background-color: lightgreen; }
-#absences_table .abs-absence { background-color: red; }
-#absences_table .abs-retard { background-color: orange; }
-#absences_table .abs-infirmerie { background-color: cyan; }
+#absences_table .abs-absence { background-color: red; color: red; }
+#absences_table .abs-retard { background-color: orange; color: orange; }
+#absences_table .abs-infirmerie { background-color: cyan; color: cyan; }
+#absences_table .abs-controle { background-color: rebeccapurple; color: rebeccapurple; }
+#absences_table td[class^="abs-"] { cursor: pointer; }
 
 /*# sourceMappingURL=absences.css.map */

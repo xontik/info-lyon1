@@ -23,6 +23,21 @@ body main {
 
   td {
     border-right: 1px SOLID $second-color;
+
+    div {
+      display: none;
+      position: relative;
+      top: 3em; left: 3em;
+      padding: .4em;
+
+      background-color: darken($background-color, 5);
+      border: 3px SOLID rgba(0, 0, 0, .6);
+      border-radius: .2em;
+
+      p:not(:last-child) {
+        color: $text-color;
+      }
+    }
   }
 
   thead {
@@ -70,13 +85,25 @@ body main {
 
   .abs-absence {
     background-color: red;
+    color: red;
   }
 
   .abs-retard {
     background-color: orange;
+    color: orange;
   }
 
   .abs-infirmerie {
     background-color: cyan;
+    color: cyan;
+  }
+
+  .abs-controle {
+    background-color: rebeccapurple;
+    color: rebeccapurple;
+  }
+
+  td[class^="abs-"] {
+    cursor: pointer;
   }
 }
