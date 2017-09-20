@@ -39,16 +39,21 @@ li { list-style-type: none; }
 
 body main { margin: 0; }
 
+.group-change { border-top: 2px SOLID #403e3f; }
+
 #absences_table { display: flex; flex-flow: row nowrap; width: 100%; }
 
 #table_static { min-width: 16em; border-right: 2px SOLID #403e3f; }
-#table_static div.wrapper { display: flex; flex-flow: row nowrap; justify-content: flex-end; overflow: visible; }
-#table_static h1 { border-bottom: 2px SOLID #403e3f; line-height: 50px; font-size: 1.4em; font-weight: 600; text-align: center; color: #e7bd26; }
-#table_static p { border-bottom: 1px SOLID #403e3f; }
+#table_static div.wrapper { display: flex; flex-flow: row nowrap; justify-content: flex-end; }
 #table_static p:last-child { border-bottom: 2px SOLID #403e3f; }
-#table_static #table_group_list p { width: 20px; padding-left: 8px; margin: auto; word-wrap: break-word; letter-spacing: 20px; }
-#table_static #table_stud_list { flex-grow: 1; }
-#table_static #table_stud_list p { flex-basis: 7em; height: 25px; line-height: 25px; font-size: 1em; }
+#table_static h1 { border-bottom: 2px SOLID #403e3f; line-height: 50px; font-size: 1.4em; font-weight: 600; text-align: center; color: #e7bd26; }
+
+#table_group_list p { width: 20px; padding-left: 8px; margin: auto; word-wrap: break-word; letter-spacing: 20px; overflow: hidden; }
+#table_group_list p:not(:first-child) { border-top: 2px SOLID #403e3f; }
+
+#table_stud_list { flex-grow: 1; }
+#table_stud_list p { flex-basis: 7em; height: 25px; line-height: 25px; font-size: 1em; }
+#table_stud_list p:not(:first-child):not(.group-change) { border-top: 1px SOLID #403e3f; }
 
 div.wrapper { overflow: auto; }
 div.wrapper table { border-spacing: 0; border-collapse: collapse; }

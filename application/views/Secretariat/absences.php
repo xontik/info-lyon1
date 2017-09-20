@@ -17,8 +17,16 @@
                     </div>
                     <div id="table_stud_list">
                         <?php
+                        $last_group = null;
                         foreach($data['absences'] as $student) {
-                            echo '<p>' . $student['nom'] . ' ' . $student['prenom'] . '</p>';
+                            echo '<p';
+                            if ($last_group !== $student['groupe']) {
+                                if (!is_null($last_group)) {
+                                    echo ' class="group-change"';
+                                }
+                                $last_group = $student['groupe'];
+                            }
+                            echo '>' . $student['nom'] . ' ' . $student['prenom'] . '</p>';
                         }
                         ?>
                     </div>
@@ -60,8 +68,16 @@
                     <tbody>
                         <?php
                         // table content
+                        $last_group = null;
                         foreach ($data['absences'] as $student) {
-                            echo '<tr>';
+                            echo '<tr';
+                            if ($last_group !== $student['groupe']) {
+                                if (!is_null($last_group)) {
+                                    echo ' class="group-change"';
+                                }
+                                $last_group = $student['groupe'];
+                            }
+                            echo '>';
 
                             for ($i = 0; $i <= $data['day_number']; $i++) {
                                 $classes = array();

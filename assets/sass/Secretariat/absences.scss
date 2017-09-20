@@ -7,6 +7,10 @@ body main {
 $line-height: 25px;
 $border-nosize: SOLID $second-color;
 
+.group-change {
+  border-top: 2px $border-nosize;
+}
+
 #absences_table {
   display: flex;
   flex-flow: row nowrap;
@@ -21,7 +25,10 @@ $border-nosize: SOLID $second-color;
     display: flex;
     flex-flow: row nowrap;
     justify-content: flex-end;
-    overflow: visible;
+  }
+
+  p:last-child {
+    border-bottom: 2px $border-nosize;
   }
 
   h1 {
@@ -32,30 +39,35 @@ $border-nosize: SOLID $second-color;
     text-align: center;
     color: $foreground-color;
   }
+}
+
+#table_group_list p {
+  width: 20px;
+  padding-left: 8px;
+  margin: auto;
+
+  word-wrap: break-word;
+  letter-spacing: 20px;
+
+  overflow: hidden;
+
+  &:not(:first-child) {
+    border-top: 2px $border-nosize;
+  }
+}
+
+#table_stud_list {
+  flex-grow: 1;
 
   p {
-    border-bottom: 1px $border-nosize;
+    flex-basis: 7em;
+    height: $line-height;
+    line-height: $line-height;
 
-    &:last-child {
-      border-bottom: 2px $border-nosize;
-    }
-  }
+    font-size: 1em;
 
-  #table_group_list p {
-    width: 20px;
-    padding-left: 8px;
-    margin: auto;
-    word-wrap: break-word;
-    letter-spacing: 20px;
-  }
-
-  #table_stud_list {
-    flex-grow: 1;
-    p {
-      flex-basis: 7em;
-      height: $line-height;
-      line-height: $line-height;
-      font-size: 1em;
+    &:not(:first-child):not(.group-change) {
+      border-top: 1px $border-nosize;
     }
   }
 }
