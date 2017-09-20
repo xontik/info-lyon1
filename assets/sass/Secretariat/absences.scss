@@ -4,30 +4,63 @@ body main {
   margin: 0;
 }
 
-#absences_table_wrapper {
+$line-height: 25px;
+
+#absences_table {
+
+  display: flex;
+  flex-flow: row nowrap;
   width: 100%;
+
+  > div > p {
+    min-width: 7em;
+    border-right: 2px SOLID $second-color;
+
+    &:first-child {
+      border-bottom: 2px SOLID $second-color;
+      line-height: 2*$line-height;
+      font-size: 1.4em;
+      font-weight: 600;
+      text-align: center;
+      color: $foreground-color;
+    }
+
+    &:not(:first-child) {
+      height: $line-height;
+      padding: 0;
+      line-height: 1.3em;
+      font-size: 1em;
+      border-bottom: 1px SOLID $second-color;
+    }
+
+    &:last-child {
+      border-bottom: 2px SOLID $second-color;
+    }
+  }
+}
+
+#absence_table_wrapper {
   overflow: auto;
 }
 
-#absences_table {
+#absences_table_body {
   width: 100%;
 
   border-spacing: 0;
   border-collapse: collapse;
 
-  th {
-    min-width: 7em;
-    padding: .2em .8em;
-    border-right: 2px SOLID $second-color;
-  }
-
   td {
+    position: relative;
+    height: $line-height;
+    font-size: 1em;
     border-right: 1px SOLID $second-color;
 
     div {
       display: none;
-      position: relative;
-      top: 3em; left: 3em;
+      position: absolute;
+      top: 10px;
+      left: 20px;
+      min-width: 170px;
       padding: .4em;
 
       background-color: darken($background-color, 5);
@@ -44,19 +77,9 @@ body main {
     text-align: center;
     border-bottom: 2px SOLID $second-color;
 
-    th, td.month-cell {
-      font-size: 1.4em;
-      font-weight: 600;
-      color: $foreground-color;
-    }
-
-    td.month-cell {
-      font-size: 1.4em;
-    }
-
     td {
       min-width: 1em;
-      padding: .2em;
+      padding: 0 .2em;
       border-right: 1px SOLID $second-color
     }
   }

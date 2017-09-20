@@ -12,7 +12,6 @@ $(function() {
             selected.push(this);
             $(this).children('div').show();
         }
-        console.log(selected);
     });
 
     tdAbsences.hover(function() {
