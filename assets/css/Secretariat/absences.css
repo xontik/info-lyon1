@@ -40,28 +40,32 @@ li { list-style-type: none; }
 body main { margin: 0; }
 
 #absences_table { display: flex; flex-flow: row nowrap; width: 100%; }
-#absences_table > div > p { min-width: 7em; border-right: 2px SOLID #403e3f; }
-#absences_table > div > p:first-child { border-bottom: 2px SOLID #403e3f; line-height: 50px; font-size: 1.4em; font-weight: 600; text-align: center; color: #e7bd26; }
-#absences_table > div > p:not(:first-child) { height: 25px; padding: 0; line-height: 1.3em; font-size: 1em; border-bottom: 1px SOLID #403e3f; }
-#absences_table > div > p:last-child { border-bottom: 2px SOLID #403e3f; }
 
-#absence_table_wrapper { overflow: auto; }
+#table_static { min-width: 16em; border-right: 2px SOLID #403e3f; }
+#table_static div.wrapper { display: flex; flex-flow: row nowrap; justify-content: flex-end; overflow: visible; }
+#table_static h1 { border-bottom: 2px SOLID #403e3f; line-height: 50px; font-size: 1.4em; font-weight: 600; text-align: center; color: #e7bd26; }
+#table_static p { border-bottom: 1px SOLID #403e3f; }
+#table_static p:last-child { border-bottom: 2px SOLID #403e3f; }
+#table_static #table_group_list p { width: 20px; padding-left: 8px; margin: auto; word-wrap: break-word; letter-spacing: 20px; }
+#table_static #table_stud_list { flex-grow: 1; }
+#table_static #table_stud_list p { flex-basis: 7em; height: 25px; line-height: 25px; font-size: 1em; }
 
-#absences_table_body { width: 100%; border-spacing: 0; border-collapse: collapse; }
-#absences_table_body td { position: relative; height: 25px; font-size: 1em; border-right: 1px SOLID #403e3f; }
-#absences_table_body td div { display: none; position: absolute; top: 10px; left: 20px; min-width: 170px; padding: .4em; background-color: #ededed; border: 3px SOLID rgba(0, 0, 0, 0.6); border-radius: .2em; }
-#absences_table_body td div p:not(:last-child) { color: #202020; }
-#absences_table_body thead { text-align: center; border-bottom: 2px SOLID #403e3f; }
-#absences_table_body thead td { min-width: 1em; padding: 0 .2em; border-right: 1px SOLID #403e3f; }
-#absences_table_body tbody tr { border-bottom: 1px SOLID #403e3f; }
-#absences_table_body tbody tr:last-child { border-bottom: 2px SOLID #403e3f; }
-#absences_table_body tbody tr:nth-child(2n+1) { background-color: #c7c7c7; }
-#absences_table_body tbody th { text-align: left; }
-#absences_table_body td.abs-justifiee { background-color: lightgreen; }
-#absences_table_body .abs-absence { background-color: red; color: red; }
-#absences_table_body .abs-retard { background-color: orange; color: orange; }
-#absences_table_body .abs-infirmerie { background-color: cyan; color: cyan; }
-#absences_table_body .abs-controle { background-color: rebeccapurple; color: rebeccapurple; }
-#absences_table_body td[class^="abs-"] { cursor: pointer; }
+div.wrapper { overflow: auto; }
+div.wrapper table { border-spacing: 0; border-collapse: collapse; }
+div.wrapper table td { position: relative; height: 25px; font-size: 1em; border-right: 1px SOLID #403e3f; }
+div.wrapper table td div { display: none; position: absolute; top: 10px; left: 20px; min-width: 170px; padding: .4em; background-color: #ededed; border: 3px SOLID rgba(0, 0, 0, 0.6); border-radius: .2em; }
+div.wrapper table td div p:not(:last-child) { color: #202020; }
+div.wrapper table thead { text-align: center; border-bottom: 2px SOLID #403e3f; }
+div.wrapper table thead td { min-width: 1em; padding: 0 .2em; border-right: 1px SOLID #403e3f; }
+div.wrapper table tbody tr { border-bottom: 1px SOLID #403e3f; }
+div.wrapper table tbody tr:last-child { border-bottom: 2px SOLID #403e3f; }
+div.wrapper table tbody tr:nth-child(2n+1) { background-color: #c7c7c7; }
+div.wrapper table tbody th { text-align: left; }
+div.wrapper table td.abs-justifiee { background-color: lightgreen; }
+div.wrapper table .abs-absence { background-color: red; color: red; }
+div.wrapper table .abs-retard { background-color: orange; color: orange; }
+div.wrapper table .abs-infirmerie { background-color: cyan; color: cyan; }
+div.wrapper table .abs-controle { background-color: rebeccapurple; color: rebeccapurple; }
+div.wrapper table td[class^="abs-"] { cursor: pointer; }
 
 /*# sourceMappingURL=absences.css.map */

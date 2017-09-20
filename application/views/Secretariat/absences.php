@@ -3,17 +3,30 @@
 
         </section>
         <section id="absences_table">
-            <div>
-                <p>Étudiants</p>
-                <?php
-                foreach($data['absences'] as $student) {
-                    echo '<p>' . $student['nom'] . ' ' . $student['prenom'] . '</p>';
-                }
-                ?>
+            <div id="table_static">
+                <h1>Étudiants</h1>
+                <div class="wrapper">
+                    <div id="table_group_list">
+                        <?php
+                        foreach($data['groups'] as $group => $students_number) {
+                            echo '<p style="height: ' . ($students_number * 26 - 1) . 'px; ">'
+                                . $group
+                                . '</p>';
+                        }
+                        ?>
+                    </div>
+                    <div id="table_stud_list">
+                        <?php
+                        foreach($data['absences'] as $student) {
+                            echo '<p>' . $student['nom'] . ' ' . $student['prenom'] . '</p>';
+                        }
+                        ?>
+                    </div>
+                </div>
             </div>
-            <div id="absence_table_wrapper">
-                <table id="absences_table_body">
-                    <thead id="absences_table_head">
+            <div class="wrapper">
+                <table>
+                    <thead>
                         <tr>
                             <?php
                             $curr_date = clone $data['begin_date'];
@@ -23,11 +36,12 @@
                                 if ($last_month !== $curr_month) {
                                     $colspan = days_in_month($curr_date->format('n'), $curr_date->format('Y'));
                                     echo '<td colspan="' . $colspan . '">' . $curr_month . '</td>';
+                                    $last_month = $curr_month;
                                 }
 
-                                $last_month = $curr_month;
                                 $curr_date->modify('+1 day');
                             }
+                            unset($curr_month);
                             unset($last_month);
                             ?>
                         </tr>
@@ -79,7 +93,6 @@
                                 <?php
                                 }
                                 echo '</td>';
-
                             } // for each day
 
                             echo '</tr>';

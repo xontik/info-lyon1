@@ -5,128 +5,147 @@ body main {
 }
 
 $line-height: 25px;
+$border-nosize: SOLID $second-color;
 
 #absences_table {
-
   display: flex;
   flex-flow: row nowrap;
   width: 100%;
+}
 
-  > div > p {
-    min-width: 7em;
-    border-right: 2px SOLID $second-color;
+#table_static {
+  min-width: 16em;
+  border-right: 2px $border-nosize;
 
-    &:first-child {
-      border-bottom: 2px SOLID $second-color;
-      line-height: 2*$line-height;
-      font-size: 1.4em;
-      font-weight: 600;
-      text-align: center;
-      color: $foreground-color;
-    }
+  div.wrapper {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-end;
+    overflow: visible;
+  }
 
-    &:not(:first-child) {
-      height: $line-height;
-      padding: 0;
-      line-height: 1.3em;
-      font-size: 1em;
-      border-bottom: 1px SOLID $second-color;
-    }
+  h1 {
+    border-bottom: 2px $border-nosize;
+    line-height: 2*$line-height;
+    font-size: 1.4em;
+    font-weight: 600;
+    text-align: center;
+    color: $foreground-color;
+  }
+
+  p {
+    border-bottom: 1px $border-nosize;
 
     &:last-child {
-      border-bottom: 2px SOLID $second-color;
+      border-bottom: 2px $border-nosize;
+    }
+  }
+
+  #table_group_list p {
+    width: 20px;
+    padding-left: 8px;
+    margin: auto;
+    word-wrap: break-word;
+    letter-spacing: 20px;
+  }
+
+  #table_stud_list {
+    flex-grow: 1;
+    p {
+      flex-basis: 7em;
+      height: $line-height;
+      line-height: $line-height;
+      font-size: 1em;
     }
   }
 }
 
-#absence_table_wrapper {
+div.wrapper {
   overflow: auto;
-}
 
-#absences_table_body {
-  width: 100%;
-
-  border-spacing: 0;
-  border-collapse: collapse;
-
-  td {
-    position: relative;
-    height: $line-height;
-    font-size: 1em;
-    border-right: 1px SOLID $second-color;
-
-    div {
-      display: none;
-      position: absolute;
-      top: 10px;
-      left: 20px;
-      min-width: 170px;
-      padding: .4em;
-
-      background-color: darken($background-color, 5);
-      border: 3px SOLID rgba(0, 0, 0, .6);
-      border-radius: .2em;
-
-      p:not(:last-child) {
-        color: $text-color;
-      }
-    }
-  }
-
-  thead {
-    text-align: center;
-    border-bottom: 2px SOLID $second-color;
+  table {
+    border-spacing: 0;
+    border-collapse: collapse;
 
     td {
-      min-width: 1em;
-      padding: 0 .2em;
-      border-right: 1px SOLID $second-color
+      position: relative;
+      height: $line-height;
+      font-size: 1em;
+      border-right: 1px $border-nosize;
+
+      div {
+        display: none;
+        position: absolute;
+        top: 10px;
+        left: 20px;
+        min-width: 170px;
+        padding: .4em;
+
+        background-color: darken($background-color, 5);
+        border: 3px SOLID rgba(0, 0, 0, .6);
+        border-radius: .2em;
+
+        p:not(:last-child) {
+          color: $text-color;
+        }
+      }
     }
-  }
 
-  tbody {
-    tr {
-      border-bottom: 1px SOLID $second-color;
+    thead {
+      text-align: center;
+      border-bottom: 2px $border-nosize;
 
-      &:last-child {
-        border-bottom: 2px SOLID $second-color;
+      td {
+        min-width: 1em;
+        padding: 0 .2em;
+        border-right: 1px $border-nosize
+      }
+    }
+
+    tbody {
+      tr {
+        border-bottom: 1px $border-nosize;
+
+        &:last-child {
+          border-bottom: 2px $border-nosize;
+        }
+
+        &:nth-child(2n+1) {
+          background-color: darken($background-color, 20);
+        }
       }
 
-      &:nth-child(2n+1) {
-        background-color: darken($background-color, 20);
+      th {
+        text-align: left;
       }
     }
 
-    th {
-      text-align: left;
+    td.abs-justifiee {
+      background-color: lightgreen;
     }
-  }
 
-  td.abs-justifiee {
-    background-color: lightgreen;
-  }
+    .abs-absence {
+      background-color: red;
+      color: red;
+    }
 
-  .abs-absence {
-    background-color: red;
-    color: red;
-  }
+    .abs-retard {
+      background-color: orange;
+      color: orange;
+    }
 
-  .abs-retard {
-    background-color: orange;
-    color: orange;
-  }
+    .abs-infirmerie {
+      background-color: cyan;
+      color: cyan;
+    }
 
-  .abs-infirmerie {
-    background-color: cyan;
-    color: cyan;
-  }
+    .abs-controle {
+      background-color: rebeccapurple;
+      color: rebeccapurple;
+    }
 
-  .abs-controle {
-    background-color: rebeccapurple;
-    color: rebeccapurple;
-  }
-
-  td[class^="abs-"] {
-    cursor: pointer;
+    td[class^="abs-"] {
+      cursor: pointer;
+    }
   }
 }

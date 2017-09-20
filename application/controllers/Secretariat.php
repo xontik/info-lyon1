@@ -41,16 +41,25 @@ class Secretariat extends CI_Controller {
         }
 
         // Associate students absences to the day it happened
+        $groups = array();
         $assoc = array();
+
         foreach ($students as $student) {
             if (!isset($assoc[$student->numEtudiant])) {
-                $assoc[$student->numEtudiant] = array(
+                $assoc[$student->numEtudiant] = array (
                     'numEtudiant' => $student->numEtudiant,
                     'nom' => $student->nom,
                     'prenom' => $student->prenom,
                     'mail' => $student->mail,
+                    'groupe' => $student->nomGroupe,
                     'absences' => array()
                 );
+
+                if (isset($groups[$student->nomGroupe])) {
+                    $groups[$student->nomGroupe] += 1;
+                } else {
+                    $groups[$student->nomGroupe] = 1;
+                }
             }
 
             if (isset($abs_assoc[$student->numEtudiant])) {
@@ -67,6 +76,7 @@ class Secretariat extends CI_Controller {
             'title' => 'Absences',
             'data' => array(
                 'absences' => $assoc,
+                'groups' => $groups,
                 'begin_date' => $period->getBeginDate(),
                 'day_number' => $period->getDays()
             )

@@ -12,10 +12,17 @@ class students_model extends CI_Model {
      * @return array The id, name, surname and email of all students in the database
      */
     public function getStudents() {
-        return $this->db->select('numEtudiant, nom, prenom, mail')
-            ->order_by('nom', 'asc')
-            ->order_by('prenom', 'asc')
-            ->get('Etudiants')
+        return $this->db->select('numEtudiant, nom, prenom, mail, CONCAT(Groupes.nomGroupe, Semestres.typeSemestre) as nomGroupe')
+            ->from('Etudiants')
+            ->join('EtudiantGroupe', 'numEtudiant')
+            ->join('Groupes', 'idGroupe')
+            ->join('Semestres', 'idSemestre')
+            ->where('Semestres.actif', '1')
+            ->order_by('Semestres.typeSemestre', 'asc')
+            ->order_by('Groupes.idGroupe', 'asc')
+            ->order_by('Etudiants.nom', 'asc')
+            ->order_by('Etudiants.prenom', 'asc')
+            ->get()
             ->result();
     }
 
