@@ -1,6 +1,13 @@
     <main>
         <section id="color-code">
-
+            <ul>
+                <li>Pas d'absence</li>
+                <li>Absence justifiée</li>
+                <li>Absence</li>
+                <li>Retard</li>
+                <li>Contrôle</li>
+                <li>Infirmerie</li>
+            </ul>
         </section>
         <section id="absences_table">
             <div id="table_static">

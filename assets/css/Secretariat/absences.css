@@ -39,6 +39,15 @@ li { list-style-type: none; }
 
 body main { margin: 0; }
 
+#color-code { margin-bottom: 1em; }
+#color-code ul { display: flex; flex-flow: row nowrap; justify-content: space-around; width: 70%; }
+#color-code ul li::after { content: ''; display: inline-block; position: relative; top: 2px; width: 15px; height: 15px; border: 1px SOLID #403e3f; margin-left: 5px; }
+#color-code ul li:nth-child(2)::after { background-color: lightgreen; }
+#color-code ul li:nth-child(3)::after { background-color: red; }
+#color-code ul li:nth-child(4)::after { background-color: orange; }
+#color-code ul li:nth-child(5)::after { background-color: rebeccapurple; }
+#color-code ul li:nth-child(6)::after { background-color: cyan; }
+
 .group-change { border-top: 2px SOLID #403e3f; }
 
 #absences_table { display: flex; flex-flow: row nowrap; width: 100%; }

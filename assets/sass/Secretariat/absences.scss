@@ -7,6 +7,40 @@ body main {
 $line-height: 25px;
 $border-nosize: SOLID $second-color;
 
+$color-justifiee: lightgreen;
+$color-absence: red;
+$color-retard: orange;
+$color-controle: rebeccapurple;
+$color-infirmerie: cyan;
+
+#color-code {
+  margin-bottom: 1em;
+
+  ul {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-around;
+    width: 70%;
+
+    li::after {
+      content: '';
+      display: inline-block;
+      position: relative;
+      top: 2px;
+      width: 15px;
+      height: 15px;
+      border: 1px $border-nosize;
+      margin-left: 5px;
+    }
+
+    li:nth-child(2)::after { background-color: $color-justifiee; }
+    li:nth-child(3)::after { background-color: $color-absence; }
+    li:nth-child(4)::after { background-color: $color-retard; }
+    li:nth-child(5)::after { background-color: $color-controle; }
+    li:nth-child(6)::after { background-color: $color-infirmerie; }
+  }
+}
+
 .group-change {
   border-top: 2px $border-nosize;
 }
@@ -133,27 +167,27 @@ div.wrapper {
     }
 
     td.abs-justifiee {
-      background-color: lightgreen;
+      background-color: $color-justifiee;
     }
 
     .abs-absence {
-      background-color: red;
-      color: red;
+      background-color: $color-absence;
+      color: $color-absence;
     }
 
     .abs-retard {
-      background-color: orange;
-      color: orange;
+      background-color: $color-retard;
+      color: $color-retard;
     }
 
     .abs-infirmerie {
-      background-color: cyan;
-      color: cyan;
+      background-color: $color-infirmerie;
+      color: $color-infirmerie;
     }
 
     .abs-controle {
-      background-color: rebeccapurple;
-      color: rebeccapurple;
+      background-color: $color-controle;
+      color: $color-controle;
     }
 
     td[class^="abs-"] {
