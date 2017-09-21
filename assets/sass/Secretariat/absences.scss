@@ -13,6 +13,9 @@ $color-retard: orange;
 $color-controle: rebeccapurple;
 $color-infirmerie: cyan;
 
+$color-line1: $background-color;
+$color-line2: darken($background-color, 20);
+
 #color-code {
   margin-bottom: 1em;
 
@@ -33,6 +36,7 @@ $color-infirmerie: cyan;
       margin-left: 5px;
     }
 
+    li:nth-child(1)::after { background: linear-gradient(to right, $color-line1 50%, $color-line2 50%); }
     li:nth-child(2)::after { background-color: $color-justifiee; }
     li:nth-child(3)::after { background-color: $color-absence; }
     li:nth-child(4)::after { background-color: $color-retard; }
@@ -75,30 +79,42 @@ $color-infirmerie: cyan;
   }
 }
 
-#table_group_list p {
-  width: 20px;
-  padding-left: 8px;
-  margin: auto;
+#table_group_list {
+  width: 10%;
 
-  word-wrap: break-word;
-  letter-spacing: 20px;
+  p {
+    max-width: 20px;
+    padding-left: 8px;
+    margin: auto;
 
-  overflow: hidden;
+    word-wrap: break-word;
+    letter-spacing: 20px;
 
-  &:not(:first-child) {
-    border-top: 2px $border-nosize;
+    overflow: hidden;
+
+    &:not(:first-child) {
+      border-top: 2px $border-nosize;
+    }
   }
 }
 
 #table_stud_list {
-  flex-grow: 1;
+  width: 90%;
 
   p {
     flex-basis: 7em;
     height: $line-height;
     line-height: $line-height;
+    padding-left: 5px;
 
     font-size: 1em;
+
+    white-space: nowrap;
+    overflow: hidden;
+
+    &:nth-child(2n+1) {
+      background-color: $color-line2;
+    }
 
     &:not(:first-child):not(.group-change) {
       border-top: 1px $border-nosize;
@@ -157,7 +173,7 @@ div.wrapper {
         }
 
         &:nth-child(2n+1) {
-          background-color: darken($background-color, 20);
+          background-color: $color-line2;
         }
       }
 

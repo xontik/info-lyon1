@@ -42,6 +42,7 @@ body main { margin: 0; }
 #color-code { margin-bottom: 1em; }
 #color-code ul { display: flex; flex-flow: row nowrap; justify-content: space-around; width: 70%; }
 #color-code ul li::after { content: ''; display: inline-block; position: relative; top: 2px; width: 15px; height: 15px; border: 1px SOLID #403e3f; margin-left: 5px; }
+#color-code ul li:nth-child(1)::after { background: linear-gradient(to right, #fafafa 50%, #c7c7c7 50%); }
 #color-code ul li:nth-child(2)::after { background-color: lightgreen; }
 #color-code ul li:nth-child(3)::after { background-color: red; }
 #color-code ul li:nth-child(4)::after { background-color: orange; }
@@ -57,11 +58,13 @@ body main { margin: 0; }
 #table_static p:last-child { border-bottom: 2px SOLID #403e3f; }
 #table_static h1 { border-bottom: 2px SOLID #403e3f; line-height: 50px; font-size: 1.4em; font-weight: 600; text-align: center; color: #e7bd26; }
 
-#table_group_list p { width: 20px; padding-left: 8px; margin: auto; word-wrap: break-word; letter-spacing: 20px; overflow: hidden; }
+#table_group_list { width: 10%; }
+#table_group_list p { max-width: 20px; padding-left: 8px; margin: auto; word-wrap: break-word; letter-spacing: 20px; overflow: hidden; }
 #table_group_list p:not(:first-child) { border-top: 2px SOLID #403e3f; }
 
-#table_stud_list { flex-grow: 1; }
-#table_stud_list p { flex-basis: 7em; height: 25px; line-height: 25px; font-size: 1em; }
+#table_stud_list { width: 90%; }
+#table_stud_list p { flex-basis: 7em; height: 25px; line-height: 25px; padding-left: 5px; font-size: 1em; white-space: nowrap; overflow: hidden; }
+#table_stud_list p:nth-child(2n+1) { background-color: #c7c7c7; }
 #table_stud_list p:not(:first-child):not(.group-change) { border-top: 1px SOLID #403e3f; }
 
 div.wrapper { overflow: auto; }
