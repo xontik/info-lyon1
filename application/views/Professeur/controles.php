@@ -5,25 +5,33 @@
 
   </p>
   <br>
+  <?php
+  if(count($data['controls']) > 0) {
+    ?>
   <form method="post" action="<?php echo base_url('professeur/controle')?>">
     <?php
-    echo "<p>Groupes :</p>";
-    foreach ($data['groupes'] as $groupe) {
-      $checked = "";
-      if(in_array($groupe->nomGroupe,$data["restrict"]["groupes"])){
-        $checked = "checked";
+    if(count($data['groupes']) > 1){
+      echo "<p>Groupes :</p>";
+      foreach ($data['groupes'] as $groupe) {
+        $checked = "";
+        if(in_array($groupe->idGroupe,$data["restrict"]["groupes"])){
+          $checked = "checked";
+        }
+        echo '<label for="id'.$groupe->nomGroupe.'">'.$groupe->nomGroupe.$groupe->typeSemestre.'</label><input type="checkbox" id="id'.$groupe->nomGroupe.'" name="'.$groupe->idGroupe.'" '.$checked.'>';
       }
-      echo '<label for="id'.$groupe->nomGroupe.'">'.$groupe->nomGroupe.'</label><input type="checkbox" id="id'.$groupe->nomGroupe.'" name="'.$groupe->nomGroupe.'" '.$checked.'>';
     }
-    echo "<p>Matieres :</p>";
-    foreach ($data['matieres'] as $matiere) {
-      $checked = "";
-      if(in_array($matiere->codeMatiere,$data["restrict"]["matieres"])){
-        $checked = "checked";
+    if(count($data['matieres'])){
+      echo "<p>Matieres :</p>";
+      foreach ($data['matieres'] as $matiere) {
+        $checked = "";
+        if(in_array($matiere->codeMatiere,$data["restrict"]["matieres"])){
+          $checked = "checked";
+        }
+        echo '<label for="id'.$matiere->codeMatiere.'">'.$matiere->nomMatiere.'</label><input type="checkbox" id="id'.$matiere->codeMatiere.'" name="'.$matiere->codeMatiere.'" '.$checked.' >';
       }
-      echo '<label for="id'.$matiere->codeMatiere.'">'.$matiere->nomMatiere.'</label><input type="checkbox" id="id'.$matiere->codeMatiere.'" name="'.$matiere->codeMatiere.'" '.$checked.' >';
+
     }
-    //TODO verifier ds promo ou non in array restrict etc
+
 
     echo "<p>Type de controles</p>";
     $checked  = "";
@@ -43,7 +51,7 @@
   <br>
   <?php
   $mat = null;
-  if(count($data['controls']) > 0) {
+
     ?>
     <h2>Controles</h2>
     <table>
