@@ -79,7 +79,7 @@ class Professeur extends CI_Controller {
     $restrict = array("groupes" => array(),"matieres" => array(), "DS" => array()); //le filtre
     /*
     echo "<pre>";
-    var_dump($matieres);
+    var_dump($groupes);
     echo "</pre>";
     //*/
     if(isset($_POST["filter"])){
@@ -89,7 +89,8 @@ class Professeur extends CI_Controller {
       $mat = array(); //from bd
 
       foreach ($groupes as $groupe) {
-          array_push($grp,$groupe->nomGroupe);
+
+          array_push($grp,$groupe->idGroupe);
       }
       foreach ($matieres as $matiere){
           array_push($mat,$matiere->codeMatiere);
@@ -114,11 +115,11 @@ class Professeur extends CI_Controller {
 
       /*
       echo "<pre>";
-      var_dump($restrict);
+      var_dump($controls);
       echo "</pre>";
       //*/
       foreach ($controls as $key => $control) {
-          if(!is_null($control->nomGroupe) && !empty($restrict["groupes"]) && !in_array($control->nomGroupe, $restrict["groupes"]) ){
+          if(!is_null($control->nomGroupe) && !empty($restrict["groupes"]) && !in_array($control->idGroupe, $restrict["groupes"]) ){
             //echo $control->nomGroupe;
             unset($controls[$key]);
           }

@@ -26,11 +26,11 @@ class Control_model extends CI_Model
   {
     $sql = "SELECT foo.codeMatiere,foo.nomMatiere,foo.idControle,foo.nomControle,
     foo.coefficient,foo.diviseur,foo.typeControle,foo.median,foo.average,
-    foo.dateControle,foo.coefficientMatiere,foo.nomGroupe
+    foo.dateControle,foo.coefficientMatiere,foo.nomGroupe,foo.idGroupe
     from (
       Select codeMatiere,nomMatiere,idControle,nomControle,
       coefficient,diviseur,typeControle,median,average,
-      dateControle,coefficientMatiere,nomGroupe FROM Controles
+      dateControle,coefficientMatiere,nomGroupe,idGroupe FROM Controles
         JOIN Enseignements USING (idEnseignement)
         JOIN Matieres USING (codeMatiere)
         JOIN Groupes USING (idGroupe)
@@ -39,7 +39,7 @@ class Control_model extends CI_Model
       UNION
       Select distinct codeMatiere,nomMatiere,idControle,nomControle,
       coefficient,diviseur,typeControle,median,average,
-      dateControle,coefficientMatiere,null as nomGroupe FROM Controles
+      dateControle,coefficientMatiere,null as nomGroupe,null as idGroupe FROM Controles
         JOIN DsPromo USING (idDsPromo)
         join Matieres using (codeMatiere)
         join Enseignements USING (codeMatiere)
@@ -48,7 +48,7 @@ class Control_model extends CI_Model
       UNION
       Select codeMatiere,nomMatiere,idControle,nomControle,
       coefficient,diviseur,typeControle,median,average,
-      dateControle,coefficientMatiere,nomGroupe FROM Controles
+      dateControle,coefficientMatiere,nomGroupe,idGroupe FROM Controles
         JOIN Enseignements USING (idEnseignement)
         JOIN Matieres USING (codeMatiere)
         JOIN Groupes USING (idGroupe)
@@ -58,7 +58,7 @@ class Control_model extends CI_Model
       UNION
       Select codeMatiere,nomMatiere,idControle,nomControle,
       controles.coefficient,diviseur,typeControle,median,average,
-      dateControle,coefficientMatiere,null as nomGroupe FROM Controles
+      dateControle,coefficientMatiere,null as nomGroupe,null as idGroupe FROM Controles
         JOIN DsPromo USING (idDsPromo)
         join Matieres USING (codeMatiere)
         JOIN Modules using (codeModule)
@@ -190,18 +190,18 @@ UNION
 
     public function getGroupes($profId){
       $sql = "SELECT distinct * from (
-      SELECT nomGroupe FROM Enseignements
+      SELECT nomGroupe,typeSemestre,idGroupe FROM Enseignements
   join Groupes using(idGroupe)
   join Matieres using(codeMatiere)
   join Semestres using (idSemestre)
   WHERE idProfesseur = ? and actif = 1
   UNION
-  SELECT nomGroupe FROM Enseignements
+  SELECT nomGroupe,typeSemestre,idGroupe FROM Enseignements
   JOIN Matieres using (codeMatiere)
   join Referents using (codeModule)
   join Semestres using (idSemestre)
   JOIN Groupes using (idGroupe,idSemestre)
-  WHERE Referents.idProfesseur = ? and actif = 1) as foo ";
+  WHERE Referents.idProfesseur = ? and actif = 1) as foo ORDER BY typeSemestre ";
 
       return $this->db->query($sql, array($profId,$profId))->result();
     }

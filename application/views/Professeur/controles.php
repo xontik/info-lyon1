@@ -10,10 +10,10 @@
     echo "<p>Groupes :</p>";
     foreach ($data['groupes'] as $groupe) {
       $checked = "";
-      if(in_array($groupe->nomGroupe,$data["restrict"]["groupes"])){
+      if(in_array($groupe->idGroupe,$data["restrict"]["groupes"])){
         $checked = "checked";
       }
-      echo '<label for="id'.$groupe->nomGroupe.'">'.$groupe->nomGroupe.'</label><input type="checkbox" id="id'.$groupe->nomGroupe.'" name="'.$groupe->nomGroupe.'" '.$checked.'>';
+      echo '<label for="id'.$groupe->nomGroupe.'">'.$groupe->nomGroupe.$groupe->typeSemestre.'</label><input type="checkbox" id="id'.$groupe->nomGroupe.'" name="'.$groupe->idGroupe.'" '.$checked.'>';
     }
     echo "<p>Matieres :</p>";
     foreach ($data['matieres'] as $matiere) {
