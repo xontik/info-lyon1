@@ -24,13 +24,6 @@ class Secretariat extends CI_Controller {
             $this->semester_model->getSemesterId($semester)
         );
 
-        // Check if semester end date is later than now
-        $now = new DateTime();
-        if ($period->getEndDate()->diff($now)->invert === 1) {
-            // if so, change it to now
-            $period->setEndDate($now);
-        }
-
         $students = $this->students_model->getStudents();
         $absences =  $this->absence_model->getAbsencesInPeriod($period);
 
