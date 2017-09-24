@@ -142,7 +142,7 @@ class Professeur extends CI_Controller {
     }
 
 
-    $css = array("test");
+    $css = array("Professeurs/notes");
     $js = array("debug");
     $title = "Controles";
     $data = array("controls" => $controls, "groupes" => $groupes, "matieres" => $matieres,"restrict" => $restrict);

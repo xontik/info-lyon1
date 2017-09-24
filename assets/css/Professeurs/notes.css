@@ -15,4 +15,16 @@ li { list-style-type: none; }
 
 .dropdown::after { content: ''; width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 9px solid #ffffff; }
 
+main { /* corps du tableau */ }
+main .ajoutcontole { color: #e7bd26; border: 1px groove #403e3f; border-radius: 5px; padding: 10px 5px; }
+main .ajoutcontole:hover { color: #e7bd26; background-color: #403e3f; font-size: 1rem; border-width: 1px; border-style: groove; border-color: black; border-radius: 5px; padding: 10px 5px; }
+main #table { border-collapse: collapse; empty-cells: show; border: 2px solid #e7bd26; }
+main #table > caption { color: #e7bd26; text-align: left; font-size: 200%; border-bottom: .2em solid #403e3f; margin-bottom: 1em; }
+main #table th { text-align: center; font-variant: small-caps; padding-left: 2rem; padding-right: 2rem; color: #e7bd26; background-color: #403e3f; border: 2px solid #e7bd26; padding: 1em 1em 1em 1em; }
+main tr:nth-child(even) { background: #CCC; }
+main tr:nth-child(odd) { background: #ffffff; }
+main #table td { text-align: center; padding: 1em 1em 1em 1em; color: #403e3f; }
+main .suppr { color: red; border: 1px solid red; border-radius: 2px; padding: 3px; }
+main .edit { border: 1px solid #403e3f; border-radius: 2px; padding: 3px; }
+
 /*# sourceMappingURL=notes.css.map */

@@ -1,7 +1,7 @@
 <main>
   <p>
-    <a href="<?php echo base_url('professeur/addControle')?>" >Ajouter un controle</a><br>
-    <a href="<?php echo base_url('professeur/addControle/promo')?>" >Ajouter un DS de promo</a><br>
+    <a class="ajoutcontole" href="<?php echo base_url('professeur/addControle')?>" >Ajouter un controle</a>
+    <a class="ajoutcontole" href="<?php echo base_url('professeur/addControle/promo')?>" >Ajouter un DS de promo</a>
 
   </p>
   <br>
@@ -33,7 +33,7 @@
     }
 
 
-    echo "<p>Type de controles</p>";
+    echo "<p>Type de controles :</p>";
     $checked  = "";
     if(in_array("DSPROMO",$data["restrict"]["DS"])){
       $checked = "checked";
@@ -53,8 +53,9 @@
   $mat = null;
 
     ?>
-    <h2>Controles</h2>
-    <table>
+    
+    <table id="table">
+	<caption>Controles</caption>
       <tr>
         <th>Matière</th>
         <th>Libélé</th>
@@ -84,9 +85,9 @@
         echo "<td>". ($control->median != null ? ( $control->median) : "Non calculée") . "</td>";
         echo "<td>". ($control->average != null ? ($control->average) : "Non calculée") . "</td>";
         echo "<td>". $date->format("d/m/Y") . "</td>";
-        echo "<td><a href='" . base_url("process_professeur/deletecontrole/" . $control->idControle) . "'>X</a></td>";
-        echo "<td><a href='" . base_url("professeur/editcontrole/" . $control->idControle) . "'>Edit</a></td>";
-        echo "<td><a href='" . base_url("professeur/ajoutNotes/" . $control->idControle) . "'>Notes</a></td>";
+        echo "<td><a class='suppr' href='" . base_url("process_professeur/deletecontrole/" . $control->idControle) . "'>X</a></td>";
+        echo "<td><a class='edit' href='" . base_url("professeur/editcontrole/" . $control->idControle) . "'>Edit</a></td>";
+        echo "<td><a class='edit' href='" . base_url("professeur/ajoutNotes/" . $control->idControle) . "'>Notes</a></td>";
         echo "</tr>";
 
       }

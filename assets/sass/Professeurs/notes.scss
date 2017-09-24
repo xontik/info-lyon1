@@ -1,5 +1,72 @@
 @import '../style';
 
 main {
+	.ajoutcontole{
+		color:$foreground-color;
+		border: 1px groove #403e3f;
+		border-radius:5px;
+		padding:10px 5px;
+	}
+	.ajoutcontole:hover{
+		color:$foreground-color;
+		background-color:#403e3f;
+		font-size:1rem;
+		border-width:1px;
+		border-style:groove;
+		border-color:black;
+		border-radius:5px;
+		padding:10px 5px;
+	}
 	
+	#table {
+	  border-collapse: collapse;
+	  empty-cells: show;
+	  border: 2px solid $foreground-color;
+	  }
+
+	
+	#table > caption {
+	  color:$foreground-color;
+	  text-align: left;
+	  font-size: 200%;
+	  border-bottom: .2em solid #403e3f;
+	  margin-bottom: 1em;
+	 }
+	 
+	#table th {
+		text-align:center;
+		font-variant:small-caps;
+		padding-left: 2rem;
+		padding-right: 2rem;
+		color :$foreground-color;
+		background-color:#403e3f;
+		border:2px solid $foreground-color;
+		padding:1em 1em 1em 1em;
+	  }
+	 tr:nth-child(even){
+	 background: #CCC;
+	 }
+	 tr:nth-child(odd) {
+	 background: #ffffff;
+	 }
+	/* corps du tableau */
+	#table td {
+		text-align:center;
+		padding:1em 1em 1em 1em;
+		color:#403e3f;
+		
+	  }
+	  
+	 .suppr{
+	 color:red;
+	 border:1px solid red;
+	 border-radius:2px;
+	 padding:3px;
+	 }
+	 .edit{
+	 border:1px solid #403e3f;
+	 border-radius:2px;
+	 padding:3px;
+	 }
+	 
 }
