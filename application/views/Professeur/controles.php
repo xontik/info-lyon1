@@ -1,99 +1,117 @@
-<main>
-  <p>
-    <a class="ajoutcontole" href="<?php echo base_url('professeur/addControle')?>" >Ajouter un controle</a>
-    <a class="ajoutcontole" href="<?php echo base_url('professeur/addControle/promo')?>" >Ajouter un DS de promo</a>
+    <main>
+        <div id="control-add">
+            <a href="<?= base_url('professeur/addControle') ?>">Ajouter un controle</a>
+            <a href="<?= base_url('professeur/addControle/promo') ?>">Ajouter un DS de promo</a>
+        </div>
+        <?php
+        if (count($data['controls']) > 0) {
+            ?>
+            <form method="post" action="/Professeur/Controle" id="filters">
+                <?php
+                // Group filter
+                if (count($data['groupes']) > 1) {
+                    echo '<div>';
+                    echo '<h2>Groupes :</h2>';
+                    foreach ($data['groupes'] as $groupe) {
+                        $checked = '';
+                        if (in_array($groupe->idGroupe,$data['restrict']['groupes'])) {
+                            $checked = 'checked';
+                        }
+                        echo '<label id="choix" for="id'. $groupe->nomGroupe .'">'. $groupe->nomGroupe . $groupe->typeSemestre .'</label>'
+                            . '<input type="checkbox" id="id'. $groupe->nomGroupe .'" name="'. $groupe->idGroupe .'" '.$checked.'>';
+                    }
+                    echo '</div>';
+                }
 
-  </p>
-  <br>
-  <?php
-  if(count($data['controls']) > 0) {
-    ?>
-  <form method="post" action="<?php echo base_url('professeur/controle')?>">
-    <?php
-    if(count($data['groupes']) > 1){
-      echo "<p class='filtre'>Groupes :</p>";
-      foreach ($data['groupes'] as $groupe) {
-        $checked = "";
-        if(in_array($groupe->idGroupe,$data["restrict"]["groupes"])){
-          $checked = "checked";
-        }
-        echo '<label id="choix" for="id'. $groupe->nomGroupe .'">'. $groupe->nomGroupe . $groupe->typeSemestre .'</label><input type="checkbox" id="id'. $groupe->nomGroupe .'" name="'. $groupe->idGroupe .'" '.$checked.'>';
-      }
-    }
-    if(count($data['matieres'])){
-      echo "<p class='filtre'>Matieres :</p>";
-      foreach ($data['matieres'] as $matiere) {
-        $checked = "";
-        if(in_array($matiere->codeMatiere,$data["restrict"]["matieres"])){
-          $checked = "checked";
-        }
-        echo '<label id="choix" for="id'. $matiere->codeMatiere .'">'.$matiere->nomMatiere.'</label><input type="checkbox" id="id'.$matiere->codeMatiere.'" name="'.$matiere->codeMatiere.'" '.$checked.' >';
-      }
+                // Subject filter
+                if (count($data['matieres'])) {
+                    echo '<div>';
+                    echo '<h2>Matieres :</h2>';
+                    foreach ($data['matieres'] as $matiere) {
+                        $checked = '';
+                        if (in_array($matiere->codeMatiere,$data['restrict']['matieres'])) {
+                            $checked = 'checked';
+                        }
+                        echo '<label id="choix" for="id'. $matiere->codeMatiere .'">'.$matiere->nomMatiere.'</label>'
+                            . '<input type="checkbox" id="id'.$matiere->codeMatiere.'" name="'.$matiere->codeMatiere.'" '.$checked.' >';
+                    }
+                    echo '</div>';
+                }
 
-    }
+                // Control type filter
+                echo '<div>';
+                echo '<h2>Type de controles :</h2>';
+                // Promos
+                $checked  = '';
+                if (in_array('DSPROMO',$data['restrict']['DS'])) {
+                    $checked = 'checked';
+                }
+                echo '<label id="choix" for="idDSPROMO"> Ds Promo </label>'
+                    . '<input type="checkbox" id="idDSPROMO" name="DSPROMO" '.$checked.'>';
 
+                // Class tests
+                $checked  = '';
+                if (in_array('CC',$data['restrict']['DS'])) {
+                    $checked = 'checked';
+                }
+                echo '<label id="choix" for="idCC"> CC </label>'
+                    . '<input type="checkbox" id="idCC" name="CC" '.$checked.'>';
 
-    echo "<p class='filtre'>Type de controles :</p>";
-    $checked  = "";
-    if(in_array("DSPROMO",$data["restrict"]["DS"])){
-      $checked = "checked";
-    }
-    echo '<label id="choix" for="idDSPROMO"> Ds Promo </label><input type="checkbox" id="idDSPROMO" name="DSPROMO" '.$checked.'>';
-    $checked  = "";
-    if(in_array("CC",$data["restrict"]["DS"])){
-      $checked = "checked";
-    }
-    echo '<label id="choix" for="idCC"> CC </label><input type="checkbox" id="idCC" name="CC" '.$checked.'>';
-    ?>
-    <br>
-    <input type="submit" name="filter" value="Filter"/>
-  </form>
-  <br>
-  <?php
-  $mat = null;
+                echo '</div>';
+                ?>
+                <input type="submit" name="filter" value="Filter"/>
+            </form>
+            <?php
+            $mat = null;
 
-    ?>
-    
-    <table id="table">
-	<caption>Controles</caption>
-      <tr>
-        <th>Matière</th>
-        <th>Libélé</th>
-        <th>Groupe</th>
-        <th>Type</th>
-        <th>Coeff</th>
-        <th>Div</th>
-        <th>Mediane</th>
-        <th>Moyenne</th>
-        <th>Date</th>
-        <th>Supprimer</th>
-        <th>Modifier</th>
-        <th>Ajouter Note</th>
-      </tr>
-
-      <?php
-      foreach ($data['controls'] as $control) {
-        $date = date_create_from_format('Y-m-d', $control->dateControle);
-        echo "<tr>";
-
-        echo "<td>". $control->codeMatiere." - ".$control->nomMatiere . "</td>";
-        echo "<td>". $control->nomControle . "</td>";
-        echo "<td>". $control->nomGroupe . "</td>";
-        echo "<td>". $control->typeControle . "</td>";
-        echo "<td>". $control->coefficient . "</td>";
-        echo "<td>". $control->diviseur . "</td>";
-        echo "<td>". ($control->median != null ? ( $control->median) : "Non calculée") . "</td>";
-        echo "<td>". ($control->average != null ? ($control->average) : "Non calculée") . "</td>";
-        echo "<td>". $date->format("d/m/Y") . "</td>";
-        echo "<td><a class='suppr' href='" . base_url("process_professeur/deletecontrole/" . $control->idControle) . "'>X</a></td>";
-        echo "<td><a class='edit' href='" . base_url("professeur/editcontrole/" . $control->idControle) . "'>Edit</a></td>";
-        echo "<td><a class='edit' href='" . base_url("professeur/ajoutNotes/" . $control->idControle) . "'>Notes</a></td>";
-        echo "</tr>";
-
-      }
-
-      echo"</table>";
-    }
-    ?>
-
-  </main>
+            ?>
+            <table id="controls-table">
+                <caption>Controles</caption>
+                <thead>
+                    <tr>
+                        <td>matière</td>
+                        <td>libélé</td>
+                        <td>groupe</td>
+                        <td>type</td>
+                        <td>coeff</td>
+                        <td>div</td>
+                        <td>mediane</td>
+                        <td>moyenne</td>
+                        <td>date</td>
+                        <td>suppr.</td>
+                        <td>edit.</td>
+                        <td>notes</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    foreach ($data['controls'] as $control) {
+                        $date = DateTime::createFromFormat('Y-m-d', $control->dateControle);
+                        echo '<tr>'
+                        . '<td>' . $control->codeMatiere.' - '.$control->nomMatiere . '</td>'
+                        . '<td>' . $control->nomControle . '</td>'
+                        . '<td>' . $control->nomGroupe . '</td>'
+                        . '<td>' . $control->typeControle . '</td>'
+                        . '<td>' . $control->coefficient . '</td>'
+                        . '<td>' . $control->diviseur . '</td>'
+                        . '<td>' . ($control->median != null ? ( $control->median) : 'Non calculée') . '</td>'
+                        . '<td>' . ($control->average != null ? ($control->average) : 'Non calculée') . '</td>'
+                        . '<td>' . $date->format('d/m/Y') . '</td>'
+                        . '<td>'
+                            .'<a href="' . base_url('process_professeur/deletecontrole/' . $control->idControle) . '">'
+                            . html_img('trash_delete.png', 'supprimer')
+                            .'</a>'
+                        . '</td>'
+                        . '<td>'
+                            . '<a href="' . base_url('professeur/editcontrole/' . $control->idControle) . '">'
+                            . html_img('note_edit.png', 'modifier')
+                            . '</a>'
+                        . '</td>'
+                        . '<td><a href="' . base_url('professeur/ajoutNotes/' . $control->idControle) . '">Notes</a></td>'
+                        . '</tr>';
+                    }
+                    ?>
+                </tbody>
+            </table>
+        <?php } ?>
+    </main>

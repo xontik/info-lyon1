@@ -1,98 +1,91 @@
 @import '../style';
 
 main {
-	.ajoutcontole{
-		color:$foreground-color;
-		border: 1px groove #403e3f;
-		border-radius:5px;
-		box-shadow:3px 3px 12px #999;
-		padding:10px 5px;
-	}
-	.ajoutcontole:hover{
-		color:$foreground-color;
-		background-color:#403e3f;
-		border: 1px groove #403e3f;
-		border-radius:5px;
-		box-shadow:3px 3px 12px #999;
-		padding:10px 5px;
-	}
+  $default-box-shadow: 3px 3px 12px #999;
 
-	.filtre{
-	font-variant:small-caps;
-	font-size: x-large;
-	text-align:left;
-	}
-	#choix{
-	color:$foreground-color;
-	font-size: large;
-	}
-	
-	input[type="submit"]{
-	border:1px solid #403e3f;
-	 border-radius:2px;
-	 box-shadow:3px 3px 12px #999;
-	 padding:3px;
-	 font-size: medium;
-	 }
-	
-	
-	
-	
-	#table {
-	  border-collapse: collapse;
-	  empty-cells: show;
-	  border: 2px solid $foreground-color;
-	  }
+  #control-add a {
+    display: inline-block;
+    color: $foreground-color;
+    border: 1px groove $second-color;
+    border-radius: 5px;
+    box-shadow: $default-box-shadow;
+    padding: 10px 5px;
+    margin-right: 8px;
+    margin-bottom: 10px;
 
-	
-	#table > caption {
-	  color:$foreground-color;
-	  text-align: left;
-	  font-size: 200%;
-	  border-bottom: .2em solid #403e3f;
-	  margin-bottom: 1em;
-	 }
-	 
-	#table th {
-		text-align:center;
-		font-variant:small-caps;
-		padding-left: 2rem;
-		padding-right: 2rem;
-		color :$foreground-color;
-		background-color:#403e3f;
-		border:2px solid $foreground-color;
-		padding:1em 1em 1em 1em;
-	  }
-	 tr:nth-child(even){
-	 background: #CCC;
-	 }
-	 tr:nth-child(even):hover{
-	 background:  rgb(132, 132, 132);
-	 }
-	 tr:nth-child(odd) {
-	 background: #ffffff;
-	 }
-	 tr:nth-child(odd):hover {
-	 background: rgb(132, 132, 132);
-	 }
-	/* corps du tableau */
-	#table td {
-		text-align:center;
-		padding:1em 1em 1em 1em;
-		color:#403e3f;
-	 }
-	 .suppr{
-	 color:red;
-	 border:1px solid red;
-	 border-radius:2px;
-	 box-shadow:3px 3px 12px #999;
-	 padding:3px;
-	 }
-	 .edit{
-	 border:1px solid #403e3f;
-	 border-radius:2px;
-	 box-shadow:3px 3px 12px #999;
-	 padding:3px;
-	 }
-	 
+    &:hover {
+      background-color: $second-color;
+    }
+  }
+
+  #filters {
+    color: $foreground-color;
+    font-size: 1.2em;
+
+    h2 {
+      color: $second-color;
+      font-size: 1.3em;
+    }
+
+    input[type="submit"] {
+      border: 1px solid $second-color;
+      border-radius: 2px;
+      box-shadow: $default-box-shadow;
+      padding: 2px 6px;
+      margin: 5px;
+      font-size: .9em;
+    }
+  }
+
+  #controls-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 2em;
+
+    > caption {
+      color: $foreground-color;
+      text-align: left;
+      font-size: 2em;
+      border-bottom: .2em solid $second-color;
+      margin-bottom: .6em;
+    }
+
+    thead td {
+        text-align: center;
+        font-size: 1.4em;
+        font-variant: small-caps;
+        color: $foreground-color;
+        background-color: $second-color;
+        border: 2px solid $foreground-color;
+        padding: 8px;
+    }
+
+    tbody {
+      td {
+        text-align: center;
+        padding: .5em 1em;
+        color: $second-color;
+      }
+
+      tr {
+        &:nth-child(even) {
+          background: darken($background-color, 15);
+        }
+
+        &:nth-child(odd) {
+          background: $background-color;
+        }
+
+        &:hover {
+          background: rgb(132, 132, 132);
+        }
+      }
+
+      img {
+        width: 20px;
+      }
+
+    }
+
+  }
 }
