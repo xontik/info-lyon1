@@ -18,6 +18,9 @@ li { list-style-type: none; }
 main { /* corps du tableau */ }
 main .ajoutcontole { color: #e7bd26; border: 1px groove #403e3f; border-radius: 5px; box-shadow: 3px 3px 12px #999; padding: 10px 5px; }
 main .ajoutcontole:hover { color: #e7bd26; background-color: #403e3f; border: 1px groove #403e3f; border-radius: 5px; box-shadow: 3px 3px 12px #999; padding: 10px 5px; }
+main .filtre { font-variant: small-caps; font-size: x-large; text-align: left; }
+main #choix { color: #e7bd26; font-size: large; }
+main input[type="submit"] { border: 1px solid #403e3f; border-radius: 2px; box-shadow: 3px 3px 12px #999; padding: 3px; font-size: medium; }
 main #table { border-collapse: collapse; empty-cells: show; border: 2px solid #e7bd26; }
 main #table > caption { color: #e7bd26; text-align: left; font-size: 200%; border-bottom: .2em solid #403e3f; margin-bottom: 1em; }
 main #table th { text-align: center; font-variant: small-caps; padding-left: 2rem; padding-right: 2rem; color: #e7bd26; background-color: #403e3f; border: 2px solid #e7bd26; padding: 1em 1em 1em 1em; }

@@ -16,6 +16,27 @@ main {
 		box-shadow:3px 3px 12px #999;
 		padding:10px 5px;
 	}
+
+	.filtre{
+	font-variant:small-caps;
+	font-size: x-large;
+	text-align:left;
+	}
+	#choix{
+	color:$foreground-color;
+	font-size: large;
+	}
+	
+	input[type="submit"]{
+	border:1px solid #403e3f;
+	 border-radius:2px;
+	 box-shadow:3px 3px 12px #999;
+	 padding:3px;
+	 font-size: medium;
+	 }
+	
+	
+	
 	
 	#table {
 	  border-collapse: collapse;
@@ -59,9 +80,7 @@ main {
 		text-align:center;
 		padding:1em 1em 1em 1em;
 		color:#403e3f;
-		
-	  }
-	  
+	 }
 	 .suppr{
 	 color:red;
 	 border:1px solid red;

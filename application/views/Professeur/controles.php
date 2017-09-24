@@ -11,39 +11,39 @@
   <form method="post" action="<?php echo base_url('professeur/controle')?>">
     <?php
     if(count($data['groupes']) > 1){
-      echo "<p>Groupes :</p>";
+      echo "<p class='filtre'>Groupes :</p>";
       foreach ($data['groupes'] as $groupe) {
         $checked = "";
         if(in_array($groupe->idGroupe,$data["restrict"]["groupes"])){
           $checked = "checked";
         }
-        echo '<label for="id'.$groupe->nomGroupe.'">'.$groupe->nomGroupe.$groupe->typeSemestre.'</label><input type="checkbox" id="id'.$groupe->nomGroupe.'" name="'.$groupe->idGroupe.'" '.$checked.'>';
+        echo '<label id="choix" for="id'. $groupe->nomGroupe .'">'. $groupe->nomGroupe . $groupe->typeSemestre .'</label><input type="checkbox" id="id'. $groupe->nomGroupe .'" name="'. $groupe->idGroupe .'" '.$checked.'>';
       }
     }
     if(count($data['matieres'])){
-      echo "<p>Matieres :</p>";
+      echo "<p class='filtre'>Matieres :</p>";
       foreach ($data['matieres'] as $matiere) {
         $checked = "";
         if(in_array($matiere->codeMatiere,$data["restrict"]["matieres"])){
           $checked = "checked";
         }
-        echo '<label for="id'.$matiere->codeMatiere.'">'.$matiere->nomMatiere.'</label><input type="checkbox" id="id'.$matiere->codeMatiere.'" name="'.$matiere->codeMatiere.'" '.$checked.' >';
+        echo '<label id="choix" for="id'. $matiere->codeMatiere .'">'.$matiere->nomMatiere.'</label><input type="checkbox" id="id'.$matiere->codeMatiere.'" name="'.$matiere->codeMatiere.'" '.$checked.' >';
       }
 
     }
 
 
-    echo "<p>Type de controles :</p>";
+    echo "<p class='filtre'>Type de controles :</p>";
     $checked  = "";
     if(in_array("DSPROMO",$data["restrict"]["DS"])){
       $checked = "checked";
     }
-    echo '<label for="idDSPROMO">Ds Promo</label><input type="checkbox" id="idDSPROMO" name="DSPROMO" '.$checked.'>';
+    echo '<label id="choix" for="idDSPROMO"> Ds Promo </label><input type="checkbox" id="idDSPROMO" name="DSPROMO" '.$checked.'>';
     $checked  = "";
     if(in_array("CC",$data["restrict"]["DS"])){
       $checked = "checked";
     }
-    echo '<label for="idCC">CC</label><input type="checkbox" id="idCC" name="CC" '.$checked.'>';
+    echo '<label id="choix" for="idCC"> CC </label><input type="checkbox" id="idCC" name="CC" '.$checked.'>';
     ?>
     <br>
     <input type="submit" name="filter" value="Filter"/>
