@@ -5,16 +5,15 @@ main {
 		color:$foreground-color;
 		border: 1px groove #403e3f;
 		border-radius:5px;
+		box-shadow:3px 3px 12px #999;
 		padding:10px 5px;
 	}
 	.ajoutcontole:hover{
 		color:$foreground-color;
 		background-color:#403e3f;
-		font-size:1rem;
-		border-width:1px;
-		border-style:groove;
-		border-color:black;
+		border: 1px groove #403e3f;
 		border-radius:5px;
+		box-shadow:3px 3px 12px #999;
 		padding:10px 5px;
 	}
 	
@@ -46,8 +45,14 @@ main {
 	 tr:nth-child(even){
 	 background: #CCC;
 	 }
+	 tr:nth-child(even):hover{
+	 background:  rgb(132, 132, 132);
+	 }
 	 tr:nth-child(odd) {
 	 background: #ffffff;
+	 }
+	 tr:nth-child(odd):hover {
+	 background: rgb(132, 132, 132);
 	 }
 	/* corps du tableau */
 	#table td {
@@ -61,11 +66,13 @@ main {
 	 color:red;
 	 border:1px solid red;
 	 border-radius:2px;
+	 box-shadow:3px 3px 12px #999;
 	 padding:3px;
 	 }
 	 .edit{
 	 border:1px solid #403e3f;
 	 border-radius:2px;
+	 box-shadow:3px 3px 12px #999;
 	 padding:3px;
 	 }
 	 
