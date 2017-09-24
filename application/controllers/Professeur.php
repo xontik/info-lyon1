@@ -232,7 +232,7 @@ class Professeur extends CI_Controller {
           $this->session->set_flashdata("notif", array("Vous n'avez pas les droit sur ce controle"));
           redirect("professeur/controle");
         }
-
+        
         $marks = $this->markMod->getMarks($control,$_SESSION["id"]);
 
 

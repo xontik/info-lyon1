@@ -145,7 +145,7 @@ class Mark_model extends CI_Model {
   public function getMarks($control,$profId){
     $CI =& get_instance();
     $CI->load->model("control_model");
-    if(!is_null($control->idDsPromo)){
+    if(!is_null($control->idDSPromo)){
       if($CI->control_model->isReferent($profId,$control->idControle)){
 
 
