@@ -4,6 +4,19 @@ body main {
   margin: 0;
 }
 
+@mixin popup {
+  display: none;
+  position: absolute;
+
+  padding: .3em;
+
+  z-index: 1;
+
+  background-color: darken($background-color, 5);
+  border: 3px SOLID #2d2d2d;
+  border-radius: .2em;
+}
+
 $line-height: 25px;
 $border-nosize: SOLID $second-color;
 
@@ -45,31 +58,31 @@ $color-line2: darken($background-color, 20);
   }
 }
 
-.group-change {
-  border-top: 2px $border-nosize;
-}
-
 #absences_table {
   display: flex;
   flex-flow: row nowrap;
   width: 100%;
+
+  margin-bottom: 2.5em;
 }
 
 #table_static {
   min-width: 16em;
   border-right: 2px $border-nosize;
 
-  div.wrapper {
+  > .wrapper {
     display: flex;
     flex-flow: row nowrap;
     justify-content: flex-end;
+
+    overflow: visible;
   }
 
-  p:last-child {
+  > div:last-child {
     border-bottom: 2px $border-nosize;
   }
 
-  h1 {
+  > h1 {
     border-bottom: 2px $border-nosize;
     line-height: 2*$line-height;
     font-size: 1.4em;
@@ -101,33 +114,62 @@ $color-line2: darken($background-color, 20);
 #table_stud_list {
   width: 90%;
 
-  p {
-    flex-basis: 7em;
+  .group-change {
+    border-top: 1px $border-nosize;
+  }
+
+  > div {
+    position: relative;
     height: $line-height;
     line-height: $line-height;
-    padding-left: 5px;
 
-    font-size: 1em;
+    &:not(:last-of-type) {
+      border-bottom: 1px $border-nosize;
+    }
 
-    white-space: nowrap;
-    overflow: hidden;
-
-    &:nth-child(2n+1) {
+    &:nth-child(odd) {
       background-color: $color-line2;
     }
 
-    &:not(:first-child):not(.group-change) {
-      border-top: 1px $border-nosize;
+    p {
+      flex-basis: 7em;
+      padding-left: 5px;
+
+      font-size: 1em;
+
+      white-space: nowrap;
+      overflow: hidden;
+
+      + img {
+        $image-width: 16px;
+        position: absolute;
+        right: $image-width / 4;
+        top: ($line-height - $image-width) / 2;
+        width: $image-width;
+
+        cursor: pointer;
+      }
+    }
+
+    > div {
+      @include popup();
+      right: 0;
+
+      text-align: center;
     }
   }
 }
 
-div.wrapper {
+#table-wrapper {
   overflow: auto;
 
   table {
     border-spacing: 0;
     border-collapse: collapse;
+
+    .group-change {
+      border-top: 2px $border-nosize;
+    }
 
     td {
       position: relative;
@@ -136,16 +178,11 @@ div.wrapper {
       border-right: 1px $border-nosize;
 
       div {
-        display: none;
-        position: absolute;
+        @include popup();
+
         top: 10px;
         left: 20px;
         min-width: 170px;
-        padding: .4em;
-
-        background-color: darken($background-color, 5);
-        border: 3px SOLID rgba(0, 0, 0, .6);
-        border-radius: .2em;
 
         p:not(:last-child) {
           color: $text-color;

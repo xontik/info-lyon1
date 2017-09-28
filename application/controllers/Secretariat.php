@@ -59,6 +59,12 @@ class Secretariat extends CI_Controller {
                 foreach ($abs_assoc[$student->numEtudiant] as $absence) {
                     $index = $period->getDays(new DateTime($absence->dateDebut));
                     $assoc[$student->numEtudiant]['absences'][$index] = $absence;
+
+                    if ($absence->justifiee == 1) {
+                        if (!isset($assoc[$student->numEtudiant]['absences']['justified']))
+                            $assoc[$student->numEtudiant]['absences']['justified'] = 0;
+                        $assoc[$student->numEtudiant]['absences']['justified'] += 1;
+                    }
                 }
             }
         }

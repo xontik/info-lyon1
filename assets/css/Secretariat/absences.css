@@ -49,43 +49,46 @@ body main { margin: 0; }
 #color-code ul li:nth-child(5)::after { background-color: rebeccapurple; }
 #color-code ul li:nth-child(6)::after { background-color: cyan; }
 
-.group-change { border-top: 2px SOLID #403e3f; }
-
-#absences_table { display: flex; flex-flow: row nowrap; width: 100%; }
+#absences_table { display: flex; flex-flow: row nowrap; width: 100%; margin-bottom: 2.5em; }
 
 #table_static { min-width: 16em; border-right: 2px SOLID #403e3f; }
-#table_static div.wrapper { display: flex; flex-flow: row nowrap; justify-content: flex-end; }
-#table_static p:last-child { border-bottom: 2px SOLID #403e3f; }
-#table_static h1 { border-bottom: 2px SOLID #403e3f; line-height: 50px; font-size: 1.4em; font-weight: 600; text-align: center; color: #e7bd26; }
+#table_static > .wrapper { display: flex; flex-flow: row nowrap; justify-content: flex-end; overflow: visible; }
+#table_static > div:last-child { border-bottom: 2px SOLID #403e3f; }
+#table_static > h1 { border-bottom: 2px SOLID #403e3f; line-height: 50px; font-size: 1.4em; font-weight: 600; text-align: center; color: #e7bd26; }
 
 #table_group_list { width: 10%; }
 #table_group_list p { max-width: 20px; padding-left: 8px; margin: auto; word-wrap: break-word; letter-spacing: 20px; overflow: hidden; }
 #table_group_list p:not(:first-child) { border-top: 2px SOLID #403e3f; }
 
 #table_stud_list { width: 90%; }
-#table_stud_list p { flex-basis: 7em; height: 25px; line-height: 25px; padding-left: 5px; font-size: 1em; white-space: nowrap; overflow: hidden; }
-#table_stud_list p:nth-child(2n+1) { background-color: #c7c7c7; }
-#table_stud_list p:not(:first-child):not(.group-change) { border-top: 1px SOLID #403e3f; }
+#table_stud_list .group-change { border-top: 1px SOLID #403e3f; }
+#table_stud_list > div { position: relative; height: 25px; line-height: 25px; }
+#table_stud_list > div:not(:last-of-type) { border-bottom: 1px SOLID #403e3f; }
+#table_stud_list > div:nth-child(odd) { background-color: #c7c7c7; }
+#table_stud_list > div p { flex-basis: 7em; padding-left: 5px; font-size: 1em; white-space: nowrap; overflow: hidden; }
+#table_stud_list > div p + img { position: absolute; right: 4px; top: 4.5px; width: 16px; cursor: pointer; }
+#table_stud_list > div > div { display: none; position: absolute; padding: .3em; z-index: 1; background-color: #ededed; border: 3px SOLID #2d2d2d; border-radius: .2em; right: 0; text-align: center; }
 
-div.wrapper { overflow: auto; }
-div.wrapper table { border-spacing: 0; border-collapse: collapse; }
-div.wrapper table td { position: relative; height: 25px; font-size: 1em; border-right: 1px SOLID #403e3f; }
-div.wrapper table td div { display: none; position: absolute; top: 10px; left: 20px; min-width: 170px; padding: .4em; background-color: #ededed; border: 3px SOLID rgba(0, 0, 0, 0.6); border-radius: .2em; }
-div.wrapper table td div p:not(:last-child) { color: #202020; }
-div.wrapper table thead { text-align: center; border-bottom: 2px SOLID #403e3f; }
-div.wrapper table thead tr:first-child td { border-right: 2px SOLID #403e3f; }
-div.wrapper table thead td { min-width: 1em; padding: 0 .2em; border-right: 1px SOLID #403e3f; }
-div.wrapper table thead td:last-child { border-right: 2px SOLID #403e3f; }
-div.wrapper table thead .first_month_day:not(:first-of-type) { border-left: 2px SOLID #403e3f; }
-div.wrapper table tbody tr { border-bottom: 1px SOLID #403e3f; }
-div.wrapper table tbody tr:last-child { border-bottom: 2px SOLID #403e3f; }
-div.wrapper table tbody tr:nth-child(2n+1) { background-color: #c7c7c7; }
-div.wrapper table tbody th { text-align: left; }
-div.wrapper table td.abs-justifiee { background-color: #1bee00; }
-div.wrapper table .abs-absence { background-color: red; color: red; }
-div.wrapper table .abs-retard { background-color: orange; color: orange; }
-div.wrapper table .abs-infirmerie { background-color: cyan; color: cyan; }
-div.wrapper table .abs-controle { background-color: rebeccapurple; color: rebeccapurple; }
-div.wrapper table td[class^="abs-"] { cursor: pointer; }
+#table-wrapper { overflow: auto; }
+#table-wrapper table { border-spacing: 0; border-collapse: collapse; }
+#table-wrapper table .group-change { border-top: 2px SOLID #403e3f; }
+#table-wrapper table td { position: relative; height: 25px; font-size: 1em; border-right: 1px SOLID #403e3f; }
+#table-wrapper table td div { display: none; position: absolute; padding: .3em; z-index: 1; background-color: #ededed; border: 3px SOLID #2d2d2d; border-radius: .2em; top: 10px; left: 20px; min-width: 170px; }
+#table-wrapper table td div p:not(:last-child) { color: #202020; }
+#table-wrapper table thead { text-align: center; border-bottom: 2px SOLID #403e3f; }
+#table-wrapper table thead tr:first-child td { border-right: 2px SOLID #403e3f; }
+#table-wrapper table thead td { min-width: 1em; padding: 0 .2em; border-right: 1px SOLID #403e3f; }
+#table-wrapper table thead td:last-child { border-right: 2px SOLID #403e3f; }
+#table-wrapper table thead .first_month_day:not(:first-of-type) { border-left: 2px SOLID #403e3f; }
+#table-wrapper table tbody tr { border-bottom: 1px SOLID #403e3f; }
+#table-wrapper table tbody tr:last-child { border-bottom: 2px SOLID #403e3f; }
+#table-wrapper table tbody tr:nth-child(2n+1) { background-color: #c7c7c7; }
+#table-wrapper table tbody th { text-align: left; }
+#table-wrapper table td.abs-justifiee { background-color: #1bee00; }
+#table-wrapper table .abs-absence { background-color: red; color: red; }
+#table-wrapper table .abs-retard { background-color: orange; color: orange; }
+#table-wrapper table .abs-infirmerie { background-color: cyan; color: cyan; }
+#table-wrapper table .abs-controle { background-color: rebeccapurple; color: rebeccapurple; }
+#table-wrapper table td[class^="abs-"] { cursor: pointer; }
 
 /*# sourceMappingURL=absences.css.map */

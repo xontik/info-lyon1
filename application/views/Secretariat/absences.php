@@ -25,20 +25,35 @@
                         <?php
                         $last_group = null;
                         foreach($data['absences'] as $student) {
-                            echo '<p';
+                            $class = '';
                             if ($last_group !== $student['groupe']) {
                                 if (!is_null($last_group)) {
-                                    echo ' class="group-change"';
+                                    $class = ' class="group-change"';
                                 }
                                 $last_group = $student['groupe'];
                             }
-                            echo '>' . $student['nom'] . ' ' . $student['prenom'] . '</p>';
+
+                            $missCount = count($student['absences']);
+                            $justifiedMiss = isset($student['absences']['justified'])
+                                ? '<p>dont ' . $student['absences']['justified']  .  ' justifiées</p>'
+                                : '';
+
+                            echo '<div' . $class . '>'
+                                . '<p>' . $student['nom'] . ' ' . $student['prenom'] . '</p>'
+                                . html_img('info.png', 'infos');
+                            ?>
+                                <div>
+                                    <p><?= $missCount ?> absences</p>
+                                    <?= $justifiedMiss ?>
+                                </div>
+                            <?php
+                            echo '</div>';
                         }
                         ?>
                     </div>
                 </div>
             </div>
-            <div class="wrapper">
+            <div id="table-wrapper">
                 <table>
                     <thead>
                         <tr>
