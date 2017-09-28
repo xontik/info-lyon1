@@ -22,14 +22,14 @@ class Mark_model extends CI_Model {
     $sql  = " SELECT * from (
       Select codeMatiere,nomMatiere,nomControle,
       coefficient,diviseur,typeControle,median,average,
-      dateControle,coefficientMatiere,valeur,idDsPromo
-      FROM Notes join Controles using (idControle) JOIN Enseignements USING (idEnseignement) JOIN Matieres USING (codeMatiere) join Groupes USING  (idGroupe)
+      dateControle,coefficientMatiere,valeur,idDSPromo
+      FROM Notes join Controles using (idControle) JOIN Enseignements USING (idEnseignement) JOIN Matieres USING (idMatiere) join Groupes USING  (idGroupe)
       where numEtudiant = ? and idSemestre = ?
       UNION
       Select distinct codeMatiere,nomMatiere,nomControle,
       coefficient,diviseur,typeControle,median,average,
-      dateControle,coefficientMatiere,valeur,idDsPromo
-      FROM Notes join Controles using (idControle)  JOIN DsPromo USING (idDsPromo)  join Matieres using (codeMatiere) join Enseignements USING (codeMatiere) where numEtudiant = ? and idSemestre = ?
+      dateControle,coefficientMatiere,valeur,idDSPromo
+      FROM Notes join Controles using (idControle)  JOIN DsPromo USING (idDSPromo)  join Matieres using (idMatiere) join Enseignements USING (idMatiere) where numEtudiant = ? and idSemestre = ?
     ) as foo ";
 
     return $this->db->query($sql,array($studentId,$semestreId,$studentId,$semestreId))->result();
@@ -111,7 +111,7 @@ class Mark_model extends CI_Model {
   public function getDsPromoAllMarks($controlId){
     $sql = "SELECT nom,prenom,Etudiants.numEtudiant,valeur
     FROM Controles
-    JOIN DsPromo using (idDsPromo)
+    JOIN DsPromo using (idDSPromo)
     JOIN Semestres USING (idSemestre)
     JOIN Groupes using (idSemestre)
     JOIN Etudiantgroupe USING (idGroupe)
@@ -127,12 +127,12 @@ class Mark_model extends CI_Model {
   public function getDsPromoMarks($profId,$controlId){
     $sql = "SELECT nom,prenom,Etudiants.numEtudiant,valeur
     FROM Controles
-    JOIN DsPromo using (idDsPromo)
+    JOIN DsPromo using (idDSPromo)
     JOIN Semestres USING (idSemestre)
     JOIN Groupes using (idSemestre)
     JOIN Etudiantgroupe USING (idGroupe)
     join Etudiants using (numEtudiant)
-    join Enseignements using (idGroupe,codeMatiere)
+    join Enseignements using (idGroupe,idMatiere)
     LEFT JOIN Notes USING (numEtudiant,idControle)
 
     WHERE Controles.idControle = ? AND actif = 1 and idProfesseur = ?";
@@ -143,14 +143,13 @@ class Mark_model extends CI_Model {
   }
 
   public function getMarks($control,$profId){
+
     $CI =& get_instance();
     $CI->load->model("control_model");
-    if(!is_null($control->idDsPromo)){
+    if(!is_null($control->idDSPromo)){
       if($CI->control_model->isReferent($profId,$control->idControle)){
 
-
         $marks = $this->getDsPromoAllMarks($control->idControle);
-
       }else{
         $marks = $this->getDsPromoMarks($profId,$control->idControle);
       }

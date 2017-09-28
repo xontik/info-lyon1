@@ -19,7 +19,7 @@
           <div>
           <?php } ?>
 
-          <article <?php echo $mark->idDsPromo == null ? '' : 'class="dspromo"';?>>
+          <article <?php echo $mark->idDSPromo == null ? '' : 'class="dspromo"';?>>
             <h2><?php echo $mark->nomControle; ?></h2>
             <div>
               <p>Note : <?php echo $mark->valeur . "/" . $mark->diviseur; ?></p>

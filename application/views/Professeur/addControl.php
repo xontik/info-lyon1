@@ -21,7 +21,7 @@
       <select name="matiere" id="matiere">
         <?php
         foreach ($data["select"] as $d) {
-          echo "<option value='" . $d->codeMatiere . "'>" . $d->codeMatiere . " - " . $d->nomMatiere . "</option>";
+          echo "<option value='" . $d->idMatiere . "'>" . $d->codeMatiere . " - " . $d->nomMatiere . "</option>";
         }
 
       } ?>

@@ -16,9 +16,15 @@
         <input type="number" id="coeff"   name="coeff"  value="<?php echo $data['control']->coefficient; ?>" /><br >
         <label for="diviseur" >Diviseur</label>
         <input type="number" id="diviseur"name="diviseur" value="<?php echo $data['control']->diviseur; ?>"/><br >
-        <label for="type">Type : </label>
-        <input type="text" id="type"    name="type"    value="<?php echo $data['control']->typeControle; ?>"/><br >
-        <label for="date">Date du controle : </label>
+        <?php if ($data['control']->idDSPromo == null){ ?>
+          <label for="type">Type : </label>
+          <select id="type" name="type">
+            <option value="DS Groupe">DS Groupe</option>
+            <option value="CC">CC</option>
+          </select><br>
+        <?php }
+        //// TODO: Mettre en BDD ou global les differents type de ds ou retirer select
+        ?><label for="date">Date du controle : </label>
         <input type="date" id="date"    name="date"    value="<?php echo $data['control']->dateControle; ?>"/><br >
         <input type="submit" name="valid" value="Editer"> <a href="<?php echo site_url("professeur/controle")?>">Retour</a>
     </form>

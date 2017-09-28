@@ -28,16 +28,9 @@ class semester_model extends CI_Model {
      * @return String The type (S1-4) of the semester
      */
     public function getSemesterTypeFromId($semesterId) {
-         $semesterType = $this->db->select('typeSemestre')
-            ->from('Semestres')
-            ->where('idSemestre', $semesterId)
-            ->get()
-            ->result();
+      $sql = "SELECT type FROM Semestres JOIN Parcours using (idParcours) where idSemestre=?";
+      return $this->db->query($sql,array($semesterId))->row()->type;
 
-        if ( empty($semesterType) ) {
-            return FALSE;
-        }
-        return $semesterType[0]->typeSemestre;
     }
 
     /**
@@ -45,19 +38,19 @@ class semester_model extends CI_Model {
      * @return mixed An array of two dates, the beginning and the end of the semester
      */
     public function getSemesterBounds($semesterId) {
-        $this->db->select('typeSemestre, anneeScolaire, differe')
+        $this->db->select('type, anneeScolaire, differe')
             ->from('Semestres')
             ->where('idSemestre', $semesterId);
-
-        $row = $this->db->get()->result()[0];
+        $sql = 'SELECT type,anneeScolaire,differe FROM Semestres JOIN Parcours USING (idParcours) where idSemestre = ?';
+        $row = $this->db->query($sql,array($semesterId))->row();
 
         if ( empty($row) ) {
             return FALSE;
         }
 
 
-        if (( ($row->typeSemestre === 'S1' || $row->typeSemestre === 'S3') && !$row->differe ) ||
-            ( ($row->typeSemestre === 'S2' || $row->typeSemestre === 'S4') && $row->differe ))
+        if (( ($row->type === 'S1' || $row->type === 'S3') && !$row->differe ) ||
+            ( ($row->type === 'S2' || $row->type === 'S4') && $row->differe ))
         {
             return array(
                 $row->anneeScolaire . '-09-01',
@@ -76,7 +69,7 @@ class semester_model extends CI_Model {
      * @return int current activ semestre
      */
     public function getCurrentSemesterId($studentId) {
-        $sql = "SELECT idSemestre from Etudiantgroupe
+        $sql = "SELECT idSemestre from EtudiantGroupe
           join Groupes USING (idGroupe)
           join Semestres USING (idSemestre)
           where numEtudiant=? and actif = 1
@@ -96,30 +89,21 @@ class semester_model extends CI_Model {
      */
     public function getLastSemesterOfType($semesterType, $studentId) {
 
-        $compatibleSemesters = $this->db->select('idSemestre')
-            ->from('Semestres')
-            ->where('typeSemestre', $semesterType)
-            ->get_compiled_select();
 
-        $groupId = $this->db->select_max('Groupes.idGroupe')
-            ->from('Groupes')
-            ->join('EtudiantGroupe', 'Groupes.idGroupe = EtudiantGroupe.idGroupe')
-            ->where('EtudiantGroupe.numEtudiant', $studentId)
-            ->where('Groupes.idSemestre IN (' . $compatibleSemesters . ')')
-            ->get()
-            ->result()[0]->idGroupe;
+        $sql = 'SELECT idSemestre FROM EtudiantGroupe
+        join Groupes using(idGroupe)
+        join Semestres using(idSemestre)
+        join Parcours using(idParcours)
+        where type = ? and numEtudiant = ? order by idGroupe DESC'
 
-        $semester = $this->db->select('idSemestre')
-            ->from('Groupes')
-            ->where('idGroupe', $groupId)
-            ->get()
-            ->result();
+        $row = $this->db->query($sql,array($semesterType, $studentId))->row();
 
-        if ( empty($semester) ) {
+
+        if ( empty($row) ) {
             return FALSE;
         }
 
-        return $semester[0]->idSemestre;
+        return $row->idSemestre;
     }
 
 }
