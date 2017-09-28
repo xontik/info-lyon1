@@ -1,5 +1,5 @@
 @import url("https://fonts.googleapis.com/css?family=Open+Sans|Roboto");
-#debug { background-color: #dedede; padding-left: 16px; }
+#debug { background-color: #dedede; padding-left: 16px; display: none; }
 
 #notifications { height: 30px; max-height: 30px; padding-left: 15px; overflow: hidden; background-color: #dedede; }
 #notifications img { position: absolute; right: 20px; top: 3px; }

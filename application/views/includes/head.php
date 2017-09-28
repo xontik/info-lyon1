@@ -12,7 +12,6 @@
         } else {
             echo '<link rel = "stylesheet" type = "text/css" href = "' . css_url('style') . '">';
         }
-      }
 
         $debug = isset($js) && in_array('debug', $js) && isset($data); ?>
 
@@ -27,7 +26,7 @@
                 }
             }
 
-            echo '<pre id="debug" style="display: none">' . PHP_EOL;
+            echo '<pre id="debug">' . PHP_EOL;
             array_walk($data, 'makeReceivedDataPrintable');
             print_r($data);
             echo '</pre>' . PHP_EOL;
