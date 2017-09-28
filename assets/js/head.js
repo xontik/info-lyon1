@@ -6,12 +6,12 @@ $(function() {
     });
 
     // #notifications
-    $('.notif').click( function() {
-        $( this ).remove();
+    $('#notifications').click( function() {
+        var notifs = $(this).children('.notif');
+        notifs.first().remove();
 
-        var notifs = $( '#notifications' );
-        if ( notifs.children().length <= 1 ) {
-            notifs.remove();
+        if ( notifs.length <= 1 ) {
+            $('#notifications').remove();
         }
     });
 

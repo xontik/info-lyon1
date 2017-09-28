@@ -32,6 +32,8 @@
           </article>
           <?php
         }
+        ?>
+    </main>
 
         echo '</div></section>';
       } else {
