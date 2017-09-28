@@ -69,6 +69,9 @@ $color-line2: darken($background-color, 20);
 #table_static {
   min-width: 16em;
   border-right: 2px $border-nosize;
+  z-index: 2;
+
+  background-color: $background-color;
 
   > .wrapper {
     display: flex;
@@ -153,8 +156,8 @@ $color-line2: darken($background-color, 20);
 
     > div {
       @include popup();
-      right: 0;
 
+      right: 0;
       text-align: center;
     }
   }
@@ -258,5 +261,14 @@ $color-line2: darken($background-color, 20);
     td[class^="abs-"] {
       cursor: pointer;
     }
+  }
+
+  table#header-fixed {
+    display: none;
+    position: fixed;
+    top: 0;
+    z-index: 1;
+
+    background-color: $background-color;
   }
 }

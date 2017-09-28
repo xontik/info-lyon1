@@ -149,6 +149,7 @@
                         ?>
                     </tbody>
                 </table>
+                <table id="header-fixed"></table>
             </div>
         </section>
     </main>

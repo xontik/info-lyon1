@@ -51,7 +51,7 @@ body main { margin: 0; }
 
 #absences_table { display: flex; flex-flow: row nowrap; width: 100%; margin-bottom: 2.5em; }
 
-#table_static { min-width: 16em; border-right: 2px SOLID #403e3f; }
+#table_static { min-width: 16em; border-right: 2px SOLID #403e3f; z-index: 2; background-color: #fafafa; }
 #table_static > .wrapper { display: flex; flex-flow: row nowrap; justify-content: flex-end; overflow: visible; }
 #table_static > div:last-child { border-bottom: 2px SOLID #403e3f; }
 #table_static > h1 { border-bottom: 2px SOLID #403e3f; line-height: 50px; font-size: 1.4em; font-weight: 600; text-align: center; color: #e7bd26; }
@@ -90,5 +90,6 @@ body main { margin: 0; }
 #table-wrapper table .abs-infirmerie { background-color: cyan; color: cyan; }
 #table-wrapper table .abs-controle { background-color: rebeccapurple; color: rebeccapurple; }
 #table-wrapper table td[class^="abs-"] { cursor: pointer; }
+#table-wrapper table#header-fixed { display: none; position: fixed; top: 0; z-index: 1; background-color: #fafafa; }
 
 /*# sourceMappingURL=absences.css.map */
