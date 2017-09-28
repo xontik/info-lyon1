@@ -106,6 +106,8 @@ body {
         position: absolute;
         right: 0; top: 1.95em;
 
+        z-index: 100;
+
         background-color: $second-color;
 
         li {
