@@ -2,7 +2,8 @@
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Absence_model extends CI_Model {
+class Absence_model extends CI_Model
+{
 
     /**
      * Creates a new absence entry.
@@ -12,7 +13,8 @@ class Absence_model extends CI_Model {
      * @param $absenceType String The type of the absence
      * @param $justify boolean Whether the absence is justified or not
      */
-	public function add($studentId, $startDate, $endDate, $absenceType, $justify) {
+	public function add($studentId, $startDate, $endDate, $absenceType, $justify)
+    {
 	    $data = array(
 	        'dateDebut' => $startDate,
 	        'dateFin' => $endDate,
@@ -31,7 +33,8 @@ class Absence_model extends CI_Model {
      * the beginning and the end of the semester,
      * or FALSE if an error happened with the semester's id
      */
-    public function getSemesterAbsences($semester) {
+    public function getSemesterAbsences($semester)
+    {
         $CI =& get_instance();
         $CI->load->model('semester_model');
 
@@ -50,7 +53,8 @@ class Absence_model extends CI_Model {
      * @param null $end_date DateTime The datetime of the end of the period
      * @return array The absences of the students
      */
-    public function getAbsencesInPeriod($begin_date, $end_date = null) {
+    public function getAbsencesInPeriod($begin_date, $end_date = null)
+    {
         if (is_null($end_date)) {
             // $begin_date must be a period
             $end_date = $begin_date->getEndDate();
@@ -76,7 +80,8 @@ class Absence_model extends CI_Model {
      * @return mixed An array of absences,
      * FALSE if there's an error with semesterId
      */
-	public function getStudentSemesterAbsence($studentId, $semesterId) {
+	public function getStudentSemesterAbsence($studentId, $semesterId)
+    {
         $CI =& get_instance();
         $CI->load->model('semester_model');
 
@@ -92,4 +97,5 @@ class Absence_model extends CI_Model {
                         ->get()
                         ->result();
     }
+    
 }

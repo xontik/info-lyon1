@@ -24,7 +24,7 @@ class Secretariat extends CI_Controller {
             $this->semester_model->getSemesterId($semester)
         );
 
-        $students = $this->students_model->getStudents();
+        $students = $this->students_model->getStudentsOrganized();
         $absences =  $this->absence_model->getAbsencesInPeriod($period);
 
         // Associate absence to the student

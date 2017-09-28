@@ -9,16 +9,18 @@
 class students_model extends CI_Model {
 
     /**
-     * @return array The id, name, surname and email of all students in the database
+     * @return array The id, name, surname and email of all students in the database,
+     * ordered by semester type, then group
      */
-    public function getStudents() {
-        return $this->db->select('numEtudiant, nom, prenom, mail, CONCAT(Groupes.nomGroupe, Semestres.typeSemestre) as nomGroupe')
+    public function getStudentsOrganized() {
+        return $this->db->select('numEtudiant, nom, prenom, mail, CONCAT(Groupes.nomGroupe, Parcours.type) as nomGroupe')
             ->from('Etudiants')
             ->join('EtudiantGroupe', 'numEtudiant')
             ->join('Groupes', 'idGroupe')
             ->join('Semestres', 'idSemestre')
+            ->join('Parcours', 'idParcours')
             ->where('Semestres.actif', '1')
-            ->order_by('Semestres.typeSemestre', 'asc')
+            ->order_by('Parcours.type', 'asc')
             ->order_by('Groupes.idGroupe', 'asc')
             ->order_by('Etudiants.nom', 'asc')
             ->order_by('Etudiants.prenom', 'asc')

@@ -27,8 +27,9 @@ class semester_model extends CI_Model {
      * @return String The type (S1-4) of the semester
      */
     public function getSemesterTypeFromId($semesterId) {
-         $semesterType = $this->db->select('typeSemestre')
+         $semesterType = $this->db->select('Parcours.type')
             ->from('Semestres')
+            ->join('Parcours', 'idParcours')
             ->where('idSemestre', $semesterId)
             ->get()
             ->result();
@@ -46,27 +47,28 @@ class semester_model extends CI_Model {
     public function getSemesterPeriod($semesterId) {
         require_once(APPPATH . 'libraries/Period.php');
 
-        $row = $this->db->select('typeSemestre, anneeScolaire, differe')
+        $semester = $this->db->select('Parcours.type, anneeScolaire, differe')
             ->from('Semestres')
+            ->join('Parcours', 'idParcours')
             ->where('idSemestre', $semesterId)
             ->get()
             ->row();
 
-        if ( empty($row) ) {
+        if ( empty($semester) ) {
             return FALSE;
         }
 
-        if (   ( ($row->typeSemestre === 'S1' || $row->typeSemestre === 'S3') && !$row->differe )
-            || ( ($row->typeSemestre === 'S2' || $row->typeSemestre === 'S4') && $row->differe )
+        if (   ( ($semester->type === 'S1' || $semester->type === 'S3') && !$semester->differe )
+            || ( ($semester->type === 'S2' || $semester->type === 'S4') && $semester->differe )
         ) {
             return new Period(
-                new DateTime($row->anneeScolaire . '-09-01'),
-                new DateTime((intval($row->anneeScolaire) + 1) . '-01-31')
+                new DateTime($semester->anneeScolaire . '-09-01'),
+                new DateTime((intval($semester->anneeScolaire) + 1) . '-01-31')
             );
         } else {
             return new Period(
-                new DateTime($row->anneeScolaire . '-02-01'),
-                new DateTime($row->anneeScolaire . '-08-31')
+                new DateTime($semester->anneeScolaire . '-02-01'),
+                new DateTime($semester->anneeScolaire . '-08-31')
             );
         }
     }
@@ -103,12 +105,13 @@ class semester_model extends CI_Model {
 
         $compatibleSemesters = $this->db->select('idSemestre')
             ->from('Semestres')
+            ->join('Parcours', 'idParcours')
             ->where('typeSemestre', $semesterType)
             ->get_compiled_select();
 
         $groupId = $this->db->select_max('Groupes.idGroupe')
             ->from('Groupes')
-            ->join('EtudiantGroupe', 'Groupes.idGroupe = EtudiantGroupe.idGroupe')
+            ->join('EtudiantGroupe', 'idGroupe')
             ->where('EtudiantGroupe.numEtudiant', $studentId)
             ->where('Groupes.idSemestre IN (' . $compatibleSemesters . ')')
             ->get()
@@ -120,8 +123,9 @@ class semester_model extends CI_Model {
             ->get()
             ->row();
 
-        if ( empty($semester) )
+        if ( empty($semester) ) {
             return FALSE;
+        }
         return $semester->idSemestre;
     }
 
