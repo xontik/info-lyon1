@@ -7,7 +7,7 @@ body main {
 $line-height: 25px;
 $border-nosize: SOLID $second-color;
 
-$color-justifiee: lightgreen;
+$color-justifiee: #1bee00;
 $color-absence: red;
 $color-retard: orange;
 $color-controle: rebeccapurple;
@@ -157,10 +157,22 @@ div.wrapper {
       text-align: center;
       border-bottom: 2px $border-nosize;
 
+      tr:first-child td {
+        border-right: 2px $border-nosize;
+      }
+
       td {
         min-width: 1em;
         padding: 0 .2em;
-        border-right: 1px $border-nosize
+        border-right: 1px $border-nosize;
+
+        &:last-child {
+          border-right: 2px $border-nosize;
+        }
+      }
+
+      .first_month_day:not(:first-of-type) {
+        border-left: 2px $border-nosize;
       }
     }
 

@@ -97,5 +97,5 @@ class Absence_model extends CI_Model
                         ->get()
                         ->result();
     }
-    
+
 }

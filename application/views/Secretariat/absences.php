@@ -16,9 +16,8 @@
                     <div id="table_group_list">
                         <?php
                         foreach($data['groups'] as $group => $students_number) {
-                            echo '<p style="height: ' . ($students_number * 26 - 1) . 'px; ">'
-                                . $group
-                                . '</p>';
+                            $height = $students_number * 26 - 1;
+                            echo "<p style=\"height: ${height}px;\">$group</p>";
                         }
                         ?>
                     </div>
@@ -64,8 +63,20 @@
                             <?php
                             // table head
                             $curr_date = clone $data['begin_date'];
+                            $today = new DateTime();
+                            $last_month = null;
                             for ($i = 0; $i <= $data['day_number']; $i++) {
-                                echo('<td>' . $curr_date->format('j') . '</td>');
+                                $class = '';
+                                if ($last_month !== $curr_date->format('F')) {
+                                    $class = ' class="first_month_day"';
+                                    $last_month = $curr_date->format('F');
+                                }
+
+                                echo '<td'
+                                    . ($curr_date->format('Y-m-d') == $today->format('Y-m-d') ? ' id="active_day"' : '')
+                                    . $class . '>'
+                                    . $curr_date->format('j')
+                                    . '</td>';
                                 $curr_date->modify('+1 day');
                             }
                             unset($curr_date);

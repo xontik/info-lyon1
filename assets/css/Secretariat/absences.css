@@ -43,7 +43,7 @@ body main { margin: 0; }
 #color-code ul { display: flex; flex-flow: row nowrap; justify-content: space-around; width: 70%; }
 #color-code ul li::after { content: ''; display: inline-block; position: relative; top: 2px; width: 15px; height: 15px; border: 1px SOLID #403e3f; margin-left: 5px; }
 #color-code ul li:nth-child(1)::after { background: linear-gradient(to right, #fafafa 50%, #c7c7c7 50%); }
-#color-code ul li:nth-child(2)::after { background-color: lightgreen; }
+#color-code ul li:nth-child(2)::after { background-color: #1bee00; }
 #color-code ul li:nth-child(3)::after { background-color: red; }
 #color-code ul li:nth-child(4)::after { background-color: orange; }
 #color-code ul li:nth-child(5)::after { background-color: rebeccapurple; }
@@ -73,12 +73,15 @@ div.wrapper table td { position: relative; height: 25px; font-size: 1em; border-
 div.wrapper table td div { display: none; position: absolute; top: 10px; left: 20px; min-width: 170px; padding: .4em; background-color: #ededed; border: 3px SOLID rgba(0, 0, 0, 0.6); border-radius: .2em; }
 div.wrapper table td div p:not(:last-child) { color: #202020; }
 div.wrapper table thead { text-align: center; border-bottom: 2px SOLID #403e3f; }
+div.wrapper table thead tr:first-child td { border-right: 2px SOLID #403e3f; }
 div.wrapper table thead td { min-width: 1em; padding: 0 .2em; border-right: 1px SOLID #403e3f; }
+div.wrapper table thead td:last-child { border-right: 2px SOLID #403e3f; }
+div.wrapper table thead .first_month_day:not(:first-of-type) { border-left: 2px SOLID #403e3f; }
 div.wrapper table tbody tr { border-bottom: 1px SOLID #403e3f; }
 div.wrapper table tbody tr:last-child { border-bottom: 2px SOLID #403e3f; }
 div.wrapper table tbody tr:nth-child(2n+1) { background-color: #c7c7c7; }
 div.wrapper table tbody th { text-align: left; }
-div.wrapper table td.abs-justifiee { background-color: lightgreen; }
+div.wrapper table td.abs-justifiee { background-color: #1bee00; }
 div.wrapper table .abs-absence { background-color: red; color: red; }
 div.wrapper table .abs-retard { background-color: orange; color: orange; }
 div.wrapper table .abs-infirmerie { background-color: cyan; color: cyan; }
