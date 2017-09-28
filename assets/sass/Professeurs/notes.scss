@@ -1,0 +1,91 @@
+@import '../style';
+
+main {
+  $default-box-shadow: 3px 3px 12px #999;
+
+  #control-add a {
+    display: inline-block;
+    color: $foreground-color;
+    border: 1px groove $second-color;
+    border-radius: 5px;
+    box-shadow: $default-box-shadow;
+    padding: 10px 5px;
+    margin-right: 8px;
+    margin-bottom: 10px;
+
+    &:hover {
+      background-color: $second-color;
+    }
+  }
+
+  #filters {
+    color: $foreground-color;
+    font-size: 1.2em;
+
+    h2 {
+      color: $second-color;
+      font-size: 1.3em;
+    }
+
+    input[type="submit"] {
+      border: 1px solid $second-color;
+      border-radius: 2px;
+      box-shadow: $default-box-shadow;
+      padding: 2px 6px;
+      margin: 5px;
+      font-size: .9em;
+    }
+  }
+
+  #controls-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 2em;
+
+    > caption {
+      color: $foreground-color;
+      text-align: left;
+      font-size: 2em;
+      border-bottom: .2em solid $second-color;
+      margin-bottom: .6em;
+    }
+
+    thead td {
+        text-align: center;
+        font-size: 1.4em;
+        font-variant: small-caps;
+        color: $foreground-color;
+        background-color: $second-color;
+        border: 2px solid $foreground-color;
+        padding: 8px;
+    }
+
+    tbody {
+      td {
+        text-align: center;
+        padding: .5em 1em;
+        color: $second-color;
+      }
+
+      tr {
+        &:nth-child(even) {
+          background: darken($background-color, 15);
+        }
+
+        &:nth-child(odd) {
+          background: $background-color;
+        }
+
+        &:hover {
+          background: rgb(132, 132, 132);
+        }
+      }
+
+      img {
+        width: 20px;
+      }
+
+    }
+
+  }
+}

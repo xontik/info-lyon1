@@ -144,7 +144,7 @@ class Professeur extends CI_Controller {
     }
 
 
-    $css = array("test");
+    $css = array("Professeurs/notes");
     $js = array("debug");
     $title = "Controles";
     $data = array("controls" => $controls, "groupes" => $groupes, "matieres" => $matieres,"restrict" => $restrict);
@@ -172,7 +172,7 @@ class Professeur extends CI_Controller {
       }
 
 
-      $css = array("test");
+      $css = array();
       $js = array("debug");
       $title = "Ajout de controles";
       $data = array("select" => $select,"promo" => $bool);
@@ -203,7 +203,7 @@ class Professeur extends CI_Controller {
 
 
 
-        $css = array("test");
+        $css = array();
         $js = array("debug");
         $title = "Ajout de controles";
         $data = array("control" => $control);
@@ -242,7 +242,7 @@ class Professeur extends CI_Controller {
         $js = array("debug");
         $title = "Ajout de notes";
         $data = array("control" => $control,"marks" => $marks,"matiere" => $matiere);
-        $var = array(   "css" => array("test"),
+        $var = array(   "css" => array(),
         "js" => $js,
         "title" => $title,
         "data" => $data);
