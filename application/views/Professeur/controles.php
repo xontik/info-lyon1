@@ -17,7 +17,7 @@
         if(in_array($groupe->idGroupe,$data["restrict"]["groupes"])){
           $checked = "checked";
         }
-        echo '<label for="id'.$groupe->nomGroupe.'">'.$groupe->nomGroupe.$groupe->typeSemestre.'</label><input type="checkbox" id="id'.$groupe->nomGroupe.'" name="'.$groupe->idGroupe.'" '.$checked.'>';
+        echo '<label for="id'.$groupe->nomGroupe.'">'.$groupe->nomGroupe.$groupe->type.'</label><input type="checkbox" id="id'.$groupe->nomGroupe.'" name="'.$groupe->idGroupe.'" '.$checked.'>';
       }
     }
     if(count($data['matieres'])){
@@ -38,7 +38,7 @@
     if(in_array("DSPROMO",$data["restrict"]["DS"])){
       $checked = "checked";
     }
-    echo '<label for="idDSPROMO">Ds Promo</label><input type="checkbox" id="idDSPROMO" name="DSPROMO" '.$checked.'>';
+    echo '<label for="idDSPromo">Ds Promo</label><input type="checkbox" id="idDSPromo" name="DSPROMO" '.$checked.'>';
     $checked  = "";
     if(in_array("CC",$data["restrict"]["DS"])){
       $checked = "checked";
