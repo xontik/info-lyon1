@@ -54,6 +54,47 @@
                 </div>
             </div>
             <div id="table-wrapper">
+                <div id="new-absences-wrapper">
+                    <div id="new-absences">
+                        <header>
+                            <h2 id="new-absences-name">Text nom</h2>
+                            <h3 id="new-absences-date">Text date</h3>
+                        </header>
+                        <section>
+                            <article>
+                                <label for="add-beginTime">Heure de début</label>
+                                <p><input type="time" min="07:00" max="21:00" step="1800" name="begin-time" id="add-beginTime"></p>
+                            </article>
+                            <article>
+                                <label for="add-endTime">Heure de fin</label>
+                                <p><input type="time" min="07:00" max="21:00" step="1800" name="end-time" id="add-endTime"></p>
+                            </article>
+                            <article>
+                                <label for="add-justified">Justifiée</label>
+                                <p><input type="checkbox" name="justified" id="add-justified"></p>
+                            </article>
+                            <article>
+                                <label for="add-absenceType">Type d'absence</label>
+                                <p>
+                                    <select name="absenceType" id="add-absenceType">
+                                        <option value="0" selected="selected">Selectionner...</option>
+                                        <?php
+                                        foreach($data['absenceTypes'] as $option) {
+                                            echo '<option value="' . $option->idTypeAbsence . '">'
+                                                . $option->nomTypeAbsence
+                                                . '</option>';
+                                        }
+                                        ?>
+                                    </select>
+                                </p>
+                            </article>
+                        </section>
+                        <div>
+                            <button id="new-absences-submit">Enregistrer</button>
+                            <button id="new-absences-cancel">Annuler</button>
+                        </div>
+                    </div>
+                </div>
                 <table>
                     <thead>
                         <tr>
@@ -153,3 +194,6 @@
             </div>
         </section>
     </main>
+    <script>
+        var FIRST_DATE = new Date('<?= $data['begin_date']->format('Y-m-d') ?>');
+    </script>

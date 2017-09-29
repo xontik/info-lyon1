@@ -5,25 +5,48 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Absence_model extends CI_Model
 {
 
+    public function getAbsenceTypes() {
+        return $this->db->order_by('idTypeAbsence', 'asc')
+            ->get('TypeAbsence')
+            ->result();
+    }
+
     /**
      * Creates a new absence entry.
      * @param $studentId String The student id
      * @param $startDate String The time at which absence started
      * @param $endDate String The time at which absence ended
-     * @param $absenceType String The type of the absence
+     * @param $absenceType String|int The type of the absence
      * @param $justify boolean Whether the absence is justified or not
+     * @return boolean Whether the insert was successful or not
      */
 	public function add($studentId, $startDate, $endDate, $absenceType, $justify)
     {
+        if (is_string($absenceType)) {
+            $absenceType = $this->db->select('idTypeAbsence')
+                ->where('nomTypeAbsence', $absenceType)
+                ->get('TypeAbsence')
+                ->row();
+
+            if ($absenceType === FALSE) {
+                return FALSE;
+            }
+
+            $idAbsenceType = $absenceType->idTypeAbsence;
+        } else {
+            $idAbsenceType = $absenceType;
+        }
+
 	    $data = array(
 	        'dateDebut' => $startDate,
 	        'dateFin' => $endDate,
-	        'typeAbsence' => $absenceType,
+            'typeAbsence' => $idAbsenceType,
             'numEtudiant' => $studentId,
             'justifiee' => $justify
         );
 
 		$this->db->insert('Absences', $data);
+		return TRUE;
     }
 
     /**
@@ -60,10 +83,12 @@ class Absence_model extends CI_Model
             $end_date = $begin_date->getEndDate();
             $begin_date = $begin_date->getBeginDate();
         }
+
         return $this->db->select('numEtudiant, nom, prenom, mail,
-                idAbsence, dateDebut, dateFin, typeAbsence, justifiee')
-            ->from('absences')
-            ->join('etudiants', 'numEtudiant')
+                idAbsence, dateDebut, dateFin, nomTypeAbsence as typeAbsence, justifiee')
+            ->from('Absences')
+            ->join('TypeAbsence', 'idTypeAbsence')
+            ->join('Etudiants', 'numEtudiant')
             ->where('dateDebut BETWEEN "' . $begin_date->format('Y-m-d')
                 . '" AND "' . $end_date->format('Y-m-d') . '"')
             ->order_by('etudiants.nom', 'asc')
@@ -86,16 +111,19 @@ class Absence_model extends CI_Model
         $CI->load->model('semester_model');
 
         $bounds = $CI->semester_model->getSemesterPeriod($semesterId);
-        if ($bounds === FALSE)
+        if ($bounds === FALSE) {
             return FALSE;
+        }
 
-        return $this->db->select('*')
-                        ->from('Absences')
-                        ->where('numEtudiant', $studentId)
-                        ->where('dateDebut BETWEEN "' . $bounds->getBeginDate()->format('Y-m-d')
-                            . '" AND "' . $bounds->getEndDate()->format('Y-m-d') . '"')
-                        ->get()
-                        ->result();
+        return $this->db->select('numEtudiant, idAbsence, dateDebut, dateFin,
+                nomTypeAbsence as typeAbsence, justifiee')
+            ->from('Absences')
+            ->join('TypeAbsence', 'idTypeAbsence')
+            ->where('numEtudiant', $studentId)
+            ->where('dateDebut BETWEEN "' . $bounds->getBeginDate()->format('Y-m-d')
+            . '" AND "' . $bounds->getEndDate()->format('Y-m-d') . '"')
+            ->get()
+            ->result();
     }
 
 }

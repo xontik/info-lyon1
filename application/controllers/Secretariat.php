@@ -77,7 +77,8 @@ class Secretariat extends CI_Controller {
                 'absences' => $assoc,
                 'groups' => $groups,
                 'begin_date' => $period->getBeginDate(),
-                'day_number' => $period->getDays()
+                'day_number' => $period->getDays(),
+                'absenceTypes' => $this->absence_model->getAbsenceTypes()
             )
         );
         show("Secretariat/absences", $data);
