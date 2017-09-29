@@ -25,12 +25,13 @@ class Control_model extends CI_Model
   public function getControls($professorId)
   {
     $sql = "SELECT foo.codeMatiere,foo.idMatiere,foo.nomMatiere,foo.idControle,foo.nomControle,
-    foo.coefficient,foo.diviseur,foo.typeControle,foo.median,foo.average,
+    foo.coefficient,foo.diviseur,foo.nomTypeControle,foo.idTypeControle,foo.median,foo.average,
     foo.dateControle,foo.coefficientMatiere,foo.nomGroupe,foo.idGroupe
     from (
       Select codeMatiere,idMatiere,nomMatiere,idControle,nomControle,
-      coefficient,diviseur,typeControle,median,average,
+      coefficient,diviseur,idTypeControle,nomTypeControle,median,average,
       dateControle,coefficientMatiere,nomGroupe,idGroupe FROM Controles
+        join TypeControle USING (idTypeControle)
         JOIN Enseignements USING (idEnseignement)
         JOIN Matieres USING (idMatiere)
         JOIN Groupes USING (idGroupe)
@@ -38,8 +39,9 @@ class Control_model extends CI_Model
         where idProfesseur = ? and actif = 1
       UNION
       Select distinct codeMatiere,idMatiere,nomMatiere,idControle,nomControle,
-      coefficient,diviseur,typeControle,median,average,
+      coefficient,diviseur,idTypeControle,nomTypeControle,median,average,
       dateControle,coefficientMatiere,null as nomGroupe,null as idGroupe FROM Controles
+        join TypeControle USING (idTypeControle)
         JOIN DsPromo USING (idDSPromo)
         join Matieres using (idMatiere)
         join Enseignements USING (idMatiere)
@@ -47,8 +49,9 @@ class Control_model extends CI_Model
         where idProfesseur = ? and actif = 1
       UNION
       Select codeMatiere,idMatiere,nomMatiere,idControle,nomControle,
-      coefficient,diviseur,typeControle,median,average,
+      coefficient,diviseur,idTypeControle,nomTypeControle,median,average,
       dateControle,coefficientMatiere,nomGroupe,idGroupe FROM Controles
+        join TypeControle USING (idTypeControle)
         JOIN Enseignements USING (idEnseignement)
         JOIN Matieres USING (idMatiere)
         JOIN Groupes USING (idGroupe)
@@ -58,8 +61,9 @@ class Control_model extends CI_Model
         where Referents.idProfesseur = ? and  actif = 1
       UNION
       Select codeMatiere,idMatiere,nomMatiere,idControle,nomControle,
-      controles.coefficient,diviseur,typeControle,median,average,
+      controles.coefficient,diviseur,idTypeControle,nomTypeControle,median,average,
       dateControle,coefficientMatiere,null as nomGroupe,null as idGroupe FROM Controles
+        join TypeControle USING (idTypeControle)
         JOIN DsPromo USING (idDSPromo)
         join Matieres USING (idMatiere)
         join MatieresDeModules using (idMatiere)
@@ -241,13 +245,13 @@ UNION
 
   public function getMatieres($profId)
   {
-    $sql = "SELECT distinct codeMatiere,nomMatiere FROM Enseignements
+    $sql = "SELECT distinct idMatiere,codeMatiere,nomMatiere FROM Enseignements
   join Groupes using(idGroupe)
   join Matieres using(idMatiere)
   join Semestres using (idSemestre)
   WHERE idProfesseur = ? and actif = 1
   UNION
-  SELECT distinct codeMatiere,nomMatiere FROM Referents
+  SELECT distinct idMatiere,codeMatiere,nomMatiere FROM Referents
   join MatieresDeModules using( idModule)
   JOIN Matieres using (idMatiere)
   join Semestres using (idSemestre)
@@ -260,5 +264,11 @@ UNION
     $sql = "SELECT distinct * from (SELECT codeMatiere, nomMatiere FROM Controles JOIN DsPromo using (idDSPromo) join Matieres using (idMatiere)  WHERE idControle = ?
     UNION SELECT codeMatiere, nomMatiere FROM Controles JOIN Enseignements using (idEnseignement) join Matieres using (idMatiere)  WHERE idControle = ?) as foo ";
     return $this->db->query($sql, array($idControle,$idControle))->row();
+  }
+
+  public function getTypeControle(){
+    $sql = "SELECT  idTypeControle,nomTypeControle FROM typeControle";
+
+    return $this->db->query($sql)->result();
   }
 }

@@ -35,6 +35,10 @@ class Process_professeur extends CI_Controller {
       if ($this->ctrlMod->addControl($_POST['nom'], $_POST['coeff'], $_POST['diviseur'], $_POST['type'], $_POST['date'], $_POST['enseignement'])) {
         $this->session->set_flashdata("notif", array("Controle ajoutée avec succes"));
         redirect("professeur/controle");
+      }else{
+        $this->session->set_flashdata("notif", array("Erreur de requete base de données impossible d'ajouter le controle"));
+        redirect("professeur/controle");
+
       }
 
 
@@ -51,8 +55,12 @@ class Process_professeur extends CI_Controller {
   && $_POST["date"] != ""
 ) {
 
-  if ($this->ctrlMod->addDsPromo($_POST['nom'], $_POST['coeff'], $_POST['diviseur'], "Promo", $_POST['date'],$_POST['matiere'])) {
+  if ($this->ctrlMod->addDsPromo($_POST['nom'], $_POST['coeff'], $_POST['diviseur'], 1, $_POST['date'],$_POST['matiere'])) {
     $this->session->set_flashdata("notif", array("Controle promo ajoutée avec succes"));
+    redirect("professeur/controle");
+  }
+  else{
+    $this->session->set_flashdata("notif", array("Erreur de requete base de données impossible d'ajouter le controle"));
     redirect("professeur/controle");
   }
 
