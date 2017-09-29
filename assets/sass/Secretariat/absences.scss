@@ -256,6 +256,14 @@ $color-line2: darken($background-color, 20);
         p:not(:last-child) {
           color: $text-color;
         }
+
+        &:nth-child(2) {
+          top: 10px + 80px;
+        }
+
+        &:nth-child(3) {
+          top: 10px + 80px * 2;
+        }
       }
     }
 

@@ -33,10 +33,9 @@
                                 $last_group = $student['groupe'];
                             }
 
-                            $missCount = count($student['absences']);
-                            $justifiedMiss = isset($student['absences']['justified'])
-                                ? '<p>dont ' . $student['absences']['justified']  .  ' justifiées</p>'
-                                : '';
+                            $missCount = $student['absences']['total'];
+                            $dayMissCount = $student['absences']['total_days'];
+                            $justifiedMiss = $student['absences']['justified'];
 
                             echo '<div' . $class . '>'
                                 . '<p>' . $student['nom'] . ' ' . $student['prenom'] . '</p>'
@@ -44,7 +43,12 @@
                             ?>
                                 <div>
                                     <p><?= $missCount ?> absences</p>
-                                    <?= $justifiedMiss ?>
+                                    <?= $missCount >= 2
+                                        ? '<p>réparties sur ' . $dayMissCount . ' jours</p>'
+                                        : '' ?>
+                                    <?= $justifiedMiss > 0
+                                        ? '<p>dont ' . $justifiedMiss . ' justifiées</p>'
+                                        : '' ?>
                                 </div>
                             <?php
                             echo '</div>';
@@ -154,31 +158,33 @@
                             echo '>';
 
                             for ($i = 0; $i <= $data['day_number']; $i++) {
+                                $infos = array();
                                 $classes = array();
-                                $curr_absence = null;
                                 if (isset($student['absences'][$i])) {
-                                    $curr_absence = $student['absences'][$i];
-                                    $classes[] = 'abs-' . strtolower($curr_absence->typeAbsence);
-                                    if ($curr_absence->justifiee) {
-                                        $classes[] = 'abs-justifiee';
-                                    }
+                                    foreach($student['absences'][$i] as $curr_absence) {
+                                        $classes[] = 'abs-' . strtolower($curr_absence->typeAbsence);
+                                        if ($curr_absence->justifiee && !in_array('abs-justifiee', $classes)) {
+                                            $classes[] = 'abs-justifiee';
+                                        }
 
-                                    $time_period = substr($curr_absence->dateDebut, -8, 5)
-                                        . ' - '
-                                        . substr($curr_absence->dateFin, -8, 5);
-                                    $justify = $curr_absence->justifiee ? 'Oui' : 'Non';
-                                    $absence_type = $curr_absence->typeAbsence;
+                                        $curr_infos['time_period'] = substr($curr_absence->dateDebut, -8, 5)
+                                            . ' - '
+                                            . substr($curr_absence->dateFin, -8, 5);
+                                        $curr_infos['justify'] = $curr_absence->justifiee ? 'Oui' : 'Non';
+                                        $curr_infos['absence_type'] = $curr_absence->typeAbsence;
+                                        $infos[] = $curr_infos;
+                                    }
                                 }
 
                                 echo '<td'
                                     . (!empty($classes)
                                         ? ' class="' . join(' ', $classes) . '"': '')
                                     . '>';
-                                if (!is_null($curr_absence)) {
+                                foreach($infos as $info) {
                                     ?><div>
-                                        <p>Horaire : <?= $time_period ?></p>
-                                        <p>Justifiée : <?= $justify ?></p>
-                                        <p><?= $absence_type ?></p>
+                                        <p>Horaire : <?= $info['time_period'] ?></p>
+                                        <p>Justifiée : <?= $info['justify'] ?></p>
+                                        <p><?= $info['absence_type'] ?></p>
                                     </div>
                                 <?php
                                 }

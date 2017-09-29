@@ -45,7 +45,11 @@ class Secretariat extends CI_Controller {
                     'prenom' => $student->prenom,
                     'mail' => $student->mail,
                     'groupe' => $student->nomGroupe,
-                    'absences' => array()
+                    'absences' => array(
+                        'total' => 0,
+                        'total_days' => 0,
+                        'justified' => 0
+                    )
                 );
 
                 if (isset($groups[$student->nomGroupe])) {
@@ -56,16 +60,22 @@ class Secretariat extends CI_Controller {
             }
 
             if (isset($abs_assoc[$student->numEtudiant])) {
+
+                $assoc[$student->numEtudiant]['absences']['justified'] = 0;
+
                 foreach ($abs_assoc[$student->numEtudiant] as $absence) {
                     $index = $period->getDays(new DateTime($absence->dateDebut));
-                    $assoc[$student->numEtudiant]['absences'][$index] = $absence;
+                    $assoc[$student->numEtudiant]['absences'][$index][] = $absence;
 
-                    if ($absence->justifiee == 1) {
-                        if (!isset($assoc[$student->numEtudiant]['absences']['justified']))
-                            $assoc[$student->numEtudiant]['absences']['justified'] = 0;
+                    if ($absence->justifiee) {
                         $assoc[$student->numEtudiant]['absences']['justified'] += 1;
                     }
                 }
+
+                $assoc[$student->numEtudiant]['absences']['total'] =
+                    count($abs_assoc[$student->numEtudiant]);
+                $assoc[$student->numEtudiant]['absences']['total_days'] =
+                    count($assoc[$student->numEtudiant]['absences']) - 3;
             }
         }
 
