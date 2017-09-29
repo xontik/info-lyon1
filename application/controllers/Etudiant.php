@@ -37,17 +37,18 @@ class Etudiant extends CI_Controller {
 
     $semesterId = $this->semesterMod->getSemesterId($semester);
     if ($semesterId === FALSE) {
-      redirect('/Etudiant/Absence/');
-      return;
+        $semesterId = $this->semesterMod->getSemesterId();
     }
 
     $absences = $this->absenceMod->getAbsencesFromSemester($_SESSION['id'], $semesterId);
 
     $var = array(
-      'css' => array('absences_page'),
+      'css' => array(),
       'js' => array('debug'),
       'title' => 'Absences',
-      'data' => array('absences' => $absences)
+      'data' => array(
+          'absences' => $absences
+      )
     );
 
     show('Etudiant/absences', $var);

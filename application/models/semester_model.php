@@ -40,14 +40,14 @@ class semester_model extends CI_Model {
     public function getSemesterBounds($semesterId) {
         $this->db->select('type, anneeScolaire, differe')
             ->from('Semestres')
-            ->where('idSemestre', $semesterId);
-        $sql = 'SELECT type,anneeScolaire,differe FROM Semestres JOIN Parcours USING (idParcours) where idSemestre = ?';
-        $row = $this->db->query($sql,array($semesterId))->row();
+            ->join('Parcours', 'idParcours')
+            ->where('idSemestre', $semesterId)
+            ->get()
+            ->row();
 
         if ( empty($row) ) {
             return FALSE;
         }
-
 
         if (( ($row->type === 'S1' || $row->type === 'S3') && !$row->differe ) ||
             ( ($row->type === 'S2' || $row->type === 'S4') && $row->differe ))
@@ -94,7 +94,7 @@ class semester_model extends CI_Model {
         join Groupes using(idGroupe)
         join Semestres using(idSemestre)
         join Parcours using(idParcours)
-        where type = ? and numEtudiant = ? order by idGroupe DESC'
+        where type = ? and numEtudiant = ? order by idGroupe DESC';
 
         $row = $this->db->query($sql,array($semesterType, $studentId))->row();
 
