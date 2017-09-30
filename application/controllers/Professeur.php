@@ -228,12 +228,12 @@ class Professeur extends CI_Controller {
 
         $marks = $this->markMod->getMarks($control,$_SESSION["id"]);
 
-
+		$css = array("Professeurs/ajoutnotes");
         $matiere = $this->ctrlMod->getMatiere($id);
         $js = array("debug");
         $title = "Ajout de notes";
         $data = array("control" => $control,"marks" => $marks,"matiere" => $matiere);
-        $var = array(   "css" => array(),
+        $var = array("css" => $css,
         "js" => $js,
         "title" => $title,
         "data" => $data);
