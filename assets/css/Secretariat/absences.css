@@ -66,9 +66,10 @@ body main { margin: 0; }
 #table_stud_list > div { position: relative; height: 25px; line-height: 25px; }
 #table_stud_list > div:not(:last-of-type) { border-bottom: 1px SOLID #403e3f; }
 #table_stud_list > div:nth-child(odd) { background-color: #c7c7c7; }
-#table_stud_list > div p { flex-basis: 7em; padding-left: 5px; font-size: 1em; white-space: nowrap; overflow: hidden; }
-#table_stud_list > div p + img { position: absolute; right: 4px; top: 4.5px; width: 16px; cursor: pointer; }
-#table_stud_list > div > div { display: none; position: absolute; padding: .3em; z-index: 1; background-color: #ededed; border: 3px SOLID #2d2d2d; border-radius: .2em; right: 0; text-align: center; }
+#table_stud_list > div > p { flex-basis: 7em; padding-left: 5px; font-size: 1em; white-space: nowrap; overflow: hidden; }
+#table_stud_list > div > p + img { position: absolute; right: 4px; top: 4.5px; width: 16px; cursor: pointer; }
+#table_stud_list > div > div { display: none; position: absolute; padding: .3em; z-index: 1; background-color: #ededed; border: 3px SOLID #2d2d2d; border-radius: .2em; font-family: Arial, sans-serif; right: 0; text-align: center; }
+#table_stud_list > div > div p { line-height: 1.2em; }
 
 #table-wrapper { overflow: auto; }
 #table-wrapper #new-absences-wrapper { display: none; align-items: center; justify-content: center; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; background-color: rgba(0, 0, 0, 0.65); }
@@ -87,7 +88,7 @@ body main { margin: 0; }
 #table-wrapper table td { position: relative; height: 25px; min-width: 25px; font-size: 1em; border-right: 1px SOLID #403e3f; }
 #table-wrapper table td.abs { cursor: pointer; }
 #table-wrapper table td.abs p:nth-child(3) { font-weight: bold; }
-#table-wrapper table td > div { display: none; position: absolute; padding: .3em; z-index: 1; background-color: #ededed; border: 3px SOLID #2d2d2d; border-radius: .2em; top: 10px; left: 20px; min-width: 170px; }
+#table-wrapper table td > div { display: none; position: absolute; padding: .3em; z-index: 1; background-color: #ededed; border: 3px SOLID #2d2d2d; border-radius: .2em; font-family: Arial, sans-serif; top: 10px; left: 20px; min-width: 170px; }
 #table-wrapper table td > div.abs-absence p:last-child { color: #f7171b; }
 #table-wrapper table td > div.abs-retard p:last-child { color: #eb9a0e; }
 #table-wrapper table td > div.abs-controle p:last-child { color: #010dfd; }

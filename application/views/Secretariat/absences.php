@@ -43,12 +43,12 @@
                                 . html_img('info.png', 'infos');
                             ?>
                                 <div>
-                                    <p><?= $missCount ?> absences</p>
+                                    <p><?= $missCount ?> demi-journée(s)</p>
                                     <?= $missCount >= 2
-                                        ? '<p>réparties sur ' . $dayMissCount . ' jours</p>'
+                                        ? '<p>sur ' . $dayMissCount . ' jour(s)</p>'
                                         : '' ?>
                                     <?= $justifiedMiss > 0
-                                        ? '<p>dont ' . $justifiedMiss . ' justifiées</p>'
+                                        ? '<p>' . $justifiedMiss . ' absence(s) justifiée(s)</p>'
                                         : '' ?>
                                 </div>
                             <?php
