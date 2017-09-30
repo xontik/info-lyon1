@@ -50,39 +50,28 @@ body main { margin: 0; }
 #color-code ul li:nth-child(6)::after { background-color: #02fca1; }
 #color-code ul li:nth-child(7)::after { background-color: #b203fd; }
 
-#absences_table { display: flex; flex-flow: row nowrap; width: 100%; margin-bottom: 2.5em; }
+#absences-table { display: flex; flex-flow: row nowrap; width: 100%; margin-bottom: 2.5em; }
 
-#table_static { min-width: 16em; border-right: 2px SOLID #403e3f; z-index: 2; background-color: #fafafa; }
-#table_static > .wrapper { display: flex; flex-flow: row nowrap; justify-content: flex-end; overflow: visible; }
-#table_static > div:last-child { border-bottom: 2px SOLID #403e3f; }
-#table_static > h1 { border-bottom: 2px SOLID #403e3f; line-height: 50px; font-size: 1.4em; font-weight: 600; text-align: center; color: #e7bd26; }
+#table-static { min-width: 16em; border-right: 2px SOLID #403e3f; z-index: 2; background-color: #fafafa; }
+#table-static > .wrapper { display: flex; flex-flow: row nowrap; justify-content: flex-end; overflow: visible; }
+#table-static > div:last-child { border-bottom: 2px SOLID #403e3f; }
+#table-static > h1 { border-bottom: 2px SOLID #403e3f; line-height: 50px; font-size: 1.4em; font-weight: 600; text-align: center; color: #e7bd26; }
 
-#table_group_list { width: 10%; }
-#table_group_list p { max-width: 20px; padding-left: 8px; margin: auto; word-wrap: break-word; letter-spacing: 20px; overflow: hidden; }
-#table_group_list p:not(:first-child) { border-top: 2px SOLID #403e3f; }
+#table-group-list { width: 10%; }
+#table-group-list p { max-width: 20px; padding-left: 8px; margin: auto; word-wrap: break-word; letter-spacing: 20px; overflow: hidden; }
+#table-group-list p:not(:first-child) { border-top: 2px SOLID #403e3f; }
 
-#table_stud_list { width: 90%; }
-#table_stud_list .group-change { border-top: 1px SOLID #403e3f; }
-#table_stud_list > div { position: relative; height: 25px; line-height: 25px; }
-#table_stud_list > div:not(:last-of-type) { border-bottom: 1px SOLID #403e3f; }
-#table_stud_list > div:nth-child(odd) { background-color: #c7c7c7; }
-#table_stud_list > div > p { flex-basis: 7em; padding-left: 5px; font-size: 1em; white-space: nowrap; overflow: hidden; }
-#table_stud_list > div > p + img { position: absolute; right: 4px; top: 4.5px; width: 16px; cursor: pointer; }
-#table_stud_list > div > div { display: none; position: absolute; padding: .3em; z-index: 1; background-color: #ededed; border: 3px SOLID #2d2d2d; border-radius: .2em; font-family: Arial, sans-serif; right: 0; text-align: center; }
-#table_stud_list > div > div p { line-height: 1.2em; }
+#table-stud-list { width: 90%; }
+#table-stud-list .group-change { border-top: 1px SOLID #403e3f; }
+#table-stud-list > div { position: relative; height: 25px; line-height: 25px; }
+#table-stud-list > div:not(:last-of-type) { border-bottom: 1px SOLID #403e3f; }
+#table-stud-list > div:nth-child(odd) { background-color: #c7c7c7; }
+#table-stud-list > div > p { flex-basis: 7em; padding-left: 5px; font-size: 1em; white-space: nowrap; overflow: hidden; }
+#table-stud-list > div > p + img { position: absolute; right: 4px; top: 4.5px; width: 16px; cursor: pointer; }
+#table-stud-list > div > div { display: none; position: absolute; padding: .3em; z-index: 1; background-color: #ededed; border: 3px SOLID #2d2d2d; border-radius: .2em; font-family: Arial, sans-serif; right: 0; text-align: center; }
+#table-stud-list > div > div p { line-height: 1.2em; }
 
 #table-wrapper { overflow: auto; }
-#table-wrapper #new-absences-wrapper { display: none; align-items: center; justify-content: center; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; background-color: rgba(0, 0, 0, 0.65); }
-#table-wrapper #new-absences-wrapper.active { display: flex; }
-#table-wrapper #new-absences { width: 400px; padding: 1em 0; margin: auto; background-color: #fafafa; box-shadow: 3px 3px 16px rgba(0, 0, 0, 0.8); text-align: center; }
-#table-wrapper #new-absences header, #table-wrapper #new-absences section { margin-bottom: 15px; }
-#table-wrapper #new-absences h2, #table-wrapper #new-absences h3 { color: #403e3f; }
-#table-wrapper #new-absences h3 { font-size: 1.2em; }
-#table-wrapper #new-absences article { margin-bottom: 10px; }
-#table-wrapper #new-absences label, #table-wrapper #new-absences p { display: inline-block; width: 48%; }
-#table-wrapper #new-absences label { margin-right: 3%; text-align: right; }
-#table-wrapper #new-absences p { text-align: left; }
-#table-wrapper #new-absences button { width: 85px; padding: 5px; border-radius: 3px; }
 #table-wrapper table { border-spacing: 0; border-collapse: collapse; }
 #table-wrapper table .group-change { border-top: 2px SOLID #403e3f; }
 #table-wrapper table td { position: relative; height: 25px; min-width: 25px; font-size: 1em; border-right: 1px SOLID #403e3f; }
@@ -93,7 +82,8 @@ body main { margin: 0; }
 #table-wrapper table td > div.abs-retard p:last-child { color: #eb9a0e; }
 #table-wrapper table td > div.abs-controle p:last-child { color: #010dfd; }
 #table-wrapper table td > div.abs-infirmerie p:last-child { color: #02fca1; }
-#table-wrapper table td > div:nth-of-type(2) { top: 90px; }
+#table-wrapper table td > div:nth-of-type(2) { top: 85px; }
+#table-wrapper table td > button { display: none; position: absolute; top: 85px; left: 20px; padding: 5px; border: 3px SOLID #2d2d2d; border-radius: .2em; background-color: #ededed; font-family: Arial, sans-serif; font-size: .95em; cursor: pointer; }
 #table-wrapper table td.abs-justifiee { background-color: #1bee00 !important; }
 #table-wrapper table td.abs-absence { background-color: #f7171b; }
 #table-wrapper table td.abs-retard { background-color: #eb9a0e; }
@@ -102,13 +92,27 @@ body main { margin: 0; }
 #table-wrapper table td.abs-several { background-color: #b203fd; }
 #table-wrapper table thead { text-align: center; border-bottom: 2px SOLID #403e3f; }
 #table-wrapper table thead tr:first-child td { border-right: 2px SOLID #403e3f; }
-#table-wrapper table thead td { min-width: 1em; padding: 0 .2em; border-right: 1px SOLID #403e3f; }
 #table-wrapper table thead td:last-child { border-right: 2px SOLID #403e3f; }
-#table-wrapper table thead .first_month_day:not(:first-of-type) { border-left: 2px SOLID #403e3f; }
+#table-wrapper table thead td.first-month-day:not(:first-of-type) { border-left: 2px SOLID #403e3f; }
 #table-wrapper table tbody tr { border-bottom: 1px SOLID #403e3f; }
 #table-wrapper table tbody tr:last-child { border-bottom: 2px SOLID #403e3f; }
 #table-wrapper table tbody tr:nth-child(odd) { background-color: #c7c7c7; }
 #table-wrapper table tbody th { text-align: left; }
 #table-wrapper table#header-fixed { display: none; position: fixed; top: 0; z-index: 1; background-color: #fafafa; }
+
+#new-absences-wrapper { display: none; align-items: center; justify-content: center; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; background-color: rgba(0, 0, 0, 0.65); }
+#new-absences-wrapper.active { display: flex; }
+
+#new-absences { width: 400px; padding: 1em 0; margin: auto; background-color: #fafafa; box-shadow: 3px 3px 16px rgba(0, 0, 0, 0.8); text-align: center; }
+#new-absences > header { margin-bottom: 12px; }
+#new-absences > header h2, #new-absences > header h3 { color: #403e3f; }
+#new-absences > header h3 { font-size: 1.2em; }
+#new-absences > section { margin-bottom: 15px; }
+#new-absences > section article { margin-bottom: 10px; }
+#new-absences > section label, #new-absences > section p { display: inline-block; width: 48%; }
+#new-absences > section label { margin-right: 3%; text-align: right; }
+#new-absences > section p { text-align: left; }
+#new-absences > section select { padding: 2px; }
+#new-absences button { width: 85px; padding: 5px; border-radius: 3px; }
 
 /*# sourceMappingURL=absences.css.map */

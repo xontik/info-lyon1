@@ -10,11 +10,11 @@
                 <li>Plusieurs types</li>
             </ul>
         </section>
-        <section id="absences_table">
-            <div id="table_static">
+        <section id="absences-table">
+            <div id="table-static">
                 <h1>Étudiants</h1>
                 <div class="wrapper">
-                    <div id="table_group_list">
+                    <div id="table-group-list">
                         <?php
                         foreach($data['groups'] as $group => $students_number) {
                             $height = $students_number * 26 - 1;
@@ -22,7 +22,7 @@
                         }
                         ?>
                     </div>
-                    <div id="table_stud_list">
+                    <div id="table-stud-list">
                         <?php
                         $last_group = null;
                         foreach($data['absences'] as $student) {
@@ -82,7 +82,7 @@
                                 <label for="add-absenceType">Type d'absence</label>
                                 <p>
                                     <select name="absenceType" id="add-absenceType">
-                                        <option value="0" selected="selected">Selectionner...</option>
+                                        <option value="0" selected>Selectionner...</option>
                                         <?php
                                         foreach($data['absenceTypes'] as $option) {
                                             echo '<option value="' . $option->idTypeAbsence . '">'
@@ -101,7 +101,7 @@
                     </div>
                 </div>
                 <table>
-                    <thead>
+                    <thead id="absences-table-head">
                         <tr>
                             <?php
                             $curr_date = clone $data['begin_date'];
@@ -124,17 +124,17 @@
                             <?php
                             // table head
                             $curr_date = clone $data['begin_date'];
-                            $today = new DateTime();
+                            $today = new DateTime('2017-04-10');
                             $last_month = null;
                             for ($i = 0; $i <= $data['day_number']; $i++) {
                                 $class = '';
                                 if ($last_month !== $curr_date->format('F')) {
-                                    $class = ' class="first_month_day"';
+                                    $class = ' class="first-month-day"';
                                     $last_month = $curr_date->format('F');
                                 }
 
                                 echo '<td'
-                                    . ($curr_date->format('Y-m-d') == $today->format('Y-m-d') ? ' id="active_day"' : '')
+                                    . ($curr_date->format('Y-m-d') == $today->format('Y-m-d') ? ' id="active-day"' : '')
                                     . $class . '>'
                                     . $curr_date->format('j')
                                     . '</td>';
@@ -199,13 +199,20 @@
                                         ? ' class="' . join(' ', $classes) . '"' : '')
                                     . '>';
 
-                                foreach($infos as $info) {
-                                    ?><div class="<?= 'abs-' . strtolower($info['absence_type']) ?>">
-                                        <p>Horaires : <?= $info['time_period'] ?></p>
-                                        <p>Justifiée : <?= $info['justify'] ?>  </p>
-                                        <p><?= $info['absence_type'] ?></p>
-                                    </div>
-                                <?php
+                                if (!empty($infos)) {
+                                    foreach($infos as $info) {
+                                        ?>
+                                        <div
+                                        class="<?= 'abs-' . strtolower($info['absence_type']) ?>">
+                                            <p>Horaires : <?= $info['time_period'] ?></p>
+                                            <p>Justifiée : <?= $info['justify'] ?>  </p>
+                                            <p><?= $info['absence_type'] ?></p>
+                                        </div>
+                                        <?php
+                                    }
+                                    if (count($infos) < 2) {
+                                        echo '<button>Nouveau</button>';
+                                    }
                                 }
                                 echo '</td>';
 
