@@ -43,7 +43,7 @@ $(function() {
     // ### Per day absence informations
     var selected = [];
 
-    $absence_table.on('click', 'td[class^="abs-"]', function() {
+    $absence_table.on('click', 'td.abs', function() {
         if (selected.indexOf(this) > -1) {
             var index = selected.indexOf(this);
             selected.splice(index, 1);
@@ -53,10 +53,10 @@ $(function() {
             $(this).children('div').show(DEFAULT_ANIM_TIME);
         }
     })
-    .on('mouseenter', 'td[class^="abs-"]', function() {
+    .on('mouseenter', 'td.abs', function() {
         $(this).children('div').show(DEFAULT_ANIM_TIME);
     })
-    .on('mouseleave', 'td[class^="abs-"]', function() {
+    .on('mouseleave', 'td.abs', function() {
         if (selected.indexOf(this) === -1) {
             $(this).children('div').hide(DEFAULT_ANIM_TIME);
         }
@@ -96,7 +96,7 @@ $(function() {
         }
     };
 
-    $absence_table.find('tbody').on('click', 'td:not([class^="abs-"])', function() {
+    $absence_table.find('tbody').on('click', 'td:not(.abs)', function() {
         newAbsence.prepare(
             getNameFromRow(this.parentNode.rowIndex - 2),
             formatDate(getDateFromColumn(this.cellIndex))

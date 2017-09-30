@@ -21,10 +21,11 @@ $line-height: 25px;
 $border-nosize: SOLID $second-color;
 
 $color-justifiee: #1bee00;
-$color-absence: red;
-$color-retard: orange;
-$color-controle: rebeccapurple;
-$color-infirmerie: cyan;
+$color-absence: #f7171b;
+$color-retard: #eb9a0e;
+$color-controle: #010dfd;
+$color-infirmerie: #02fca1;
+$color-mix: #b203fd;
 
 $color-line1: $background-color;
 $color-line2: darken($background-color, 20);
@@ -55,6 +56,7 @@ $color-line2: darken($background-color, 20);
     li:nth-child(4)::after { background-color: $color-retard; }
     li:nth-child(5)::after { background-color: $color-controle; }
     li:nth-child(6)::after { background-color: $color-infirmerie; }
+    li:nth-child(7)::after { background-color: $color-mix; }
   }
 }
 
@@ -191,7 +193,7 @@ $color-line2: darken($background-color, 20);
 
     background-color: $background-color;
 
-    box-shadow: 0 0 3px rgba(0, 0, 0, .8);
+    box-shadow: 3px 3px 16px rgba(0, 0, 0, .8);
 
     text-align: center;
 
@@ -243,27 +245,57 @@ $color-line2: darken($background-color, 20);
     td {
       position: relative;
       height: $line-height;
+      min-width: $line-height;
       font-size: 1em;
       border-right: 1px $border-nosize;
 
-      div {
+      &.abs {
+        cursor: pointer;
+
+        p:nth-child(3) {
+          font-weight: bold;
+        }
+      }
+
+      > div {
         @include popup();
 
         top: 10px;
         left: 20px;
         min-width: 170px;
 
-        p:not(:last-child) {
-          color: $text-color;
-        }
+        &.abs-absence p:last-child { color: $color-absence; }
+        &.abs-retard p:last-child { color: $color-retard; }
+        &.abs-controle p:last-child { color: $color-controle; }
+        &.abs-infirmerie p:last-child { color: $color-infirmerie; }
 
-        &:nth-child(2) {
+        &:nth-of-type(2) {
           top: 10px + 80px;
         }
+      }
 
-        &:nth-child(3) {
-          top: 10px + 80px * 2;
-        }
+      &.abs-justifiee {
+        background-color: $color-justifiee !important;
+      }
+
+      &.abs-absence {
+        background-color: $color-absence;
+      }
+
+      &.abs-retard {
+        background-color: $color-retard;
+      }
+
+      &.abs-infirmerie {
+        background-color: $color-infirmerie;
+      }
+
+      &.abs-controle {
+        background-color: $color-controle;
+      }
+
+      &.abs-several {
+        background-color: $color-mix;
       }
     }
 
@@ -298,7 +330,7 @@ $color-line2: darken($background-color, 20);
           border-bottom: 2px $border-nosize;
         }
 
-        &:nth-child(2n+1) {
+        &:nth-child(odd) {
           background-color: $color-line2;
         }
       }
@@ -306,34 +338,6 @@ $color-line2: darken($background-color, 20);
       th {
         text-align: left;
       }
-    }
-
-    td.abs-justifiee {
-      background-color: $color-justifiee;
-    }
-
-    .abs-absence {
-      background-color: $color-absence;
-      color: $color-absence;
-    }
-
-    .abs-retard {
-      background-color: $color-retard;
-      color: $color-retard;
-    }
-
-    .abs-infirmerie {
-      background-color: $color-infirmerie;
-      color: $color-infirmerie;
-    }
-
-    .abs-controle {
-      background-color: $color-controle;
-      color: $color-controle;
-    }
-
-    td[class^="abs-"] {
-      cursor: pointer;
     }
   }
 

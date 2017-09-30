@@ -7,6 +7,7 @@
                 <li>Retard</li>
                 <li>Contrôle</li>
                 <li>Infirmerie</li>
+                <li>Plusieurs types</li>
             </ul>
         </section>
         <section id="absences_table">
@@ -160,11 +161,21 @@
                             for ($i = 0; $i <= $data['day_number']; $i++) {
                                 $infos = array();
                                 $classes = array();
+                                $td_class = '';
+
                                 if (isset($student['absences'][$i])) {
+                                    $justified = 0;
+
                                     foreach($student['absences'][$i] as $curr_absence) {
-                                        $classes[] = 'abs-' . strtolower($curr_absence->typeAbsence);
-                                        if ($curr_absence->justifiee && !in_array('abs-justifiee', $classes)) {
-                                            $classes[] = 'abs-justifiee';
+                                        $abs_class = 'abs-' . strtolower($curr_absence->typeAbsence);
+                                        $td_class = $td_class === ''
+                                            ? $abs_class
+                                            : ($td_class !== $abs_class
+                                                ? 'abs-several'
+                                                : $td_class);
+
+                                        if ($curr_absence->justifiee) {
+                                            $justified += 1;
                                         }
 
                                         $curr_infos['time_period'] = substr($curr_absence->dateDebut, -8, 5)
@@ -174,21 +185,30 @@
                                         $curr_infos['absence_type'] = $curr_absence->typeAbsence;
                                         $infos[] = $curr_infos;
                                     }
+
+                                    // td has absences
+                                    $classes[] = 'abs';
+                                    $classes[] = $td_class;
+                                    // if all absences are justified
+                                    if ($justified === count($student['absences'][$i]))
+                                        $classes[] = 'abs-justifiee';
+
                                 }
 
-                                echo '<td'
-                                    . (!empty($classes)
-                                        ? ' class="' . join(' ', $classes) . '"': '')
+                                echo '<td ' . (!empty($classes)
+                                        ? ' class="' . join(' ', $classes) . '"' : '')
                                     . '>';
+
                                 foreach($infos as $info) {
-                                    ?><div>
-                                        <p>Horaire : <?= $info['time_period'] ?></p>
-                                        <p>Justifiée : <?= $info['justify'] ?></p>
+                                    ?><div class="<?= 'abs-' . strtolower($info['absence_type']) ?>">
+                                        <p>Horaires : <?= $info['time_period'] ?></p>
+                                        <p>Justifiée : <?= $info['justify'] ?>  </p>
                                         <p><?= $info['absence_type'] ?></p>
                                     </div>
                                 <?php
                                 }
                                 echo '</td>';
+
                             } // for each day
 
                             echo '</tr>';
@@ -201,5 +221,6 @@
         </section>
     </main>
     <script>
+        // Needed for absence_table script
         var FIRST_DATE = new Date('<?= $data['begin_date']->format('Y-m-d') ?>');
     </script>
