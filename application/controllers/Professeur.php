@@ -194,7 +194,7 @@ class Professeur extends CI_Controller {
 
 
 
-        $css = array();
+        $css = array("Professeurs/editcontrole");
         $js = array("debug");
         $title = "Ajout de controles";
         $data = array("control" => $control);
