@@ -33,13 +33,20 @@
     <input type="number" id="coeff" name="coeff" step="0.05" min="0"/><br>
     <label for="diviseur">Diviseur</label>
     <input type="number" id="diviseur" name="diviseur" min="0"/><br>
-    <label for="type">Type : </label>
-    <?php if ($data['promo'] == false){ ?>
-      <select id="type" name="type">
-        <option value="DS Groupe">DS Groupe</option>
-        <option value="CC">CC</option>
-      </select><br>
-    <?php } ?>
+    <?php if ($data['promo'] === false){ ?>
+    <label for="">Type de Controle : </label>
+
+      <select name="typeControle" id="typeControle">
+
+    <?php
+    foreach ($data['typeControle'] as $typeControle) {
+
+        echo '<option value="'.$typeControle->idTypeControle.'">'.$typeControle->nomTypeControle.'</option>'.PHP_EOL;
+    }
+    ?>
+    </select>
+    <br>
+  <?php }?>
     <label for="date">Date du controle : </label>
     <input type="date" id="date" name="date"/><br>
     <input type="submit" name="valid" value="Ajouter"><a href="<?php echo site_url("professeur/controle")?>">Retour</a>

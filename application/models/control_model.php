@@ -169,7 +169,7 @@ class Control_model extends CI_Model
     public function editControl($nom, $coeff, $div, $type, $date, $controlId)
     {
 
-      $sql = "UPDATE Controles SET nomControle = ? , coefficient = ?, diviseur = ?, typeControle= ?,dateControle = ?  WHERE idControle = ?";
+      $sql = "UPDATE Controles SET nomControle = ? , coefficient = ?, diviseur = ?, idTypeControle= ?,dateControle = ?  WHERE idControle = ?";
       return $this->db->query($sql, array($nom, $coeff, $div, $type, $date, $controlId));
 
 

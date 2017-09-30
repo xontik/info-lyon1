@@ -161,12 +161,13 @@ class Professeur extends CI_Controller {
         show_404();
         return;
       }
+      $typeControle = $this->ctrlMod->getTypeControle();
 
 
       $css = array();
       $js = array("debug");
       $title = "Ajout de controles";
-      $data = array("select" => $select,"promo" => $bool);
+      $data = array("select" => $select,"promo" => $bool,'typeControle' => $typeControle);
       $var = array(
         "css" => $css,
         "js" => $js,
@@ -180,7 +181,8 @@ class Professeur extends CI_Controller {
           show_404();
         }
         $this->load->model('control_model','ctrlMod');
-
+        $typeControle = $this->ctrlMod->getTypeControle();
+        
 
         $control = $this->ctrlMod->getControl($id);
         if(empty($control)){
@@ -197,7 +199,7 @@ class Professeur extends CI_Controller {
         $css = array();
         $js = array("debug");
         $title = "Ajout de controles";
-        $data = array("control" => $control);
+        $data = array("control" => $control,'typeControle' => $typeControle);
         $var = array(   "css" => $css,
         "js" => $js,
         "title" => $title,
