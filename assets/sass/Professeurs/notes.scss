@@ -88,4 +88,43 @@ main {
     }
 
   }
+  
+	input[type="submit"] {
+		border: 1.5px groove $second-color;
+		padding: 7px 12px;
+		border-radius: 5px;
+	
+	}
+	input[type="submit"]:hover {
+		color: white;
+		box-shadow: $default-box-shadow;
+	}
+	
+	form{
+		margin-top:30px;
+		margin-bottom:30px;
+	}
+	
+	#typeControle{
+		padding: 4px;
+		border: solid 1px #c9c9c9;
+		transition: border 0.3s;
+		margin-right:5px;
+	}
+	
+	#matieres{
+		padding: 4px;
+		border: solid 1px #c9c9c9;
+		transition: border 0.3s;
+		margin-right:5px;
+	}
+	
+	#groupes{
+		padding: 4px;
+		border: solid 1px #c9c9c9;
+		transition: border 0.3s;
+		margin-right:5px;
+	}
+	
+	
 }
