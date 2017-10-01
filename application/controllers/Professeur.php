@@ -42,12 +42,19 @@ class Professeur extends CI_Controller {
   }
 
   public function ptut() {
+    $this->load->model('ptut_model','ptutMod');
+
+    $ptuts = $this->ptutMod->getPtutOfProf($_SESSION['id']);
+
+
     $data = array(
-      "css" => array(),
-      "js" => array(),
-      "title" => "Projets tuteurés"
+      'css' => array(),
+      'js' => array('debug'),
+      'title' => "Projets tuteurés",
+      'var' => array('ptuts'=> $ptuts),
+
     );
-    show("Professeur/ptut", $data);
+    show('Professeur/ptut', $data);
   }
 
   public function edt() {

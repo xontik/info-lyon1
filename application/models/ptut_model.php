@@ -7,5 +7,23 @@
  */
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+class Ptut_model extends CI_Model
+{
 
-?>
+    public function getPtutOfProf($professorId)
+    {
+
+        $sql = "SELECT nomGroupe, idGroupe FROM groupesPtut WHERE idProfesseur = ?";
+        return $this->db->query($sql, array($professorId))->result();
+    }
+
+    public function getPtutMembers($GroupeId){
+        $sql = "SELECT nom, prenom FROM MembrePTUT m
+                                   JOIN Etudiants USING (numEtudiant) 
+                                   WHERE m.idGroupe = ?";
+        return $this->db->query($sql, array($GroupeId))->result();
+    }
+
+
+}
+
