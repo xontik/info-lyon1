@@ -163,7 +163,7 @@ class Professeur extends CI_Controller {
       }
 
 
-      $css = array();
+      $css = array("Professeurs/addDSPromo");
       $js = array("debug");
       $title = "Ajout de controles";
       $data = array("select" => $select,"promo" => $bool);
