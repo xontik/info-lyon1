@@ -1,11 +1,74 @@
 @import '../style';
 
 main {
+	$default-box-shadow: 3px 3px 12px #999;
+
+	label
+	{
+		display: block;
+		width: 150px;
+		float: left;
+		margin-top:5px;
+	}
 	
-	label{ 
-		display:inline-block; width:100px; 
+	input[type="submit"] {
+		display: inline-block;
+		border: 1.5px groove $second-color;
+		padding: 7px 12px;
+		border-radius: 5px;
+	
 	}
-	input { 
-	display:inline-block; 
+	
+	input[type="submit"]:hover {
+		box-shadow: $default-box-shadow;
 	}
+	
+	#return{
+		display: inline-block;
+		border: 1.5px groove $second-color;
+		padding: 5px 10px;
+		border-radius: 5px;
+	
+	}
+	
+	#return:hover{
+		
+		box-shadow: $default-box-shadow;
+	}
+	
+	input[type="text"] {
+		padding: 3px;
+		border: solid 1px #c9c9c9;
+		transition: border 0.3s;
+		margin-top:3px;
+	}
+	
+	input[type="number"] {
+		padding: 3px;
+		border: solid 1px #c9c9c9;
+		transition: border 0.3s;
+		margin-top:3px;
+	}
+	
+	input[type="date"] {
+		padding: 3px;
+		border: solid 1px #c9c9c9;
+		transition: border 0.3s;
+		margin-top:3px;
+	}
+	
+	#type{
+		padding: 4px;
+		border: solid 1px #c9c9c9;
+		transition: border 0.3s;
+		margin-top:3px;
+	
+	}
+	
+	
+	
+	
+	
+	
+	
 }
