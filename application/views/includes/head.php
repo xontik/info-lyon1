@@ -63,7 +63,9 @@
                             'questions' => '/Professeur/Question'
                         ),
                         'secretariat' => array(
-                            'absences' => '/Secretariat/Absence'
+                            'absences' => '/Secretariat/Absence',
+                            'administration' => '/Secretariat/Administration'
+
                         )
                     );
 
