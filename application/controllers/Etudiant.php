@@ -38,7 +38,7 @@ class Etudiant extends CI_Controller {
         $semesterId = $this->semesterMod->getSemesterId();
     }
 
-    $absences = $this->absenceMod->getStudentSemesterAbsences($_SESSION['id'], $semesterId);
+    $absences = $this->absenceMod->getStudentSemesterAbsence($_SESSION['id'], $semesterId);
 
     $var = array(
       'css' => array(),
