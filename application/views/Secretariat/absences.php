@@ -38,7 +38,7 @@
                             $dayMissCount = $student['absences']['total_days'];
                             $justifiedMiss = $student['absences']['justified'];
 
-                            echo '<div' . $class . '>'
+                            echo '<div id="' . $student['numEtudiant'] . '"' . $class . '>'
                                 . '<p>' . $student['nom'] . ' ' . $student['prenom'] . '</p>'
                                 . html_img('info.png', 'infos');
                             ?>
@@ -124,7 +124,7 @@
                             <?php
                             // table head
                             $curr_date = clone $data['begin_date'];
-                            $today = new DateTime('2017-04-10');
+                            $today = new DateTime();
                             $last_month = null;
                             for ($i = 0; $i <= $data['day_number']; $i++) {
                                 $class = '';
@@ -178,6 +178,7 @@
                                             $justified += 1;
                                         }
 
+                                        $curr_infos['absence_id'] = $curr_absence->idAbsence;
                                         $curr_infos['time_period'] = substr($curr_absence->dateDebut, -8, 5)
                                             . ' - '
                                             . substr($curr_absence->dateFin, -8, 5);
@@ -188,11 +189,9 @@
 
                                     // td has absences
                                     $classes[] = 'abs';
-                                    $classes[] = $td_class;
-                                    // if all absences are justified
-                                    if ($justified === count($student['absences'][$i]))
-                                        $classes[] = 'abs-justifiee';
-
+                                    $classes[] = $justified === count($student['absences'][$i])
+                                        ? 'abs-justifiee'
+                                        : $td_class;
                                 }
 
                                 echo '<td ' . (!empty($classes)
@@ -202,7 +201,7 @@
                                 if (!empty($infos)) {
                                     foreach($infos as $info) {
                                         ?>
-                                        <div
+                                        <div id="absn<?= $info['absence_id'] ?>"
                                         class="<?= 'abs-' . strtolower($info['absence_type']) ?>">
                                             <p>Horaires : <?= $info['time_period'] ?></p>
                                             <p>Justifiée : <?= $info['justify'] ?>  </p>

@@ -77,6 +77,7 @@ body main { margin: 0; }
 #table-wrapper table td { position: relative; height: 25px; min-width: 25px; font-size: 1em; border-right: 1px SOLID #403e3f; }
 #table-wrapper table td.abs { cursor: pointer; }
 #table-wrapper table td.abs p:nth-child(3) { font-weight: bold; }
+#table-wrapper table td > div, #table-wrapper table td > button { z-index: 10; }
 #table-wrapper table td > div { display: none; position: absolute; padding: .3em; z-index: 1; background-color: #ededed; border: 3px SOLID #2d2d2d; border-radius: .2em; font-family: Arial, sans-serif; top: 10px; left: 20px; min-width: 170px; }
 #table-wrapper table td > div.abs-absence p:last-child { color: #f7171b; }
 #table-wrapper table td > div.abs-retard p:last-child { color: #eb9a0e; }
@@ -84,7 +85,7 @@ body main { margin: 0; }
 #table-wrapper table td > div.abs-infirmerie p:last-child { color: #02fca1; }
 #table-wrapper table td > div:nth-of-type(2) { top: 85px; }
 #table-wrapper table td > button { display: none; position: absolute; top: 85px; left: 20px; padding: 5px; border: 3px SOLID #2d2d2d; border-radius: .2em; background-color: #ededed; font-family: Arial, sans-serif; font-size: .95em; cursor: pointer; }
-#table-wrapper table td.abs-justifiee { background-color: #1bee00 !important; }
+#table-wrapper table td.abs-justifiee { background-color: #1bee00; }
 #table-wrapper table td.abs-absence { background-color: #f7171b; }
 #table-wrapper table td.abs-retard { background-color: #eb9a0e; }
 #table-wrapper table td.abs-infirmerie { background-color: #02fca1; }
@@ -100,7 +101,7 @@ body main { margin: 0; }
 #table-wrapper table tbody th { text-align: left; }
 #table-wrapper table#header-fixed { display: none; position: fixed; top: 0; z-index: 1; background-color: #fafafa; }
 
-#new-absences-wrapper { display: none; align-items: center; justify-content: center; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; background-color: rgba(0, 0, 0, 0.65); }
+#new-absences-wrapper { display: none; align-items: center; justify-content: center; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 20; background-color: rgba(0, 0, 0, 0.65); }
 #new-absences-wrapper.active { display: flex; }
 
 #new-absences { width: 400px; padding: 1em 0; margin: auto; background-color: #fafafa; box-shadow: 3px 3px 16px rgba(0, 0, 0, 0.8); text-align: center; }

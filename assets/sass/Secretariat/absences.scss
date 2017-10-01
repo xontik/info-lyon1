@@ -197,6 +197,10 @@ $color-line2: darken($background-color, 20);
         }
       }
 
+      > div, > button {
+        z-index: 10;
+      }
+
       > div {
         @include popup();
 
@@ -231,7 +235,7 @@ $color-line2: darken($background-color, 20);
       }
 
       &.abs-justifiee {
-        background-color: $color-justifiee !important;
+        background-color: $color-justifiee;
       }
 
       &.abs-absence {
@@ -310,7 +314,7 @@ $color-line2: darken($background-color, 20);
   width: 100%;
   height: 100%;
 
-  z-index: 5;
+  z-index: 20;
 
   background-color: rgba(0, 0, 0, 0.65);
 
