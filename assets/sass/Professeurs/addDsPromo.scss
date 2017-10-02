@@ -6,10 +6,18 @@ main {
 
 	label
 	{
-    width: 250px;
+    width: 350px;
     display: block;
     float: left; 
+	margin-top:5px;
 		
+	}
+	
+	input{
+		padding: 3px;
+		border: solid 1px #c9c9c9;
+		transition: border 0.3s;
+		margin-top:3px;
 	}
 	
 	input[type="submit"] {
@@ -17,6 +25,7 @@ main {
 		border: 1.5px groove $second-color;
 		padding: 7px 12px;
 		border-radius: 5px;
+		margin-top:30px;
 	
 	}
 	
@@ -24,6 +33,30 @@ main {
 		color:white;
 		box-shadow: $default-box-shadow;
 	}
+
 	
- 
+	select {
+		padding: 3px;
+		border: solid 1px #c9c9c9;
+		transition: border 0.3s;
+		margin-top:3px;
+	}
+	
+	#return{
+		display: inline-block;
+		border: 1.5px groove $second-color;
+		padding: 5px 10px;
+		border-radius: 5px;
+		margin-left:8px;
+	
+	}
+	
+	#return:hover{
+		
+		box-shadow: $default-box-shadow;
+	}
+	
+	
+	
+	
 }

@@ -41,7 +41,7 @@ main { text-align: center; }
 main p { color: #403e3f; margin-top: 30px; font-size: 1.6em; }
 main table { margin: auto; margin-top: 20px; margin-bottom: 20px; border-collapse: separate; border-spacing: 50px 4px; }
 main thead tr { text-align: center; font-size: 1.4em; font-variant: small-caps; color: #403e3f; }
-main input[type="number"] { padding: 5px; border: solid 1px #c9c9c9; transition: border 0.3s; }
+main input { padding: 5px; border: solid 1px #c9c9c9; transition: border 0.3s; }
 main input[type="submit"] { border: 1.5px groove #403e3f; padding: 7px 12px; border-radius: 5px; }
 main input[type="submit"]:hover { color: white; box-shadow: 3px 3px 12px #999; }
 

@@ -42,6 +42,6 @@
     <?php } ?>
     <label for="date">Date du controle : </label>
     <input type="date" id="date" name="date"/><br>
-    <input type="submit" name="valid" value="Ajouter"><a href="<?php echo site_url("professeur/controle")?>">Retour</a>
+    <input type="submit" name="valid" value="Ajouter"> <div id="return"> <a href="<?php echo site_url("professeur/controle")?>">Retour</a></div>
   </form>
 </main>

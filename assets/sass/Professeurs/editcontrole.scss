@@ -11,24 +11,14 @@ main {
 		margin-top:5px;
 	}
 	
-	input[type="submit"] {
-		display: inline-block;
-		border: 1.5px groove $second-color;
-		padding: 7px 12px;
-		border-radius: 5px;
 	
-	}
-	
-	input[type="submit"]:hover {
-		color:white;
-		box-shadow: $default-box-shadow;
-	}
 	
 	#return{
 		display: inline-block;
 		border: 1.5px groove $second-color;
 		padding: 5px 10px;
 		border-radius: 5px;
+		margin-left:8px;
 	
 	}
 	
@@ -37,28 +27,29 @@ main {
 		box-shadow: $default-box-shadow;
 	}
 	
-	input[type="text"] {
+	input {
 		padding: 3px;
 		border: solid 1px #c9c9c9;
 		transition: border 0.3s;
 		margin-top:3px;
 	}
 	
-	input[type="number"] {
-		padding: 3px;
-		border: solid 1px #c9c9c9;
-		transition: border 0.3s;
-		margin-top:3px;
+	input[type="submit"] {
+		display: inline-block;
+		border: 1.5px groove $second-color;
+		padding: 7px 12px;
+		border-radius: 5px;
+		margin-top:30px;
+	
 	}
 	
-	input[type="date"] {
-		padding: 3px;
-		border: solid 1px #c9c9c9;
-		transition: border 0.3s;
-		margin-top:3px;
+	input[type="submit"]:hover {
+		color:white;
+		box-shadow: $default-box-shadow;
 	}
 	
-	#type{
+	
+	select{
 		padding: 4px;
 		border: solid 1px #c9c9c9;
 		transition: border 0.3s;

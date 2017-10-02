@@ -37,8 +37,12 @@ li { list-style-type: none; }
 
 .dropdown::after { content: ''; width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 9px solid #ffffff; }
 
-main label { width: 250px; display: block; float: left; }
-main input[type="submit"] { display: inline-block; border: 1.5px groove #403e3f; padding: 7px 12px; border-radius: 5px; }
+main label { width: 350px; display: block; float: left; margin-top: 5px; }
+main input { padding: 3px; border: solid 1px #c9c9c9; transition: border 0.3s; margin-top: 3px; }
+main input[type="submit"] { display: inline-block; border: 1.5px groove #403e3f; padding: 7px 12px; border-radius: 5px; margin-top: 30px; }
 main input[type="submit"]:hover { color: white; box-shadow: 3px 3px 12px #999; }
+main select { padding: 3px; border: solid 1px #c9c9c9; transition: border 0.3s; margin-top: 3px; }
+main #return { display: inline-block; border: 1.5px groove #403e3f; padding: 5px 10px; border-radius: 5px; margin-left: 8px; }
+main #return:hover { box-shadow: 3px 3px 12px #999; }
 
 /*# sourceMappingURL=addDsPromo.css.map */
