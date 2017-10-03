@@ -13,7 +13,7 @@ class Ptut_model extends CI_Model
     public function getPtutOfProf($professorId)
     {
 
-        $sql = "SELECT nomGroupe, idGroupe FROM groupesPtut WHERE idProfesseur = ?";
+        $sql = "SELECT nomGroupe, idGroupe, prenom FROM groupesPtut JOIN MembrePTUT USING (idGroupe) JOIN Etudiants USING (numEtudiant) WHERE idProfesseur = ?";
         return $this->db->query($sql, array($professorId))->result();
     }
 
