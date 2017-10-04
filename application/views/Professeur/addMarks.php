@@ -7,7 +7,7 @@
       <tr>
         <th>Nom</th>
         <th>Prenom</th>
-        <th>Note</th>
+        <th>Note /<?= $data['control']->diviseur ?></th>
       </tr>
 
       <?php
@@ -24,5 +24,6 @@
 
       ?>
       <input type="submit" value="Envoyer" name="send" />
+      <a href="<?= base_url('Professeur/controle')?>">Retour</a>
     </form>
   </main>

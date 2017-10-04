@@ -30,9 +30,9 @@
     <label for="nom">Libellé : </label>
     <input type="text" id="nom" name="nom"/><br>
     <label for="coeff">Coefficient : </label>
-    <input type="number" id="coeff" name="coeff" step="0.05" min="0"/><br>
+    <input type="number" id="coeff" name="coeff" step="0.05" min="0" value="1"/><br>
     <label for="diviseur">Diviseur</label>
-    <input type="number" id="diviseur" name="diviseur" min="0"/><br>
+    <input type="number" id="diviseur" name="diviseur" min="1" value="20"/><br>
     <?php if ($data['promo'] === false){ ?>
     <label for="">Type de Controle : </label>
 
@@ -48,7 +48,7 @@
     <br>
   <?php }?>
     <label for="date">Date du controle : </label>
-    <input type="date" id="date" name="date"/><br>
+    <input type="date" id="date" name="date" value="<?= date('Y-m-d')?>"/><br>
     <input type="submit" name="valid" value="Ajouter"><a href="<?php echo site_url("professeur/controle")?>">Retour</a>
   </form>
 </main>
