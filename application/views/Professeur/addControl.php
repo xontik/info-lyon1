@@ -34,7 +34,7 @@
     <label for="diviseur">Diviseur</label>
     <input type="number" id="diviseur" name="diviseur" min="1" value="20"/><br>
     <?php if ($data['promo'] === false){ ?>
-    <label for="">Type de Controle : </label>
+    <label for="typeControle">Type de Controle : </label>
 
       <select name="typeControle" id="typeControle">
 
