@@ -5,66 +5,81 @@
         </div>
 
   <?php
-  if(count($data['controls']) > 0) {
+  if(isset($data['controls'])) {
 
     ?>
   <div>
   <form method="post" action="<?php echo base_url('professeur/controle')?>">
     <?php
-    if(count($data['groupes']) > 1){
-      echo '<div>';
-      echo "<h2>Groupes :</h2>";
+    if(count($data['groupes'])){?>
+      <label for="">Groupes : </label>
+        <select name="groupes" id="groupes">
+          <option value="0">Tous</option>
+      <?php
       foreach ($data['groupes'] as $groupe) {
-        $checked = "";
-        if(in_array($groupe->idGroupe,$data["restrict"]["groupes"])){
-          $checked = "checked";
+        $selected = "";
+        if(isset($data["restrict"]["groupes"]) && $groupe->idGroupe == $data["restrict"]["groupes"]){
+          $selected = "selected";
         }
-        echo '<label for="id'.$groupe->nomGroupe.'">'.$groupe->nomGroupe.$groupe->type.'</label><input type="checkbox" id="id'.$groupe->nomGroupe.'" name="'.$groupe->idGroupe.'" '.$checked.'>';
+          echo '<option value="'.$groupe->idGroupe.'" '.$selected.' >'.$groupe->nomGroupe.$groupe->type.'</option>'.PHP_EOL;
       }
-      echo '</div>';
+      ?>
+      </select>
+      <?php
 
     }
-    if(count($data['matieres'])){
-      echo '<div>';
-      echo "<h2>Matieres :</h2>";
+    if(isset($data['matieres'])){
+      ?>
+      <label for="">Matieres : </label>
+        <select name="matieres" id="matieres">
+          <option value="0">Tous</option>
+
+      <?php
       foreach ($data['matieres'] as $matiere) {
-        $checked = "";
-        if(in_array($matiere->codeMatiere,$data["restrict"]["matieres"])){
-          $checked = "checked";
+        $selected = "";
+        if(isset($data["restrict"]["matieres"]) && $matiere->idMatiere == $data["restrict"]["matieres"]){
+          $selected = "selected";
         }
-        echo '<label for="id'.$matiere->codeMatiere.'">'.$matiere->nomMatiere.'</label><input type="checkbox" id="id'.$matiere->codeMatiere.'" name="'.$matiere->codeMatiere.'" '.$checked.' >';
+          echo '<option value="'.$matiere->idMatiere.'" '.$selected.'>'.$matiere->codeMatiere.' - '.$matiere->nomMatiere.'</option>'.PHP_EOL;
       }
-      echo '</div>';
+      ?>
+      </select>
+      <?php
 
     }
 
-                // Control type filter
-                echo '<div>';
-                echo '<h2>Type de controles :</h2>';
-                // Promos
-                $checked  = '';
-                if (in_array('DSPROMO',$data['restrict']['DS'])) {
-                    $checked = 'checked';
-                }
-                echo '<label id="choix" for="idDSPROMO"> Ds Promo </label>'
-                    . '<input type="checkbox" id="idDSPROMO" name="DSPROMO" '.$checked.'>';
+    if(isset($data['typeControle'])){
+      ?>
+      <label for="">Type de Controle : </label>
 
-                // Class tests
-                $checked  = '';
-                if (in_array('CC',$data['restrict']['DS'])) {
-                    $checked = 'checked';
-                }
-                echo '<label id="choix" for="idCC"> CC </label>'
-                    . '<input type="checkbox" id="idCC" name="CC" '.$checked.'>';
+        <select name="typeControle" id="typeControle">
+          <option value="0">Tous</option>
+
+      <?php
+      foreach ($data['typeControle'] as $typeControle) {
+        $selected = "";
+        if(isset($data["restrict"]["typeControle"]) && $typeControle->idTypeControle == $data["restrict"]["typeControle"]){
+          $selected = "selected";
+        }
+          echo '<option value="'.$typeControle->idTypeControle.'" '.$selected.'>'.$typeControle->nomTypeControle.'</option>'.PHP_EOL;
+      }
+      ?>
+      </select>
+      <?php
+
+    }
+
+
 
     ?>
-    <br>
+
     <input type="submit" name="filter" value="Filter"/>
+    <a href="<?= base_url('professeur/controle') ?>">Reset all</a>
   </form>
 </div>
   <?php
   $mat = null;
-
+      if(count($data['controls'])){
             ?>
             <table id="controls-table">
                 <caption>Controles</caption>
@@ -92,7 +107,7 @@
                         . '<td>' . $control->codeMatiere.' - '.$control->nomMatiere . '</td>'
                         . '<td>' . $control->nomControle . '</td>'
                         . '<td>' . $control->nomGroupe . '</td>'
-                        . '<td>' . $control->typeControle . '</td>'
+                        . '<td>' . $control->nomTypeControle . '</td>'
                         . '<td>' . $control->coefficient . '</td>'
                         . '<td>' . $control->diviseur . '</td>'
                         . '<td>' . ($control->median != null ? ( $control->median) : 'Non calculée') . '</td>'
@@ -114,5 +129,7 @@
                     ?>
                 </tbody>
             </table>
-        <?php } ?>
+        <?php }
+      }
+      ?>
     </main>

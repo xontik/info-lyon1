@@ -26,15 +26,19 @@ class Process_professeur extends CI_Controller {
       && isset($_POST['date']) && isset($_POST['type'])
     ) {
       if ($_POST["enseignement"] != "" && $_POST["nom"] != "" && $_POST["coeff"] != "" && $_POST["diviseur"] != ""
-      && $_POST["date"] != "" && $_POST["type"] != ""
+      && $_POST["date"] != "" && $_POST["typeControle"] != ""
     ) {
       if(!$this->ctrlMod->checkEnseignementProf($_POST["enseignement"],$_SESSION['id'])){
         $this->session->set_flashdata("notif", array("Vous n'avez pas les droit sur cet enseignement"));
         redirect("professeur/controle");
       }
-      if ($this->ctrlMod->addControl($_POST['nom'], $_POST['coeff'], $_POST['diviseur'], $_POST['type'], $_POST['date'], $_POST['enseignement'])) {
+      if ($this->ctrlMod->addControl($_POST['nom'], $_POST['coeff'], $_POST['diviseur'], $_POST['typeControle'], $_POST['date'], $_POST['enseignement'])) {
         $this->session->set_flashdata("notif", array("Controle ajoutée avec succes"));
         redirect("professeur/controle");
+      }else{
+        $this->session->set_flashdata("notif", array("Erreur de requete base de données impossible d'ajouter le controle"));
+        redirect("professeur/controle");
+
       }
 
 
@@ -51,8 +55,12 @@ class Process_professeur extends CI_Controller {
   && $_POST["date"] != ""
 ) {
 
-  if ($this->ctrlMod->addDsPromo($_POST['nom'], $_POST['coeff'], $_POST['diviseur'], "Promo", $_POST['date'],$_POST['matiere'])) {
+  if ($this->ctrlMod->addDsPromo($_POST['nom'], $_POST['coeff'], $_POST['diviseur'], 1, $_POST['date'],$_POST['matiere'])) {
     $this->session->set_flashdata("notif", array("Controle promo ajoutée avec succes"));
+    redirect("professeur/controle");
+  }
+  else{
+    $this->session->set_flashdata("notif", array("Erreur de requete base de données impossible d'ajouter le controle"));
     redirect("professeur/controle");
   }
 
@@ -71,28 +79,37 @@ public function editcontrole($id = ""){
     show_404();
   }
   $this->load->model('control_model','ctrlMod');
-
   if(!$this->ctrlMod->checkProfessorRightOnControl($_SESSION['id'],$id)){
     $this->session->set_flashdata("notif", array("Vous n'avez pas les droit sur ce controle"));
     redirect("professeur/controle");
   }
 
+  $control = $this->ctrlMod->getControl($id);
 
   if(isset($_POST['nom']) && isset($_POST['coeff']) && isset($_POST['diviseur'])
-  && isset($_POST['date']) && isset($_POST['type']) ){
+  && isset($_POST['date'])) {
 
     if($_POST["nom"] != "" && $_POST["coeff"] != "" && $_POST["diviseur"] != ""
-    && $_POST["date"] != "" && $_POST["type"] != "" ){
+    && $_POST["date"] != ""){
+      if(!is_null($control->idDSPromo)){
+        $res = $this->ctrlMod->editControl($_POST['nom'],$_POST['coeff'],$_POST['diviseur'],1,$_POST['date'],$id);
+      }else{
+        if(isset($_POST['typeControle'])){
+          $res = $this->ctrlMod->editControl($_POST['nom'],$_POST['coeff'],$_POST['diviseur'],$_POST['typeControle'],$_POST['date'],$id);
+        }else{
+          $res= false;
+        }
+      }
 
-      if($this->ctrlMod->editControl($_POST['nom'],$_POST['coeff'],$_POST['diviseur'],$_POST['type'],$_POST['date'],$id)){
-
+      if($res){
         $this->session->set_flashdata("notif",array("Controle ajoutée avec succes"));
         redirect("professeur/controle");
       }
+      else{
+        $this->session->set_flashdata("notif",array("Erreur requete bd"));
+        redirect("professeur/controle");
 
-
-
-
+      }
     }
   }
   $this->session->set_flashdata("notif",array("Erreur controle pas add"));
