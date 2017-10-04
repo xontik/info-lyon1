@@ -15,7 +15,7 @@
         echo "<tr>";
         echo "<td>". $mark->nom. "</td>";
         echo "<td>". $mark->prenom. "</td>";
-        echo "<td><input type='text' name='".$mark->numEtudiant."' value='".((!is_null($mark->valeur))?$mark->valeur:"")."'/></td>";
+        echo "<td><input type='number' name='".$mark->numEtudiant."' value='".((!is_null($mark->valeur))?$mark->valeur:"")."'/></td>";
         echo "</tr>";
 
       }

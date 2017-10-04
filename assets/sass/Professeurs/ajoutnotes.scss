@@ -1,0 +1,47 @@
+@import '../style';
+
+main {
+	
+	$default-box-shadow: 3px 3px 12px #999;
+	text-align:center;
+	
+	
+	p{
+	color:$second-color;
+	margin-top:30px;
+	font-size:1.6em;
+	}
+
+	table{
+		margin:auto;
+		margin-top:20px;
+		margin-bottom:20px;
+		border-collapse: separate;
+		border-spacing: 50px 4px;
+	}
+	thead tr {
+        text-align: center;
+        font-size: 1.4em;
+        font-variant: small-caps;
+        color: $second-color;
+    }
+
+	input {
+		padding: 5px;
+		border: solid 1px #c9c9c9;
+		transition: border 0.3s;
+	}
+	
+	input[type="submit"] {
+		border: 1.5px groove $second-color;
+		padding: 7px 12px;
+		border-radius: 5px;
+	
+	}
+	input[type="submit"]:hover {
+		color: white;
+		box-shadow: $default-box-shadow;
+	}
+	
+	
+}

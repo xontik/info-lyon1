@@ -1,0 +1,66 @@
+@import '../style';
+
+main {
+	$default-box-shadow: 3px 3px 12px #999;
+
+	label
+	{
+		display: block;
+		width: 150px;
+		float: left;
+		margin-top:5px;
+	}
+	
+	
+	
+	#return{
+		display: inline-block;
+		border: 1.5px groove $second-color;
+		padding: 5px 10px;
+		border-radius: 5px;
+		margin-left:8px;
+	
+	}
+	
+	#return:hover{
+		
+		box-shadow: $default-box-shadow;
+	}
+	
+	input {
+		padding: 3px;
+		border: solid 1px #c9c9c9;
+		transition: border 0.3s;
+		margin-top:3px;
+	}
+	
+	input[type="submit"] {
+		display: inline-block;
+		border: 1.5px groove $second-color;
+		padding: 7px 12px;
+		border-radius: 5px;
+		margin-top:30px;
+	
+	}
+	
+	input[type="submit"]:hover {
+		color:white;
+		box-shadow: $default-box-shadow;
+	}
+	
+	
+	select{
+		padding: 4px;
+		border: solid 1px #c9c9c9;
+		transition: border 0.3s;
+		margin-top:3px;
+	
+	}
+	
+	
+	
+	
+	
+	
+	
+}
