@@ -12,8 +12,7 @@ class Secretariat extends CI_Controller {
   public function index() {
       $this->administration();
   }
-
-  public function administration(){
+  public function listParcours(){
     $this->load->model('Administration_model','adminMod');
     $admins = $this->adminMod->getAllAdministration();
     $parcours = array();
@@ -44,7 +43,7 @@ class Secretariat extends CI_Controller {
         $parcours[$idParcours]['UEs'][$idUE]['nomUE'] = $admin->nomUE;
         $parcours[$idParcours]['UEs'][$idUE]['coefficientUE'] = 0;
         $parcours[$idParcours]['UEs'][$idUE]['Modules'] = array();
-        
+
         $idModule = 0;
 
 
@@ -81,14 +80,22 @@ class Secretariat extends CI_Controller {
 
 
     $data = array(
-      "css" => array('Secretariats/administration'),
-      "js" => array('debug','administration'),
+      "css" => array('Secretariats/listParcours'),
+      "js" => array('debug','listParcours'),
       "title" => "Administration",
-      'data' => array('parcours' => $parcours, 'admins' => $admins)
+      'data' => array('parcours' => $parcours)
     );
-    show("Secretariat/administration", $data);
+    show("Secretariat/listParcours", $data);
 
   }
 
+  public function administration(){
+    $data = array(
+      "css" => array(),
+      "js" => array(),
+      "title" => "Tableau de bord"
+    );
+    show("Secretariat/administration", $data);
+  }
 
 }
