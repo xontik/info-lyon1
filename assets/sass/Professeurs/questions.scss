@@ -1,0 +1,16 @@
+@import '../style';
+
+main {
+	margin-top: 2em;
+	
+	section {
+		height: 32em;
+		border: 1px 0 0 1px solid black;
+
+		header {
+			border-bottom : 1px solid black;
+			font-size: 2em;
+			
+		}
+	}	
+ }

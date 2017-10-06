@@ -60,12 +60,19 @@ class Professeur extends CI_Controller {
   }
 
   public function question() {
-    $data = array(
-      "css" => array(),
-      "js" => array(),
-      "title" => "Questions / Réponses"
+	
+	$this->load->model('students_model', 'studentMod');
+	$this->load->model('question_model', 'questionsMod');
+	
+	$profQuestions = $this->questionsMod->getProfessorQuestions($_SESSION['id']);
+	$var = array(
+      'css' => array('Professeurs/questions'),
+      'js' => array('debug'),
+      'title' => 'Absences',
+      'data' => array('profQuestions' => $profQuestions)
     );
-    show("Professeur/questions", $data);
+
+    show("Professeur/questions", $var);
   }
 
   public function controle() {
