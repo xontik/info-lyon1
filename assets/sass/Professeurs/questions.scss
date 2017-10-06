@@ -4,13 +4,44 @@ main {
 	margin-top: 2em;
 	
 	section {
-		height: 32em;
-		border: 1px 0 0 1px solid black;
 
 		header {
-			border-bottom : 1px solid black;
+			border-bottom : 1px solid #595959;
 			font-size: 2em;
-			
+			margin-bottom: 1.3em;
+			color: #595959;
+		}
+		
+		div{
+			margin-bottom: 1.5em;
+		}
+
+		li span{
+			padding-left: 65%;
+		}
+		
+		.question{
+			font-size: 18px;
+		}
+		
+		.question:nth-child(1){
+			border-top: 1px solid black;
+		
+		}
+		
+		.qr{
+			border: 1px solid black;
+			border-top: none;	
+			padding: 6px 0 6px .6em;
+		}
+		
+		form{
+			input[name=texte]{
+				font-size: 14px;
+				width: 40%;
+				padding : 3px;
+				margin-top: 4px;
+			}
 		}
 	}	
  }
