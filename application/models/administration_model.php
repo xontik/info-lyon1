@@ -17,16 +17,6 @@ class Administration_model extends CI_Model {
         return $this->db->query($sql)->result();
     }
 
-    public function getDeadlineEditable($parcours){
-      $annee = $parcours['anneeCreation'];
-      $cond = array(
-        'S1' => $annee.'-08-31',
-        'S2' => $annee.'-12-31',
-        'S3' => $annee.'-08-31',
-        'S4' =>  $annee.'-12-31'
-      );
-      return $cond[$parcours['type']];
-    }
 
     public function getUENotInParcours($idParcours){
       $sql = 'SELECT idUE,codeUE,nomUE,anneeCreation from UE
@@ -48,7 +38,7 @@ class Administration_model extends CI_Model {
     //TODO distinction de ceux que l'on peut editer
     public function getAllParcoursEditable(){
       $sql =
-      'SELECT * from Parcours where DATE(CONCAT(anneeCreation,\'-08-31\')) > CURDATE()';
+      'SELECT *, count(idSemestre) as nbsemestre from Parcours left join Semestres using(idParcours) where DATE(CONCAT(anneeCreation,\'-08-31\')) > CURDATE() group by idParcours';
 
       return $this->db->query($sql)->result();
     }
@@ -67,5 +57,15 @@ class Administration_model extends CI_Model {
     }
     public function removeUEtoParcours($idParcours,$idUE){
       return $this->db->query("DELETE FROM UEdeparcours WHERE idUE = ? and idParcours = ?",array($idUE,$idParcours));
+    }
+
+    public function addParcours($date,$type){
+      return $this->db->query('INSERT INTO Parcours VALUES(\'\',?,?)',array($type,$date));
+    }
+
+    public function deleteCascadeParcours($id){
+      $this->db->query('DELETE FROM UEdeParcours where idParcours =?',array($id));
+      return $this->db->query('DELETE FROM Parcours where idParcours = ?',array($id));
+
     }
 }

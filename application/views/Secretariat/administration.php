@@ -1,10 +1,13 @@
   <main>
     <section>
       <h2>Gestion des parcours</h2>
+
       <?php
         if(count($data['parcours'])){ //AKA est ce qu'il ya des parcours modifiable
        ?>
-      <form action="<?= base_url('Process_secretariat/joinUESemestre')?>" method="post">
+       <section>
+         <h3>Relation parcours/UE</h3>
+      <form id="delete" action="<?= base_url('Process_secretariat/deleteParcours')?>" method="post">
         <label for="parcours">Selectioner un parcours à modifier :</label><br>
         <select id="parcours" name="parcours">
           <?php
@@ -13,6 +16,7 @@
           }
           ?>
         </select>
+        <input type="submit" name="suppr" value="Supprimer ce parcours">
         <div id="inout">
           <div>
             <label for="UEin">UE lié au modules :</label>
@@ -32,7 +36,26 @@
           </div>
         </div>
       </form>
+    </section>
+
     <?php }?>
+    <section>
+      <form action="<?= base_url('Process_secretariat/addParcours')?>" method="post">
+        <h3>Ajouter un parcours</h3>
+        <label for="year">Année d'entrée en application : </label>
+        <input type="number" name="year" id="year" min="<?= (int)(date('Y')+1)?>" value="<?= (int)(date('Y')+1)?>">
+
+        <label for="type"> Type de semestre :</label>
+        <select id="type" name="type">
+          <option value="S1">S1</option>
+          <option value="S2">S2</option>
+          <option value="S3">S3</option>
+          <option value="S4">S4</option>
+        </select>
+        <input type="submit" name="send" value="Ajouter">
+      </form>
+    </section>
+
     </section>
     <section>
       <h2>Attribution professeurs a un couple Groupe-Matiere</h2>
