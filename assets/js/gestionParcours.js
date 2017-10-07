@@ -36,17 +36,21 @@ $(function (){
             data: {'idParcours':$("#parcours").val(), 'idUEs': ids},
             url: '/Process_secretariat/addUEtoParcours',
             success: function(d){
+              //console.log(d);
+
               $.each(d,function(key,val){
                 UEout.find('option').filter(function(i){ return this.value == val}).detach().appendTo('#UEin')
               });
-              //
+
             }
           });
         }
     });
-
-    
-
+    /*
+    $('section h2').click(function(e){
+      $(this).parent().find('section').toggle();
+    });
+    //*/
     $("#remove").click(function(e){
       var ids = UEin.val();
         if(ids.length > 0){
@@ -55,6 +59,7 @@ $(function (){
             data: {'idParcours':$("#parcours").val(), 'idUEs': ids},
             url: '/Process_secretariat/removeUEtoParcours',
             success: function(d){
+              //console.log(d);
               $.each(d,function(key,val){
                 UEin.find('option').filter(function(i){ return this.value == val}).detach().appendTo('#UEout')
               });

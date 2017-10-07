@@ -35,10 +35,9 @@ class Administration_model extends CI_Model {
 
 
     }
-    //TODO distinction de ceux que l'on peut editer
     public function getAllParcoursEditable(){
       $sql =
-      'SELECT *, count(idSemestre) as nbsemestre from Parcours left join Semestres using(idParcours) where DATE(CONCAT(anneeCreation,\'-08-31\')) > CURDATE() group by idParcours';
+      'SELECT * from Parcours left join Semestres using(idParcours) where DATE(CONCAT(anneeCreation,\'-08-31\')) > CURDATE() group by idParcours /*having count(idSemestre) < 1*/';
 
       return $this->db->query($sql)->result();
     }
@@ -50,6 +49,9 @@ class Administration_model extends CI_Model {
         ORDER BY idParcours DESC';
 
         return $this->db->query($sql)->result();
+    }
+    public function isThisParcoursEditable($id){
+      return count($this->db->query('SELECT * from Parcours where DATE(CONCAT(anneeCreation,\'-08-31\')) > CURDATE() and idParcours = ?',array($id))->result()) > 0;
     }
 
     public function addUEtoParcours($idParcours,$idUE){
