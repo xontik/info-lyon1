@@ -1,32 +1,21 @@
 @import "../style";
 
-main li.depliant{
-  list-style-type: square;
+#inout{
+  display: flex;
+  flex-direction: row;
 
-  &:hover{
-    cursor: pointer;
-  }
-}
-main li{
-  list-style-type: circle;
-  font-size: 1em;
-  &:hover{
-    cursor: auto;
-  }
-  strong:last-of-type{
-    color:red;
-  }
-}
-.editable{
-  color:blue;
-}
-li a img{
-  height: 15px;
-}
+  div{
+    display: flex;
+    flex-direction: column;
+    width: 400px;
 
-#ulroot ul {
-    display: none;
-    list-style-type: none;
-    margin: 0;
-    padding-left: 20px;
+    select{
+      height:100px;
+    }
+  }
+  div:nth-child(2){
+    align-items: center;
+    justify-content: center;
+    width:40px;
+  }
 }

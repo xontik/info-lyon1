@@ -10,6 +10,8 @@ class Secretariat extends CI_Controller {
   }
 
   public function index() {
+
+
       $this->administration();
   }
   public function listParcours(){
@@ -90,10 +92,16 @@ class Secretariat extends CI_Controller {
   }
 
   public function administration(){
+    $this->load->model('Administration_model','adminMod');
+    $parcours = $this->adminMod->getAllParcoursEditable();
+
+    $UEs = $this->adminMod->getAllUEParcours();
+
     $data = array(
-      "css" => array(),
-      "js" => array(),
-      "title" => "Tableau de bord"
+      "css" => array('Secretariats/administration'),
+      "js" => array('debug','gestionParcours'),
+      "title" => "Tableau de bord",
+      'data' => array('parcours' => $parcours)
     );
     show("Secretariat/administration", $data);
   }
