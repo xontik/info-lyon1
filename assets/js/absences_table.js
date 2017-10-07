@@ -2,9 +2,14 @@ $(function() {
 
     "use strict";
 
-    Array.prototype.maxUnder = function(value) {
+    /**
+     * Get the maximum number in a table that is less than a limit
+     * @param limit The maximum number possible
+     * @returns {number} The maximum value under the limit
+     */
+    Array.prototype.maxUnder = function(limit) {
         for (var i = 0; i < this.length; i++) {
-            if (this[i] >= value)
+            if (this[i] >= limit)
                 return this[Math.min(i-1, 0)];
         }
         return this[this.length-1];
@@ -15,6 +20,11 @@ $(function() {
         SQL: 2
     };
 
+    /**
+     * Format date according to a date format
+     * @param format A value of DateFormat
+     * @returns {String} The formatted date
+     */
     Date.prototype.format = function(format) {
         format = format || DateFormat.READABLE;
 
@@ -42,18 +52,62 @@ $(function() {
         }
     };
 
+    if (!String.prototype.startsWith) {
+        String.prototype.startsWith = function (searchString, position) {
+            position = position || 0;
+            return this.substr(position, searchString.length) === searchString;
+        };
+    }
+
+    if (!String.prototype.endsWith) {
+        String.prototype.endsWith = function(searchString, position) {
+            var subjectString = this.toString();
+            if (typeof position !== 'number' || !isFinite(position) || Math.floor(position) !== position || position > subjectString.length) {
+                position = subjectString.length;
+            }
+            position -= searchString.length;
+            var lastIndex = subjectString.lastIndexOf(searchString, position);
+            return lastIndex !== -1 && lastIndex === position;
+        };
+    }
+
+    /**
+     * If the integer only contains 1 digit, fill with zeros
+     * @param d int In integer between -99 and 99
+     * @returns {string} The number filled with zeros
+     */
     function twoDigits(d) {
         if(d >= 0 && d < 10) return '0' + d.toString();
         if(d >= -10 && d < 0) return '-0' + (-d).toString();
         return d.toString();
     }
 
+    /**
+     * Format a number of seconds into a formatted string :
+     * "HH:mm"
+     * @param seconds The number of seconds
+     * @returns {string} The time formatted string
+     */
     function formatTime(seconds) {
         var hours = seconds / 3600;
         return twoDigits(Math.floor(hours)) + ':'
             + twoDigits(hours % 1 * 60)
     }
 
+    /**
+     * @param time A formatted string: "HH:mm"
+     * @returns {number} The number of seconds in the time
+     */
+    function parseTimeToSeconds(time) {
+        return parseInt(time.substr(0, 2)) * 60 * 60
+            + parseInt(time.substr(3)) * 60;
+    }
+
+    /**
+     * Return the name of the student corresponding to the row
+     * @param row The row on the table
+     * @returns {string} The name of the student
+     */
     function getNameFromRow(row) {
         return $('#table-stud-list').children('div')
             .eq(row)
@@ -61,29 +115,101 @@ $(function() {
             .text();
     }
 
+    /**
+     * Return the date corresponding to the column of the table
+     * @param col The column
+     * @returns {Date} The date corresponding
+     */
     function getDateFromColumn(col) {
         var date = new Date(FIRST_DATE.getTime());
         date.setDate(date.getDate() + col);
         return date;
     }
 
+    /**
+     * @param absenceName The name of the asbence type
+     * @returns {number} The value of the absence type, or -1
+     */
     function getAbsenceTypeValue(absenceName) {
         var options = document.getElementById('add-absenceType').children;
         for (var i = 0; i < options.length; i++) {
             if (options[i].text === absenceName) {
-                return options[i].value;
+                return parseInt(options[i].value);
             }
         }
         return -1;
     }
 
+    /**
+     * @param absenceValue The value of the absence type
+     * @returns {string} The name of the absence type
+     */
     function getAbsenceTypeName(absenceValue) {
-        return document.getElementById('add-absenceType').children[absenceValue].text;
+        return document.getElementById('add-absenceType').children[parseInt(absenceValue)].text;
     }
 
-    function parseTimeToSeconds(time) {
-        return parseInt(time.substr(0, 2)) * 60 * 60
-            + parseInt(time.substr(3));
+    /**
+     * This function takes the old classes of a cell and
+     * the new absence to be added or modified and produce
+     * the new classes to be set on the cell.
+     * If the cell has classes that do not have relation with absence,
+     * they will be kept.
+     *
+     * @param oldClasses The old classes of the cell
+     * @param absence The absence to be added/modified
+     * @returns {Array.<String>} The new classes of the cell
+     */
+    function filterClasses(oldClasses, absence) {
+        var cellClasses = oldClasses.slice(0).filter(function(klass) {
+            return !klass.startsWith("abs");
+        });
+        cellClasses.push("abs");
+
+        var htmlId = "#absn" + absence.absenceId;
+        var $otherChild = $(htmlId).parent()
+            .children('div:not(' + htmlId + ')');
+
+        var newClass = "abs-" + absence.absenceType.name.toLowerCase();
+
+        // justification
+        if (absence.editing) {
+            // if absence justified and, if it exists, other one is too
+            if (absence.justified
+                && ($otherChild.length
+                    ? $otherChild.find('p:nth-child(2)').text().trim().endsWith("Oui")
+                    : true)
+            ) {
+                cellClasses.push("abs-justifiee");
+            }
+        } else {
+            var wasAbsenceCell = oldClasses.indexOf("abs") > -1;
+            var wasJustifiedCell = oldClasses.indexOf("abs-justifiee") > -1;
+
+            // if absence is justified and, if cell had an absence, was it justified
+            if (absence.justified && (wasAbsenceCell ? wasJustifiedCell : true)) {
+                cellClasses.push("abs-justifiee");
+            }
+        }
+
+        var notAbsenceClass = function(klass) {
+            return klass === "abs-justifiee" || !klass.startsWith("abs-");
+        };
+
+        // if there was no absence class
+        // or new class already existed
+        // or there was several abs type but now there's one
+        if (oldClasses.every(notAbsenceClass)
+            || oldClasses.indexOf(newClass) > -1
+            || (oldClasses.indexOf("abs-several") > -1 && $otherChild.attr('class') === newClass)
+        ) {
+            cellClasses.push(newClass);
+        }
+        else {
+            cellClasses.push("abs-several");
+        }
+
+
+        return cellClasses;
     }
 
     var DEFAULT_ANIM_TIME = 100;
@@ -203,7 +329,7 @@ $(function() {
             var absence = $(td).children().eq(abs).children('p');
             var beginTime = absence[0].textContent.trim().substr(-13, 5),
                 endTime = absence[0].textContent.trim().substr(-5, 5),
-                justified = absence[1].textContent.trim().substr(-3, 3) === 'Oui',
+                justified = absence[1].textContent.trim().endsWith('Oui'),
                 absenceTypeValue = getAbsenceTypeValue(absence[2].textContent.trim());
 
             this.prepare(
@@ -249,10 +375,11 @@ $(function() {
                 row: cell.parentNode.rowIndex - 2
             };
 
+            var absence = {};
             // remove 'absn' from id
-            var absenceId = active.id.substr(4);
-
-            var studentId = $('#table-stud-list')
+            absence.absenceId = active.id.substr(4);
+            absence.editing = !!absence.absenceId;
+            absence.studentId = $('#table-stud-list')
                 .children('div')
                 .eq(cellPosition.row)
                 .attr('id');
@@ -260,28 +387,27 @@ $(function() {
             // Errors in fields
             var beginTimeVal = this.beginTime.val();
             var endTimeVal = this.endTime.val();
-            var justified = this.justified.is(':checked');
             var absenceTypeValue = this.absenceType.val();
 
             var error = false;
             if (!beginTimeVal) {
                 error = true;
-                this.beginTime.addClass('form-error');
+                alert("Erreur avec la date de début");
             }
 
             if (!endTimeVal) {
                 error = true;
-                this.endTime.addClass('form-error');
+                alert("Erreur avec la date de fin");
             }
 
             if (beginTimeVal === endTimeVal) {
                 error = true;
-                this.endTime.addClass('form-error');
+                alert("Erreur : les dates ne peuvent pas être égales ");
             }
 
             if (absenceTypeValue === '0') {
                 error = true;
-                this.absenceType.addClass('form-error');
+                alert("Erreur : vous n'avez pas choisi de type d'absence");
             }
 
             if (error) return false;
@@ -289,21 +415,27 @@ $(function() {
             // ### Parse datas
             var date = getDateFromColumn(cellPosition.col);
 
-            var beginDate = new Date(date.getTime() + (parseTimeToSeconds(beginTimeVal) * 1000));
-            var endDate = new Date(date.getTime() + (parseTimeToSeconds(endTimeVal) * 1000));
+            absence.beginDate = new Date(date.getTime() + (parseTimeToSeconds(beginTimeVal) * 1000));
+            absence.endDate = new Date(date.getTime() + (parseTimeToSeconds(endTimeVal) * 1000));
+            absence.justified = this.justified.is(':checked');
+            absence.absenceType = {
+                value: absenceTypeValue,
+                name: getAbsenceTypeName(absenceTypeValue)
+            };
 
             // ### Send to server
             var url;
+
             var data = {
-                studentId: studentId,
-                beginDate: beginDate.format(DateFormat.SQL),
-                endDate: endDate.format(DateFormat.SQL),
-                absenceTypeId: absenceTypeValue,
-                justified: justified ? '1' : '0'
+                studentId: absence.studentId,
+                beginDate: absence.beginDate.format(DateFormat.SQL),
+                endDate: absence.endDate.format(DateFormat.SQL),
+                absenceTypeId: absence.absenceType.value,
+                justified: absence.justified ? '1' : '0'
             };
 
-            if (absenceId) {
-                data.absenceId = absenceId;
+            if (absence.editing) {
+                data.absenceId = absence.absenceId;
                 url = '/Process_secretariat/modifier_absence/';
             } else {
                 url = '/Process_secretariat/ajout_absence/';
@@ -318,61 +450,21 @@ $(function() {
                     var $justified;
                     var $absenceType;
 
-                    var isNotAbsenceClass = function(element) {
-                        return element === 'abs-justifiee' || element.substr(0, 4) !== 'abs-';
-                    };
-
-                    var absenceType = getAbsenceTypeName(absenceTypeValue);
-
-                    var newClass = 'abs-' + absenceType.toLowerCase();
-                    var cellClasses = cell.className.split(' ');
-                    var justifiedCell = cellClasses.indexOf('abs-justifiee') !== -1;
-
-                    if (cellClasses.indexOf('abs') === -1) {
-                        cellClasses.push('abs');
-                    }
-
-                    // justification
-                    if ($(cell).children('div').length === 1) {
-                        var indexJustified = cellClasses.indexOf('abs-justifiee');
-                        if (indexJustified !== -1) {
-                            // if cell justified and current new abs is not
-                            if (!justified) {
-                                // remove justification
-                                cellClasses.splice(indexJustified, 1);
-                                justifiedCell = false;
-                            }
-                        }
-                    } else { // cell has no div childrens
-                        if (justified) {
-                            cellClasses.push('abs-justifiee');
-                            justifiedCell = true;
-                        }
-                    }
-
-                    if (!justifiedCell) {
-                        // if the new class doesn't already exists in cell
-                        if (cellClasses.indexOf(newClass) === -1) {
-                            // if no other absence type
-                            if (cellClasses.every(isNotAbsenceClass)) {
-                                // add it
-                                cellClasses.push(newClass);
-                            } else {
-                                // remove all absences type and add 'abs-several'
-                                cellClasses.filter(isNotAbsenceClass);
-                                cellClasses.push('abs-several');
-                            }
-                        }
-                        // if new class already exist in cell, change nothing
-                    }
-
-                    cell.className = cellClasses.join(' ');
+                    var oldCellClasses = cell.className.split(" ");
+                    cell.className = filterClasses(oldCellClasses, absence).join(" ");
 
                     // Create absence in DOM
-                    // If new, create div
-                    if (!absenceId) {
+                    if (absence.editing) {
+                        // if edit, modify existant
+                        active.className = "abs-" + absence.absenceType.name.toLowerCase();
+                        var children = active.children;
+                        $schedule = children[0];
+                        $justified = children[1];
+                        $absenceType = children[2];
+                    } else {
+                        // if new, create div
                         var div = document.createElement('div');
-                        div.className = 'abs-' + absenceType.toLowerCase();
+                        div.className = 'abs-' + absence.absenceType.name.toLowerCase();
                         div.id = 'absn' + data.substr(8);
 
                         $schedule = div.appendChild(document.createElement('p'));
@@ -380,27 +472,24 @@ $(function() {
                         $absenceType = div.appendChild(document.createElement('p'));
 
                         cell.appendChild(div);
-
-                    } else {
-                        var children = active.children;
-                        $schedule = children[0];
-                        $justified = children[1];
-                        $absenceType = children[2];
                     }
 
                     $schedule.textContent = 'Horaires : ' + beginTimeVal + ' - ' + endTimeVal;
-                    $justified.textContent = 'Justifiée : ' + (justified ? 'Oui' : 'Non');
-                    $absenceType.textContent = absenceType;
+                    $justified.textContent = 'Justifiée : ' + (absence.justified ? 'Oui' : 'Non');
+                    $absenceType.textContent = absence.absenceType.name;
 
                     // 'new' button
-                    if ($(cell).children('div').length === 1) {
-                        var button = document.createElement('button');
-                        button.appendChild(document.createTextNode('Nouveau'));
-                        cell.appendChild(button);
-                    } else {
-                        // 2 children, can't add more
-                        $(cell).children('button').remove();
-                        $(cell).children('div').show();
+                    // only modify if adding absence
+                    if (!absence.editing) {
+                        if ($(cell).children('div').length === 1) {
+                            var button = document.createElement('button');
+                            button.appendChild(document.createTextNode('Nouveau'));
+                            cell.appendChild(button);
+                        } else {
+                            // 2 children, can't add more
+                            $(cell).children('button').remove();
+                            $(cell).children('div').show();
+                        }
                     }
 
                 } else if (data === 'cancel') {
@@ -410,6 +499,11 @@ $(function() {
                 } else if (data.substring(0, 9) === 'exception') {
                     alert('Erreur interne : ' + data);
                 } else {
+                    /*
+                     * Use of JS to receive datas than can only happen
+                     * if the client that sent it has JS disabled.
+                     * Really useful ?
+                     */
                     var errors = data.split(',');
                     for (var error in errors) {
                         switch(error) {

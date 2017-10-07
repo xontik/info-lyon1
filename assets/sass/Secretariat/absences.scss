@@ -32,6 +32,28 @@ $color-mix: #b203fd;
 $color-line1: $background-color;
 $color-line2: darken($background-color, 20);
 
+td {
+  &.abs-absence {
+    background-color: $color-absence;
+  }
+
+  &.abs-retard {
+    background-color: $color-retard;
+  }
+
+  &.abs-infirmerie {
+    background-color: $color-infirmerie;
+  }
+
+  &.abs-controle {
+    background-color: $color-controle;
+  }
+
+  &.abs-several {
+    background-color: $color-mix;
+  }
+}
+
 #color-code {
   margin-bottom: 1em;
 
@@ -236,26 +258,6 @@ $color-line2: darken($background-color, 20);
 
       &.abs-justifiee {
         background-color: $color-justifiee;
-      }
-
-      &.abs-absence {
-        background-color: $color-absence;
-      }
-
-      &.abs-retard {
-        background-color: $color-retard;
-      }
-
-      &.abs-infirmerie {
-        background-color: $color-infirmerie;
-      }
-
-      &.abs-controle {
-        background-color: $color-controle;
-      }
-
-      &.abs-several {
-        background-color: $color-mix;
       }
     }
 

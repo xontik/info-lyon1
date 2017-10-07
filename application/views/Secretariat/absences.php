@@ -189,9 +189,10 @@
 
                                     // td has absences
                                     $classes[] = 'abs';
-                                    $classes[] = $justified === count($student['absences'][$i])
-                                        ? 'abs-justifiee'
-                                        : $td_class;
+                                    $classes[] = $td_class;
+                                    if ($justified === count($student['absences'][$i])) {
+                                        $classes[] = 'abs-justifiee';
+                                    }
                                 }
 
                                 echo '<td ' . (!empty($classes)
