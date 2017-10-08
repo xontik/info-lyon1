@@ -109,7 +109,7 @@ td.abs-several { background-color: #b203fd; }
 #edition > header { margin-bottom: 12px; }
 #edition > header h2, #edition > header h3 { color: #403e3f; }
 #edition > header h3 { font-size: 1.2em; }
-#edition div { display: flex; flex-flow: row nowrap; justify-content: space-between; align-items: center; }
+#edition div { display: flex; flex-flow: row nowrap; justify-content: space-between; align-items: center; margin-bottom: 10px; }
 #edition section { width: 400px; box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); margin: 10px; }
 #edition section h2 { width: 60%; padding-bottom: 4px; margin: 12px auto; border-bottom: 2px DASHED; }
 #edition section article { margin-bottom: 10px; }

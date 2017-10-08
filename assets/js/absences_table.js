@@ -2,9 +2,14 @@ $(function() {
 
     "use strict";
 
-    function Absence(absenceId, studentId, beginTime, endTime, justified, absenceTypeValue) {
+    var DEFAULT_ANIM_TIME = 100;
+    var ACTIVE_CONTAINER = {};
+
+    var absences = {};
+
+    function Absence(absenceId, student, beginTime, endTime, justified, absenceTypeValue) {
         this.absenceId = absenceId || null;
-        this.studentId = studentId || '';
+        this.student = student || null;
         this.time = {};
         this.time = {
             begin: beginTime,
@@ -25,7 +30,8 @@ $(function() {
 
     var DateFormat = {
         READABLE: 1,
-        SQL: 2
+        SQL: 2,
+        SHORT_TIME: 3
     };
 
     /**
@@ -60,6 +66,8 @@ $(function() {
                 + twoDigits(this.getUTCHours()) + ':'
                 + twoDigits(this.getUTCMinutes()) + ':'
                 + twoDigits(this.getUTCSeconds());
+        case DateFormat.SHORT_TIME:
+            return twoDigits(this.getUTCHours()) + 'h' + twoDigits(this.getUTCMinutes());
         default:
             return '';
         }
@@ -104,10 +112,10 @@ $(function() {
      * @param target The element to be activated
      */
     function activate(field, target) {
-        if (active[field]) {
-            active[field].removeClass('active');
+        if (ACTIVE_CONTAINER[field]) {
+            ACTIVE_CONTAINER[field].removeClass('active');
         }
-        active[field] = $(target).addClass('active');
+        ACTIVE_CONTAINER[field] = $(target).addClass('active');
     }
 
     /**
@@ -115,9 +123,14 @@ $(function() {
      * @param field The field to be emptied
      */
     function deactivate(field) {
-        if (active[field]) {
-            active[field].removeClass('active');
+        if (ACTIVE_CONTAINER[field]) {
+            ACTIVE_CONTAINER[field].removeClass('active');
+            delete ACTIVE_CONTAINER[field];
         }
+    }
+
+    function getActive(field) {
+        return ACTIVE_CONTAINER[field]
     }
 
     /**
@@ -215,6 +228,7 @@ $(function() {
     }
 
     /**
+     * Get the name of the absence type from its value.
      * @param absenceValue The value of the absence type
      * @returns {string} The name of the absence type
      */
@@ -224,6 +238,50 @@ $(function() {
             return '';
         }
         return document.getElementById('am-absenceType').children[absenceValue].textContent;
+    }
+
+    /**
+     * Check if the element contains an absence that is in the morning or not.
+     * @param $div The absence element to be tested
+     * @returns {boolean} Whether the absence is in morning or not
+     */
+    function isMorningAbsence($div) {
+        var time = $($div).children().eq(0).text().substr(-13, 5);
+        return parseTimeToSeconds(time) <= 43200; // midday
+    }
+
+    /**
+     * Choose to create or to modify an absence.
+     * @param cell The cell that contains the absence
+     * @param array newAbsence.morning or newAbsense.afternoon
+     * @return {bool} Whether the absence was added/modified or not
+     */
+    function handleAbsence(cell, array) {
+        //TODO Create or modify absence
+    }
+
+    /**
+     * Create an absence from the informations in the div
+     * (and its position in the table)
+     * @param div The element you want the absence from
+     * @returns {Absence} An absence
+     */
+    function createAbsenceFromDiv(div) {
+        var cell = div.parentNode;
+        var date = getDateFromColumn(cell.cellIndex);
+
+        var timeContent = div.children[0].textContent.trim();
+        var beginTime = new Date(date.getTime() + parseTimeToSeconds(timeContent.substr(-13, 5)) * 1000);
+        var endTime = new Date(date.getTime() + parseTimeToSeconds(timeContent.substr(-5)) * 1000);
+
+        return new Absence(
+            div.id.substr(4),
+            getStudentFromRow(cell.parentNode.rowIndex),
+            beginTime,
+            endTime,
+            div.children[1].textContent.trim().substr(-3) === "Oui",
+            getAbsenceTypeValue(div.children[2].textContent)
+        );
     }
 
     /**
@@ -250,7 +308,8 @@ $(function() {
         var newClass = "abs-" + absence.absenceType.name.toLowerCase();
 
         // justification
-        if (absence.editing) {
+        // if edition
+        if (absence.absenceId) {
             // if absence justified and, if it exists, other one is too
             if (absence.justified
                 && ($otherChild.length
@@ -289,9 +348,9 @@ $(function() {
         return cellClasses;
     }
 
-    var DEFAULT_ANIM_TIME = 100;
-
-    var active = {};
+    // #################################
+    // ########  PROGRAM START  ########
+    // #################################
 
     var $absenceTable = $('#absences-table');
     var $tableWrapper = $('#table-wrapper');
@@ -305,12 +364,20 @@ $(function() {
         }
     });
 
+    $('td.abs').each(function() {
+        $(this).children().each(function() {
+            var absence = createAbsenceFromDiv(this);
+            absences[absence.absenceId] = absence;
+        });
+    });
 
     /* ##### Per day absence informations #####*/
 
-    $absenceTable.on('click', 'td', function() {
-        activate("cell", this);
-        newAbsence.edit(this);
+    $absenceTable.on('click', 'td', function(event) {
+        if (event.which === 1) {
+            activate("cell", this);
+            newAbsence.edit(this);
+        }
     })
 
     .on('mouseenter', 'td.abs', function() {
@@ -330,11 +397,15 @@ $(function() {
         name: $('#edition-name'),
         date: $('#edition-date'),
         morning: {
+            modified: false,
+            content: $('#edition-morning'),
             timeSlot: $('#am-time'),
             justified: $('#am-justified'),
             absenceType: $('#am-absenceType')
         },
         afternoon: {
+            modified: false,
+            content: $('#edition-afternoon'),
             timeSlot: $('#pm-time'),
             justified: $('#pm-justified'),
             absenceType: $('#pm-absenceType')
@@ -349,54 +420,23 @@ $(function() {
 
             var student = getStudentFromRow(td.parentNode.rowIndex);
             var date = getDateFromColumn(td.cellIndex);
-            var $datas, beginDate, endDate;
+            var tmp, absenceId;
 
             if ($absences.length >= 1) {
-                $datas = $absences[0].children;
+                // Morning absence
+                absenceId = parseInt(($absences[0].id || '').substr(4));
+                tmp = absences[absenceId];
 
-                beginDate = new Date(date.getTime()
-                    + (parseTimeToSeconds($datas[0].textContent.substr(-13, 5)) * 1000));
-                endDate = new Date(date.getTime()
-                    + (parseTimeToSeconds($datas[0].textContent.substr(-5)) * 1000));
+                if (tmp.time.begin.getUTCHours() <= 12) {
+                    amAbs = tmp;
 
-                if (beginDate.getUTCHours() <= 12) {
-
-                    amAbs = new Absence(
-                        ($absences[0].id || '').substr(4),
-                        student.id,
-                        beginDate,
-                        endDate,
-                        $datas[1].textContent.trim().substr(-3) === "Oui",
-                        getAbsenceTypeValue($datas[2].textContent)
-                    );
-
-                    if ($absences.length >= 2) {
-                        // PM Absence
-                        $datas = $absences[1].children;
-
-                        beginDate = new Date(date.getTime()
-                            + (parseTimeToSeconds($datas[0].textContent.substr(-13, 5)) * 1000));
-                        endDate = new Date(date.getTime()
-                            + (parseTimeToSeconds($datas[0].textContent.substr(-5)) * 1000));
-
-                        pmAbs = new Absence(
-                            ($absences[1].id || '').substr(4),
-                            student.id,
-                            beginDate,
-                            endDate,
-                            $datas[1].textContent.trim().substr(-3) === "Oui",
-                            getAbsenceTypeValue($datas[2].textContent)
-                        );
+                    if ($absences.length === 2) {
+                        // Afternoon absence
+                        absenceId = parseInt(($absences[0].id || '').substr(4));
+                        pmAbs = absences[absenceId];
                     }
                 } else {
-                    pmAbs = new Absence(
-                        ($absences[0].id || '').substr(4),
-                        student.id,
-                        beginDate,
-                        endDate,
-                        $datas[1].textContent.trim().substr(-3) === "Oui",
-                        getAbsenceTypeValue($datas[2].textContent)
-                    );
+                    pmAbs = tmp;
                 }
 
             }
@@ -422,7 +462,7 @@ $(function() {
                 $pmTimes[2].textContent = '16h00 - 18h00';
             }
 
-            if (amAbs !== null) {
+            if (amAbs) {
                 activate('morning', this.morning.timeSlot.children().eq(amAbs.time.slot));
                 this.morning.justified[0].checked = amAbs.justified;
                 this.morning.absenceType.val(amAbs.absenceType.value);
@@ -431,7 +471,7 @@ $(function() {
                 this.morning.absenceType.val('0');
             }
 
-            if (pmAbs !== null) {
+            if (pmAbs) {
                 activate('afternoon', this.afternoon.timeSlot.children().eq(pmAbs.time.slot));
                 this.afternoon.justified[0].checked = pmAbs.justified;
                 this.afternoon.absenceType.val(pmAbs.absenceType.value);
@@ -443,141 +483,15 @@ $(function() {
         },
 
         send: function() {
-            /*
-            // ### Check for errors
-            // Errors with active element
-            var active = $('td.active, table div.active');
-            if (active.length !== 1) {
-                alert("Error : " + active.length + " actives part");
-                return false;
+            var cell = getActive('cell');
+            var handled;
+            if (this.morning.modified) {
+                handled = handleAbsence(cell, this.morning);
             }
-
-            active = active[0];
-
-            var cell = $(active).is('td') ? active : active.parentNode;
-
-            if (cell.children > 2) {
-                return false;
+            if (this.afternoon.modified && handled) {
+                handled = handleAbsence(cell, this.afternoon);
             }
-
-            var cellPosition = {
-                col: cell.cellIndex,
-                row: cell.parentNode.rowIndex - 2
-            };
-
-            var absence = {};
-            // remove 'absn' from id
-            absence.absenceId = active.id.substr(4);
-            absence.editing = !!absence.absenceId;
-            absence.studentId = $('#table-stud-list')
-                .children('div')
-                .eq(cellPosition.row)
-                .attr('id');
-
-            // Errors in fields
-            var beginTimeVal = this.beginTime.val();
-            var endTimeVal = this.endTime.val();
-            var absenceTypeValue = this.absenceType.val();
-
-            var error = false;
-            if (!beginTimeVal) {
-                error = true;
-                alert("Erreur avec la date de début");
-            }
-
-            if (!endTimeVal) {
-                error = true;
-                alert("Erreur avec la date de fin");
-            }
-
-            if (beginTimeVal === endTimeVal) {
-                error = true;
-                alert("Erreur : les dates ne peuvent pas être égales ");
-            }
-
-            if (absenceTypeValue === '0') {
-                error = true;
-                alert("Erreur : vous n'avez pas choisi de type d'absence");
-            }
-
-            if (error) return false;
-
-            // ### Parse datas
-            var date = getDateFromColumn(cellPosition.col);
-
-            absence.beginDate = new Date(date.getTime() + (parseTimeToSeconds(beginTimeVal) * 1000));
-            absence.endDate = new Date(date.getTime() + (parseTimeToSeconds(endTimeVal) * 1000));
-            absence.justified = this.justified.is(':checked');
-            absence.absenceType = {
-                value: absenceTypeValue,
-                name: getAbsenceTypeName(absenceTypeValue)
-            };
-
-            // ### Send to server
-            var url;
-
-            var data = {
-                studentId: absence.studentId,
-                beginDate: absence.beginDate.format(DateFormat.SQL),
-                endDate: absence.endDate.format(DateFormat.SQL),
-                absenceTypeId: absence.absenceType.value,
-                justified: absence.justified ? '1' : '0'
-            };
-
-            if (absence.editing) {
-                data.absenceId = absence.absenceId;
-                url = '/Process_secretariat/modifier_absence/';
-            } else {
-                url = '/Process_secretariat/ajout_absence/';
-            }
-
-            $.post(url, data, function(data) {
-                // If success
-                if (data.match(/^success [0-9]*$/)) {
-                    newAbsence.hide();
-
-                    var $schedule;
-                    var $justified;
-                    var $absenceType;
-
-                    var oldCellClasses = cell.className.split(" ");
-                    cell.className = filterClasses(oldCellClasses, absence).join(" ");
-
-                    // Create absence in DOM
-                    if (absence.editing) {
-                        // if edit, modify existant
-                        active.className = "abs-" + absence.absenceType.name.toLowerCase();
-                        var children = active.children;
-                        $schedule = children[0];
-                        $justified = children[1];
-                        $absenceType = children[2];
-                    } else {
-                        // if new, create div
-                        var div = document.createElement('div');
-                        div.className = 'abs-' + absence.absenceType.name.toLowerCase();
-                        div.id = 'absn' + data.substr(8);
-
-                        $schedule = div.appendChild(document.createElement('p'));
-                        $justified = div.appendChild(document.createElement('p'));
-                        $absenceType = div.appendChild(document.createElement('p'));
-
-                        cell.appendChild(div);
-                    }
-
-                    $schedule.textContent = 'Horaires : ' + beginTimeVal + ' - ' + endTimeVal;
-                    $justified.textContent = 'Justifiée : ' + (absence.justified ? 'Oui' : 'Non');
-                    $absenceType.textContent = absence.absenceType.name;
-                } else if (data === 'cancel') {
-                    alert('Erreur interne : requête annulée');
-                } else if (data === 'missing_data') {
-                    alert('Erreur interne : données manquantes');
-                } else if(data === 'wrong_data') {
-                    alert('Erreur : Les données entrées ne sont pas correctes');
-                } else if (data.substring(0, 9) === 'exception') {
-                    alert('Erreur interne : ' + data);
-                }
-            });
-            */
+            if (handled) this.hide();
         },
 
         show: function() {
@@ -586,12 +500,17 @@ $(function() {
 
         hide: function() {
             this.wrapper.removeClass('active');
+
             deactivate('morning');
             deactivate('afternoon');
+
+            this.morning.modified = false;
+            this.afternoon.modified = false;
         }
     };
 
     newAbsence.morning.timeSlot.on('click', 'p', function() {
+        newAbsence.morning.modified = true;
         if ($(this).is('.active')) {
             deactivate("morning");
         } else {
@@ -599,12 +518,21 @@ $(function() {
         }
     });
 
+    newAbsence.morning.content.on('change', ':checkbox, select', function() {
+        newAbsence.morning.modified = true;
+    });
+
     newAbsence.afternoon.timeSlot.on('click', 'p', function() {
+        newAbsence.afternoon.modified = true;
         if ($(this).is('.active')) {
             deactivate("afternoon");
         } else {
             activate("afternoon", this);
         }
+    });
+
+    newAbsence.afternoon.content.on('change', ':checkbox, select', function() {
+        newAbsence.afternoon.modified = true;
     });
 
     newAbsence.submitButton.click(function() {

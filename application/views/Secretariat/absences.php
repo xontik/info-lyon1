@@ -66,7 +66,7 @@
                             <h3 id="edition-date">Text date</h3>
                         </header>
                         <div>
-                            <section>
+                            <section id="edition-morning">
                                 <h2>Matinée</h2>
                                 <article>
                                     <div id="am-time">
@@ -95,7 +95,7 @@
                                     </p>
                                 </article>
                             </section>
-                            <section>
+                            <section id="edition-afternoon">
                                 <h2>Après-midi</h2>
                                 <article>
                                     <div id="pm-time">
