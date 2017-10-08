@@ -114,7 +114,7 @@ td.abs-several { background-color: #b203fd; }
 #edition section h2 { width: 60%; padding-bottom: 4px; margin: 12px auto; border-bottom: 2px DASHED; }
 #edition section article { margin-bottom: 10px; }
 #edition section #am-time, #edition section #pm-time { display: flex; flex-flow: row wrap; justify-content: space-between; align-items: center; width: 240px; height: 100px; margin: auto; }
-#edition section #am-time p, #edition section #pm-time p { box-sizing: border-box; width: 50%; height: 50px; line-height: 44px; border: 6px groove #b1acac; background-color: rgba(177, 172, 172, 0.2); text-align: center; font-size: 14px; font-weight: bold; }
+#edition section #am-time p, #edition section #pm-time p { box-sizing: border-box; width: 50%; height: 50px; line-height: 44px; border: 6px groove #b1acac; background-color: rgba(177, 172, 172, 0.2); text-align: center; font-size: 14px; font-weight: bold; cursor: default; }
 #edition section #am-time p:first-child, #edition section #pm-time p:first-child { width: 100%; }
 #edition section #am-time p.active, #edition section #pm-time p.active { border-color: #e7bd26; }
 #edition section article:not(:first-of-type) > label, #edition section article:not(:first-of-type) > p { display: inline-block; width: 40%; margin: auto; font-size: 15px; }
