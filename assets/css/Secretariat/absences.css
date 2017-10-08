@@ -102,19 +102,25 @@ td.abs-several { background-color: #b203fd; }
 #table-wrapper table tbody th { text-align: left; }
 #table-wrapper table#header-fixed { display: none; position: fixed; top: 0; z-index: 1; background-color: #fafafa; }
 
-#new-absences-wrapper { display: none; align-items: center; justify-content: center; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 20; background-color: rgba(0, 0, 0, 0.65); }
-#new-absences-wrapper.active { display: flex; }
+#edition-wrapper { display: none; align-items: center; justify-content: center; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 20; background-color: rgba(0, 0, 0, 0.65); }
+#edition-wrapper.active { display: flex; }
 
-#new-absences { width: 400px; padding: 1em 0; margin: auto; background-color: #fafafa; box-shadow: 3px 3px 16px rgba(0, 0, 0, 0.8); text-align: center; }
-#new-absences > header { margin-bottom: 12px; }
-#new-absences > header h2, #new-absences > header h3 { color: #403e3f; }
-#new-absences > header h3 { font-size: 1.2em; }
-#new-absences > section { margin-bottom: 15px; }
-#new-absences > section article { margin-bottom: 10px; }
-#new-absences > section label, #new-absences > section p { display: inline-block; width: 48%; }
-#new-absences > section label { margin-right: 3%; text-align: right; }
-#new-absences > section p { text-align: left; }
-#new-absences > section select { padding: 2px; }
-#new-absences button { width: 85px; padding: 5px; border-radius: 3px; }
+#edition { padding: 1em 0; margin: auto; background-color: #fafafa; box-shadow: 3px 3px 16px rgba(0, 0, 0, 0.8); text-align: center; }
+#edition > header { margin-bottom: 12px; }
+#edition > header h2, #edition > header h3 { color: #403e3f; }
+#edition > header h3 { font-size: 1.2em; }
+#edition div { display: flex; flex-flow: row nowrap; justify-content: space-between; align-items: center; }
+#edition section { width: 400px; box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); margin: 10px; }
+#edition section h2 { width: 60%; padding-bottom: 4px; margin: 12px auto; border-bottom: 2px DASHED; }
+#edition section article { margin-bottom: 10px; }
+#edition section #am-time, #edition section #pm-time { display: flex; flex-flow: row wrap; justify-content: space-between; align-items: center; width: 240px; height: 100px; margin: auto; }
+#edition section #am-time p, #edition section #pm-time p { box-sizing: border-box; width: 50%; height: 50px; line-height: 44px; border: 6px groove #b1acac; background-color: rgba(177, 172, 172, 0.2); text-align: center; font-size: 14px; font-weight: bold; }
+#edition section #am-time p:first-child, #edition section #pm-time p:first-child { width: 100%; }
+#edition section #am-time p.active, #edition section #pm-time p.active { border-color: #e7bd26; }
+#edition section article:not(:first-of-type) > label, #edition section article:not(:first-of-type) > p { display: inline-block; width: 40%; margin: auto; font-size: 15px; }
+#edition section article:not(:first-of-type) > label { margin-right: 12px; text-align: right; }
+#edition section article:not(:first-of-type) > p { text-align: left; }
+#edition section article:not(:first-of-type) select { padding: 2px; }
+#edition footer button { width: 85px; padding: 5px; border-radius: 3px; }
 
 /*# sourceMappingURL=absences.css.map */

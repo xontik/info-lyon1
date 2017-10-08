@@ -2,18 +2,26 @@ $(function() {
 
     "use strict";
 
-    /**
-     * Get the maximum number in a table that is less than a limit
-     * @param limit The maximum number possible
-     * @returns {number} The maximum value under the limit
-     */
-    Array.prototype.maxUnder = function(limit) {
-        for (var i = 0; i < this.length; i++) {
-            if (this[i] >= limit)
-                return this[Math.min(i-1, 0)];
-        }
-        return this[this.length-1];
-    };
+    function Absence(absenceId, studentId, beginTime, endTime, justified, absenceTypeValue) {
+        this.absenceId = absenceId || null;
+        this.studentId = studentId || '';
+        this.time = {};
+        this.time = {
+            begin: beginTime,
+            end: endTime,
+            slot: getTimeSlot(beginTime, endTime)
+        };
+        this.justified = justified || false;
+        this.absenceType = {
+            value: absenceTypeValue || 0,
+            name: getAbsenceTypeName(absenceTypeValue)
+        };
+    }
+
+    function Student(studentId, name) {
+        this.id = studentId || '';
+        this.name = name || '';
+    }
 
     var DateFormat = {
         READABLE: 1,
@@ -30,6 +38,10 @@ $(function() {
 
         switch (format) {
         case DateFormat.READABLE:
+            var dayName = [
+                "Dimanche", "Lundi", "Mardi", "Mercredi",
+                "Jeudi", "Vendredi", "Samedi"
+            ];
             var monthNames = [
                 "Janvier", "Février", "Mars",
                 "Avril", "Mai", "Juin", "Juillet",
@@ -37,9 +49,10 @@ $(function() {
                 "Novembre", "Décembre"
             ];
 
-            return this.getDate() + ' '
-                + monthNames[this.getMonth()] + ' '
-                + this.getFullYear();
+            return dayName[this.getUTCDay()] + ' '
+                + this.getUTCDate() + ' '
+                + monthNames[this.getUTCMonth()] + ' '
+                + this.getUTCFullYear();
         case DateFormat.SQL:
             return this.getUTCFullYear() + '-'
                 + twoDigits(1 + this.getUTCMonth()) + '-'
@@ -48,11 +61,16 @@ $(function() {
                 + twoDigits(this.getUTCMinutes()) + ':'
                 + twoDigits(this.getUTCSeconds());
         default:
-            return false;
+            return '';
         }
     };
 
     if (!String.prototype.startsWith) {
+        /**
+         * @param searchString The string to search for
+         * @param position The position where to begin to search
+         * @returns {boolean} true if the string begins with the search string, false otherwise
+         */
         String.prototype.startsWith = function (searchString, position) {
             position = position || 0;
             return this.substr(position, searchString.length) === searchString;
@@ -60,15 +78,46 @@ $(function() {
     }
 
     if (!String.prototype.endsWith) {
+        /**
+         * @param searchString The string to look for
+         * @param position Search for the search string like this was its length
+         * @returns {boolean} true if the string ends with the search string, false otherwise
+         */
         String.prototype.endsWith = function(searchString, position) {
             var subjectString = this.toString();
-            if (typeof position !== 'number' || !isFinite(position) || Math.floor(position) !== position || position > subjectString.length) {
+            if (typeof position !== 'number' || !isFinite(position)
+                || Math.floor(position) !== position || position > subjectString.length
+            ) {
                 position = subjectString.length;
             }
             position -= searchString.length;
             var lastIndex = subjectString.lastIndexOf(searchString, position);
             return lastIndex !== -1 && lastIndex === position;
         };
+    }
+
+    /**
+     * Activate an element relative to a field.
+     * If the field contained another actived element,
+     * it deactivate it then active the target element.
+     * @param field The field of the target
+     * @param target The element to be activated
+     */
+    function activate(field, target) {
+        if (active[field]) {
+            active[field].removeClass('active');
+        }
+        active[field] = $(target).addClass('active');
+    }
+
+    /**
+     * Deactivate all the elements a field
+     * @param field The field to be emptied
+     */
+    function deactivate(field) {
+        if (active[field]) {
+            active[field].removeClass('active');
+        }
     }
 
     /**
@@ -104,15 +153,40 @@ $(function() {
     }
 
     /**
-     * Return the name of the student corresponding to the row
-     * @param row The row on the table
-     * @returns {string} The name of the student
+     * @param begin Date
+     * @param end Date
+     * @return {int} The index of the time slot, -1 if dates are incorrect
      */
-    function getNameFromRow(row) {
-        return $('#table-stud-list').children('div')
-            .eq(row)
-            .children('p')
-            .text();
+    function getTimeSlot(begin, end) {
+        if (begin.getUTCDate() !== end.getUTCDate()
+        || begin.getUTCMonth() !== end.getUTCMonth()
+        || begin.getUTCFullYear() !== end.getUTCFullYear()
+        ) {
+            return -1;
+        }
+
+        var beginHour = begin.getUTCHours() + begin.getUTCMinutes() / 60;
+        var endHour = end.getUTCHours() + end.getUTCMinutes() / 60;
+
+        return beginHour === 8 || beginHour === 13.5 || beginHour === 14
+            ? (endHour === 12 || endHour === 17.5 || endHour === 18 ? 0 : 1)
+            : (beginHour === 10 || beginHour === 16 || beginHour === 15.5 ? 2 : -1);
+
+    }
+
+    /**
+     * Return the id and the name of the student corresponding to the row
+     * @param row The row on the table
+     * @returns {object} The informations about the student
+     */
+    function getStudentFromRow(row) {
+        var $studentDiv = $('#table-stud-list').children('div')
+            .eq(row);
+        return new Student(
+            $studentDiv.attr('id'),
+            $studentDiv.children('p').text()
+        );
+
     }
 
     /**
@@ -122,22 +196,22 @@ $(function() {
      */
     function getDateFromColumn(col) {
         var date = new Date(FIRST_DATE.getTime());
-        date.setDate(date.getDate() + col);
+        date.setDate(date.getUTCDate() + col);
         return date;
     }
 
     /**
      * @param absenceName The name of the asbence type
-     * @returns {number} The value of the absence type, or -1
+     * @returns {number} The value of the absence type, 0 if it doesn't exists
      */
     function getAbsenceTypeValue(absenceName) {
-        var options = document.getElementById('add-absenceType').children;
+        var options = document.getElementById('am-absenceType').children;
         for (var i = 0; i < options.length; i++) {
-            if (options[i].text === absenceName) {
+            if (options[i].textContent === absenceName) {
                 return parseInt(options[i].value);
             }
         }
-        return -1;
+        return 0;
     }
 
     /**
@@ -145,7 +219,11 @@ $(function() {
      * @returns {string} The name of the absence type
      */
     function getAbsenceTypeName(absenceValue) {
-        return document.getElementById('add-absenceType').children[parseInt(absenceValue)].text;
+        absenceValue = parseInt(absenceValue);
+        if (!absenceValue) {
+            return '';
+        }
+        return document.getElementById('am-absenceType').children[absenceValue].textContent;
     }
 
     /**
@@ -208,12 +286,12 @@ $(function() {
             cellClasses.push("abs-several");
         }
 
-
         return cellClasses;
     }
 
     var DEFAULT_ANIM_TIME = 100;
-    var ACTIVE_DAY_COL = $('#active-day').prop('cellIndex');
+
+    var active = {};
 
     var $absenceTable = $('#absences-table');
     var $tableWrapper = $('#table-wrapper');
@@ -230,130 +308,142 @@ $(function() {
 
     /* ##### Per day absence informations #####*/
 
-    var selected = [];
-    var mousedOver = null;
-    var activeNode = null;
-
     $absenceTable.on('click', 'td', function() {
-        if (activeNode !== null)
-            activeNode.removeClass('active');
-        activeNode = $(this).addClass('active');
-
-        if ($(this).is('.abs')) {
-            if (selected.indexOf(this) > -1) {
-                var index = selected.indexOf(this);
-                selected.splice(index, 1);
-                $(this).children(mousedOver === this ? 'button' : '').hide(DEFAULT_ANIM_TIME);
-            } else {
-                selected.push(this);
-                $(this).children().show(DEFAULT_ANIM_TIME);
-            }
-        } else {
-            newAbsence.new(this.parentNode.rowIndex - 2, this.cellIndex);
-        }
-    })
-
-    .on('click', 'td.abs > div', function() {
-        if (activeNode !== null)
-            activeNode.removeClass('active');
-        activeNode = $(this).addClass('active');
-
-        var td = this.parentNode;
-        newAbsence.edit(td, $(td).children('div').index(this));
-        return false;
-    })
-
-    .on('click', 'td.abs > button', function() {
-        newAbsence.new(this.parentNode.parentNode.rowIndex - 2, this.parentNode.cellIndex);
-        return false;
+        activate("cell", this);
+        newAbsence.edit(this);
     })
 
     .on('mouseenter', 'td.abs', function() {
-        mousedOver = this;
         $(this).children('div').show(DEFAULT_ANIM_TIME);
     })
 
     .on('mouseleave', 'td.abs', function() {
-        mousedOver = null;
-        if (selected.indexOf(this) === -1) {
-            $(this).children().hide(DEFAULT_ANIM_TIME);
-        }
+        $(this).children().hide(DEFAULT_ANIM_TIME);
     });
 
 
     /* ##### Per day absence creation ##### */
 
     var newAbsence = {
-        wrapper: $('#new-absences-wrapper'),
-        content: $('#new-absences'),
-        name: $('#new-absences-name'),
-        date: $('#new-absences-date'),
-        submitButton: $('#new-absences-submit'),
-        cancelButton: $('#new-absences-cancel'),
+        wrapper: $('#edition-wrapper'),
+        content: $('#edition'),
+        name: $('#edition-name'),
+        date: $('#edition-date'),
+        morning: {
+            timeSlot: $('#am-time'),
+            justified: $('#am-justified'),
+            absenceType: $('#am-absenceType')
+        },
+        afternoon: {
+            timeSlot: $('#pm-time'),
+            justified: $('#pm-justified'),
+            absenceType: $('#pm-absenceType')
+        },
+        submitButton: $('#edition-submit'),
+        cancelButton: $('#edition-cancel'),
 
-        beginTime: $('#add-beginTime'),
-        endTime: $('#add-endTime'),
-        justified: $('#add-justified'),
-        absenceType: $('#add-absenceType'),
+        edit: function(td) {
+            var $absences = td.children;
+            var amAbs = null,
+                pmAbs = null;
 
-        new: function(row, col) {
-            var beginTime,
-                endTime;
+            var student = getStudentFromRow(td.parentNode.rowIndex);
+            var date = getDateFromColumn(td.cellIndex);
+            var $datas, beginDate, endDate;
 
-            if (col === ACTIVE_DAY_COL) {
+            if ($absences.length >= 1) {
+                $datas = $absences[0].children;
 
-                var now = new Date();
-                var lessonsStartTime = [8, 10].concat(
-                    now.getDay() !== 5
-                        ? [14, 16]
-                        : [13.5, 15.5]
-                );
+                beginDate = new Date(date.getTime()
+                    + (parseTimeToSeconds($datas[0].textContent.substr(-13, 5)) * 1000));
+                endDate = new Date(date.getTime()
+                    + (parseTimeToSeconds($datas[0].textContent.substr(-5)) * 1000));
 
-                var time = lessonsStartTime.maxUnder(now.getHours() + now.getMinutes()/60);
+                if (beginDate.getUTCHours() <= 12) {
 
-                beginTime = formatTime(time);
-                time += 2;
-                endTime = formatTime(time);
+                    amAbs = new Absence(
+                        ($absences[0].id || '').substr(4),
+                        student.id,
+                        beginDate,
+                        endDate,
+                        $datas[1].textContent.trim().substr(-3) === "Oui",
+                        getAbsenceTypeValue($datas[2].textContent)
+                    );
+
+                    if ($absences.length >= 2) {
+                        // PM Absence
+                        $datas = $absences[1].children;
+
+                        beginDate = new Date(date.getTime()
+                            + (parseTimeToSeconds($datas[0].textContent.substr(-13, 5)) * 1000));
+                        endDate = new Date(date.getTime()
+                            + (parseTimeToSeconds($datas[0].textContent.substr(-5)) * 1000));
+
+                        pmAbs = new Absence(
+                            ($absences[1].id || '').substr(4),
+                            student.id,
+                            beginDate,
+                            endDate,
+                            $datas[1].textContent.trim().substr(-3) === "Oui",
+                            getAbsenceTypeValue($datas[2].textContent)
+                        );
+                    }
+                } else {
+                    pmAbs = new Absence(
+                        ($absences[0].id || '').substr(4),
+                        student.id,
+                        beginDate,
+                        endDate,
+                        $datas[1].textContent.trim().substr(-3) === "Oui",
+                        getAbsenceTypeValue($datas[2].textContent)
+                    );
+                }
+
             }
 
-            this.prepare(
-                getNameFromRow(row),
-                getDateFromColumn(col).format(DateFormat.READABLE),
-                beginTime || '08:00',
-                endTime || '10:00'
-            );
+            this.prepare(student, date, amAbs, pmAbs);
             this.show();
         },
 
-        edit: function(td, abs) {
-            var absence = $(td).children().eq(abs).children('p');
-            var beginTime = absence[0].textContent.trim().substr(-13, 5),
-                endTime = absence[0].textContent.trim().substr(-5, 5),
-                justified = absence[1].textContent.trim().endsWith('Oui'),
-                absenceTypeValue = getAbsenceTypeValue(absence[2].textContent.trim());
+        prepare: function(student, date, amAbs, pmAbs) {
 
-            this.prepare(
-                getNameFromRow(td.parentNode.rowIndex),
-                getDateFromColumn(td.cellIndex).format(DateFormat.READABLE),
-                beginTime,
-                endTime,
-                justified,
-                absenceTypeValue
-            );
-            this.show();
-        },
+            this.name.text(student.name);
+            this.date.text(date.format(DateFormat.READABLE));
 
-        prepare: function(name, date, beginTime, endTime, justified, absenceTypeValue) {
-            this.name.text(name);
-            this.date.text(date);
-            this.beginTime.val(beginTime || '');
-            this.endTime.val(endTime || '');
-            this.justified.checked = justified || false;
-            this.absenceType.val(absenceTypeValue || '0');
+            var $pmTimes = this.afternoon.timeSlot.children();
+
+            if (date.getDay() === 5) { // Friday
+                $pmTimes[0].textContent = '13h30 - 17h30';
+                $pmTimes[1].textContent = '13h30 - 15h30';
+                $pmTimes[2].textContent = '15h30 - 17h30';
+            } else {
+                $pmTimes[0].textContent = '14h00 - 18h00';
+                $pmTimes[1].textContent = '14h00 - 16h00';
+                $pmTimes[2].textContent = '16h00 - 18h00';
+            }
+
+            if (amAbs !== null) {
+                activate('morning', this.morning.timeSlot.children().eq(amAbs.time.slot));
+                this.morning.justified[0].checked = amAbs.justified;
+                this.morning.absenceType.val(amAbs.absenceType.value);
+            } else {
+                this.morning.justified[0].checked = false;
+                this.morning.absenceType.val('0');
+            }
+
+            if (pmAbs !== null) {
+                activate('afternoon', this.afternoon.timeSlot.children().eq(pmAbs.time.slot));
+                this.afternoon.justified[0].checked = pmAbs.justified;
+                this.afternoon.absenceType.val(pmAbs.absenceType.value);
+            } else {
+                this.afternoon.justified[0].checked = false;
+                this.afternoon.absenceType.val('0');
+            }
+
         },
 
         send: function() {
-
+            /*
             // ### Check for errors
             // Errors with active element
             var active = $('td.active, table div.active');
@@ -477,58 +567,45 @@ $(function() {
                     $schedule.textContent = 'Horaires : ' + beginTimeVal + ' - ' + endTimeVal;
                     $justified.textContent = 'Justifiée : ' + (absence.justified ? 'Oui' : 'Non');
                     $absenceType.textContent = absence.absenceType.name;
-
-                    // 'new' button
-                    // only modify if adding absence
-                    if (!absence.editing) {
-                        if ($(cell).children('div').length === 1) {
-                            var button = document.createElement('button');
-                            button.appendChild(document.createTextNode('Nouveau'));
-                            cell.appendChild(button);
-                        } else {
-                            // 2 children, can't add more
-                            $(cell).children('button').remove();
-                            $(cell).children('div').show();
-                        }
-                    }
-
                 } else if (data === 'cancel') {
                     alert('Erreur interne : requête annulée');
                 } else if (data === 'missing_data') {
                     alert('Erreur interne : données manquantes');
+                } else if(data === 'wrong_data') {
+                    alert('Erreur : Les données entrées ne sont pas correctes');
                 } else if (data.substring(0, 9) === 'exception') {
                     alert('Erreur interne : ' + data);
-                } else {
-                    /*
-                     * Use of JS to receive datas than can only happen
-                     * if the client that sent it has JS disabled.
-                     * Really useful ?
-                     */
-                    var errors = data.split(',');
-                    for (var error in errors) {
-                        switch(error) {
-                            case 'beginDate':
-                                newAbsence.beginTime.addClass('form-error');
-                                break;
-                            case 'endDate':
-                            case 'sameDates':
-                                newAbsence.endTime.addClass('form-error');
-                                break;
-                        }
-                    }
                 }
-
             });
+            */
         },
 
         show: function() {
-            newAbsence.wrapper.addClass('active');
+            this.wrapper.addClass('active');
         },
 
         hide: function() {
             this.wrapper.removeClass('active');
+            deactivate('morning');
+            deactivate('afternoon');
         }
     };
+
+    newAbsence.morning.timeSlot.on('click', 'p', function() {
+        if ($(this).is('.active')) {
+            deactivate("morning");
+        } else {
+            activate("morning", this);
+        }
+    });
+
+    newAbsence.afternoon.timeSlot.on('click', 'p', function() {
+        if ($(this).is('.active')) {
+            deactivate("afternoon");
+        } else {
+            activate("afternoon", this);
+        }
+    });
 
     newAbsence.submitButton.click(function() {
         newAbsence.send();
@@ -541,29 +618,15 @@ $(function() {
     });
 
 
-    var previousTimes = {};
-    newAbsence.beginTime.on('focus', function() {
-        previousTimes.begin = parseTimeToSeconds(newAbsence.beginTime.val());
-        previousTimes.end = parseTimeToSeconds(newAbsence.endTime.val());
-    })
-    .on('change', function() {
-        var diff = previousTimes.end - previousTimes.begin;
-        newAbsence.endTime.val(formatTime(
-            parseTimeToSeconds(newAbsence.beginTime.val()) + diff
-        ));
-
-        previousTimes.begin = parseTimeToSeconds(newAbsence.beginTime.val());
-        previousTimes.end = parseTimeToSeconds(newAbsence.endTime.val());
-    });
-
-
     /* ##### Student absence count ##### */
 
     $('#table-stud-list').on('click', 'p + img', function() {
         $(this).siblings('div').toggle(DEFAULT_ANIM_TIME);
     });
 
-    // ### Thead fixation
+
+    // ##### Thead fixation #####
+
     var $absenceTableHead = $('#absences-table-head');
     var $fixedHeader = $('#header-fixed').append($absenceTableHead.clone());
 

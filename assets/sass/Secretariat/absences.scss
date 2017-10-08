@@ -307,7 +307,7 @@ td {
   }
 }
 
-#new-absences-wrapper {
+#edition-wrapper {
   display: none;
   align-items: center;
   justify-content: center;
@@ -325,8 +325,7 @@ td {
   }
 }
 
-#new-absences {
-  width: 400px;
+#edition {
   padding: 1em 0;
   margin: auto;
 
@@ -348,35 +347,101 @@ td {
     }
   }
 
-  > section {
-    margin-bottom: 15px;
+  div {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  section {
+    width: 400px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, .3);
+    margin: 10px;
+
+    h2 {
+      width: 60%;
+      padding-bottom: 4px;
+      margin: 12px auto;
+      border-bottom: 2px DASHED;
+    }
 
     article {
       margin-bottom: 10px;
     }
 
-    label, p {
-      display: inline-block;
-      width: 48%;
+    #am-time, #pm-time {
+      $opt-width: 120px;
+      $opt-height: 50px;
+      $opt-border: $opt-width / 20;
+      $opt-color: #b1acac;
+
+      display: flex;
+      flex-flow: row wrap;
+      justify-content: space-between;
+      align-items: center;
+      width: $opt-width * 2;
+      height: $opt-height * 2;
+      margin: auto;
+
+      p {
+        box-sizing: border-box;
+        width: 50%;
+        height: $opt-height;
+        line-height: $opt-height - $opt-border;
+        border: $opt-border groove $opt-color;
+
+        background-color: transparentize($opt-color, .8);
+
+        text-align: center;
+        font-size: 14px;
+        font-weight: bold;
+
+        &:first-child {
+          width: 100%;
+        }
+
+        &.active {
+          border-color: $foreground-color;
+        }
+      }
     }
 
-    label {
-      margin-right: 3%;
-      text-align: right;
+    article:not(:first-of-type) {
+
+      > label, > p {
+        display: inline-block;
+        width: 40%;
+        margin: auto;
+
+        font-size: 15px;
+      }
+
+      > label {
+        margin-right: 12px;
+
+        text-align: right;
+      }
+
+      > p {
+        text-align: left;
+      }
+
+      select {
+        padding: 2px;
+      }
+
     }
 
-    p {
-      text-align: left;
-    }
-
-    select {
-      padding: 2px;
-    }
   }
 
-  button {
-    width: 85px;
-    padding: 5px;
-    border-radius: 3px;
+  footer {
+
+    button {
+      width: 85px;
+      padding: 5px;
+      border-radius: 3px;
+    }
+
   }
 }
