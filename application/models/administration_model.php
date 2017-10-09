@@ -66,8 +66,16 @@ class Administration_model extends CI_Model {
     }
 
     public function deleteCascadeParcours($id){
-      $this->db->query('DELETE FROM UEdeParcours where idParcours =?',array($id));
-      return $this->db->query('DELETE FROM Parcours where idParcours = ?',array($id));
+
+      if(count($this->db->query('SELECT * FROM Semestres where idParcours=? and actif=1',array($id))->result()) == 0){
+        $this->db->query('DELETE FROM UEdeParcours where idParcours =?',array($id));
+        $this->db->query('DELETE FROM Semestres where idParcours =?',array($id));
+        return $this->db->query('DELETE FROM Parcours where idParcours = ?',array($id));
+      }else{
+        return false;
+      }
+
+
 
     }
 }

@@ -46,11 +46,14 @@ $(function (){
           });
         }
     });
-    /*
-    $('section h2').click(function(e){
-      $(this).parent().find('section').toggle();
+
+    $('#delete').submit(function(e){
+      if(!window.confirm("Etes vous sur de vouloir supprimer le parcours :" + $('#parcours').text().trim() )){
+        return false;
+      }
     });
-    //*/
+
+
     $("#remove").click(function(e){
       var ids = UEin.val();
         if(ids.length > 0){
