@@ -219,7 +219,7 @@ td {
         }
       }
 
-      > div, > button {
+      > div {
         z-index: 10;
       }
 
@@ -237,6 +237,11 @@ td {
 
         &:nth-of-type(2) {
           top: 5px + 80px;
+        }
+
+        p {
+          white-space: nowrap;
+          word-break: keep-all;
         }
       }
 
