@@ -67,7 +67,7 @@ $(function() {
                 + twoDigits(this.getUTCMinutes()) + ':'
                 + twoDigits(this.getUTCSeconds());
         case DateFormat.SHORT_TIME:
-            return twoDigits(this.getUTCHours()) + 'h' + twoDigits(this.getUTCMinutes());
+            return twoDigits(this.getUTCHours()) + ':' + twoDigits(this.getUTCMinutes());
         default:
             return '';
         }
@@ -212,7 +212,7 @@ $(function() {
      */
     function getDateFromColumn(col) {
         var date = new Date(FIRST_DATE.getTime());
-        date.setDate(date.getUTCDate() + col);
+        date.setUTCDate(date.getUTCDate() + col);
         return date;
     }
 
@@ -385,7 +385,7 @@ $(function() {
                     $justified = div.appendChild(document.createElement('p'));
                     $absenceType = div.appendChild(document.createElement('p'));
 
-                    if (isMorningAbsence(div)) {
+                    if (absence.time.begin.getUTCHours() <= 12) {
                         $(cell).prepend(div);
                     } else {
                         cell.appendChild(div);
@@ -605,7 +605,7 @@ $(function() {
 
             var $pmTimes = this.afternoon.timeSlot.children();
 
-            if (date.getDay() === 5) { // Friday
+            if (date.getUTCDay() === 5) { // Friday
                 $pmTimes[0].textContent = '13h30 - 17h30';
                 $pmTimes[1].textContent = '13h30 - 15h30';
                 $pmTimes[2].textContent = '15h30 - 17h30';
@@ -656,13 +656,16 @@ $(function() {
                 var index = morningAbsence ? (cellChildren.length === 2 ? 1 : -1) : 0;
 
                 if (index > -1) {
-                    afternoonAbsence = !isMorningAbsence(cellChildren[index]);
+                    afternoonAbsence = isMorningAbsence(cellChildren[index]);
+                    if (afternoonAbsence !== null) {
+                        afternoonAbsence = !afternoonAbsence;
+                    }
                 }
 
                 if (index === -1 || afternoonAbsence === null) {
                     handleAbsence(cell, this.afternoon);
                 }
-                else if (afternoonAbsence) {
+                else if (afternoonAbsence === true) {
                     absence = absences[cellChildren[index].id.substr(4)];
                     handleAbsence(cell, this.afternoon, absence);
                 }
