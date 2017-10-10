@@ -105,9 +105,9 @@ $(function() {
     }
 
     /**
-     * Activate an element relative to a field.
-     * If the field contained another actived element,
-     * it deactivate it then active the target element.
+     * Activate an element relatively to a field.
+     * If the field contained another activated node,
+     * it deactivates it then active the target element.
      * @param field The field of the target
      * @param target The element to be activated
      */
@@ -119,7 +119,7 @@ $(function() {
     }
 
     /**
-     * Deactivate all the elements a field
+     * Deactivate the active element of a field.
      * @param field The field to be emptied
      */
     function deactivate(field) {
@@ -129,8 +129,111 @@ $(function() {
         }
     }
 
+    /**
+     * Return the activated node in a field.
+     * @param field The field containing the active node
+     * @returns {Node} The active DOM element corresponing to the field
+     */
     function getActive(field) {
         return ACTIVE_CONTAINER[field]
+    }
+
+    /**
+     * Add absence to the count of absence of "its" student.
+     * @param absence The absence to be added
+     */
+    function addToCount(absence) {
+        var cell = document.getElementById('absn' + absence.absenceId).parentNode;
+
+        var $div = $('#' + absence.student.id).find('div')[0];
+        var $datas = $div.children;
+
+        var justifiyIndex, justifiedDays;
+
+        // always add halfday, as we add an absence
+        var halfDays = parseInt($datas[0].textContent) + 1;
+        $datas[0].textContent = halfDays + " demi-journée" + (halfDays > 1 ? 's' : '');
+
+        // If there's more than one absence
+        if (halfDays > 1) {
+            // if $datas[1] is justified days
+            if ($datas[1].textContent.split(' ').length === 3) {
+                // Store it before it changes
+                justifiedDays = parseInt($datas[1].textContent);
+            }
+            // If half-day count was 1
+            else if ($datas.length === 1) {
+                $div.appendChild(document.createElement('p'));
+            }
+
+            // if there's not already an absence this day, add one day
+            var days = ($datas.length > 1 ? parseInt($datas[1].textContent) || 1 : 1)
+                + !(cell.children.length - 1);
+
+            $datas[1].textContent = days + " jour" + (days > 1 ? 's' : '');
+
+            justifiyIndex = 2;
+        } else {
+            justifiyIndex = 1;
+        }
+
+
+        if (absence.justified) {
+            if (!justifiedDays) {
+                justifiedDays = ($datas.length > justifiyIndex
+                    ? parseInt($datas[justifiyIndex].textContent) : 0);
+            }
+            justifiedDays++;
+
+            if ($datas.length <= justifiyIndex) {
+                $div.appendChild(document.createElement('p'));
+            }
+
+            $datas[justifiyIndex].textContent = justifiedDays
+                + " absence" + (justifiedDays > 1 ? 's' : '')
+                + " justifiée" + (justifiedDays > 1 ? 's' : '');
+        }
+    }
+
+    /**
+     * Remove an absence to the count of "its" student.
+     * @param absence The absence to be removed
+     */
+    function removeFromCount(absence) {
+        var cell = document.getElementById('absn' + absence.absenceId).parentNode;
+
+        var $datas = $('#' + absence.student.id)
+            .find('div')[0].children;
+
+        var justifiyIndex, justifiedDays;
+
+        // always add halfday, as we add an absence
+        var halfDays = parseInt($datas[0].textContent) - 1;
+        $datas[0].textContent = halfDays + " demi-journée" + (halfDays > 1 ? 's' : '');
+
+        // After removing
+        if (halfDays > 1) {
+            // if there's more than one absence
+            var days = parseInt($datas[1].textContent) - !(cell.children.length - 1);
+            $datas[1].textContent = days + " jour" + (days > 1 ? 's' : '');
+
+            justifiyIndex = 2;
+        } else {
+            // if no or one absence left
+            justifiyIndex = 1;
+            if (halfDays === 1) $($datas[1]).remove();
+        }
+
+        if (absence.justified && $datas.length > justifiyIndex) {
+            justifiedDays = parseInt($datas[justifiyIndex].textContent) - 1;
+            if (justifiedDays === 0) {
+                $($datas[justifiyIndex]).remove();
+            } else {
+                $datas[justifiyIndex].textContent = justifiedDays
+                    + " absence" + (justifiedDays > 1 ? 's' : '')
+                    + " justifiée" + (justifiedDays > 1 ? 's' : '');
+            }
+        }
     }
 
     /**
@@ -366,20 +469,21 @@ $(function() {
             return element.substring(0, 3) !== "abs";
         });
 
+        removeFromCount(absence);
+
         delete absences[absence.absenceId];
         $absence.remove();
 
         if (cell.children.length) {
-            var datas = cell.children[0].children;
+            var $datas = cell.children[0].children;
 
             cellClasses.push("abs");
-            if (datas[1].trim().substr(-3) === "Oui") {
+            if ($datas[1].textContent.trim().substr(-3) === "Oui") {
                 cellClasses.push('abs-justified');
             }
-            cellClasses.push('abs-' + datas[2].toLowerCase());
+            cellClasses.push('abs-' + $datas[2].textContent.toLowerCase());
         }
         cell.className = cellClasses.join(' ');
-
     }
 
     /**
@@ -436,37 +540,46 @@ $(function() {
                     $justified,
                     $absenceType;
 
-                // Create absence in DOM
                 if (absence.absenceId) {
+                    // If absence editition
+                    var wasJustified = absences[absence.absenceId].justified;
                     absences[absence.absenceId] = absence;
 
-                    // if edit, modify existant
-                    var $absence = document.getElementById('absn' + absence.absenceId);
+                    if (absence.justified !== wasJustified) {
+                        //TODO Update student absence count
+                    }
 
+                    var $absence = document.getElementById('absn' + absence.absenceId);
                     $absence.className = "abs-" + absence.absenceType.name.toLowerCase();
+
+                    // Fields to be modified
                     var children = $absence.children;
                     $schedule = children[0];
                     $justified = children[1];
                     $absenceType = children[2];
                 } else {
+                    // if new absence
                     var absenceId = data.substr(8);
                     absence.absenceId = absenceId;
                     absences[absenceId] = absence;
 
-                    // if new, create div
+                    // create new absence container
                     var div = document.createElement('div');
                     div.className = 'abs-' + absence.absenceType.name.toLowerCase();
-                    div.id = 'absn' + data.substr(8);
+                    div.id = 'absn' + absenceId;
 
+                    // add the fields that will be filled to the container
                     $schedule = div.appendChild(document.createElement('p'));
                     $justified = div.appendChild(document.createElement('p'));
                     $absenceType = div.appendChild(document.createElement('p'));
 
+                    // if absence is in the morning, add it before the other absence
                     if (absence.time.begin.getUTCHours() <= 12) {
                         $(cell).prepend(div);
                     } else {
                         cell.appendChild(div);
                     }
+                    addToCount(absence);
                 }
 
                 $schedule.textContent = 'Horaires : ' + absence.time.begin.format(DateFormat.SHORT_TIME)
@@ -753,11 +866,13 @@ $(function() {
         var absence = newAbsence.morning.activeAbsence;
         if (absence === null) {
             setInterfaceAbsence(newAbsence.morning, null, 'morning');
+            newAbsence.morning.modified = false;
         } else {
             $.post('/Process_secretariat/suppression_absence', {absenceId: absence.absenceId}, function(data) {
                 if (data === 'success') {
                     setInterfaceAbsence(newAbsence.morning, null, 'morning');
                     deleteAbsence(absence);
+                    newAbsence.morning.modified = false;
                 } else if (data === 'missing_data') {
                     alert('Erreur de communication avec le serveur.' +
                         'Nous vous conseillons de rafraîchir la page !');
@@ -789,11 +904,13 @@ $(function() {
         var absence = newAbsence.afternoon.activeAbsence;
         if (absence === null) {
             setInterfaceAbsence(newAbsence.afternoon, null, 'afternoon');
+            newAbsence.afternoon.modified = false;
         } else {
             $.post('/Process_secretariat/suppression_absence', {absenceId: absence.absenceId}, function(data) {
                 if (data === 'success') {
                     setInterfaceAbsence(newAbsence.afternoon, null, 'afternoon');
                     deleteAbsence(absence);
+                    newAbsence.afternoon.modified = false;
                 } else if (data === 'missing_data') {
                     alert('Erreur de communication avec le serveur.' +
                         'Nous vous conseillons de rafraîchir la page !');

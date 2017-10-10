@@ -43,12 +43,14 @@
                                 . html_img('info.png', 'infos');
                             ?>
                                 <div>
-                                    <p><?= $missCount ?> demi-journée(s)</p>
-                                    <?= $missCount >= 2
-                                        ? '<p>sur ' . $dayMissCount . ' jour(s)</p>'
+                                    <p><?= $missCount ?> demi-journée<?= $missCount > 1 ? 's' : ''?></p>
+                                    <?= $missCount > 1
+                                        ? '<p>' . $dayMissCount . ' jour' . ($dayMissCount > 1 ? 's' : '') . '</p>'
                                         : '' ?>
                                     <?= $justifiedMiss > 0
-                                        ? '<p>' . $justifiedMiss . ' absence(s) justifiée(s)</p>'
+                                        ? '<p>' . $justifiedMiss
+                                        . ' absence' . ($justifiedMiss > 1 ? 's' : '')
+                                        . ' justifiée' . ($justifiedMiss > 1 ? 's' : '') . '</p>'
                                         : '' ?>
                                 </div>
                             <?php

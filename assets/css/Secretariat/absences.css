@@ -45,8 +45,8 @@ td.abs-infirmerie { background-color: #02fca1; }
 td.abs-controle { background-color: #010dfd; }
 td.abs-several { background-color: #b203fd; }
 
-#color-code { margin-bottom: 1em; }
-#color-code ul { display: flex; flex-flow: row nowrap; justify-content: space-around; width: 70%; }
+#color-code { margin-bottom: 1em; overflow: auto; }
+#color-code ul { display: flex; flex-flow: row nowrap; justify-content: space-around; min-width: 800px; width: 70%; }
 #color-code ul li::after { content: ''; display: inline-block; position: relative; top: 2px; width: 15px; height: 15px; border: 1px SOLID #403e3f; margin-left: 5px; }
 #color-code ul li:nth-child(1)::after { background: linear-gradient(to right, #fafafa 50%, #c7c7c7 50%); }
 #color-code ul li:nth-child(2)::after { background-color: #1bee00; }

@@ -56,11 +56,13 @@ td {
 
 #color-code {
   margin-bottom: 1em;
+  overflow: auto;
 
   ul {
     display: flex;
     flex-flow: row nowrap;
     justify-content: space-around;
+    min-width: 800px;
     width: 70%;
 
     li::after {
