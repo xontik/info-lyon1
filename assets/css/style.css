@@ -29,7 +29,7 @@ main { margin-left: 3%; margin-right: 3%; }
 
 a { color: #2d2d2d; text-decoration: none; }
 
-h1, h2, h3, h4, h5, h6 { font-family: "Open Sans", "Roboto", helvetica, arial, sans-serif; font-size: 1.6em; color: #e7bd26; }
+h1, h2, h3, h4, h5, h6 { font-family: "Open Sans", "Roboto", helvetica, arial, sans-serif; font-size: 1.6em; color: #e7bd26; cursor: default; }
 
 h1 a, h2 a, h3 a, h4 a, h5 a, h6 a { color: #dbb118; }
 

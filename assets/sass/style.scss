@@ -1,6 +1,5 @@
 @import url('https://fonts.googleapis.com/css?family=Open+Sans|Roboto');
 @import '_head';
-// _head already imports _var
 
 // ### GENERAL STYLE
 
@@ -29,10 +28,11 @@ h1, h2, h3, h4, h5, h6 {
   font-family: $title-font, $text-font-family;
   font-size: 1.6em;
   color: $title-color;
+  cursor: default;
 }
 
 h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
-  color: darken( $title-color, 5 );
+  color: darken($title-color, 5);
 }
 
 li {
