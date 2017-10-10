@@ -371,6 +371,28 @@ td {
       padding-bottom: 4px;
       margin: 12px auto;
       border-bottom: 2px DASHED;
+
+      white-space: nowrap;
+
+      img {
+        display: none;
+        height: 25px;
+        vertical-align: -2px;
+        margin-left: 12px;
+
+        cursor: pointer;
+
+        transition: opacity .7s;
+
+        &.active {
+          display: inline-block;
+          opacity: .8;
+        }
+
+        &.active:hover {
+          opacity: 1;
+        }
+      }
     }
 
     article {

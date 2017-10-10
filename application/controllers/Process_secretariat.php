@@ -92,6 +92,27 @@ class Process_secretariat extends CI_Controller
         }
     }
 
+    public function suppression_absence()
+    {
+        header('Content-Type: text/plain');
+
+        if (!isset($_POST['absenceId']))
+        {
+            echo 'missing_data';
+            return;
+        }
+
+        $absenceId = htmlspecialchars($_POST['absenceId']);
+
+        try {
+            $this->db->delete('Absences', array('idAbsence' => $absenceId));
+            echo 'success';
+        } catch(Exception $e) {
+            echo 'exception: ' . $e->getMessage();
+        }
+
+    }
+
     private function _checkAbsenceData($data)
     {
         return !empty($data['numEtudiant'])

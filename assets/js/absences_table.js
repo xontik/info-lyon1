@@ -259,22 +259,25 @@ $(function() {
     }
 
     /**
-     * Choose to create or modify an absence.
-     * @param cell The cell that contains the absence
-     * @param array The interface used to create the absence (newAbsence.morning or newAbsense.afternoon)
-     * @param originalAbsence The old absence if it's a modification
-     * @return {boolean} true if the operation was successful, false otherwise
+     *
+     * @param array Either 'newAbsence.morning' or 'newAbsence.afternoon'
+     * @param absence The absence to be used to fill the informations (can be null)
+     * @param activeField The field to be used to active things in absence
      */
-    function handleAbsence(cell, array, originalAbsence) {
-        originalAbsence = originalAbsence || null;
-
-        var absence = createAbsenceFromInterface(
-            cell, array, originalAbsence ? originalAbsence.absenceId : null);
-
-        if (!absence) {
-            return false;
+    function setInterfaceAbsence(array, absence, activeField) {
+        if (absence) {
+            array.activeAbsence = absence;
+            activate(activeField, array.timeSlot.children().eq(absence.time.slot));
+            activate(activeField + 'Delete', array.delete);
+            array.justified[0].checked = absence.justified;
+            array.absenceType.val(absence.absenceType.value);
+        } else {
+            array.activeAbsence = null;
+            deactivate(activeField);
+            deactivate(activeField + 'Delete');
+            array.justified[0].checked = false;
+            array.absenceType.val('0');
         }
-        return sendAbsence(cell, absence);
     }
 
     /**
@@ -327,6 +330,78 @@ $(function() {
     }
 
     /**
+     * Create an absence from the informations in the div
+     * (and its position in the table)
+     * @param div The element you want the absence from
+     * @returns {Absence} An absence
+     */
+    function createAbsenceFromDiv(div) {
+        var cell = div.parentNode;
+        var date = getDateFromColumn(cell.cellIndex);
+
+        var timeContent = div.children[0].textContent.trim();
+        var beginTime = new Date(date.getTime() + parseTimeToSeconds(timeContent.substr(-13, 5)) * 1000);
+        var endTime = new Date(date.getTime() + parseTimeToSeconds(timeContent.substr(-5)) * 1000);
+
+        return new Absence(
+            div.id.substr(4),
+            getStudentFromRow(cell.parentNode.rowIndex - 2),
+            beginTime,
+            endTime,
+            div.children[1].textContent.trim().substr(-3) === "Oui",
+            getAbsenceTypeValue(div.children[2].textContent)
+        );
+    }
+
+    /**
+     * Deletes an absence from interface and the database
+     * @param absence The absence to be deleted
+     */
+    function deleteAbsence(absence) {
+        if (!absence) return;
+
+        var $absence = $('#absn' + absence.absenceId);
+        var cell = $absence.parent()[0];
+        var cellClasses = cell.className.split(' ').filter(function(element) {
+            return element.substring(0, 3) !== "abs";
+        });
+
+        delete absences[absence.absenceId];
+        $absence.remove();
+
+        if (cell.children.length) {
+            var datas = cell.children[0].children;
+
+            cellClasses.push("abs");
+            if (datas[1].trim().substr(-3) === "Oui") {
+                cellClasses.push('abs-justified');
+            }
+            cellClasses.push('abs-' + datas[2].toLowerCase());
+        }
+        cell.className = cellClasses.join(' ');
+
+    }
+
+    /**
+     * Choose to create or modify an absence.
+     * @param cell The cell that contains the absence
+     * @param array The interface used to create the absence (newAbsence.morning or newAbsense.afternoon)
+     * @param originalAbsence The old absence if it's a modification
+     * @return {boolean} true if the operation was successful, false otherwise
+     */
+    function handleAbsence(cell, array, originalAbsence) {
+        originalAbsence = originalAbsence || null;
+
+        var absence = createAbsenceFromInterface(
+            cell, array, originalAbsence ? originalAbsence.absenceId : null);
+
+        if (!absence) {
+            return false;
+        }
+        return sendAbsence(cell, absence);
+    }
+
+    /**
      * Permenantly save the absence.
      * @param cell The cell to which belongs the absence
      * @param absence The absence to be added or modified
@@ -342,7 +417,7 @@ $(function() {
             absenceTypeId: absence.absenceType.value,
             justified: absence.justified ? '1' : '0'
         };
-        var url = /Process_secretariat/;
+        var url = '/Process_secretariat/';
 
         if (absence.absenceId) {
             url += 'modifier_absence';
@@ -374,7 +449,9 @@ $(function() {
                     $justified = children[1];
                     $absenceType = children[2];
                 } else {
-                    absences[data.substr(8)] = absence;
+                    var absenceId = data.substr(8);
+                    absence.absenceId = absenceId;
+                    absences[absenceId] = absence;
 
                     // if new, create div
                     var div = document.createElement('div');
@@ -403,36 +480,12 @@ $(function() {
                 alert('Erreur interne : données manquantes');
             } else if(data === 'wrong_data') {
                 alert('Erreur : Les données entrées ne sont pas correctes');
-            } else if (data.substring(0, 9) === 'exception') {
-                alert('Erreur interne : ' + data);
+            } else if (data.substr(0, 9) === 'exception') {
+                alert(data);
             }
         });
 
         return true;
-    }
-
-    /**
-     * Create an absence from the informations in the div
-     * (and its position in the table)
-     * @param div The element you want the absence from
-     * @returns {Absence} An absence
-     */
-    function createAbsenceFromDiv(div) {
-        var cell = div.parentNode;
-        var date = getDateFromColumn(cell.cellIndex);
-
-        var timeContent = div.children[0].textContent.trim();
-        var beginTime = new Date(date.getTime() + parseTimeToSeconds(timeContent.substr(-13, 5)) * 1000);
-        var endTime = new Date(date.getTime() + parseTimeToSeconds(timeContent.substr(-5)) * 1000);
-
-        return new Absence(
-            div.id.substr(4),
-            getStudentFromRow(cell.parentNode.rowIndex - 2),
-            beginTime,
-            endTime,
-            div.children[1].textContent.trim().substr(-3) === "Oui",
-            getAbsenceTypeValue(div.children[2].textContent)
-        );
     }
 
     /**
@@ -500,68 +553,28 @@ $(function() {
         return cellClasses;
     }
 
-    // #################################
-    // ########  PROGRAM START  ########
-    // #################################
-
-    var $absenceTable = $('#absences-table');
-    var $tableWrapper = $('#table-wrapper');
-
-    /* ##### Center #active-day ##### */
-
-    $tableWrapper.each( function() {
-        var activeDay = $('#active-day');
-        if (activeDay.length) {
-            this.scrollLeft = activeDay.position().left - (window.innerWidth / 2);
-        }
-    });
-
-    $('td.abs').each(function() {
-        $(this).children().each(function() {
-            var absence = createAbsenceFromDiv(this);
-            absences[absence.absenceId] = absence;
-        });
-    });
-
-
-    /* ##### Per day absence informations #####*/
-
-    $absenceTable.on('click', 'td', function(event) {
-        if (event.which === 1) {
-            activate("cell", this);
-            newAbsence.edit(this);
-        }
-    })
-
-    .on('mouseenter', 'td.abs', function() {
-        $(this).children('div').show(DEFAULT_ANIM_TIME);
-    })
-
-    .on('mouseleave', 'td.abs', function() {
-        $(this).children().hide(DEFAULT_ANIM_TIME);
-    });
-
-
-    /* ##### Per day absence creation ##### */
-
     var newAbsence = {
         wrapper: $('#edition-wrapper'),
         content: $('#edition'),
         name: $('#edition-name'),
         date: $('#edition-date'),
         morning: {
+            activeAbsence: null,
             modified: false,
             content: $('#edition-morning'),
             timeSlot: $('#am-time'),
             justified: $('#am-justified'),
-            absenceType: $('#am-absenceType')
+            absenceType: $('#am-absenceType'),
+            delete: $('#am-delete')
         },
         afternoon: {
+            activeAbsence: null,
             modified: false,
             content: $('#edition-afternoon'),
             timeSlot: $('#pm-time'),
             justified: $('#pm-justified'),
-            absenceType: $('#pm-absenceType')
+            absenceType: $('#pm-absenceType'),
+            delete: $('#pm-delete')
         },
         submitButton: $('#edition-submit'),
         cancelButton: $('#edition-cancel'),
@@ -615,24 +628,8 @@ $(function() {
                 $pmTimes[2].textContent = '16h00 - 18h00';
             }
 
-            if (amAbs) {
-                activate('morning', this.morning.timeSlot.children().eq(amAbs.time.slot));
-                this.morning.justified[0].checked = amAbs.justified;
-                this.morning.absenceType.val(amAbs.absenceType.value);
-            } else {
-                this.morning.justified[0].checked = false;
-                this.morning.absenceType.val('0');
-            }
-
-            if (pmAbs) {
-                activate('afternoon', this.afternoon.timeSlot.children().eq(pmAbs.time.slot));
-                this.afternoon.justified[0].checked = pmAbs.justified;
-                this.afternoon.absenceType.val(pmAbs.absenceType.value);
-            } else {
-                this.afternoon.justified[0].checked = false;
-                this.afternoon.absenceType.val('0');
-            }
-
+            setInterfaceAbsence(this.morning, amAbs, 'morning');
+            setInterfaceAbsence(this.afternoon, pmAbs, 'afternoon');
         },
 
         send: function() {
@@ -642,13 +639,14 @@ $(function() {
             var morningAbsence = isMorningAbsence(cellChildren[0]),
                 afternoonAbsence = null;
 
+            var handled = true;
             if (this.morning.modified) {
                 if (morningAbsence === null || morningAbsence === false) {
-                    handleAbsence(cell, this.morning);
+                    handled = handleAbsence(cell, this.morning);
                 }
                 else {
                     absence = absences[cellChildren[0].id.substr(4)];
-                    handleAbsence(cell, this.morning, absence);
+                    handled = handleAbsence(cell, this.morning, absence);
                 }
             }
 
@@ -663,15 +661,15 @@ $(function() {
                 }
 
                 if (index === -1 || afternoonAbsence === null) {
-                    handleAbsence(cell, this.afternoon);
+                    handled = handleAbsence(cell, this.afternoon);
                 }
                 else if (afternoonAbsence === true) {
                     absence = absences[cellChildren[index].id.substr(4)];
-                    handleAbsence(cell, this.afternoon, absence);
+                    handled = handleAbsence(cell, this.afternoon, absence);
                 }
             }
 
-            this.hide();
+            if (handled) this.hide();
         },
 
         show: function() {
@@ -689,40 +687,129 @@ $(function() {
 
             $(window).off('keydown');
 
-            deactivate('morning');
-            deactivate('afternoon');
-
             this.morning.modified = false;
             this.afternoon.modified = false;
         }
     };
 
+    // #################################
+    // ########  PROGRAM START  ########
+    // #################################
+
+    var $absenceTable = $('#absences-table');
+    var $tableWrapper = $('#table-wrapper');
+
+    /* ##### Center #active-day ##### */
+
+    $tableWrapper.each( function() {
+        var activeDay = $('#active-day');
+        if (activeDay.length) {
+            this.scrollLeft = activeDay.position().left - (window.innerWidth / 2);
+        }
+    });
+
+    $('td.abs').each(function() {
+        $(this).children().each(function() {
+            var absence = createAbsenceFromDiv(this);
+            absences[absence.absenceId] = absence;
+        });
+    });
+
+
+    /* ##### Per day absence informations #####*/
+
+    $absenceTable.on('click', 'td', function(event) {
+        if (event.which === 1) {
+            activate("cell", this);
+            newAbsence.edit(this);
+        }
+    })
+
+    .on('mouseenter', 'td.abs', function() {
+        $(this).children('div').show(DEFAULT_ANIM_TIME);
+    })
+
+    .on('mouseleave', 'td.abs', function() {
+        $(this).children().hide(DEFAULT_ANIM_TIME);
+    });
+
+
+    /* ##### Per day absence creation, modification, deletion ##### */
+
+    // ### NEW ABSENCE EVENTS ###
+    // Morning
     newAbsence.morning.timeSlot.on('click', 'p', function() {
         newAbsence.morning.modified = true;
-        if ($(this).is('.active')) {
-            deactivate("morning");
-        } else {
-            activate("morning", this);
-        }
+        activate("morning", this);
+        activate("morningDelete", newAbsence.morning.delete);
     });
 
     newAbsence.morning.content.on('change', ':checkbox, select', function() {
         newAbsence.morning.modified = true;
+        activate("morningDelete", newAbsence.morning.delete);
     });
 
+    newAbsence.morning.delete.click(function() {
+        var absence = newAbsence.morning.activeAbsence;
+        if (absence === null) {
+            setInterfaceAbsence(newAbsence.morning, null, 'morning');
+        } else {
+            $.post('/Process_secretariat/suppression_absence', {absenceId: absence.absenceId}, function(data) {
+                if (data === 'success') {
+                    setInterfaceAbsence(newAbsence.morning, null, 'morning');
+                    deleteAbsence(absence);
+                } else if (data === 'missing_data') {
+                    alert('Erreur de communication avec le serveur.' +
+                        'Nous vous conseillons de rafraîchir la page !');
+                } else if (data === 'unknown id') {
+                    alert('Erreur de communication avec le serveur.' +
+                        'Nous vous conseillons de rafraîchir la page !');
+                } else if (data.substr(0, 9) === 'exception') {
+                    alert(data);
+                } else {
+                    alert('Message inconnu reçu du serveur');
+                }
+            });
+        }
+    });
+
+    // Afternoon
     newAbsence.afternoon.timeSlot.on('click', 'p', function() {
         newAbsence.afternoon.modified = true;
-        if ($(this).is('.active')) {
-            deactivate("afternoon");
-        } else {
-            activate("afternoon", this);
-        }
+        activate("afternoon", this);
+        activate("afternoonDelete", newAbsence.afternoon.delete);
     });
 
     newAbsence.afternoon.content.on('change', ':checkbox, select', function() {
         newAbsence.afternoon.modified = true;
+        activate("afternoonDelete", newAbsence.afternoon.delete);
     });
 
+    newAbsence.afternoon.delete.click(function() {
+        var absence = newAbsence.afternoon.activeAbsence;
+        if (absence === null) {
+            setInterfaceAbsence(newAbsence.afternoon, null, 'afternoon');
+        } else {
+            $.post('/Process_secretariat/suppression_absence', {absenceId: absence.absenceId}, function(data) {
+                if (data === 'success') {
+                    setInterfaceAbsence(newAbsence.afternoon, null, 'afternoon');
+                    deleteAbsence(absence);
+                } else if (data === 'missing_data') {
+                    alert('Erreur de communication avec le serveur.' +
+                        'Nous vous conseillons de rafraîchir la page !');
+                } else if (data === 'unknown id') {
+                    alert('Erreur de communication avec le serveur.' +
+                        'Nous vous conseillons de rafraîchir la page !');
+                } else if (data.substr(0, 9) === 'exception') {
+                    alert(data);
+                } else {
+                    alert('Message inconnu reçu du serveur');
+                }
+            });
+        }
+    });
+
+    // Footer
     newAbsence.submitButton.click(function() {
         newAbsence.send();
         return false;

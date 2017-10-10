@@ -67,7 +67,7 @@
                         </header>
                         <div>
                             <section id="edition-morning">
-                                <h2>Matinée</h2>
+                                <h2>Matinée<?= html_img('trash_delete.png', 'supprimer', 'am-delete') ?></h2>
                                 <article>
                                     <div id="am-time">
                                         <p>08h00 - 12h00</p>
@@ -96,7 +96,7 @@
                                 </article>
                             </section>
                             <section id="edition-afternoon">
-                                <h2>Après-midi</h2>
+                                <h2>Après-midi<?= html_img('trash_delete.png', 'supprimer', 'pm-delete') ?></h2>
                                 <article>
                                     <div id="pm-time">
                                         <p>14h00 - 18h00</p>
