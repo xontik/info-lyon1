@@ -375,22 +375,19 @@ td {
       white-space: nowrap;
 
       img {
-        display: none;
-        height: 25px;
+        display: inline-block;
+        width: 0;
+        opacity: 0;
         vertical-align: -2px;
         margin-left: 12px;
 
         cursor: pointer;
 
-        transition: opacity .7s;
+        transition: width .3s, opacity .3s;
 
         &.active {
-          display: inline-block;
+          width: 25px;
           opacity: .8;
-        }
-
-        &.active:hover {
-          opacity: 1;
         }
       }
     }

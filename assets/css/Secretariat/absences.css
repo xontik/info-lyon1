@@ -113,9 +113,8 @@ td.abs-several { background-color: #b203fd; }
 #edition div { display: flex; flex-flow: row nowrap; justify-content: space-between; align-items: center; margin-bottom: 10px; }
 #edition section { width: 400px; box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); margin: 10px; }
 #edition section h2 { width: 60%; padding-bottom: 4px; margin: 12px auto; border-bottom: 2px DASHED; white-space: nowrap; }
-#edition section h2 img { display: none; height: 25px; vertical-align: -2px; margin-left: 12px; cursor: pointer; transition: opacity .7s; }
-#edition section h2 img.active { display: inline-block; opacity: .8; }
-#edition section h2 img.active:hover { opacity: 1; }
+#edition section h2 img { display: inline-block; width: 0; opacity: 0; vertical-align: -2px; margin-left: 12px; cursor: pointer; transition: width .3s, opacity .3s; }
+#edition section h2 img.active { width: 25px; opacity: .8; }
 #edition section article { margin-bottom: 10px; }
 #edition section #am-time, #edition section #pm-time { display: flex; flex-flow: row wrap; justify-content: space-between; align-items: center; width: 240px; height: 100px; margin: auto; }
 #edition section #am-time p, #edition section #pm-time p { box-sizing: border-box; width: 50%; height: 50px; line-height: 44px; border: 6px groove #b1acac; background-color: rgba(177, 172, 172, 0.2); text-align: center; font-size: 14px; font-weight: bold; cursor: default; }
