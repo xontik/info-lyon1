@@ -237,6 +237,49 @@ $(function() {
     }
 
     /**
+     * Change the number of the justified absence for the student.
+     * @param student The student the change
+     * @param add How many justification to add. Can be negative
+     */
+    function updateJustifiedCount(student, add) {
+        var $div = $('#' + student.id).find('div')[0];
+        var $datas = $div.children;
+		
+        var justifyIndex, justifiedDays;
+
+        if ($datas.length > 1) {
+			// If all infos are shown
+			if ($datas.length === 3) {
+                justifyIndex = 2;
+                justifiedDays = parseInt($datas[2].textContent) + add;
+			}
+			// if only 2 infos and second 'p' contains justified absence count
+            else if ($datas[1].textContent.split(' ').length === 3) {
+                justifyIndex = 1;
+                justifiedDays = parseInt($datas[1].textContent) + add;
+            }
+			// if 2 infos, but no justified absence count
+            else {
+				justifyIndex = 2;
+				justifiedDays = add;
+			}
+        } else {
+			justifyIndex = 1;
+		}
+
+		if (justifiedDays > 0) {
+			if ($datas.length <= justifyIndex) {
+				$div.appendChild(document.createElement('p'));
+			}
+			$datas[justifyIndex].textContent = justifiedDays
+				+ " absence" + (justifiedDays > 1 ? 's' : '')
+				+ " justifiée" + (justifiedDays > 1 ? 's' : '');
+		} else if ($datas.length > justifyIndex) {
+			$($datas[justifyIndex]).remove();
+		}
+    }
+
+    /**
      * If the integer only contains 1 digit, fill with zeros
      * @param d int In integer between -99 and 99
      * @returns {string} The number filled with zeros
@@ -546,7 +589,7 @@ $(function() {
                     absences[absence.absenceId] = absence;
 
                     if (absence.justified !== wasJustified) {
-                        //TODO Update student absence count
+                        updateJustifiedCount(absence.student, absence.justified - wasJustified);
                     }
 
                     var $absence = document.getElementById('absn' + absence.absenceId);
