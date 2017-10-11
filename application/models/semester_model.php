@@ -68,8 +68,8 @@ class semester_model extends CI_Model {
             );
         } else {
             return new Period(
-                new DateTime($semester->anneeScolaire . '-02-01'),
-                new DateTime($semester->anneeScolaire . '-08-31')
+                new DateTime(($semester->anneeScolaire + 1) . '-02-01'),
+                new DateTime(($semester->anneeScolaire + 1) . '-08-31')
             );
         }
     }
