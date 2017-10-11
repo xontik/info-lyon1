@@ -13,19 +13,11 @@ body {
   font-family: $text-font-family;
   color: $text-color;
   background-color: $background-color;
+}
 
-  // Clear any kind of floating element
-  #body:after {
-    content: '';
-    display: table;
-    clear: both;
-  }
-
-  main, footer {
-    margin-left: 3%;
-    margin-right: 3%;
-  }
-
+main {
+  margin-left: 3%;
+  margin-right: 3%;
 }
 
 a {
@@ -64,7 +56,6 @@ li {
 
 
 // ### CLASS
-
 .dropdown::after {
   content: '';
   width: 0;

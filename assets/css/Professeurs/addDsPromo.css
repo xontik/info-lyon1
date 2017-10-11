@@ -24,22 +24,12 @@ body > header #header_profile ul li { padding: .2em .5em; border-top: 1px SOLID 
 * { padding: 0; margin: 0; }
 
 body { font-family: "Roboto", helvetica, arial, sans-serif; color: #202020; background-color: #fafafa; }
-
-main { margin-left: 3%; margin-right: 3%; }
+body #body:after { content: ''; display: table; clear: both; }
+body main, body footer { margin-left: 3%; margin-right: 3%; }
 
 a { color: #2d2d2d; text-decoration: none; }
 
 h1, h2, h3, h4, h5, h6 { font-family: "Open Sans", "Roboto", helvetica, arial, sans-serif; font-size: 1.6em; color: #e7bd26; }
-
-h2 { font-size: 1.5em; }
-
-h3 { font-size: 1.4em; }
-
-h4 { font-size: 1.3em; }
-
-h5 { font-size: 1.2em; }
-
-h6 { font-size: 1.1em; }
 
 h1 a, h2 a, h3 a, h4 a, h5 a, h6 a { color: #dbb118; }
 
@@ -47,17 +37,12 @@ li { list-style-type: none; }
 
 .dropdown::after { content: ''; width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 9px solid #ffffff; }
 
-main li.depliant { list-style-type: square; }
-main li.depliant:hover { cursor: pointer; }
+main label { width: 350px; display: block; float: left; margin-top: 5px; }
+main input { padding: 3px; border: solid 1px #c9c9c9; transition: border 0.3s; margin-top: 3px; }
+main input[type="submit"] { display: inline-block; border: 1.5px groove #403e3f; padding: 7px 12px; border-radius: 5px; margin-top: 30px; }
+main input[type="submit"]:hover { color: white; box-shadow: 3px 3px 12px #999; }
+main select { padding: 3px; border: solid 1px #c9c9c9; transition: border 0.3s; margin-top: 3px; }
+main #return { display: inline-block; border: 1.5px groove #403e3f; padding: 5px 10px; border-radius: 5px; margin-left: 8px; }
+main #return:hover { box-shadow: 3px 3px 12px #999; }
 
-main li { list-style-type: circle; font-size: 1em; }
-main li:hover { cursor: auto; }
-main li strong:last-of-type { color: red; }
-
-.editable { color: blue; }
-
-li a img { height: 15px; }
-
-#ulroot ul { display: none; list-style-type: none; margin: 0; padding-left: 20px; }
-
-/*# sourceMappingURL=listParcours.css.map */
+/*# sourceMappingURL=addDsPromo.css.map */

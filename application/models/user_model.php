@@ -1,21 +1,23 @@
 <?php
-
 /**
 * Created by PhpStorm.
 * User: Enzo
 * Date: 17/08/2017
 * Time: 15:41
 */
+
 class user_model extends CI_Model {
 
   public function getUserInformations($userid, $password) {
     static $student_regex = '/^p[0-9]{7}$/';
     static $teacher_secretariat_regex = '/^[a-z]*\.[a-z]*$/';
 
-    if ( preg_match($student_regex, $userid) )
-    return $this->getStudentInformations($userid, $password);
-    else if ( preg_match($teacher_secretariat_regex, $userid) )
-    return $this->getTeacherOrSecretaryInformations($userid, $password);
+    if ( preg_match($student_regex, $userid) ) {
+        return $this->getStudentInformations($userid, $password);
+    }
+    else if ( preg_match($teacher_secretariat_regex, $userid) ) {
+        return $this->getTeacherOrSecretaryInformations($userid, $password);
+    }
     else {
       $_SESSION['form_errors']['id'] = 'Identifiant invalide';
       return FALSE;

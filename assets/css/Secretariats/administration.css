@@ -24,8 +24,8 @@ body > header #header_profile ul li { padding: .2em .5em; border-top: 1px SOLID 
 * { padding: 0; margin: 0; }
 
 body { font-family: "Roboto", helvetica, arial, sans-serif; color: #202020; background-color: #fafafa; }
-body #body:after { content: ''; display: table; clear: both; }
-body main, body footer { margin-left: 3%; margin-right: 3%; }
+
+main { margin-left: 3%; margin-right: 3%; }
 
 a { color: #2d2d2d; text-decoration: none; }
 

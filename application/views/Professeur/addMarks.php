@@ -7,7 +7,7 @@
       <tr>
         <th>Nom</th>
         <th>Prenom</th>
-        <th>Note</th>
+        <th>Note /<?= $data['control']->diviseur ?></th>
       </tr>
 
       <?php
@@ -15,7 +15,7 @@
         echo "<tr>";
         echo "<td>". $mark->nom. "</td>";
         echo "<td>". $mark->prenom. "</td>";
-        echo "<td><input type='text' name='".$mark->numEtudiant."' value='".((!is_null($mark->valeur))?$mark->valeur:"")."'/></td>";
+        echo "<td><input type='number' name='".$mark->numEtudiant."' value='".((!is_null($mark->valeur))?$mark->valeur:"")."'/></td>";
         echo "</tr>";
 
       }
@@ -24,5 +24,6 @@
 
       ?>
       <input type="submit" value="Envoyer" name="send" />
+      <a href="<?= base_url('Professeur/controle')?>">Retour</a>
     </form>
   </main>

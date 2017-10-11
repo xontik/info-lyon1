@@ -13,8 +13,7 @@ class Etudiant extends CI_Controller {
   public function __construct() {
     parent::__construct();
     if ( !isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'student')
-    redirect('/');
-
+        redirect('/');
   }
 
   public function index() {
@@ -31,7 +30,6 @@ class Etudiant extends CI_Controller {
   }
 
   public function absence($semester = '') {
-
     $this->load->model('absence_model', 'absenceMod');
     $this->load->model('semester_model', 'semesterMod');
 
@@ -40,7 +38,7 @@ class Etudiant extends CI_Controller {
         $semesterId = $this->semesterMod->getSemesterId();
     }
 
-    $absences = $this->absenceMod->getAbsencesFromSemester($_SESSION['id'], $semesterId);
+    $absences = $this->absenceMod->getStudentSemesterAbsence($_SESSION['id'], $semesterId);
 
     $var = array(
       'css' => array(),
@@ -60,10 +58,8 @@ class Etudiant extends CI_Controller {
     $this->load->model('semester_model', 'semesterMod');
 
     $semesterId = $this->semesterMod->getSemesterId($semester);
-    if ($semesterId === FALSE) {
-      redirect('/Etudiant/Note/');
-      return;
-    }
+    if ($semesterId === FALSE)
+      $semesterId = $this->semesterMod->getSemesterId();
 
     $marks = $this->markMod->getMarksFromSemester($_SESSION['id'], $semesterId);
 
