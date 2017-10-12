@@ -7,20 +7,35 @@
 				<div>
 					<?php $student = $this->studentMod->getStudent($profQuestion->numEtudiant);?>
 					<li class = "question qr">
-						<?php echo $profQuestion->texte;?>
-						<span><?php echo $profQuestion->numEtudiant . ' - ' . $student->prenom . ' ' . strtoupper($student->nom);?></span>
+						<div>
+							<div>
+							<?php 
+								$i=0; 
+								while(!($i>=30 OR $i==strlen($profQuestion->texte))){
+									if(ord($profQuestion->texte[$i])<=127){echo $profQuestion->texte[$i];$i++;}
+									else{echo $profQuestion->texte[$i].$profQuestion->texte[$i+1];$i=$i+2;}
+								}
+								if($i>=30 AND $i <strlen($profQuestion->texte)){echo '...';}?>
+							</div>
+							<div><?php echo $profQuestion->numEtudiant . ' - ' 
+							. $student->prenom . ' ' . strtoupper($student->nom);?></div>
+						</div>
 					</li>
 					<ul>
 						<?php
 						$listeReponses = $this->repMod->getAnswers($profQuestion->idQuestion);
 						foreach($listeReponses as $reponse){
-							echo '<li class="reponse qr">'. $reponse->texte. '</li>';
+							$estProf='';
+							if($reponse->prof==1){$estProf='isProf';}
+							echo '<li class="qr '. $estProf .'">'. $reponse->texte. '</li>';
 						} 
 						?>
 						<form action="<?php echo current_url();?>" method="POST">
 							<input type="hidden" name="idQuestion" value ="<?php echo $profQuestion->idQuestion;?>"/>
-							<input type="text" name="texte" autocomplete = "off"/>
-							<input type="submit" value = "Répondre" />
+							<div>
+								<input type="text" name="texte" autocomplete = "off"/>
+								<input type="submit" value = "Répondre" />
+							</div>
 						</form>
 					</ul>
 				</div>

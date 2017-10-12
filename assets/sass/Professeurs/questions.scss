@@ -12,35 +12,59 @@ main {
 			color: #595959;
 		}
 		
-		div{
-			margin-bottom: 1.5em;
+		ul > div{
+			margin-bottom: 1.8em;
+			div:nth-child(1){
+				display:flex;
+				justify-content: space-between;
+				div:nth-child(2){
+					padding-right: .5em;
+				}
+			}
+			
 		}
 
-		li span{
-			padding-left: 65%;
-		}
-		
 		.question{
 			font-size: 18px;
+			background-color: #403E3F;
+			color: white;
 		}
 		
 		.question:nth-child(1){
 			border-top: 1px solid black;
 		
 		}
-		
+
 		.qr{
 			border: 1px solid black;
 			border-top: none;	
 			padding: 6px 0 6px .6em;
 		}
 		
+		.reponse{
+			background-color : #F4F4F4;
+		}
+		
+		.isProf{
+			text-align:right;
+			padding-right: .5em;
+			background-color: #FFFFFF;
+		}
+		
 		form{
-			input[name=texte]{
-				font-size: 14px;
-				width: 40%;
-				padding : 3px;
-				margin-top: 4px;
+			div{
+				display: flex;
+				
+				input[name=texte]{
+					font-size: 14px;
+					width: 40%;
+					padding : 3px;
+					margin-top: -1px;
+				}
+
+				input[type=submit]{
+					padding: 2px;
+				}
 			}
 		}
 	}	
