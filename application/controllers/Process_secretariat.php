@@ -36,10 +36,8 @@ class Process_secretariat extends CI_Controller
             'justifiee' => htmlspecialchars($_POST['justified'])
         );
 
-        $errors = $this->_checkAbsenceData($data);
-
-        if (!empty($errors)) {
-            echo join(',', $errors);
+        if (!$this->_checkAbsenceData($data)) {
+            echo 'wrong_data';
             return;
         }
 
@@ -79,14 +77,8 @@ class Process_secretariat extends CI_Controller
             'justifiee' => htmlspecialchars($_POST['justified'])
         );
 
-        $errors = $this->_checkAbsenceData($data);
-        if ($errors === FALSE) {
-            echo 'cancel';
-            return;
-        }
-
-        if (!empty($errors)) {
-            echo join(',', $errors);
+        if (!$this->_checkAbsenceData($data)) {
+            echo 'wrong_data';
             return;
         }
 
@@ -100,30 +92,33 @@ class Process_secretariat extends CI_Controller
         }
     }
 
+    public function suppression_absence()
+    {
+        header('Content-Type: text/plain');
+
+        if (!isset($_POST['absenceId']))
+        {
+            echo 'missing_data';
+            return;
+        }
+
+        $absenceId = htmlspecialchars($_POST['absenceId']);
+
+        try {
+            $this->db->delete('Absences', array('idAbsence' => $absenceId));
+            echo 'success';
+        } catch(Exception $e) {
+            echo 'exception: ' . $e->getMessage();
+        }
+
+    }
+
     private function _checkAbsenceData($data)
     {
-        $errors = array();
-
-        if (empty($data['numEtudiant'])) {
-            return false;
-        }
-
-        if (empty($data['dateDebut'])) {
-            $errors[] = 'beginDate';
-        }
-
-        if (empty($data['dateFin'])) {
-            $errors[] = 'endDate';
-        }
-
-        if ($data['dateDebut'] === $data['dateFin']) {
-            $errors[] = 'sameDates';
-        }
-
-        if ($data['justifiee'] != 0 && $data['justifiee'] != 1) {
-            return false;
-        }
-
-        return $errors;
+        return !empty($data['numEtudiant'])
+            && !empty($data['dateDebut'])
+            && !empty($data['dateFin'])
+            && $data['dateDebut'] !== $data['dateFin']
+            && ($data['justifiee'] == 0 || $data['justifiee'] == 1);
     }
 }

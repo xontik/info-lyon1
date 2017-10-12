@@ -43,12 +43,14 @@
                                 . html_img('info.png', 'infos');
                             ?>
                                 <div>
-                                    <p><?= $missCount ?> demi-journée(s)</p>
-                                    <?= $missCount >= 2
-                                        ? '<p>sur ' . $dayMissCount . ' jour(s)</p>'
+                                    <p><?= $missCount ?> demi-journée<?= $missCount > 1 ? 's' : ''?></p>
+                                    <?= $missCount > 1
+                                        ? '<p>' . $dayMissCount . ' jour' . ($dayMissCount > 1 ? 's' : '') . '</p>'
                                         : '' ?>
                                     <?= $justifiedMiss > 0
-                                        ? '<p>' . $justifiedMiss . ' absence(s) justifiée(s)</p>'
+                                        ? '<p>' . $justifiedMiss
+                                        . ' absence' . ($justifiedMiss > 1 ? 's' : '')
+                                        . ' justifiée' . ($justifiedMiss > 1 ? 's' : '') . '</p>'
                                         : '' ?>
                                 </div>
                             <?php
@@ -59,45 +61,76 @@
                 </div>
             </div>
             <div id="table-wrapper">
-                <div id="new-absences-wrapper">
-                    <div id="new-absences">
+                <div id="edition-wrapper">
+                    <div id="edition">
                         <header>
-                            <h2 id="new-absences-name">Text nom</h2>
-                            <h3 id="new-absences-date">Text date</h3>
+                            <h2 id="edition-name">Text nom</h2>
+                            <h3 id="edition-date">Text date</h3>
                         </header>
-                        <section>
-                            <article>
-                                <label for="add-beginTime">Heure de début</label>
-                                <p><input type="time" min="07:00" max="21:00" step="1800" name="begin-time" id="add-beginTime"></p>
-                            </article>
-                            <article>
-                                <label for="add-endTime">Heure de fin</label>
-                                <p><input type="time" min="07:00" max="21:00" step="1800" name="end-time" id="add-endTime"></p>
-                            </article>
-                            <article>
-                                <label for="add-justified">Justifiée</label>
-                                <p><input type="checkbox" name="justified" id="add-justified"></p>
-                            </article>
-                            <article>
-                                <label for="add-absenceType">Type d'absence</label>
-                                <p>
-                                    <select name="absenceType" id="add-absenceType">
-                                        <option value="0" selected>Selectionner...</option>
-                                        <?php
-                                        foreach($data['absenceTypes'] as $option) {
-                                            echo '<option value="' . $option->idTypeAbsence . '">'
-                                                . $option->nomTypeAbsence
-                                                . '</option>';
-                                        }
-                                        ?>
-                                    </select>
-                                </p>
-                            </article>
-                        </section>
                         <div>
-                            <button id="new-absences-submit">Enregistrer</button>
-                            <button id="new-absences-cancel">Annuler</button>
+                            <section id="edition-morning">
+                                <h2>Matinée<?= html_img('trash_delete.png', 'supprimer', 'am-delete') ?></h2>
+                                <article>
+                                    <div id="am-time">
+                                        <p>08h00 - 12h00</p>
+                                        <p>08h00 - 10h00</p>
+                                        <p>10h00 - 12h00</p>
+                                    </div>
+                                </article>
+                                <article>
+                                    <label for="am-justified">Justifiée</label>
+                                    <p><input type="checkbox" id="am-justified"></p>
+                                </article>
+                                <article>
+                                    <label for="am-absenceType">Type d'absence</label>
+                                    <p>
+                                        <select id="am-absenceType">
+                                            <option value="0" disabled selected>Selectionner...</option>
+                                            <?php
+                                            foreach($data['absenceTypes'] as $option) {
+                                                echo '<option value="' . $option->idTypeAbsence . '">'
+                                                    . $option->nomTypeAbsence
+                                                    . '</option>';
+                                            }
+                                            ?>
+                                        </select>
+                                    </p>
+                                </article>
+                            </section>
+                            <section id="edition-afternoon">
+                                <h2>Après-midi<?= html_img('trash_delete.png', 'supprimer', 'pm-delete') ?></h2>
+                                <article>
+                                    <div id="pm-time">
+                                        <p>14h00 - 18h00</p>
+                                        <p>14h00 - 16h00</p>
+                                        <p>16h00 - 18h00</p>
+                                    </div>
+                                </article>
+                                <article>
+                                    <label for="pm-justified">Justifiée</label>
+                                    <p><input type="checkbox" id="pm-justified"></p>
+                                </article>
+                                <article>
+                                    <label for="pm-absenceType">Type d'absence</label>
+                                    <p>
+                                        <select id="pm-absenceType">
+                                            <option value="0" disabled selected>Selectionner...</option>
+                                            <?php
+                                            foreach($data['absenceTypes'] as $option) {
+                                                echo '<option value="' . $option->idTypeAbsence . '">'
+                                                    . $option->nomTypeAbsence
+                                                    . '</option>';
+                                            }
+                                            ?>
+                                        </select>
+                                    </p>
+                                </article>
+                            </section>
                         </div>
+                        <footer>
+                            <button id="edition-submit">Enregistrer</button>
+                            <button id="edition-cancel">Annuler</button>
+                        </footer>
                     </div>
                 </div>
                 <table>
@@ -189,9 +222,10 @@
 
                                     // td has absences
                                     $classes[] = 'abs';
-                                    $classes[] = $justified === count($student['absences'][$i])
-                                        ? 'abs-justifiee'
-                                        : $td_class;
+                                    $classes[] = $td_class;
+                                    if ($justified === count($student['absences'][$i])) {
+                                        $classes[] = 'abs-justifiee';
+                                    }
                                 }
 
                                 echo '<td ' . (!empty($classes)
@@ -208,9 +242,6 @@
                                             <p><?= $info['absence_type'] ?></p>
                                         </div>
                                         <?php
-                                    }
-                                    if (count($infos) < 2) {
-                                        echo '<button>Nouveau</button>';
                                     }
                                 }
                                 echo '</td>';
