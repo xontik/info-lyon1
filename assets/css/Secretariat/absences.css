@@ -1363,7 +1363,7 @@ td, th { padding: 15px 5px; display: table-cell; text-align: left; vertical-alig
   100% { left: 107%; right: -8%; } }
 /******************* Utility Classes
 *******************/
-.hide, #table-stud-list > div > div, #header-fixed { display: none !important; }
+.hide { display: none !important; }
 
 .left-align { text-align: left; }
 
@@ -4076,7 +4076,7 @@ td, th { padding: 15px 5px; display: table-cell; text-align: left; vertical-alig
   100% { left: 107%; right: -8%; } }
 /******************* Utility Classes
 *******************/
-.hide, #table-stud-list > div > div, #header-fixed { display: none !important; }
+.hide { display: none !important; }
 
 .left-align { text-align: left; }
 
@@ -5455,6 +5455,8 @@ body > nav h2 { text-align: center; font-size: 2.46rem; }
 #table-stud-list > div { box-sizing: content-box; position: relative; height: 21px; border-bottom: 1px solid #a0a0a0; }
 #table-stud-list > div > p { display: inline-block; margin: 0; }
 #table-stud-list > div > i { position: absolute; right: 0; font-size: 20px; cursor: pointer; }
+#table-stud-list > div > div { display: none; position: absolute; padding: 0.3rem 0.5rem; background-color: #ffffff; z-index: 10; right: 0; border: 1px solid #7a7a7a; }
+#table-stud-list > div > div p { margin: 0; }
 #table-stud-list > div:first-child { border-top: 2px solid #a0a0a0; }
 
 #table-wrapper { overflow: auto; }
@@ -5465,7 +5467,8 @@ table thead { border-bottom: 2px solid #a0a0a0; }
 table tbody tr { box-sizing: content-box; border-bottom: 1px solid #a0a0a0; }
 table tbody td { position: relative; }
 table tbody td.abs { cursor: pointer; }
-table tbody td > div { display: none; position: absolute; padding: 0.3em; z-index: 1; background-color: #fff; border: 3px SOLID #939393; border-radius: 0.2em; font-family: Arial, sans-serif; top: 10px; left: 20px; min-width: 170px; z-index: 10; }
+table tbody td > div { display: none; position: absolute; padding: 0.3rem 0.5rem; background-color: #ffffff; z-index: 10; top: 10px; left: 20px; min-width: 170px; border: 3px solid #7a7a7a; z-index: 10; }
+table tbody td > div p { margin: 0; }
 table tbody td > div > p { white-space: nowrap; word-break: keep-all; }
 table tbody td > div > p:nth-child(3) { font-weight: bold; }
 table tbody td > div.abs-absence p:last-child { color: #f7171b; }
@@ -5478,5 +5481,7 @@ table tbody td.abs-retard { background-color: #eb9a0e; }
 table tbody td.abs-infirmerie { background-color: #02fca1; }
 table tbody td.abs-controle { background-color: #010dfd; }
 table tbody td.abs-several { background-color: #b203fd; }
+
+#header-fixed { display: none; }
 
 /*# sourceMappingURL=absences.css.map */

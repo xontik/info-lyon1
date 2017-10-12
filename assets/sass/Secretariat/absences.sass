@@ -14,15 +14,13 @@ $color-mix: #b203fd
   display: none
   position: absolute
 
-  padding: .3em
+  padding: .3rem .5rem
+  background-color: $background-color
 
-  z-index: 1
+  z-index: 10
 
-  background-color: #fff
-  border: 3px SOLID darken($border-color, 5)
-  border-radius: .2em
-
-  font-family: Arial, sans-serif
+  p
+    margin: 0
 
 .clean-padding
   padding: 0
@@ -99,7 +97,10 @@ $color-mix: #b203fd
       cursor: pointer
 
     > div
-      @extend .hide
+      @include popup()
+      right: 0
+
+      border: 1px solid darken($border-color, 15)
 
     &.group-change, &:last-child
       @extend .big-border
@@ -145,6 +146,8 @@ table
         left: 20px
         min-width: 170px
 
+        border: 3px solid darken($border-color, 15)
+
         z-index: 10
 
         > p
@@ -177,4 +180,4 @@ table
         background-color: $color-mix
 
 #header-fixed
-  @extend .hide
+  display: none
