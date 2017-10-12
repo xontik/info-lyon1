@@ -1,1 +1,180 @@
 @import '../head'
+
+$line-height: 21px
+$border-color: #a0a0a0
+
+$color-justifiee: #1bee00
+$color-absence: #f7171b
+$color-retard: #eb9a0e
+$color-controle: #010dfd
+$color-infirmerie: #02fca1
+$color-mix: #b203fd
+
+@mixin popup()
+  display: none
+  position: absolute
+
+  padding: .3em
+
+  z-index: 1
+
+  background-color: #fff
+  border: 3px SOLID darken($border-color, 5)
+  border-radius: .2em
+
+  font-family: Arial, sans-serif
+
+.clean-padding
+  padding: 0
+
+.big-border
+  border-width: 2px
+
+#color-code 
+  margin-bottom: 1em
+  overflow: auto
+
+  ul
+    @extend .row
+
+    li
+      @extend .col
+    li::after
+      content: ''
+      display: inline-block
+
+      position: relative
+      top: 2px
+
+      width: 15px
+      height: 15px
+      border: 1px solid $border-color
+      margin-left: 5px
+
+  
+
+    li:nth-child(1)::after
+      background-color: $color-justifiee
+    li:nth-child(2)::after
+      background-color: $color-absence
+    li:nth-child(3)::after
+      background-color: $color-retard
+    li:nth-child(4)::after
+      background-color: $color-controle
+    li:nth-child(5)::after
+      background-color: $color-infirmerie
+    li:nth-child(6)::after
+      background-color: $color-mix
+
+#table-static
+  @extend .clean-padding
+  border-right: 2px solid $border-color
+  z-index: 2
+
+#table-group-list p
+  max-width: 20px
+
+  word-wrap: break-word
+  letter-spacing: 20px
+
+  overflow: hidden
+
+#table-stud-list
+  @extend .clean-padding
+
+  > div
+    box-sizing: content-box
+    position: relative
+    height: $line-height
+    border-bottom: 1px solid $border-color
+
+    > p
+      display: inline-block
+      margin: 0
+
+    > i
+      position: absolute
+      right: 0
+      font-size: 20px
+      cursor: pointer
+
+    > div
+      @extend .hide
+
+    &.group-change, &:last-child
+      @extend .big-border
+
+    &:first-child
+      border-top: 2px solid $border-color
+
+#table-wrapper
+  @extend .clean-padding
+  overflow: auto
+
+table
+  margin-top: 5px
+
+  td
+    @extend .center-align, .clean-padding
+    height: $line-height
+    min-width: $line-height
+    font-size: 1rem
+    border-right: 1px solid $border-color
+
+  thead
+    border-bottom: 2px solid $border-color
+
+  tbody
+    tr
+      box-sizing: content-box
+      border-bottom: 1px solid $border-color
+
+      &.group-change, &:last-child
+        @extend .big-border
+
+    td
+      position: relative
+
+      &.abs
+        cursor: pointer
+
+      > div
+        @include popup()
+
+        top: 10px
+        left: 20px
+        min-width: 170px
+
+        z-index: 10
+
+        > p
+          white-space: nowrap
+          word-break: keep-all
+
+          &:nth-child(3)
+            font-weight: bold
+
+        &.abs-absence p:last-child
+          color: $color-absence
+        &.abs-retard p:last-child
+          color: $color-retard
+        &.abs-controle p:last-child
+          color: $color-controle
+        &.abs-infirmerie p:last-child
+          color: $color-infirmerie
+
+      &.abs-justifiee
+        background-color: $color-justifiee !important
+      &.abs-absence
+        background-color: $color-absence
+      &.abs-retard
+        background-color: $color-retard
+      &.abs-infirmerie
+        background-color: $color-infirmerie
+      &.abs-controle
+        background-color: $color-controle
+      &.abs-several
+        background-color: $color-mix
+
+#header-fixed
+  @extend .hide

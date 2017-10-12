@@ -1,7 +1,6 @@
     <main>
         <section id="color-code">
             <ul>
-                <li>Pas d'absence</li>
                 <li>Absence justifiée</li>
                 <li>Absence</li>
                 <li>Retard</li>
@@ -10,19 +9,19 @@
                 <li>Plusieurs types</li>
             </ul>
         </section>
-        <section id="absences-table">
-            <div id="table-static">
-                <h1>Étudiants</h1>
-                <div class="wrapper">
-                    <div id="table-group-list">
+        <section id="absences-table" class="row">
+            <div id="table-static" class="col l3">
+                <h5 class="yellow-text text-accent-4 center-align">Étudiants</h5>
+                <div class="row">
+                    <div id="table-group-list" class="col l2">
                         <?php
                         foreach($data['groups'] as $group => $students_number) {
-                            $height = $students_number * 26 - 1;
+                            $height = $students_number * 21 - 1;
                             echo "<p style=\"height: ${height}px;\">$group</p>";
                         }
                         ?>
                     </div>
-                    <div id="table-stud-list">
+                    <div id="table-stud-list" class="col l10">
                         <?php
                         $last_group = null;
                         foreach($data['absences'] as $student) {
@@ -40,7 +39,7 @@
 
                             echo '<div id="' . $student['numEtudiant'] . '"' . $class . '>'
                                 . '<p>' . $student['nom'] . ' ' . $student['prenom'] . '</p>'
-                                . html_img('info.png', 'infos');
+                                . '<i class="material-icons">info</i>';
                             ?>
                                 <div>
                                     <p><?= $missCount ?> demi-journée<?= $missCount > 1 ? 's' : ''?></p>
@@ -60,8 +59,8 @@
                     </div>
                 </div>
             </div>
-            <div id="table-wrapper">
-                <div id="edition-wrapper">
+            <div id="table-wrapper" class="col l9">
+                <div id="edition-wrapper" class="hide">
                     <div id="edition">
                         <header>
                             <h2 id="edition-name">Text nom</h2>
@@ -69,7 +68,7 @@
                         </header>
                         <div>
                             <section id="edition-morning">
-                                <h2>Matinée<?= html_img('trash_delete.png', 'supprimer', 'am-delete') ?></h2>
+                                <h2>Matinée <i class="material-icons">delete</i></h2>
                                 <article>
                                     <div id="am-time">
                                         <p>08h00 - 12h00</p>
@@ -98,7 +97,7 @@
                                 </article>
                             </section>
                             <section id="edition-afternoon">
-                                <h2>Après-midi<?= html_img('trash_delete.png', 'supprimer', 'pm-delete') ?></h2>
+                                <h2>Après-midi <i class="material-icons">delete</i></h2>
                                 <article>
                                     <div id="pm-time">
                                         <p>14h00 - 18h00</p>
@@ -133,17 +132,23 @@
                         </footer>
                     </div>
                 </div>
-                <table>
+                <table class="stripped">
                     <thead id="absences-table-head">
                         <tr>
                             <?php
+                            $monthes = array('Janvier', 'Février',
+                                'Mars', 'Avril', 'Juin', 'Juillet',
+                                'Août', 'Septembre', 'Octobre',
+                                'Novembre', 'Décembre'
+                            );
+
                             $curr_date = clone $data['begin_date'];
                             $last_month = null;
                             for ($i = 0; $i <= $data['day_number']; $i++) {
-                                $curr_month = $curr_date->format('F');
+                                $curr_month = $curr_date->format('n');
                                 if ($last_month !== $curr_month) {
                                     $colspan = days_in_month($curr_date->format('n'), $curr_date->format('Y'));
-                                    echo '<td colspan="' . $colspan . '">' . $curr_month . '</td>';
+                                    echo '<td colspan="' . $colspan . '">' . $monthes[$curr_month - 1] . '</td>';
                                     $last_month = $curr_month;
                                 }
 
