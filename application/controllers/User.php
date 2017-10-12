@@ -12,8 +12,6 @@ class User extends CI_Controller {
 
         $this->load->model('user_model', 'userModel');
 
-        unset($_SESSION['form_errors']);
-
         if ( !(isset($_POST['id']) &&
             isset($_POST['password'])) )
         {
@@ -28,28 +26,21 @@ class User extends CI_Controller {
         if ( empty($id) )
             $_SESSION['form_errors']['id'] = 'Merci d\'entrer un identifiant';
         if ( empty($password) )
-            $_SESSION['form_errors']['password'] = 'Merci d\'entrer un mot de passe';
+            $_SESSION['form_errors']['pwd'] = 'Merci d\'entrer un mot de passe';
 
 
-        if ( !empty($_SESSION['form_errors']) ) {
-            redirect('/');
-            return;
-        }
-
-        $userdata = $this->userModel->getUserInformations($id, $password);
-        if ($userdata !== FALSE) {
-            /*
-
-            echo '<pre>';
-            print_r($userdata);
-            echo '</pre>';
-            //*/
-
+        if (empty($_SESSION['form_errors'])
+            && ($userdata = $this->userModel->getUserInformations($id, $password)) !== FALSE
+        ) {
             $this->session->set_userdata($userdata);
 
             if ($stay_connected) {
                 //TODO Cookies
             }
+        } else {
+            $_SESSION['form']['id'] = $id;
+            $this->session->mark_as_flash('form_errors');
+            $this->session->mark_as_flash('form');
         }
 
         redirect('/');

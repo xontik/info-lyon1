@@ -32,18 +32,18 @@ class user_model extends CI_Model {
     ->get()
     ->result();
 
-    if ( empty($data) ) {
+    if (empty($data)) {
       // ID doesn't exists
-      $_SESSION['form_errors']['id'] = 'Impossible de retrouver le couple identifiant/mot de passe';
+      $_SESSION['form_errors']['id'] = 'Impossible de retrouver l\'identifiant';
       return FALSE;
     }
 
     // Get first and only line
     $data = $data[0];
 
-    if ( !password_verify($password, $data->password) ) {
+    if (!password_verify($password, $data->password)) {
       // Pass doesn't match
-      $_SESSION['form_errors']['id'] = 'Impossible de retrouver le couple identifiant/mot de passe';
+      $_SESSION['form_errors']['pwd'] = 'Mot de passe incorrect';
       return FALSE;
     }
 

@@ -23,8 +23,9 @@ class Etudiant extends CI_Controller {
   public function dashboard() {
     $data = array(
       'css' => array('Etudiant/dashboard'),
-      'js' => array(),
-      'title' => 'Tableau de bord'
+      'js' => array('debug'),
+      'title' => 'Tableau de bord',
+      'data' => array('hello world !')
     );
     show('Etudiant/dashboard', $data);
   }

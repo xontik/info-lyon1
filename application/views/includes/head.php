@@ -3,14 +3,10 @@
     <head>
         <title><?= isset($title) ? $title : 'Teckmeb' ?></title>
         <meta charset="utf-8">
-        <!-- Let browser know website is optimized for mobile -->
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <!-- Import Google Icon Font -->
-        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-        <!-- Import materialize.css -->
-        <link rel="stylesheet" type="text/css" href="<?= css_url('materialize') ?>"  media="screen,projection">
-
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link href="<?= css_url('materialize') ?>" rel="stylesheet">
         <?php
         if ( !empty($css) ) {
             foreach ($css as $c) {
@@ -42,10 +38,18 @@
         if ( !empty($_SESSION['notif']) ) { ?>
         <div id="notifications">
             <?php
+            $icons = array(
+                    'info' => 'info_outline',
+                    'fail' => 'warning',
+                    'success' => 'done'
+            );
+
             foreach ($_SESSION['notif'] as $notif) {
-                echo '<div class="notif">' . $notif . '</div>';
+                echo '<div class="notif ' . $notif['type'] . '">'
+                    . '<i class="material-icons">' . $icons[$notif['type']] . '</i> '
+                    . '<span>' . $notif['content'] . '</span>'
+                    . '</div>';
             } ?>
-            <i class="material-icons">&#xE5CD;</i>
         </div>
         <?php }
 
@@ -71,14 +75,14 @@
             <div class="nav-wrapper">
                 <a class="brand-logo" href="/">Teckmeb</a>
                 <a href="#" data-activates="nav-mobile" class="button-collapse">
-                    <i class="material-icons">&#xE5D2;</i></a>
+                    <i class="material-icons">menu</i></a>
                 <ul class="right hide-on-med-and-down">
                     <?php foreach ($nav[$_SESSION['user_type']] as $item => $url) {
                         echo '<li><a href="' . $url . '">' . $item . '</a></li>';
                     } ?>
                     <li>
                         <a id="nav-user-button" class="dropdown-button" href="#!" data-activates="nav-user-menu">
-                            <i class="material-icons">&#xE853;</i></a>
+                            <i class="material-icons">&#xE853;<!--account_circle--></i></a>
                     </li>
                 </ul>
                 <ul class="side-nav" id="nav-mobile">
