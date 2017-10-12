@@ -11,7 +11,7 @@ if (!function_exists('css_url')) {
 if (!function_exists('js_url')) {
     function js_url($name)
     {
-        return base_url() . 'assets/js/' . $name . '.js';
+        return base_url() . 'assets/js/bin/' . $name . '.js';
     }
 }
 
@@ -25,6 +25,6 @@ if (!function_exists('img_url')) {
 if (!function_exists('html_img')) {
     function html_img($name, $alt, $id = '')
     {
-        return '<img src="' . img_url($name) . '" '.(($id!='')?'id="'.$id.'" ':'').' alt="' . $alt . '" />';
+        return '<img src="' . img_url($name) . '" '.($id !== '' ? 'id="' . $id . '" ' : '').' alt="' . $alt . '" />';
     }
 }
