@@ -16,7 +16,7 @@
                     <div id="table-group-list" class="col l2">
                         <?php
                         foreach($data['groups'] as $group => $students_number) {
-                            $height = $students_number * 21 - 1;
+                            $height = $students_number * 22 - 1;
                             echo "<p style=\"height: ${height}px;\">$group</p>";
                         }
                         ?>
