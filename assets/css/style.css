@@ -1369,7 +1369,7 @@ td, th { padding: 15px 5px; display: table-cell; text-align: left; vertical-alig
 
 .right-align { text-align: right; }
 
-.center, .center-align { text-align: center; }
+.center, #nav-user-menu li, .center-align { text-align: center; }
 
 .left { float: left !important; }
 
@@ -1620,7 +1620,7 @@ nav .nav-wrapper { position: relative; height: 100%; }
 nav .button-collapse { float: left; position: relative; z-index: 1; height: 56px; margin: 0 18px; }
 nav .button-collapse i { height: 56px; line-height: 56px; }
 nav .brand-logo { position: absolute; color: #fff; display: inline-block; font-size: 2.1rem; padding: 0; }
-nav .brand-logo.center { left: 50%; transform: translateX(-50%); }
+nav .brand-logo.center, nav #nav-user-menu li.brand-logo, #nav-user-menu nav li.brand-logo { left: 50%; transform: translateX(-50%); }
 @media only screen and (max-width: 992px) { nav .brand-logo { left: 50%; transform: translateX(-50%); }
   nav .brand-logo.left, nav .brand-logo.right { padding: 0; transform: none; }
   nav .brand-logo.left { left: 0.5rem; }
@@ -2712,6 +2712,9 @@ button.picker__today:focus, button.picker__clear:focus, button.picker__close:foc
 .clockpicker-canvas line { stroke: #26a69a; stroke-width: 4; stroke-linecap: round; /*shape-rendering: crispEdges;*/ }
 
 body > nav { font-variant: small-caps; }
+body > nav .brand-logo { margin-left: 8px; }
 body > nav h2 { text-align: center; font-size: 2.46rem; }
+
+#nav-user-menu li { line-height: 200%; }
 
 /*# sourceMappingURL=style.css.map */

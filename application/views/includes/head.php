@@ -77,7 +77,7 @@
                         echo '<li><a href="' . $url . '">' . $item . '</a></li>';
                     } ?>
                     <li>
-                        <a class="dropdown-button" href="#!" data-activates="nav-user-menu">
+                        <a id="nav-user-button" class="dropdown-button" href="#!" data-activates="nav-user-menu">
                             <i class="material-icons">&#xE853;</i></a>
                     </li>
                 </ul>
@@ -90,7 +90,10 @@
 
                 <!-- dropdown content -->
                 <ul id="nav-user-menu" class="dropdown-content">
-                    <li><?= $_SESSION['surname'] . ' ' . $_SESSION['name'] ?></li>
+                    <li>
+                        <div><?= $_SESSION['surname'] ?></div>
+                        <div><?= $_SESSION['name'] ?></div>
+                    </li>
                     <li class="divider"></li>
                     <li><a href="/user/disconnect">Déconnexion</a></li>
                 </ul>
