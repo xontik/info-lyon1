@@ -1363,7 +1363,7 @@ td, th { padding: 15px 5px; display: table-cell; text-align: left; vertical-alig
   100% { left: 107%; right: -8%; } }
 /******************* Utility Classes
 *******************/
-.hide { display: none !important; }
+.hide, .nav-content { display: none !important; }
 
 .left-align { text-align: left; }
 

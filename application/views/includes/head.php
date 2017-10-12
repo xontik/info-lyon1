@@ -98,6 +98,7 @@
                     <li><a href="/user/disconnect">Déconnexion</a></li>
                 </ul>
             </div>
+            <?php if ($_SESSION['user_type'] === 'student') { ?>
             <div class="nav-content">
                 <ul class="tabs tabs-transparent">
                     <li class="tab"><a href="#">Semestre 1</a></li>
@@ -106,5 +107,6 @@
                     <li class="tab"><a href="#">Semestre 4</a></li>
                 </ul>
             </div>
+            <?php } ?>
         </nav>
 

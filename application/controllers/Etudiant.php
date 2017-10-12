@@ -22,7 +22,7 @@ class Etudiant extends CI_Controller {
 
   public function dashboard() {
     $data = array(
-      'css' => array(),
+      'css' => array('Etudiant/dashboard'),
       'js' => array(),
       'title' => 'Tableau de bord'
     );
@@ -41,7 +41,7 @@ class Etudiant extends CI_Controller {
     $absences = $this->absenceMod->getStudentSemesterAbsence($_SESSION['id'], $semesterId);
 
     $var = array(
-      'css' => array(),
+      'css' => array('Etudiant/absences'),
       'js' => array('debug'),
       'title' => 'Absences',
       'data' => array(
@@ -75,7 +75,7 @@ class Etudiant extends CI_Controller {
 
   public function ptut() {
     $data = array(
-      'css' => array(),
+      'css' => array('Etudiant/ptut'),
       'js' => array(),
       'title' => 'Projets tuteurés'
     );
@@ -84,7 +84,7 @@ class Etudiant extends CI_Controller {
 
   public function edt() {
     $data = array(
-      'css' => array(),
+      'css' => array('Etudiant/edt'),
       'js' => array(),
       'title' => 'Emploi du temps'
     );
@@ -93,7 +93,7 @@ class Etudiant extends CI_Controller {
 
   public function question() {
     $data = array(
-      'css' => array(),
+      'css' => array('Etudiant/questions'),
       'js' => array(),
       'title' => 'Questions / Réponses'
     );
