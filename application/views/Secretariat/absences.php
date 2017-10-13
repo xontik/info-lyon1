@@ -189,7 +189,7 @@
                 <table id="header-fixed" class="hide"></table>
             </div>
             <div id="edition-wrapper">
-                <div id="edition" class="center-block">
+                <div id="edition" class="container center-block">
                     <header>
                         <h3 id="edition-name">Text nom</h3>
                         <h4 id="edition-date">Text date</h4>
@@ -249,8 +249,8 @@
                         </section>
                     </div>
                     <footer>
-                        <button id="edition-submit" class="btn grey darken-1 waves-effect waves-green">Enregistrer</button>
-                        <button id="edition-cancel" class="btn grey darken-1 waves-effect waves-red">Annuler</button>
+                        <button id="edition-submit" class="btn">Enregistrer</button>
+                        <button id="edition-cancel" class="btn">Annuler</button>
                     </footer>
                 </div>
             </div>
