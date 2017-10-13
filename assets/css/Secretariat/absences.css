@@ -1381,7 +1381,7 @@ td, th { padding: 15px 5px; display: table-cell; text-align: left; vertical-alig
 
 .center-block, #edition section > h4 { display: block; margin-left: auto; margin-right: auto; }
 
-.truncate, #notifications .notif { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.truncate, #notifications .notif, #table-stud-list { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 .no-padding { padding: 0 !important; }
 
@@ -4094,7 +4094,7 @@ td, th { padding: 15px 5px; display: table-cell; text-align: left; vertical-alig
 
 .center-block, #edition section > h4 { display: block; margin-left: auto; margin-right: auto; }
 
-.truncate, #notifications .notif { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.truncate, #notifications .notif, #table-stud-list { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 .no-padding { padding: 0 !important; }
 
@@ -5435,7 +5435,7 @@ body > nav h2 { text-align: center; font-size: 2.46rem; }
 
 #debug { display: none; margin-left: 7px; }
 
-.clean-padding, #table-static, #table-stud-list, #table-wrapper, table td { padding: 0; }
+.clean-padding, #table-static, #table-wrapper, table td { padding: 0 !important; }
 
 .big-border, #table-stud-list > div.group-change, #table-stud-list > div:first-child, table tbody tr.group-change { border-width: 2px; }
 
@@ -5450,7 +5450,7 @@ body > nav h2 { text-align: center; font-size: 2.46rem; }
 
 #table-static { border-right: 2px solid #a0a0a0; z-index: 2; }
 
-#table-group-list p { max-width: 20px; margin: 0; word-wrap: break-word; letter-spacing: 20px; overflow: hidden; }
+#table-group-list p { max-width: 15px; margin: 0 auto; word-wrap: break-word; letter-spacing: 15px; overflow: hidden; }
 
 #table-stud-list > div { box-sizing: content-box; position: relative; height: 21px; border-top: 1px solid #a0a0a0; }
 #table-stud-list > div > p { display: inline-block; margin: 0; }

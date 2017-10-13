@@ -10,10 +10,10 @@
             </ul>
         </section>
         <section id="absences-table" class="row">
-            <div id="table-static" class="col l3">
+            <div id="table-static" class="col l3 xl2">
                 <h5 class="yellow-text text-accent-4 center-align">Étudiants</h5>
                 <div class="row">
-                    <div id="table-group-list" class="col l2">
+                    <div id="table-group-list" class="col l1 clean-padding">
                         <?php
                         foreach($data['groups'] as $group => $students_number) {
                             $height = $students_number * 22 - 1;
@@ -21,7 +21,7 @@
                         }
                         ?>
                     </div>
-                    <div id="table-stud-list" class="col l10">
+                    <div id="table-stud-list" class="col l11 clean-padding">
                         <?php
                         $last_group = null;
                         foreach($data['absences'] as $student) {
@@ -59,7 +59,7 @@
                     </div>
                 </div>
             </div>
-            <div id="table-wrapper" class="col l9">
+            <div id="table-wrapper" class="col l9 xl10">
                 <table class="stripped">
                     <thead id="absences-table-head">
                         <tr>

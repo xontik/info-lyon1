@@ -23,7 +23,7 @@ $color-mix: #b203fd
     margin: 0
 
 .clean-padding
-  padding: 0
+  padding: 0 !important
 
 .big-border
   border-width: 2px
@@ -70,16 +70,16 @@ $color-mix: #b203fd
   z-index: 2
 
 #table-group-list p
-  max-width: 20px
-  margin: 0
+  max-width: 15px
+  margin: 0 auto
 
   word-wrap: break-word
-  letter-spacing: 20px
+  letter-spacing: 15px
 
   overflow: hidden
 
 #table-stud-list
-  @extend .clean-padding
+  @extend .truncate
 
   > div
     box-sizing: content-box
