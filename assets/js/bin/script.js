@@ -1,9 +1,16 @@
 $(function() {
     "use strict";
 
-    $(".button-collapse").sideNav();
+    $(".button-collapse").sideNav({
+        draggable: true
+    });
+
     $("#nav-user-button").dropdown({
         constrainWidth: false,
+        belowOrigin: true
+    });
+
+    $('#m-nav-user-button').dropdown({
         belowOrigin: true
     });
 

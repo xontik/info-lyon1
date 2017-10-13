@@ -1,33 +1,16 @@
-@import '_var'
 @import 'materialize'
-@import 'components/_notifications'
 
 main
-  @extend .row, .valign-wrapper
+  min-height: 100vh
 
 section
   @extend .col, .s12, .m12, .l6
 
 #connect_block img
-  @extend .center-block
   width: 50%
 
 form
   @extend .center-align
-
-  .input-field
-    .prefix.active
-      color: $foreground-color
-
-    #form-id, #form-password
-      padding-left: .6rem
-
-      + label
-        padding-left: .6rem
-
-      &:focus
-        border-bottom: 1px solid $foreground-color
-        box-shadow: 0 1px 0 0 $foreground-color
 
   button
     @extend .yellow, .accent-4
