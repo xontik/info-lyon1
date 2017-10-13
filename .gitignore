@@ -35,7 +35,6 @@ user_guide_src/cilexer/pycilexer.egg-info/*
 ### AptanaStudio ###
 
 .metadata
-bin/
 tmp/
 *.tmp
 *.bak
