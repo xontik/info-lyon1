@@ -1,6 +1,6 @@
     <main>
         <section id="color-code">
-            <ul>
+            <ul class="row">
                 <li>Absence justifiée</li>
                 <li>Absence</li>
                 <li>Retard</li>
@@ -10,10 +10,10 @@
             </ul>
         </section>
         <section id="absences-table" class="row">
-            <div id="table-static" class="col l3 xl2">
-                <h5 class="yellow-text text-accent-4 center-align">Étudiants</h5>
+            <div id="table-static" class="col l3 xl2 no-padding">
+                <h5 class="center-align">Étudiants</h5>
                 <div class="row">
-                    <div id="table-group-list" class="col l1 clean-padding">
+                    <div id="table-group-list" class="col l1 no-padding">
                         <?php
                         foreach($data['groups'] as $group => $students_number) {
                             $height = $students_number * 22 - 1;
@@ -21,7 +21,7 @@
                         }
                         ?>
                     </div>
-                    <div id="table-stud-list" class="col l11 clean-padding">
+                    <div id="table-stud-list" class="col l11 no-padding">
                         <?php
                         $last_group = null;
                         foreach($data['absences'] as $student) {
@@ -59,7 +59,7 @@
                     </div>
                 </div>
             </div>
-            <div id="table-wrapper" class="col l9 xl10">
+            <div id="table-wrapper" class="col l9 xl10 no-padding">
                 <table class="stripped">
                     <thead id="absences-table-head">
                         <tr>
@@ -189,7 +189,7 @@
                 <table id="header-fixed" class="hide"></table>
             </div>
             <div id="edition-wrapper">
-                <div id="edition" class="container center-block">
+                <div id="edition" class="container center-block z-depth-5">
                     <header>
                         <h3 id="edition-name">Text nom</h3>
                         <h4 id="edition-date">Text date</h4>

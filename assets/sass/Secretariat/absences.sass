@@ -11,33 +11,28 @@ $color-infirmerie: #02fca1
 $color-mix: #b203fd
 
 @mixin popup()
+  @extend .white
   display: none
   position: absolute
 
   padding: .3rem .5rem
-  background-color: $background-color
 
   z-index: 10
 
   p
     margin: 0
 
-.clean-padding
-  padding: 0 !important
-
 .big-border
   border-width: 2px
 
-#color-code 
+#color-code
   margin-bottom: 1em
   overflow: auto
 
-  ul
-    @extend .row
+  li
+    @extend .col
 
-    li
-      @extend .col
-    li::after
+    &::after
       content: ''
       display: inline-block
 
@@ -49,23 +44,20 @@ $color-mix: #b203fd
       border: 1px solid $border-color
       margin-left: 5px
 
-  
-
-    li:nth-child(1)::after
+    &:nth-child(1)::after
       background-color: $color-justifiee
-    li:nth-child(2)::after
+    &:nth-child(2)::after
       background-color: $color-absence
-    li:nth-child(3)::after
+    &:nth-child(3)::after
       background-color: $color-retard
-    li:nth-child(4)::after
+    &:nth-child(4)::after
       background-color: $color-controle
-    li:nth-child(5)::after
+    &:nth-child(5)::after
       background-color: $color-infirmerie
-    li:nth-child(6)::after
+    &:nth-child(6)::after
       background-color: $color-mix
 
 #table-static
-  @extend .clean-padding
   border-right: 2px solid $border-color
   z-index: 2
 
@@ -110,7 +102,6 @@ $color-mix: #b203fd
       border-bottom: 2px solid $border-color
 
 #table-wrapper
-  @extend .clean-padding
   overflow: auto
 
 #edition-wrapper
@@ -190,13 +181,13 @@ $color-mix: #b203fd
           width: 100%
 
         &.active
-          border-color: $foreground-color
+          border-color: $primary-color
 
 table
   margin-top: 5px
 
   td
-    @extend .center-align, .clean-padding
+    @extend .center-align, .no-padding
     height: $line-height
     min-width: $line-height
     font-size: 1rem

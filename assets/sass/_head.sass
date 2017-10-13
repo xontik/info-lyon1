@@ -1,24 +1,21 @@
-@import '_var'
 @import 'materialize'
 @import 'components/_notifications'
 
-body > nav
-  @extend .yellow, .accent-4
+#debug
+  @extend .grey, .lighten-2
+  display: none
+  margin-left: 7px
+
+body > header > nav
   font-variant: small-caps
 
   .brand-logo
     margin-left: 8px
 
   h2
-    @extend .yellow-text, .text-accent-4
     text-align: center
     font-size: 2.46rem
 
 #nav-user-menu li
-  @extend .center
+  @extend .center-align
   line-height: 200%
-
-#debug
-  @extend .grey, .lighten-2
-  display: none
-  margin-left: 7px
