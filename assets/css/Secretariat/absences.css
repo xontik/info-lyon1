@@ -1058,7 +1058,7 @@
 
 .black-text { color: #000000 !important; }
 
-.white { background-color: #FFFFFF !important; }
+.white, #edition { background-color: #FFFFFF !important; }
 
 .white-text { color: #FFFFFF !important; }
 
@@ -1369,7 +1369,7 @@ td, th { padding: 15px 5px; display: table-cell; text-align: left; vertical-alig
 
 .right-align { text-align: right; }
 
-.center, #nav-user-menu li, .center-align, table td { text-align: center; }
+.center, #nav-user-menu li, .center-align, #edition, table td { text-align: center; }
 
 .left, #notifications i { float: left !important; }
 
@@ -1379,7 +1379,7 @@ td, th { padding: 15px 5px; display: table-cell; text-align: left; vertical-alig
 
 .circle { border-radius: 50%; }
 
-.center-block { display: block; margin-left: auto; margin-right: auto; }
+.center-block, #edition section > h4 { display: block; margin-left: auto; margin-right: auto; }
 
 .truncate, #notifications .notif { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
@@ -3771,7 +3771,7 @@ button.picker__today:focus, button.picker__clear:focus, button.picker__close:foc
 
 .black-text { color: #000000 !important; }
 
-.white { background-color: #FFFFFF !important; }
+.white, #edition { background-color: #FFFFFF !important; }
 
 .white-text { color: #FFFFFF !important; }
 
@@ -4082,7 +4082,7 @@ td, th { padding: 15px 5px; display: table-cell; text-align: left; vertical-alig
 
 .right-align { text-align: right; }
 
-.center, #nav-user-menu li, .center-align, table td { text-align: center; }
+.center, #nav-user-menu li, .center-align, #edition, table td { text-align: center; }
 
 .left, #notifications i { float: left !important; }
 
@@ -4092,7 +4092,7 @@ td, th { padding: 15px 5px; display: table-cell; text-align: left; vertical-alig
 
 .circle { border-radius: 50%; }
 
-.center-block { display: block; margin-left: auto; margin-right: auto; }
+.center-block, #edition section > h4 { display: block; margin-left: auto; margin-right: auto; }
 
 .truncate, #notifications .notif { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
@@ -5450,7 +5450,7 @@ body > nav h2 { text-align: center; font-size: 2.46rem; }
 
 #table-static { border-right: 2px solid #a0a0a0; z-index: 2; }
 
-#table-group-list p { max-width: 20px; word-wrap: break-word; letter-spacing: 20px; overflow: hidden; }
+#table-group-list p { max-width: 20px; margin: 0; word-wrap: break-word; letter-spacing: 20px; overflow: hidden; }
 
 #table-stud-list > div { box-sizing: content-box; position: relative; height: 21px; border-top: 1px solid #a0a0a0; }
 #table-stud-list > div > p { display: inline-block; margin: 0; }
@@ -5461,7 +5461,18 @@ body > nav h2 { text-align: center; font-size: 2.46rem; }
 
 #table-wrapper { overflow: auto; }
 
-#edition-wrapper { display: none; }
+#edition-wrapper { display: none; align-items: center; justify-content: center; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 20; background-color: rgba(0, 0, 0, 0.65); }
+#edition-wrapper.active { display: block; }
+
+#edition { padding: 1rem; }
+#edition section > h4 { width: 60%; border-bottom: 2px DASHED; white-space: nowrap; }
+#edition section > h4 i { font-size: 0; opacity: 0; margin-left: 8px; cursor: pointer; transition: font-size 0.3s, opacity 0.3s; }
+#edition section > h4 i.active { font-size: 25px; opacity: 1; }
+#edition section > * { margin-bottom: 1rem; }
+#edition section #am-time, #edition section #pm-time { display: flex; flex-flow: row wrap; justify-content: space-between; align-items: center; width: 240px; height: 100px; }
+#edition section #am-time p, #edition section #pm-time p { box-sizing: border-box; width: 50%; height: 50px; line-height: 44px; border: 6px groove #b1acac; margin: 0; background-color: rgba(177, 172, 172, 0.2); text-align: center; font-size: 14px; font-weight: bold; cursor: default; }
+#edition section #am-time p:first-child, #edition section #pm-time p:first-child { width: 100%; }
+#edition section #am-time p.active, #edition section #pm-time p.active { border-color: #ffd600; }
 
 table { margin-top: 5px; }
 table td { height: 21px; min-width: 21px; font-size: 1rem; border-right: 1px solid #a0a0a0; }

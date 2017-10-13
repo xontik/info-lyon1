@@ -60,78 +60,6 @@
                 </div>
             </div>
             <div id="table-wrapper" class="col l9">
-                <div id="edition-wrapper" class="hide">
-                    <div id="edition">
-                        <header>
-                            <h2 id="edition-name">Text nom</h2>
-                            <h3 id="edition-date">Text date</h3>
-                        </header>
-                        <div>
-                            <section id="edition-morning">
-                                <h2>Matinée <i class="material-icons">delete</i></h2>
-                                <article>
-                                    <div id="am-time">
-                                        <p>08h00 - 12h00</p>
-                                        <p>08h00 - 10h00</p>
-                                        <p>10h00 - 12h00</p>
-                                    </div>
-                                </article>
-                                <article>
-                                    <label for="am-justified">Justifiée</label>
-                                    <p><input type="checkbox" id="am-justified"></p>
-                                </article>
-                                <article>
-                                    <label for="am-absenceType">Type d'absence</label>
-                                    <p>
-                                        <select id="am-absenceType">
-                                            <option value="0" disabled selected>Selectionner...</option>
-                                            <?php
-                                            foreach($data['absenceTypes'] as $option) {
-                                                echo '<option value="' . $option->idTypeAbsence . '">'
-                                                    . $option->nomTypeAbsence
-                                                    . '</option>';
-                                            }
-                                            ?>
-                                        </select>
-                                    </p>
-                                </article>
-                            </section>
-                            <section id="edition-afternoon">
-                                <h2>Après-midi <i class="material-icons">delete</i></h2>
-                                <article>
-                                    <div id="pm-time">
-                                        <p>14h00 - 18h00</p>
-                                        <p>14h00 - 16h00</p>
-                                        <p>16h00 - 18h00</p>
-                                    </div>
-                                </article>
-                                <article>
-                                    <label for="pm-justified">Justifiée</label>
-                                    <p><input type="checkbox" id="pm-justified"></p>
-                                </article>
-                                <article>
-                                    <label for="pm-absenceType">Type d'absence</label>
-                                    <p>
-                                        <select id="pm-absenceType">
-                                            <option value="0" disabled selected>Selectionner...</option>
-                                            <?php
-                                            foreach($data['absenceTypes'] as $option) {
-                                                echo '<option value="' . $option->idTypeAbsence . '">'
-                                                    . $option->nomTypeAbsence
-                                                    . '</option>';
-                                            }
-                                            ?>
-                                        </select>
-                                    </p>
-                                </article>
-                            </section>
-                        </div>
-                        <footer>
-                            <button id="edition-submit">Enregistrer</button>
-                            <button id="edition-cancel">Annuler</button>
-                        </footer>
-                    </div>
-                </div>
                 <table class="stripped">
                     <thead id="absences-table-head">
                         <tr>
@@ -258,7 +186,73 @@
                         ?>
                     </tbody>
                 </table>
-                <table id="header-fixed"></table>
+                <table id="header-fixed" class="hide"></table>
+            </div>
+            <div id="edition-wrapper">
+                <div id="edition" class="center-block">
+                    <header>
+                        <h3 id="edition-name">Text nom</h3>
+                        <h4 id="edition-date">Text date</h4>
+                    </header>
+                    <div class="row">
+                        <section id="edition-morning" class="col s12 m10 l6">
+                            <h4>Matinée<i id="am-delete" class="material-icons">delete</i></h4>
+                            <div id="am-time" class="center-block">
+                                <p>08h00 - 12h00</p>
+                                <p>08h00 - 10h00</p>
+                                <p>10h00 - 12h00</p>
+                            </div>
+                            <div>
+                                <input type="checkbox" id="am-justified">
+                                <label for="am-justified">Justifiée</label>
+                            </div>
+                            <div class="input-field col s12">
+                                <select id="am-absenceType">
+                                    <option value="0" disabled selected>Selectionner...</option>
+                                    <?php
+                                    foreach($data['absenceTypes'] as $option) {
+                                        echo '<option value="' . $option->idTypeAbsence . '">'
+                                            . $option->nomTypeAbsence
+                                            . '</option>';
+                                    }
+                                    ?>
+                                </select>
+                                <label>Type d'absence</label>
+                            </div>
+                        </section>
+                        <section id="edition-afternoon" class="col s12 m10 l6">
+                            <h4>Après-midi<i id="pm-delete" class="material-icons">delete</i></h4>
+                            <div id="pm-time" class="center-block">
+                                <p>14h00 - 18h00</p>
+                                <p>14h00 - 16h00</p>
+                                <p>16h00 - 18h00</p>
+                            </div>
+                            <div>
+                                <input type="checkbox" id="pm-justified">
+                                <label for="pm-justified">Justifiée</label>
+                            </div>
+                            <div class="input-field row">
+                                <div class="col l6 center-block">
+                                    <select id="pm-absenceType">
+                                        <option value="0" disabled selected>Selectionner...</option>
+                                        <?php
+                                        foreach($data['absenceTypes'] as $option) {
+                                            echo '<option value="' . $option->idTypeAbsence . '">'
+                                                . $option->nomTypeAbsence
+                                                . '</option>';
+                                        }
+                                        ?>
+                                    </select>
+                                    <label for="pm-absenceType">Type d'absence</label>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                    <footer>
+                        <button id="edition-submit" class="btn grey darken-1 waves-effect waves-green">Enregistrer</button>
+                        <button id="edition-cancel" class="btn grey darken-1 waves-effect waves-red">Annuler</button>
+                    </footer>
+                </div>
             </div>
         </section>
     </main>
