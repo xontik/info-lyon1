@@ -208,4 +208,8 @@ class Process_secretariat extends CI_Controller
     }
     redirect('Secretariat/administration');
   }
+
+  public function deleteSemestre($id){
+    echo 'Suppresion du semestre :'.$id;
+  }
 }

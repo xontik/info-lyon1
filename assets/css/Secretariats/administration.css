@@ -52,4 +52,11 @@ li { list-style-type: none; }
 #inout div select { height: 100px; }
 #inout div:nth-child(2) { align-items: center; justify-content: center; width: 40px; }
 
+tbody .before { background: cyan; }
+tbody .after { background: pink; }
+tbody .now { background: yellow; }
+tbody img { height: 25px; }
+tbody tr { height: 30px; }
+tbody tr input { width: 30px; }
+
 /*# sourceMappingURL=administration.css.map */

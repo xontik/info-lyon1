@@ -19,3 +19,26 @@
     width:40px;
   }
 }
+
+
+tbody{
+  .before{
+    background:cyan;
+  }
+  .after{
+    background:pink;
+  }
+  .now{
+    background:yellow;
+  }
+  img{
+    height:25px;
+  }
+  tr{
+    height: 30px;
+
+    input{
+      width:30px;
+    }
+  }
+}

@@ -1,42 +1,42 @@
-  <main>
-    <section>
-      <h2>Gestion des parcours</h2>
+<main>
+  <section>
+    <h2>Gestion des parcours</h2>
 
-      <?php
-        if(count($data['parcours'])){ //AKA est ce qu'il ya des parcours modifiable
-       ?>
-       <section>
-         <h3>Relation parcours/UE</h3>
-      <form id="delete" action="<?= base_url('Process_secretariat/deleteParcours')?>" method="post">
-        <label for="parcours">Selectioner un parcours à modifier :</label><br>
-        <select id="parcours" name="parcours">
-          <?php
-          foreach($data['parcours'] as $parcours){
-            echo '<option value="'.$parcours->idParcours.'">'.$parcours->type.' démarrant en '.$parcours->anneeCreation.'</option>';
-          }
-          ?>
-        </select>
-        <input type="submit" name="suppr" value="Supprimer ce parcours">
-        <div id="inout">
-          <div>
-            <label for="UEin">UE lié au modules :</label>
-            <select multiple name="UEin" id="UEin">
+    <?php
+    if(count($data['parcours'])){ //AKA est ce qu'il ya des parcours modifiable
+      ?>
+      <section>
+        <h3>Relation parcours/UE</h3>
+        <form id="delete" action="<?= base_url('Process_secretariat/deleteParcours')?>" method="post">
+          <label for="parcours">Selectioner un parcours à modifier :</label><br>
+          <select id="parcours" name="parcours">
+            <?php
+            foreach($data['parcours'] as $parcours){
+              echo '<option value="'.$parcours->idParcours.'">'.$parcours->type.' démarrant en '.$parcours->anneeCreation.'</option>';
+            }
+            ?>
+          </select>
+          <input type="submit" name="suppr" value="Supprimer ce parcours">
+          <div id="inout">
+            <div>
+              <label for="UEin">UE lié au modules :</label>
+              <select multiple name="UEin" id="UEin">
 
-            </select>
-          </div>
-          <div>
-            <input type="button" name="add" id="add" value="<">
-            <input type="button" name="remove" id="remove" value=">">
-          </div>
-          <div>
-            <label for="UEout">UE disponible :</label>
-            <select multiple name="UEout" id="UEout">
+              </select>
+            </div>
+            <div>
+              <input type="button" name="add" id="add" value="<">
+              <input type="button" name="remove" id="remove" value=">">
+            </div>
+            <div>
+              <label for="UEout">UE disponible :</label>
+              <select multiple name="UEout" id="UEout">
 
-            </select>
+              </select>
+            </div>
           </div>
-        </div>
-      </form>
-    </section>
+        </form>
+      </section>
 
     <?php }?>
     <section>
@@ -55,16 +55,82 @@
         <input type="submit" name="send" value="Ajouter">
       </form>
     </section>
+    <section>
+      <h2>Gestion des semestres</h2>
+      <section>
+        <h3>Liste des semestres</h3>
+        <table id='tableSemestre'>
+          <thead>
+            <tr>
+              <th>Suppr</th>
+              <th>Année scolaire</th>
+              <th>Type semestre</th>
+              <th>Semestre differé</th>
+              <th>Nombre de groupes</th>
+              <th>Ajouter</th>
+              </tr>
+            </thead>
 
+            <tbody>
+
+
+              <?php
+              foreach ($data['semestres'] as $semestre) {
+                $sem = $semestre['data'];
+
+
+                ?>
+                <tr class="<?= $semestre['etat'] ?>" >
+                  <td>
+                    <?php
+                    if(count($semestre['groups'])==0){
+                      ?>
+                      <a href="<?= base_url('Process_secretariat/deleteSemestre/').$sem->idSemestre ?>"><?= html_img('trash_delete.png','Supprimer')?></a>
+                      <?php
+                    }
+                     ?>
+                  </td>
+                  <td><?= $sem->anneeScolaire ?></td>
+                  <td><?= $sem->type ?></td>
+
+                  <td><?= ($sem->differe == 0)?'Normal':'Différé' ?></td>
+                  <td>
+                    <?php
+                    if(count($semestre['groups']) > 0){
+                      foreach ($semestre['groups'] as $key => $group) {
+                        echo /*(($key > 0)?' - ':'').*/'<a href="'.base_url('Secretariat/groupe/').$group['idGroupe'].'" >'.$group['nomGroupe'].'</a> - ';
+                      }
+                    }
+                     ?>
+                     <button type="button" name="button">Ajouter</button>
+                  </td>
+
+                  <td>
+                    <!-- Think about that -->
+                    <input type="text" name="add<?= $sem->idSemestre?>" value="" placeholder="G?">
+
+                    <input type="submit" value="Ajouter">
+                  </td>
+                </tr>
+                <?php
+              }
+              ?>
+            </tbody>
+          </table>
+        </section>
+
+      </section>
+      <section>
+        <h2>Gestion des groupes</h2>
+        <p>Importer un groupe</p>
+        <p>Liste des groupe</p>
+      </section>
+      <section>
+        <h2>Attribution professeurs a un couple Groupe-Matiere</h2>
+        <p>Ici ajout manuel</p>
+        <p>Ici export csv pour un smestre</p>
+        <p>Ici import d'un csv</p>
+      </section>
     </section>
-    <section>
-      <h2>Attribution professeurs a un couple Groupe-Matiere</h2>
-      <p>Ici ajout manuel</p>
-      <p>Ici export csv pour un smestre</p>
-      <p>Ici import d'un csv</p>
-    </section>
-    <section>
-      <h2>Creation des semestres</h2>
-      <a href="#">Creer les semestres de l'année <?= date('Y').'-'.((int)(date('Y')+1)) ?></a>
-    </section>
+
   </main>

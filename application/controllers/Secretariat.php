@@ -3,74 +3,89 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Secretariat extends CI_Controller {
 
-  public function __construct() {
-      parent::__construct();
-      if ( !isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'secretariat')
-          redirect('/');
-  }
+    public function __construct() {
+        parent::__construct();
+        if ( !isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'secretariat')
+            redirect('/');
+    }
 
-  public function listParcours(){
-    $this->load->model('Administration_model','adminMod');
-    $admins = $this->adminMod->getAllAdministration();
-    $parcours = array();
-    $idParcours = 0;
-
-
-
-    foreach ($admins as $admin) {
-
-      if($admin->idParcours != $idParcours){
-
-        $idParcours = $admin->idParcours;
-        $parcours[$idParcours]['type'] = $admin->type;
-        $parcours[$idParcours]['anneeCreation'] = $admin->anneeCreation;
-        $parcours[$idParcours]['UEs'] = array();
-
-        $idUE = 0;
-        $now = date('Y-m-d');
-
-        $parcours[$idParcours]['editable']  = $this->adminMod->getDeadlineEditable($parcours[$idParcours]) > $now;
+    public function listParcours(){
+      $this->load->model('Administration_model','adminMod');
+      $admins = $this->adminMod->getAllAdministration();
+      $parcours = array();
+      $idParcours = 0;
 
 
+
+      foreach ($admins as $admin) {
+
+        if($admin->idParcours != $idParcours){
+
+          $idParcours = $admin->idParcours;
+          $parcours[$idParcours]['type'] = $admin->type;
+          $parcours[$idParcours]['anneeCreation'] = $admin->anneeCreation;
+          $parcours[$idParcours]['UEs'] = array();
+
+          $idUE = 0;
+          $now = date('Y-m-d');
+
+          $parcours[$idParcours]['editable']  = $this->adminMod->getDeadlineEditable($parcours[$idParcours]) > $now;
+
+
+        }
+
+        if($idUE != $admin->idUE){
+          $idUE = $admin->idUE;
+          $parcours[$idParcours]['UEs'][$idUE]['codeUE'] = $admin->codeUE;
+          $parcours[$idParcours]['UEs'][$idUE]['nomUE'] = $admin->nomUE;
+          $parcours[$idParcours]['UEs'][$idUE]['coefficientUE'] = 0;
+          $parcours[$idParcours]['UEs'][$idUE]['Modules'] = array();
+
+          $idModule = 0;
+
+
+
+        }
+
+        if($idModule != $admin->idModule){
+
+
+          $idModule = $admin->idModule;
+          $parcours[$idParcours]['UEs'][$idUE]['Modules'][$idModule]['codeModule'] = $admin->codeModule;
+          $parcours[$idParcours]['UEs'][$idUE]['Modules'][$idModule]['nomModule'] = $admin->nomModule;
+          $parcours[$idParcours]['UEs'][$idUE]['Modules'][$idModule]['matieres'] = array();
+          $parcours[$idParcours]['UEs'][$idUE]['Modules'][$idModule]['coefficientModule'] = 0;
+
+          $idMatiere = 0;
+
+        }
+
+        if($idMatiere != $admin->idMatiere){
+          $idMatiere = $admin->idMatiere;
+        }
+
+        $parcours[$idParcours]['UEs'][$idUE]['Modules'][$idModule]['matieres'][$idMatiere]['codeMatiere'] = $admin->codeMatiere;
+        $parcours[$idParcours]['UEs'][$idUE]['Modules'][$idModule]['matieres'][$idMatiere]['nomMatiere'] = $admin->nomMatiere;
+        $parcours[$idParcours]['UEs'][$idUE]['Modules'][$idModule]['matieres'][$idMatiere]['coefficientMatiere'] = $admin->coefficientMatiere;
+
+
+        $parcours[$idParcours]['UEs'][$idUE]['coefficientUE']+= $admin->coefficientMatiere;
+        $parcours[$idParcours]['UEs'][$idUE]['Modules'][$idModule]['coefficientModule']+= $admin->coefficientMatiere;
       }
-
-      if($idUE != $admin->idUE){
-        $idUE = $admin->idUE;
-        $parcours[$idParcours]['UEs'][$idUE]['codeUE'] = $admin->codeUE;
-        $parcours[$idParcours]['UEs'][$idUE]['nomUE'] = $admin->nomUE;
-        $parcours[$idParcours]['UEs'][$idUE]['coefficientUE'] = 0;
-        $parcours[$idParcours]['UEs'][$idUE]['Modules'] = array();
-
-        $idModule = 0;
+        //TODO calcul coeff des modules ue
 
 
+      $data = array(
+        "css" => array('Secretariats/listParcours'),
+        "js" => array('debug','listParcours'),
+        "title" => "Administration",
+        'data' => array('parcours' => $parcours)
+      );
+      show("Secretariat/listParcours", $data);
 
-      }
-
-      if($idModule != $admin->idModule){
-
-
-        $idModule = $admin->idModule;
-        $parcours[$idParcours]['UEs'][$idUE]['Modules'][$idModule]['codeModule'] = $admin->codeModule;
-        $parcours[$idParcours]['UEs'][$idUE]['Modules'][$idModule]['nomModule'] = $admin->nomModule;
-        $parcours[$idParcours]['UEs'][$idUE]['Modules'][$idModule]['matieres'] = array();
-        $parcours[$idParcours]['UEs'][$idUE]['Modules'][$idModule]['coefficientModule'] = 0;
-
-        $idMatiere = 0;
-
-      }
-
-      if($idMatiere != $admin->idMatiere){
-        $idMatiere = $admin->idMatiere;
-      }
-
-      $parcours[$idParcours]['UEs'][$idUE]['Modules'][$idModule]['matieres'][$idMatiere]['codeMatiere'] = $admin->codeMatiere;
-      $parcours[$idParcours]['UEs'][$idUE]['Modules'][$idModule]['matieres'][$idMatiere]['nomMatiere'] = $admin->nomMatiere;
-      $parcours[$idParcours]['UEs'][$idUE]['Modules'][$idModule]['matieres'][$idMatiere]['coefficientMatiere'] = $admin->coefficientMatiere;
+    }
 
 
-      $parcours[$idParcours]['UEs'][$idUE]['coefficientUE']+= $admin->coefficientMatiere;
-      $parcours[$idParcours]['UEs'][$idUE]['Modules'][$idModule]['coefficientModule']+= $admin->coefficientMatiere;
     public function index() {
         $this->absence();
     }
@@ -156,32 +171,67 @@ class Secretariat extends CI_Controller {
         show("Secretariat/absences", $data);
     }
 
-    //TODO calcul coeff des modules ue
+    public function groupe($id){
+      echo 'Gestion du groupe : '.$id;
+    }
+
+    public function administration(){
+      $this->load->model('Administration_model','adminMod');
+      $this->load->model('Semester_model','semMod');
+      $parcours = $this->adminMod->getAllParcoursEditable();
+      $semestres = $this->semMod->getAllSemestres();
+      $outSem = array();
+      $idSemestre = 0;
+      foreach ($semestres as $key => $semestre) {
+        if($idSemestre != $semestre->idSemestre){
+          $idSemestre = $semestre->idSemestre;
+          $dateSem = $this->semMod->getSemesterPeriod($semestre->idSemestre);
+          $now = new DateTime();
+          $dateStart = $dateSem->getBeginDate();
+          $dateEnd = $dateSem->getEndDate();
+          $editable = false;
+          if($now>$dateEnd){
+            $etat = 'after';
+          }else if($now>$dateStart){
+            $etat = 'now';
+          }else{
+            $etat = 'before';
+          }
+          $outSem[] = array('data' => $semestre,
+                            'etat' => $etat,
+                            'period' => $dateSem,
+                            'groups' => array()
+                          );
+        }
+
+        if(!is_null($semestre->idGroupe)){
+          $outSem[count($outSem)-1]['groups'][] = array('idGroupe' => $semestre->idGroupe, 'nomGroupe' => $semestre->nomGroupe);
+        }
 
 
-    $data = array(
-      "css" => array('Secretariats/listParcours'),
-      "js" => array('debug','listParcours'),
-      "title" => "Administration",
-      'data' => array('parcours' => $parcours)
-    );
-    show("Secretariat/listParcours", $data);
+      }
 
-  }
+      usort($outSem,function($a,$b)
+      {
+        if($a['period']->getBeginDate() < $b['period']->getEndDate()){
+          return 1;
+        }else{
+          return -1;
+        }
+      });
 
-  public function administration(){
-    $this->load->model('Administration_model','adminMod');
-    $parcours = $this->adminMod->getAllParcoursEditable();
 
-    $UEs = $this->adminMod->getAllUEParcours();
 
-    $data = array(
-      "css" => array('Secretariats/administration'),
-      "js" => array('debug','gestionParcours'),
-      "title" => "Tableau de bord",
-      'data' => array('parcours' => $parcours)
-    );
-    show("Secretariat/administration", $data);
-  }
+      //TODO differencié ce qui est modifiable
+      $UEs = $this->adminMod->getAllUEParcours();
+
+      $data = array(
+        "css" => array('Secretariats/administration'),
+        "js" => array('debug','gestionParcours','gestionSemestre'),
+        "title" => "Tableau de bord",
+        'data' => array('parcours' => $parcours,'semestres' => $outSem)
+      );
+      show("Secretariat/administration", $data);
+    }
 
 }

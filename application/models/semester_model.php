@@ -68,8 +68,8 @@ class semester_model extends CI_Model {
             );
         } else {
             return new Period(
-                new DateTime($semester->anneeScolaire . '-02-01'),
-                new DateTime($semester->anneeScolaire . '-08-31')
+                new DateTime($semester->anneeScolaire+1 . '-02-01'),
+                new DateTime($semester->anneeScolaire+1 . '-08-31')
             );
         }
     }
@@ -130,6 +130,22 @@ class semester_model extends CI_Model {
         }
 
         return $semester->idSemestre;
+    }
+
+
+    public function getAllSemestres(){
+      // etat sera utiliser pour stocker la difference entre passé et future quand actif = 0
+      $sql = 'SELECT *
+      from Semestres
+      join parcours using(idparcours)
+      left join Groupes using (idSemestre)
+      order by anneeScolaire DESC';
+      return $this->db->query($sql)->result();
+    }
+
+    public function getGroupsBySemestre($id){
+      $sql = 'SELECT * from Groupes where idSemestre = ?';
+      return $this->db->query($sql,array($id))->result();
     }
 
 }
