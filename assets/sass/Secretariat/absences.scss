@@ -1,4 +1,4 @@
-@import '../head';
+@import '../style';
 
 $line-height: 21px;
 $border-color: #a0a0a0;
@@ -80,7 +80,19 @@ $color-mix: #b203fd;
     position: relative;
     height: $line-height;
     border-top: 1px solid $border-color;
- 
+
+    &.group-change, &:first-child {
+      @extend .big-border;
+    }
+
+    &:last-child {
+      border-bottom: 2px solid $border-color;
+    }
+
+    &:nth-child(odd) {
+      background-color: $table-striped-color;
+    }
+
     > p {
       display: inline-block;
       margin: 0;
@@ -98,14 +110,6 @@ $color-mix: #b203fd;
       right: 0;
 
       border: 1px solid darken($border-color, 15);
-	}
-
-    &.group-change, &:first-child {
-      @extend .big-border;
-	}
-
-    &:last-child {
-      border-bottom: 2px solid $border-color;
 	}
   }
   
@@ -242,45 +246,43 @@ table {
   padding: 1rem;
 
   section {
-    > h4 {
-      @extend .center-block;
-      width: 60%;
+    > div.header {
+      color: $primary-color;
+      padding-bottom: 6px;
       border-bottom: 2px dashed;
 
-      white-space: nowrap;
+      > h4 {
+        display: inline;
+      }
 
-      i {
-        font-size: 0;
-        opacity: 0;
-        margin-left: 8px;
-
+      > i {
+        @extend .black-text;
         cursor: pointer;
-
-        transition: font-size .3s, opacity .3s;
-
-        &.active {
-          font-size: 25px;
-          opacity: 1;
-        }
       }
     }
 
-    > * {
+    div {
       margin-bottom: 1rem;
+
+      &.input-field {
+        margin-top: 2rem;
+      }
+
+      &:not(.header) {
+        @extend .left-align;
+      }
     }
   }
 
   #am-time, #pm-time {
-    $opt-width: 120px;
     $opt-height: 50px;
-    $opt-border: $opt-width / 20;
+    $opt-border: 6px;
     $opt-color: #b1acac;
 
     display: flex;
     flex-flow: row wrap;
     justify-content: space-between;
     align-items: center;
-    width: $opt-width * 2;
     height: $opt-height * 2;
 
     p {

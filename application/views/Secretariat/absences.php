@@ -60,7 +60,7 @@
                 </div>
             </div>
             <div id="table-wrapper" class="col l9 xl10 no-padding">
-                <table class="stripped">
+                <table class="striped">
                     <thead id="absences-table-head">
                         <tr>
                             <?php
@@ -190,49 +190,53 @@
             </div>
             <div id="edition-wrapper">
                 <div id="edition" class="container center-block z-depth-5">
-                    <header>
+                    <div>
                         <h3 id="edition-name">Text nom</h3>
                         <h4 id="edition-date">Text date</h4>
-                    </header>
+                    </div>
                     <div class="row">
                         <section id="edition-morning" class="col s12 m10 l6">
-                            <h4>Matinée<i id="am-delete" class="material-icons">delete</i></h4>
-                            <div id="am-time" class="center-block">
-                                <p>08h00 - 12h00</p>
-                                <p>08h00 - 10h00</p>
-                                <p>10h00 - 12h00</p>
+                            <div class="header col l10 offset-l1">
+                                <h4>Matinée</h4>
+                                <i id="am-delete" class="material-icons scale-transition scale-out">delete</i>
                             </div>
-                            <div>
-                                <input type="checkbox" id="am-justified">
-                                <label for="am-justified">Justifiée</label>
-                            </div>
-                            <div class="input-field col s12">
-                                <select id="am-absenceType">
-                                    <option value="0" disabled selected>Selectionner...</option>
-                                    <?php
-                                    foreach($data['absenceTypes'] as $option) {
-                                        echo '<option value="' . $option->idTypeAbsence . '">'
-                                            . $option->nomTypeAbsence
-                                            . '</option>';
-                                    }
-                                    ?>
-                                </select>
-                                <label>Type d'absence</label>
+                            <div class="col l8 offset-l2">
+                                <div id="am-time" class="center-block">
+                                    <p>08h00 - 12h00</p>
+                                    <p>08h00 - 10h00</p>
+                                    <p>10h00 - 12h00</p>
+                                </div>
+                                <div class="input-field">
+                                    <select id="am-absenceType">
+                                        <option value="0" disabled selected>Selectionner...</option>
+                                        <?php
+                                        foreach($data['absenceTypes'] as $option) {
+                                            echo '<option value="' . $option->idTypeAbsence . '">'
+                                                . $option->nomTypeAbsence
+                                                . '</option>';
+                                        }
+                                        ?>
+                                    </select>
+                                    <label for="am-absenceType">Type d'absence</label>
+                                </div>
+                                <div>
+                                    <input type="checkbox" id="am-justified">
+                                    <label for="am-justified">Justifiée</label>
+                                </div>
                             </div>
                         </section>
                         <section id="edition-afternoon" class="col s12 m10 l6">
-                            <h4>Après-midi<i id="pm-delete" class="material-icons">delete</i></h4>
-                            <div id="pm-time" class="center-block">
-                                <p>14h00 - 18h00</p>
-                                <p>14h00 - 16h00</p>
-                                <p>16h00 - 18h00</p>
+                            <div class="header col l10 offset-l1">
+                                <h4>Après-midi</h4>
+                                <i id="pm-delete" class="material-icons scale-transition scale-out">delete</i>
                             </div>
-                            <div>
-                                <input type="checkbox" id="pm-justified">
-                                <label for="pm-justified">Justifiée</label>
-                            </div>
-                            <div class="input-field row">
-                                <div class="col l6 center-block">
+                            <div class="col l8 offset-l2">
+                                <div id="pm-time" class="center-block">
+                                    <p>14h00 - 18h00</p>
+                                    <p>14h00 - 16h00</p>
+                                    <p>16h00 - 18h00</p>
+                                </div>
+                                <div class="input-field">
                                     <select id="pm-absenceType">
                                         <option value="0" disabled selected>Selectionner...</option>
                                         <?php
@@ -244,6 +248,10 @@
                                         ?>
                                     </select>
                                     <label for="pm-absenceType">Type d'absence</label>
+                                </div>
+                                <div>
+                                    <input type="checkbox" id="pm-justified">
+                                    <label for="pm-justified">Justifiée</label>
                                 </div>
                             </div>
                         </section>

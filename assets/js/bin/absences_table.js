@@ -414,16 +414,17 @@ $(function() {
         if (absence) {
             array.activeAbsence = absence;
             activate(activeField, array.timeSlot.children().eq(absence.time.slot));
-            activate(activeField + 'Delete', array.delete);
-            array.justified[0].checked = absence.justified;
+            array.delete.removeClass('scale-out');
+            array.justified.prop('checked', absence.justified);
             array.absenceType.val(absence.absenceType.value);
         } else {
             array.activeAbsence = null;
             deactivate(activeField);
-            deactivate(activeField + 'Delete');
-            array.justified[0].checked = false;
+            array.delete.addClass('scale-out');
+            array.justified.prop('checked', false);
             array.absenceType.val('0');
         }
+        array.absenceType.material_select();
     }
 
     /**
@@ -721,7 +722,12 @@ $(function() {
             timeSlot: $('#am-time'),
             justified: $('#am-justified'),
             absenceType: $('#am-absenceType'),
-            delete: $('#am-delete')
+            delete: $('#am-delete'),
+            setModified: function(modif) {
+                this.modified = modif;
+                if (modif)  this.delete.removeClass('scale-out');
+                else        this.delete.addClass('scale-out');
+            }
         },
         afternoon: {
             activeAbsence: null,
@@ -730,7 +736,12 @@ $(function() {
             timeSlot: $('#pm-time'),
             justified: $('#pm-justified'),
             absenceType: $('#pm-absenceType'),
-            delete: $('#pm-delete')
+            delete: $('#pm-delete'),
+            setModified: function(modif) {
+                this.modified = modif;
+                if (modif)  this.delete.removeClass('scale-out');
+                else        this.delete.addClass('scale-out');
+            }
         },
         submitButton: $('#edition-submit'),
         cancelButton: $('#edition-cancel'),
@@ -843,8 +854,8 @@ $(function() {
 
             $(window).off('keydown');
 
-            this.morning.modified = false;
-            this.afternoon.modified = false;
+            this.morning.setModified(false);
+            this.afternoon.setModified(false);
         }
     };
 
@@ -855,8 +866,10 @@ $(function() {
     var $absenceTable = $('#absences-table');
     var $tableWrapper = $('#table-wrapper');
 
-    /* ##### Center #active-day ##### */
+    // Initialize materialize
+    $('#am-absenceType, #pm-absenceType').material_select();
 
+    // Center #active-day
     $tableWrapper.each( function() {
         var activeDay = $('#active-day');
         if (activeDay.length) {
@@ -864,6 +877,7 @@ $(function() {
         }
     });
 
+    // Store existing absences in an object
     $('td.abs').each(function() {
         $(this).children().each(function() {
             var absence = createAbsenceFromDiv(this);
@@ -871,9 +885,12 @@ $(function() {
         });
     });
 
+    // Student list events
+    $('#table-stud-list').on('click', 'i', function() {
+        $(this).siblings('div').toggle(DEFAULT_ANIM_TIME);
+    });
 
-    /* ##### Per day absence informations #####*/
-
+    // Absence table events
     $absenceTable.on('click', 'td', function(event) {
         if (event.which === 1) {
             activate("cell", this);
@@ -888,33 +905,29 @@ $(function() {
             $(this).children().hide(DEFAULT_ANIM_TIME);
         });
 
-
-    /* ##### Per day absence creation, modification, deletion ##### */
-
-    // ### NEW ABSENCE EVENTS ###
+    // New absence interface events
     // Morning
     newAbsence.morning.timeSlot.on('click', 'p', function() {
-        newAbsence.morning.modified = true;
+        newAbsence.morning.setModified(true);
         activate("morning", this);
-        activate("morningDelete", newAbsence.morning.delete);
     });
 
     newAbsence.morning.content.on('change', ':checkbox, select', function() {
-        newAbsence.morning.modified = true;
-        activate("morningDelete", newAbsence.morning.delete);
+        newAbsence.morning.setModified(true);
+        newAbsence.morning.delete.removeClass('scale-out');
     });
 
     newAbsence.morning.delete.click(function() {
         var absence = newAbsence.morning.activeAbsence;
         if (absence === null) {
             setInterfaceAbsence(newAbsence.morning, null, 'morning');
-            newAbsence.morning.modified = false;
+            newAbsence.morning.setModified(false);
         } else {
             $.post('/Process_secretariat/suppression_absence', {absenceId: absence.absenceId}, function(data) {
                 if (data === 'success') {
                     setInterfaceAbsence(newAbsence.morning, null, 'morning');
                     deleteAbsence(absence);
-                    newAbsence.morning.modified = false;
+                    newAbsence.morning.setModified(false);
                 } else if (data === 'missing_data') {
                     alert('Erreur de communication avec le serveur.' +
                         'Nous vous conseillons de rafraîchir la page !');
@@ -932,27 +945,25 @@ $(function() {
 
     // Afternoon
     newAbsence.afternoon.timeSlot.on('click', 'p', function() {
-        newAbsence.afternoon.modified = true;
+        newAbsence.afternoon.setModified(true);
         activate("afternoon", this);
-        activate("afternoonDelete", newAbsence.afternoon.delete);
     });
 
     newAbsence.afternoon.content.on('change', ':checkbox, select', function() {
-        newAbsence.afternoon.modified = true;
-        activate("afternoonDelete", newAbsence.afternoon.delete);
+        newAbsence.afternoon.setModified(true);
     });
 
     newAbsence.afternoon.delete.click(function() {
         var absence = newAbsence.afternoon.activeAbsence;
         if (absence === null) {
             setInterfaceAbsence(newAbsence.afternoon, null, 'afternoon');
-            newAbsence.afternoon.modified = false;
+            newAbsence.afternoon.setModified(false);
         } else {
             $.post('/Process_secretariat/suppression_absence', {absenceId: absence.absenceId}, function(data) {
                 if (data === 'success') {
                     setInterfaceAbsence(newAbsence.afternoon, null, 'afternoon');
                     deleteAbsence(absence);
-                    newAbsence.afternoon.modified = false;
+                    newAbsence.afternoon.setModified(false);
                 } else if (data === 'missing_data') {
                     alert('Erreur de communication avec le serveur.' +
                         'Nous vous conseillons de rafraîchir la page !');
@@ -968,7 +979,7 @@ $(function() {
         }
     });
 
-    // Footer
+    // New absence footer
     newAbsence.submitButton.click(function() {
         newAbsence.send();
         return false;
@@ -979,16 +990,7 @@ $(function() {
         return false;
     });
 
-
-    /* ##### Student absence count ##### */
-
-    $('#table-stud-list').on('click', 'i', function() {
-        $(this).siblings('div').toggle(DEFAULT_ANIM_TIME);
-    });
-
-
-    // ##### Thead fixation #####
-
+    // Absence table head fixation
     var $absenceTableHead = $('#absences-table-head');
     var $fixedHeader = $('#header-fixed').append($absenceTableHead.clone());
 

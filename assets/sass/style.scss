@@ -1,1 +1,5 @@
 @import '_head';
+
+.material-icons {
+  @extend .no-select;
+}
