@@ -79,7 +79,9 @@
                         <i class="material-icons">menu</i></a>
                     <ul class="right hide-on-med-and-down">
                         <?php foreach ($nav[$_SESSION['user_type']] as $item => $url) {
-                            echo '<li><a href="' . $url . '">' . $item . '</a></li>';
+                            $class = (isset($page) ? $page : '') === $item
+                                ? ' class="active"' : '';
+                            echo '<li' . $class . '><a href="' . $url . '">' . $item . '</a></li>';
                         } ?>
                         <li>
                             <a id="nav-user-button" class="dropdown-button" href="#!" data-activates="nav-user-menu">

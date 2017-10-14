@@ -44,6 +44,7 @@ class Etudiant extends CI_Controller {
     $var = array(
       'css' => array('Etudiant/absences'),
       'js' => array('debug'),
+      'page' => 'absences',
       'title' => 'Absences',
       'data' => array(
           'absences' => $absences

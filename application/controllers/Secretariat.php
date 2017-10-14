@@ -79,6 +79,7 @@ class Secretariat extends CI_Controller {
         $data = array(
             'css' => array('Secretariat/absences'),
             'js' => array('debug', 'absences_table'),
+            'page' => 'absences',
             'title' => 'Absences',
             'data' => array(
                 'absences' => $assoc,
