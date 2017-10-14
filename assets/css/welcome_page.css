@@ -1375,7 +1375,7 @@ td, th { padding: 15px 5px; display: table-cell; text-align: left; vertical-alig
 
 .right { float: right !important; }
 
-.no-select, input[type=range], input[type=range] + .thumb { user-select: none; }
+.no-select, input[type=range], input[type=range] + .thumb, .material-icons { user-select: none; }
 
 .circle { border-radius: 50%; }
 

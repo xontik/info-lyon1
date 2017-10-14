@@ -148,22 +148,22 @@ $(function() {
         var $div = $('#' + absence.student.id).find('div')[0];
         var $datas = $div.children;
 
-        var justifiyIndex, justifiedDays;
+        var justifyIndex, justifiedAbs;
 
-        // always add halfday, as we add an absence
+        // always add one halfday, as we add an absence
         var halfDays = parseInt($datas[0].textContent) + 1;
         $datas[0].textContent = halfDays + " demi-journée" + (halfDays > 1 ? 's' : '');
 
         // If there's more than one absence
         if (halfDays > 1) {
-            // if $datas[1] is justified days
-            if ($datas[1].textContent.split(' ').length === 3) {
-                // Store it before it changes
-                justifiedDays = parseInt($datas[1].textContent);
-            }
-            // If half-day count was 1
-            else if ($datas.length === 1) {
+            // If half-day count was 1 and no justified abs
+            if ($datas.length === 1) {
                 $div.appendChild(document.createElement('p'));
+            }
+            // if $datas[1] is justified abs
+            else if ($datas[1].textContent.split(' ').length === 3) {
+                // Store it before it changes
+                justifiedAbs = parseInt($datas[1].textContent);
             }
 
             // if there's not already an absence this day, add one day
@@ -172,26 +172,28 @@ $(function() {
 
             $datas[1].textContent = days + " jour" + (days > 1 ? 's' : '');
 
-            justifiyIndex = 2;
+            justifyIndex = 2;
         } else {
-            justifiyIndex = 1;
+            justifyIndex = 1;
         }
 
 
+        if (!justifiedAbs) {
+            justifiedAbs = ($datas.length > justifyIndex
+                ? parseInt($datas[justifyIndex].textContent) : 0);
+        }
         if (absence.justified) {
-            if (!justifiedDays) {
-                justifiedDays = ($datas.length > justifiyIndex
-                    ? parseInt($datas[justifiyIndex].textContent) : 0);
-            }
-            justifiedDays++;
+            justifiedAbs++;
+        }
 
-            if ($datas.length <= justifiyIndex) {
+        if (justifiedAbs > 0) {
+            if ($datas.length <= justifyIndex) {
                 $div.appendChild(document.createElement('p'));
             }
 
-            $datas[justifiyIndex].textContent = justifiedDays
-                + " absence" + (justifiedDays > 1 ? 's' : '')
-                + " justifiée" + (justifiedDays > 1 ? 's' : '');
+            $datas[justifyIndex].textContent = justifiedAbs
+                + " absence" + (justifiedAbs > 1 ? 's' : '')
+                + " justifiée" + (justifiedAbs > 1 ? 's' : '');
         }
     }
 
@@ -205,7 +207,7 @@ $(function() {
         var $datas = $('#' + absence.student.id)
             .find('div')[0].children;
 
-        var justifiyIndex, justifiedDays;
+        var justifyIndex, justifiedAbs;
 
         // always add halfday, as we add an absence
         var halfDays = parseInt($datas[0].textContent) - 1;
@@ -217,21 +219,21 @@ $(function() {
             var days = parseInt($datas[1].textContent) - !(cell.children.length - 1);
             $datas[1].textContent = days + " jour" + (days > 1 ? 's' : '');
 
-            justifiyIndex = 2;
+            justifyIndex = 2;
         } else {
             // if no or one absence left
-            justifiyIndex = 1;
+            justifyIndex = 1;
             if (halfDays === 1) $($datas[1]).remove();
         }
 
-        if (absence.justified && $datas.length > justifiyIndex) {
-            justifiedDays = parseInt($datas[justifiyIndex].textContent) - 1;
-            if (justifiedDays === 0) {
-                $($datas[justifiyIndex]).remove();
+        if (absence.justified && $datas.length > justifyIndex) {
+            justifiedAbs = parseInt($datas[justifyIndex].textContent) - 1;
+            if (justifiedAbs === 0) {
+                $($datas[justifyIndex]).remove();
             } else {
-                $datas[justifiyIndex].textContent = justifiedDays
-                    + " absence" + (justifiedDays > 1 ? 's' : '')
-                    + " justifiée" + (justifiedDays > 1 ? 's' : '');
+                $datas[justifyIndex].textContent = justifiedAbs
+                    + " absence" + (justifiedAbs > 1 ? 's' : '')
+                    + " justifiée" + (justifiedAbs > 1 ? 's' : '');
             }
         }
     }
@@ -245,35 +247,35 @@ $(function() {
         var $div = $('#' + student.id).find('div')[0];
         var $datas = $div.children;
 
-        var justifyIndex, justifiedDays;
+        var justifyIndex, justifiedAbs;
 
         if ($datas.length > 1) {
             // If all infos are shown
             if ($datas.length === 3) {
                 justifyIndex = 2;
-                justifiedDays = parseInt($datas[2].textContent) + add;
+                justifiedAbs = parseInt($datas[2].textContent) + add;
             }
             // if only 2 infos and second 'p' contains justified absence count
             else if ($datas[1].textContent.split(' ').length === 3) {
                 justifyIndex = 1;
-                justifiedDays = parseInt($datas[1].textContent) + add;
+                justifiedAbs = parseInt($datas[1].textContent) + add;
             }
             // if 2 infos, but no justified absence count
             else {
                 justifyIndex = 2;
-                justifiedDays = add;
+                justifiedAbs = add;
             }
         } else {
             justifyIndex = 1;
         }
 
-        if (justifiedDays > 0) {
+        if (justifiedAbs > 0) {
             if ($datas.length <= justifyIndex) {
                 $div.appendChild(document.createElement('p'));
             }
-            $datas[justifyIndex].textContent = justifiedDays
-                + " absence" + (justifiedDays > 1 ? 's' : '')
-                + " justifiée" + (justifiedDays > 1 ? 's' : '');
+            $datas[justifyIndex].textContent = justifiedAbs
+                + " absence" + (justifiedAbs > 1 ? 's' : '')
+                + " justifiée" + (justifiedAbs > 1 ? 's' : '');
         } else if ($datas.length > justifyIndex) {
             $($datas[justifyIndex]).remove();
         }
@@ -414,16 +416,17 @@ $(function() {
         if (absence) {
             array.activeAbsence = absence;
             activate(activeField, array.timeSlot.children().eq(absence.time.slot));
-            activate(activeField + 'Delete', array.delete);
-            array.justified[0].checked = absence.justified;
+            array.delete.removeClass('scale-out');
+            array.justified.prop('checked', absence.justified);
             array.absenceType.val(absence.absenceType.value);
         } else {
             array.activeAbsence = null;
             deactivate(activeField);
-            deactivate(activeField + 'Delete');
-            array.justified[0].checked = false;
+            array.delete.addClass('scale-out');
+            array.justified.prop('checked', false);
             array.absenceType.val('0');
         }
+        array.absenceType.material_select();
     }
 
     /**
@@ -710,7 +713,6 @@ $(function() {
     }
 
     var newAbsence = {
-        wrapper: $('#edition-wrapper'),
         content: $('#edition'),
         name: $('#edition-name'),
         date: $('#edition-date'),
@@ -721,7 +723,12 @@ $(function() {
             timeSlot: $('#am-time'),
             justified: $('#am-justified'),
             absenceType: $('#am-absenceType'),
-            delete: $('#am-delete')
+            delete: $('#am-delete'),
+            setModified: function(modif) {
+                this.modified = modif;
+                if (modif)  this.delete.removeClass('scale-out');
+                else        this.delete.addClass('scale-out');
+            }
         },
         afternoon: {
             activeAbsence: null,
@@ -730,10 +737,14 @@ $(function() {
             timeSlot: $('#pm-time'),
             justified: $('#pm-justified'),
             absenceType: $('#pm-absenceType'),
-            delete: $('#pm-delete')
+            delete: $('#pm-delete'),
+            setModified: function(modif) {
+                this.modified = modif;
+                if (modif)  this.delete.removeClass('scale-out');
+                else        this.delete.addClass('scale-out');
+            }
         },
         submitButton: $('#edition-submit'),
-        cancelButton: $('#edition-cancel'),
 
         edit: function(td) {
             var $absences = td.children;
@@ -829,7 +840,7 @@ $(function() {
         },
 
         show: function() {
-            this.wrapper.addClass('active');
+            newAbsence.content.modal('open');
 
             $(window).on('keydown', function(event) {
                 if (event.keyCode === 27) {
@@ -839,12 +850,10 @@ $(function() {
         },
 
         hide: function() {
-            this.wrapper.removeClass('active');
-
             $(window).off('keydown');
 
-            this.morning.modified = false;
-            this.afternoon.modified = false;
+            newAbsence.morning.setModified(false);
+            newAbsence.afternoon.setModified(false);
         }
     };
 
@@ -855,8 +864,16 @@ $(function() {
     var $absenceTable = $('#absences-table');
     var $tableWrapper = $('#table-wrapper');
 
-    /* ##### Center #active-day ##### */
+    // Initialize materialize
+    $('#am-absenceType, #pm-absenceType').material_select();
+    newAbsence.content.modal({
+        dismissible: true,
+        inDuration: 200,
+        outDuration: 125,
+        complete: newAbsence.hide
+    });
 
+    // Center #active-day
     $tableWrapper.each( function() {
         var activeDay = $('#active-day');
         if (activeDay.length) {
@@ -864,6 +881,7 @@ $(function() {
         }
     });
 
+    // Store existing absences in an object
     $('td.abs').each(function() {
         $(this).children().each(function() {
             var absence = createAbsenceFromDiv(this);
@@ -871,9 +889,12 @@ $(function() {
         });
     });
 
+    // Student list events
+    $('#table-stud-list').on('click', 'i', function() {
+        $(this).siblings('div').toggle(DEFAULT_ANIM_TIME);
+    });
 
-    /* ##### Per day absence informations #####*/
-
+    // Absence table events
     $absenceTable.on('click', 'td', function(event) {
         if (event.which === 1) {
             activate("cell", this);
@@ -888,33 +909,29 @@ $(function() {
             $(this).children().hide(DEFAULT_ANIM_TIME);
         });
 
-
-    /* ##### Per day absence creation, modification, deletion ##### */
-
-    // ### NEW ABSENCE EVENTS ###
+    // New absence interface events
     // Morning
     newAbsence.morning.timeSlot.on('click', 'p', function() {
-        newAbsence.morning.modified = true;
+        newAbsence.morning.setModified(true);
         activate("morning", this);
-        activate("morningDelete", newAbsence.morning.delete);
     });
 
     newAbsence.morning.content.on('change', ':checkbox, select', function() {
-        newAbsence.morning.modified = true;
-        activate("morningDelete", newAbsence.morning.delete);
+        newAbsence.morning.setModified(true);
+        newAbsence.morning.delete.removeClass('scale-out');
     });
 
     newAbsence.morning.delete.click(function() {
         var absence = newAbsence.morning.activeAbsence;
         if (absence === null) {
             setInterfaceAbsence(newAbsence.morning, null, 'morning');
-            newAbsence.morning.modified = false;
+            newAbsence.morning.setModified(false);
         } else {
             $.post('/Process_secretariat/suppression_absence', {absenceId: absence.absenceId}, function(data) {
                 if (data === 'success') {
                     setInterfaceAbsence(newAbsence.morning, null, 'morning');
                     deleteAbsence(absence);
-                    newAbsence.morning.modified = false;
+                    newAbsence.morning.setModified(false);
                 } else if (data === 'missing_data') {
                     alert('Erreur de communication avec le serveur.' +
                         'Nous vous conseillons de rafraîchir la page !');
@@ -932,27 +949,25 @@ $(function() {
 
     // Afternoon
     newAbsence.afternoon.timeSlot.on('click', 'p', function() {
-        newAbsence.afternoon.modified = true;
+        newAbsence.afternoon.setModified(true);
         activate("afternoon", this);
-        activate("afternoonDelete", newAbsence.afternoon.delete);
     });
 
     newAbsence.afternoon.content.on('change', ':checkbox, select', function() {
-        newAbsence.afternoon.modified = true;
-        activate("afternoonDelete", newAbsence.afternoon.delete);
+        newAbsence.afternoon.setModified(true);
     });
 
     newAbsence.afternoon.delete.click(function() {
         var absence = newAbsence.afternoon.activeAbsence;
         if (absence === null) {
             setInterfaceAbsence(newAbsence.afternoon, null, 'afternoon');
-            newAbsence.afternoon.modified = false;
+            newAbsence.afternoon.setModified(false);
         } else {
             $.post('/Process_secretariat/suppression_absence', {absenceId: absence.absenceId}, function(data) {
                 if (data === 'success') {
                     setInterfaceAbsence(newAbsence.afternoon, null, 'afternoon');
                     deleteAbsence(absence);
-                    newAbsence.afternoon.modified = false;
+                    newAbsence.afternoon.setModified(false);
                 } else if (data === 'missing_data') {
                     alert('Erreur de communication avec le serveur.' +
                         'Nous vous conseillons de rafraîchir la page !');
@@ -968,27 +983,13 @@ $(function() {
         }
     });
 
-    // Footer
+    // New absence footer
     newAbsence.submitButton.click(function() {
         newAbsence.send();
         return false;
     });
 
-    newAbsence.cancelButton.click(function() {
-        newAbsence.hide();
-        return false;
-    });
-
-
-    /* ##### Student absence count ##### */
-
-    $('#table-stud-list').on('click', 'i', function() {
-        $(this).siblings('div').toggle(DEFAULT_ANIM_TIME);
-    });
-
-
-    // ##### Thead fixation #####
-
+    // Absence table head fixation
     var $absenceTableHead = $('#absences-table-head');
     var $fixedHeader = $('#header-fixed').append($absenceTableHead.clone());
 

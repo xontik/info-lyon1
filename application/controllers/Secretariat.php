@@ -13,17 +13,14 @@ class Secretariat extends CI_Controller {
         $this->absence();
     }
 
-    public function absence($semester = '') {
+    public function absence() {
         $this->load->model('absence_model');
         $this->load->model('semester_model');
         $this->load->model('students_model');
 
         $this->load->helper('year');
 
-        $period = $this->semester_model->getSemesterPeriod(
-            $this->semester_model->getSemesterId($semester)
-        );
-
+        $period = $this->semester_model->getCurrentPeriod();
         $students = $this->students_model->getStudentsOrganized();
         $absences =  $this->absence_model->getAbsencesInPeriod($period);
 
