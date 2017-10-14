@@ -65,7 +65,7 @@
                         <tr>
                             <?php
                             $monthes = array('Janvier', 'Février',
-                                'Mars', 'Avril', 'Juin', 'Juillet',
+                                'Mars', 'Avril', 'Mai', 'Juin', 'Juillet',
                                 'Août', 'Septembre', 'Octobre',
                                 'Novembre', 'Décembre'
                             );
