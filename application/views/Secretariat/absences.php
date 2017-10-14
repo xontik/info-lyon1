@@ -1,5 +1,5 @@
     <main>
-        <section id="color-code">
+        <div id="color-code" class="section">
             <ul class="row">
                 <li>Absence justifiée</li>
                 <li>Absence</li>
@@ -8,8 +8,8 @@
                 <li>Infirmerie</li>
                 <li>Plusieurs types</li>
             </ul>
-        </section>
-        <section id="absences-table" class="row">
+        </div>
+        <div id="absences-table" class="section row">
             <div id="table-static" class="col l3 xl2 no-padding">
                 <h5 class="center-align">Étudiants</h5>
                 <div class="row">
@@ -188,8 +188,8 @@
                 </table>
                 <table id="header-fixed" class="hide"></table>
             </div>
-            <div id="edition-wrapper">
-                <div id="edition" class="container center-block z-depth-5">
+            <div id="edition" class="modal">
+                <div class="modal-content">
                     <div>
                         <h3 id="edition-name">Text nom</h3>
                         <h4 id="edition-date">Text date</h4>
@@ -256,13 +256,13 @@
                             </div>
                         </section>
                     </div>
-                    <footer>
-                        <button id="edition-submit" class="btn">Enregistrer</button>
-                        <button id="edition-cancel" class="btn">Annuler</button>
-                    </footer>
+                </div>
+                <div class="modal-footer">
+                    <button id="edition-submit" class="btn">Enregistrer</button>
+                    <a href="#!" class="btn modal-action modal-close">Annuler</a>
                 </div>
             </div>
-        </section>
+        </div>
     </main>
     <script>
         // Needed for absence_table script

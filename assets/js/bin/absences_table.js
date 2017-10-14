@@ -713,7 +713,6 @@ $(function() {
     }
 
     var newAbsence = {
-        wrapper: $('#edition-wrapper'),
         content: $('#edition'),
         name: $('#edition-name'),
         date: $('#edition-date'),
@@ -746,7 +745,6 @@ $(function() {
             }
         },
         submitButton: $('#edition-submit'),
-        cancelButton: $('#edition-cancel'),
 
         edit: function(td) {
             var $absences = td.children;
@@ -842,7 +840,7 @@ $(function() {
         },
 
         show: function() {
-            this.wrapper.addClass('active');
+            newAbsence.content.modal('open');
 
             $(window).on('keydown', function(event) {
                 if (event.keyCode === 27) {
@@ -852,12 +850,10 @@ $(function() {
         },
 
         hide: function() {
-            this.wrapper.removeClass('active');
-
             $(window).off('keydown');
 
-            this.morning.setModified(false);
-            this.afternoon.setModified(false);
+            newAbsence.morning.setModified(false);
+            newAbsence.afternoon.setModified(false);
         }
     };
 
@@ -870,6 +866,12 @@ $(function() {
 
     // Initialize materialize
     $('#am-absenceType, #pm-absenceType').material_select();
+    newAbsence.content.modal({
+        dismissible: true,
+        inDuration: 200,
+        outDuration: 125,
+        complete: newAbsence.hide
+    });
 
     // Center #active-day
     $tableWrapper.each( function() {
@@ -984,11 +986,6 @@ $(function() {
     // New absence footer
     newAbsence.submitButton.click(function() {
         newAbsence.send();
-        return false;
-    });
-
-    newAbsence.cancelButton.click(function() {
-        newAbsence.hide();
         return false;
     });
 
