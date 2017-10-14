@@ -148,22 +148,22 @@ $(function() {
         var $div = $('#' + absence.student.id).find('div')[0];
         var $datas = $div.children;
 
-        var justifiyIndex, justifiedDays;
+        var justifyIndex, justifiedAbs;
 
-        // always add halfday, as we add an absence
+        // always add one halfday, as we add an absence
         var halfDays = parseInt($datas[0].textContent) + 1;
         $datas[0].textContent = halfDays + " demi-journée" + (halfDays > 1 ? 's' : '');
 
         // If there's more than one absence
         if (halfDays > 1) {
-            // if $datas[1] is justified days
-            if ($datas[1].textContent.split(' ').length === 3) {
-                // Store it before it changes
-                justifiedDays = parseInt($datas[1].textContent);
-            }
-            // If half-day count was 1
-            else if ($datas.length === 1) {
+            // If half-day count was 1 and no justified abs
+            if ($datas.length === 1) {
                 $div.appendChild(document.createElement('p'));
+            }
+            // if $datas[1] is justified abs
+            else if ($datas[1].textContent.split(' ').length === 3) {
+                // Store it before it changes
+                justifiedAbs = parseInt($datas[1].textContent);
             }
 
             // if there's not already an absence this day, add one day
@@ -172,26 +172,28 @@ $(function() {
 
             $datas[1].textContent = days + " jour" + (days > 1 ? 's' : '');
 
-            justifiyIndex = 2;
+            justifyIndex = 2;
         } else {
-            justifiyIndex = 1;
+            justifyIndex = 1;
         }
 
 
+        if (!justifiedAbs) {
+            justifiedAbs = ($datas.length > justifyIndex
+                ? parseInt($datas[justifyIndex].textContent) : 0);
+        }
         if (absence.justified) {
-            if (!justifiedDays) {
-                justifiedDays = ($datas.length > justifiyIndex
-                    ? parseInt($datas[justifiyIndex].textContent) : 0);
-            }
-            justifiedDays++;
+            justifiedAbs++;
+        }
 
-            if ($datas.length <= justifiyIndex) {
+        if (justifiedAbs > 0) {
+            if ($datas.length <= justifyIndex) {
                 $div.appendChild(document.createElement('p'));
             }
 
-            $datas[justifiyIndex].textContent = justifiedDays
-                + " absence" + (justifiedDays > 1 ? 's' : '')
-                + " justifiée" + (justifiedDays > 1 ? 's' : '');
+            $datas[justifyIndex].textContent = justifiedAbs
+                + " absence" + (justifiedAbs > 1 ? 's' : '')
+                + " justifiée" + (justifiedAbs > 1 ? 's' : '');
         }
     }
 
@@ -205,7 +207,7 @@ $(function() {
         var $datas = $('#' + absence.student.id)
             .find('div')[0].children;
 
-        var justifiyIndex, justifiedDays;
+        var justifyIndex, justifiedAbs;
 
         // always add halfday, as we add an absence
         var halfDays = parseInt($datas[0].textContent) - 1;
@@ -217,21 +219,21 @@ $(function() {
             var days = parseInt($datas[1].textContent) - !(cell.children.length - 1);
             $datas[1].textContent = days + " jour" + (days > 1 ? 's' : '');
 
-            justifiyIndex = 2;
+            justifyIndex = 2;
         } else {
             // if no or one absence left
-            justifiyIndex = 1;
+            justifyIndex = 1;
             if (halfDays === 1) $($datas[1]).remove();
         }
 
-        if (absence.justified && $datas.length > justifiyIndex) {
-            justifiedDays = parseInt($datas[justifiyIndex].textContent) - 1;
-            if (justifiedDays === 0) {
-                $($datas[justifiyIndex]).remove();
+        if (absence.justified && $datas.length > justifyIndex) {
+            justifiedAbs = parseInt($datas[justifyIndex].textContent) - 1;
+            if (justifiedAbs === 0) {
+                $($datas[justifyIndex]).remove();
             } else {
-                $datas[justifiyIndex].textContent = justifiedDays
-                    + " absence" + (justifiedDays > 1 ? 's' : '')
-                    + " justifiée" + (justifiedDays > 1 ? 's' : '');
+                $datas[justifyIndex].textContent = justifiedAbs
+                    + " absence" + (justifiedAbs > 1 ? 's' : '')
+                    + " justifiée" + (justifiedAbs > 1 ? 's' : '');
             }
         }
     }
@@ -245,35 +247,35 @@ $(function() {
         var $div = $('#' + student.id).find('div')[0];
         var $datas = $div.children;
 
-        var justifyIndex, justifiedDays;
+        var justifyIndex, justifiedAbs;
 
         if ($datas.length > 1) {
             // If all infos are shown
             if ($datas.length === 3) {
                 justifyIndex = 2;
-                justifiedDays = parseInt($datas[2].textContent) + add;
+                justifiedAbs = parseInt($datas[2].textContent) + add;
             }
             // if only 2 infos and second 'p' contains justified absence count
             else if ($datas[1].textContent.split(' ').length === 3) {
                 justifyIndex = 1;
-                justifiedDays = parseInt($datas[1].textContent) + add;
+                justifiedAbs = parseInt($datas[1].textContent) + add;
             }
             // if 2 infos, but no justified absence count
             else {
                 justifyIndex = 2;
-                justifiedDays = add;
+                justifiedAbs = add;
             }
         } else {
             justifyIndex = 1;
         }
 
-        if (justifiedDays > 0) {
+        if (justifiedAbs > 0) {
             if ($datas.length <= justifyIndex) {
                 $div.appendChild(document.createElement('p'));
             }
-            $datas[justifyIndex].textContent = justifiedDays
-                + " absence" + (justifiedDays > 1 ? 's' : '')
-                + " justifiée" + (justifiedDays > 1 ? 's' : '');
+            $datas[justifyIndex].textContent = justifiedAbs
+                + " absence" + (justifiedAbs > 1 ? 's' : '')
+                + " justifiée" + (justifiedAbs > 1 ? 's' : '');
         } else if ($datas.length > justifyIndex) {
             $($datas[justifyIndex]).remove();
         }
