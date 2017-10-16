@@ -133,8 +133,8 @@ class Professeur extends CI_Controller {
         $typeControle = $this->ctrlMod->getTypeControle();
 
         $data = array(
-            'css' => array('Professeur/addDSPromo'),
-            'js' => array('debug'),
+            'css' => array(),
+            'js' => array('debug', 'Professeur/ajoutControle'),
             'title' => 'Ajout de controles',
             'data' => array(
                 'select' => $select,
