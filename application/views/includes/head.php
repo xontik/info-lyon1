@@ -72,7 +72,7 @@
                 )
             );
             ?>
-            <nav class="nav-extended">
+            <nav class="nav-extended small-caps">
                 <div class="nav-wrapper">
                     <a class="brand-logo" href="/">Teckmeb</a>
                     <a href="#" data-activates="nav-mobile" class="button-collapse">

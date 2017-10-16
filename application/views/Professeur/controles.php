@@ -9,7 +9,7 @@
             <div class="section col s12 m12 l10 offset-l1 no-pad-bot">
                 <form method="post" action="<?php echo base_url('professeur/controle')?>">
                     <div class="row valign-wrapper">
-                        <div class="input-field col s12 m6 l3">
+                        <div class="input-field col s12 m6 l4">
                             <select name="groupes" id="groupes">
                                 <option value="0">Tous</option>
                                 <?php
@@ -27,7 +27,7 @@
                             </select>
                             <label for="groupes">Groupe</label>
                         </div>
-                        <div class="input-field col s12 m6 l3">
+                        <div class="input-field col s12 m6 l4">
                             <select name="matieres" id="matieres">
                                 <option value="0">Tous</option>
                                 <?php
@@ -45,7 +45,7 @@
                             </select>
                             <label for="matieres">Matieres : </label>
                         </div>
-                        <div class="input-field col s12 m6 l3">
+                        <div class="input-field col s12 m6 l4">
                             <select name="typeControle" id="typeControle">
                                 <option value="0">Tous</option>
                                 <?php
@@ -63,17 +63,17 @@
                             </select>
                             <label for="typeControle">Type de contrôle</label>
                         </div>
-                        <div class="col s12 m6 l3">
-                            <button type="submit" class="btn">Filtrer</button>
-                            <a class="flat-btn" href="<?= base_url('professeur/controle') ?>">Remettre à zéro</a>
-                        </div>
+                    </div>
+                    <div class="row col s12 m6 l4 right-align">
+                        <button type="submit" class="btn">Filtrer</button>
+                        <a class="flat-btn" href="<?= base_url('professeur/controle') ?>">Remise à zéro</a>
                     </div>
                 </form>
             </div>
             <div class="divider"></div>
             <div class="section">
                 <table id="controls-table">
-                    <thead>
+                    <thead class="small-caps">
                         <tr>
                             <td>matière</td>
                             <td>libellé</td>
@@ -85,7 +85,7 @@
                             <td>moyenne</td>
                             <td>date</td>
                             <td>suppr.</td>
-                            <td>édition</td>
+                            <td>edit.</td>
                             <td>notes</td>
                         </tr>
                     </thead>

@@ -1,6 +1,10 @@
 $(function() {
     "use strict";
 
+    /* General initialization */
+    $('select').material_select();
+
+    // Header
     $(".button-collapse").sideNav({
         draggable: true
     });

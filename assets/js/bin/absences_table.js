@@ -865,7 +865,6 @@ $(function() {
     var $tableWrapper = $('#table-wrapper');
 
     // Initialize materialize
-    $('#am-absenceType, #pm-absenceType').material_select();
     newAbsence.content.modal({
         dismissible: true,
         inDuration: 200,
