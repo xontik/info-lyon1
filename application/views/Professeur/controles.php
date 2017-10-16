@@ -72,21 +72,21 @@
             </div>
             <div class="divider"></div>
             <div class="section">
-                <table id="controls-table">
+                <table id="controls-table" class="highlight centered">
                     <thead class="small-caps">
                         <tr>
-                            <td>matière</td>
-                            <td>libellé</td>
-                            <td>groupe</td>
-                            <td>type</td>
-                            <td>coefficient</td>
-                            <td>diviseur</td>
-                            <td>médiane</td>
-                            <td>moyenne</td>
-                            <td>date</td>
-                            <td>suppr.</td>
-                            <td>edit.</td>
-                            <td>notes</td>
+                            <th>matière</th>
+                            <th>libellé</th>
+                            <th>groupe</th>
+                            <th>type</th>
+                            <th>coefficient</th>
+                            <th>diviseur</th>
+                            <th>médiane</th>
+                            <th>moyenne</th>
+                            <th>date</th>
+                            <th>suppr.</th>
+                            <th>edit.</th>
+                            <th>notes</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -99,22 +99,22 @@
                                     <td><?= $control->nomControle ?></td>
                                     <td><?= $control->nomGroupe ?></td>
                                     <td><?= $control->nomTypeControle ?> </td>
-                                    <td><?= $control->coefficient ?></td>
-                                    <td><?= $control->diviseur ?></td>
+                                    <td><?= floatval($control->coefficient) ?></td>
+                                    <td><?= floatval($control->diviseur) ?></td>
                                     <td><?= $control->median != null ? $control->median : 'Non calculée' ?> </td>
                                     <td><?= $control->average != null ? $control->average : 'Non calculée' ?>  </td>
                                     <td><?= $date->format('d/m/Y') ?></td>
-                                    <td class="center-align">
+                                    <td>
                                         <a href="<?= base_url('process_professeur/deletecontrole/' . $control->idControle) ?>">
                                             <i class="material-icons">delete</i>
                                         </a>
                                     </td>
-                                    <td class="center-align">
+                                    <td>
                                         <a href="<?= base_url('professeur/editcontrole/' . $control->idControle) ?>">
                                             <i class="material-icons">edit</i>
                                         </a>
                                     </td>
-                                    <td class="center-align">
+                                    <td>
                                         <a href="<?= base_url('professeur/ajoutNotes/' . $control->idControle) ?>">
                                             <i class="material-icons">note_add</i>
                                         </a>
