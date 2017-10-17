@@ -869,6 +869,8 @@ $(function() {
         dismissible: true,
         inDuration: 200,
         outDuration: 125,
+        startingTop: '50%',
+        endingTop: '8%',
         complete: newAbsence.hide
     });
 

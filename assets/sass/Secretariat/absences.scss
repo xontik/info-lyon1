@@ -223,7 +223,7 @@ table {
 
 #edition {
   @extend .center-align;
-  padding: 1rem;
+  min-height: 84%;
 
   section {
     > div.header {

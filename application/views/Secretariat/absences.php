@@ -191,8 +191,8 @@
             <div id="edition" class="modal">
                 <div class="modal-content">
                     <div>
-                        <h3 id="edition-name">Text nom</h3>
-                        <h4 id="edition-date">Text date</h4>
+                        <h4 id="edition-name">Text nom</h4>
+                        <h5 id="edition-date">Text date</h5>
                     </div>
                     <div class="row">
                         <section id="edition-morning" class="col s12 m10 l6">
@@ -200,7 +200,7 @@
                                 <h4>Matinée</h4>
                                 <i id="am-delete" class="material-icons scale-transition scale-out">delete</i>
                             </div>
-                            <div class="col l8 offset-l2">
+                            <div class="col l10 offset-l1">
                                 <div id="am-time" class="center-block">
                                     <p>08h00 - 12h00</p>
                                     <p>08h00 - 10h00</p>
@@ -230,7 +230,7 @@
                                 <h4>Après-midi</h4>
                                 <i id="pm-delete" class="material-icons scale-transition scale-out">delete</i>
                             </div>
-                            <div class="col l8 offset-l2">
+                            <div class="col l10 offset-l1">
                                 <div id="pm-time" class="center-block">
                                     <p>14h00 - 18h00</p>
                                     <p>14h00 - 16h00</p>

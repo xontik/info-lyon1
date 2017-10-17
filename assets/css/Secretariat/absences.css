@@ -5487,7 +5487,7 @@ table tbody td.abs-several { background-color: #b203fd; }
 
 #header-fixed { display: none; }
 
-#edition { padding: 1rem; }
+#edition { min-height: 84%; }
 #edition section > div.header { color: #ffd600; padding-bottom: 6px; border-bottom: 2px dashed; }
 #edition section > div.header > h4 { display: inline; }
 #edition section > div.header > i { cursor: pointer; }
