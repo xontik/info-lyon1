@@ -70,7 +70,8 @@
                         } ?>
                     </div>
                     <div class="input-field col s12 m6 l5">
-                        <input type="text" id="date" name="date" class="datepicker"/>
+                        <input type="text" id="date" name="date"
+                               class="datepicker" value="<?= date('d/m/Y') ?>"/>
                         <label for="date">Date du controle</label>
                     </div>
                 </div>
