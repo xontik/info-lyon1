@@ -6,12 +6,12 @@
         </div>
         <div class="divider"></div>
         <form method="post" action="<?php echo base_url("process_professeur/addmarks/" . ($data['control']->idControle)); ?>">
-            <div class="section">
+            <div class="section container">
                 <div class="row">
-                    <div class="col s6 m4">
+                    <div class="col s5 right-align">
                         <h5>Élève</h5>
                     </div>
-                    <div class="col s6 m4">
+                    <div class="col s2 offset-s1">
                         <h5>Note /<?= floatval($data['control']->diviseur) ?></h5>
                     </div>
                 </div>
@@ -19,10 +19,10 @@
                 foreach ($data['marks'] as $mark)
                 { ?>
                     <div class="row valign-wrapper">
-                        <div class="col s6 m4 pull-m2">
-                            <span class="flow-text"><?= $mark->nom . ' ' . $mark->prenom ?></span>
+                        <div class="col s5  pull-s4 right-align">
+                            <span><?= $mark->nom . ' ' . $mark->prenom ?></span>
                         </div>
-                        <div class="col s6 m4 pull-m4">
+                        <div class="col s2 offset-s1 pull-s4">
                             <input type="number" name="<?= $mark->numEtudiant ?>" id="<?= $mark->numEtudiant ?>"
                                    value="<?= !is_null($mark->valeur) ? $mark->valeur : '' ?>"/>
                         </div>
