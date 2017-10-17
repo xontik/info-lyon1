@@ -201,7 +201,7 @@ class Professeur extends CI_Controller {
         $matiere = $this->ctrlMod->getMatiere($id);
 
         $data = array(
-            'css' => array('Professeur/ajoutnotes'),
+            'css' => array(),
             'js' => array('debug'),
             'title' => 'Ajout de notes',
             'data' => array(
