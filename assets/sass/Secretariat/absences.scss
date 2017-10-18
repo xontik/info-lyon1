@@ -57,8 +57,12 @@ $color-mix: #b203fd;
 }
 
 #table-static {
-  border-right: 2px solid $border-color;
+  @extend .white;
+
+  position: relative;
   z-index: 2;
+
+  border-right: 2px solid $border-color;
 }
 
 #table-group-list p {
@@ -119,12 +123,13 @@ $color-mix: #b203fd;
 }
 
 table {
+  table-layout: fixed;
   margin-top: 5px;
 
   td {
     @extend .center-align, .no-padding;
     height: $line-height;
-    min-width: $line-height;
+    width: 40rem;
     font-size: 1rem;
     border-right: 1px solid $border-color;
   }
@@ -218,7 +223,13 @@ table {
 }
 
 #header-fixed {
+  @extend .white;
   display: none;
+  position: fixed;
+  top: 0;
+
+  margin-top: 0;
+  z-index: 1;
 }
 
 #edition {

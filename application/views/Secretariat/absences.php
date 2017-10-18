@@ -186,7 +186,7 @@
                         ?>
                     </tbody>
                 </table>
-                <table id="header-fixed" class="hide"></table>
+                <table id="header-fixed"></table>
             </div>
             <div id="edition" class="modal">
                 <div class="modal-content">

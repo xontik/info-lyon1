@@ -874,14 +874,6 @@ $(function() {
         complete: newAbsence.hide
     });
 
-    // Center #active-day
-    $tableWrapper.each( function() {
-        var activeDay = $('#active-day');
-        if (activeDay.length) {
-            this.scrollLeft = activeDay.position().left - (window.innerWidth / 2);
-        }
-    });
-
     // Store existing absences in an object
     $('td.abs').each(function() {
         $(this).children().each(function() {
@@ -890,18 +882,27 @@ $(function() {
         });
     });
 
+    // Center #active-day
+    $tableWrapper.each( function() {
+        var activeDay = $('#active-day');
+        if (activeDay.length) {
+            this.scrollLeft = activeDay.position().left - (window.innerWidth / 2);
+        }
+    });
+
     // Student list events
     $('#table-stud-list').on('click', 'i', function() {
         $(this).siblings('div').toggle(DEFAULT_ANIM_TIME);
     });
 
     // Absence table events
-    $absenceTable.on('click', 'td', function(event) {
-        if (event.which === 1) {
-            activate("cell", this);
-            newAbsence.edit(this);
-        }
-    })
+    $absenceTable
+        .on('click', 'td', function(event) {
+            if (event.which === 1) {
+                activate("cell", this);
+                newAbsence.edit(this);
+            }
+        })
         .on('mouseenter', 'td.abs', function() {
             $(this).children('div').show(DEFAULT_ANIM_TIME);
         })
@@ -919,7 +920,6 @@ $(function() {
 
     newAbsence.morning.content.on('change', ':checkbox, select', function() {
         newAbsence.morning.setModified(true);
-        newAbsence.morning.delete.removeClass('scale-out');
     });
 
     newAbsence.morning.delete.click(function() {
@@ -996,20 +996,22 @@ $(function() {
 
     var theadTopPosition = $absenceTableHead.position().top;
 
-    $(window).on('scroll', function() {
-        var offset = $(this).scrollTop();
-        if (offset >= theadTopPosition && $fixedHeader.is(':hidden')) {
-            $fixedHeader.show();
-        } else if (offset < theadTopPosition) {
-            $fixedHeader.hide();
-        }
-    })
-    // Simulate scroll so fixed header appears if page is scrolled down at loading
+    $(window)
+        .on('scroll', function() {
+            var offset = $(this).scrollTop();
+            if (offset >= theadTopPosition && $fixedHeader.is(':hidden')) {
+                $fixedHeader.css('display', 'table');
+            } else if (offset < theadTopPosition) {
+                $fixedHeader.css('display', 'none');
+            }
+        })
+        // Simulate scroll so fixed header appears if page is scrolled down at loading
         .scroll();
 
     // Make thead follow horizontal scroll of the body
     var tableStaticWidth = $('#table-static').outerWidth(true);
-    $tableWrapper.on('scroll', function() {
-        $fixedHeader.css('left', -this.scrollLeft + tableStaticWidth);
-    });
+    $tableWrapper
+        .on('scroll', function() {
+            $fixedHeader.css('left', -this.scrollLeft + tableStaticWidth);
+        });
 });
