@@ -4,6 +4,14 @@
   @extend .no-select;
 }
 
+.no-margin {
+  margin: 0 !important;
+}
+
 .small-caps {
   font-variant: small-caps;
+}
+
+.btn-footer {
+  @extend .right-align;
 }
