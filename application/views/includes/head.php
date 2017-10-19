@@ -29,10 +29,17 @@
                 }
             }
 
-            echo '<pre id="debug">' . PHP_EOL;
+            echo '<pre id="debug">';
             array_walk($data, 'makeReceivedDataPrintable');
             print_r($data);
             echo '</pre>' . PHP_EOL;
+
+            ?>
+            <div id="debug-toolbar" class="row no-margin">
+                <a href="/user/session" class="btn-flat">session</a>
+                <a href="/user/fillnotif" class="btn-flat">fill notifs</a>
+            </div>
+            <?php
         } ?>
 
         <?php

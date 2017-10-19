@@ -5428,6 +5428,8 @@ button.picker__today:focus, button.picker__clear:focus, button.picker__close:foc
 
 #debug { display: none; margin-left: 7px; }
 
+#debug-toolbar { display: none; }
+
 body > header > nav .brand-logo { margin-left: 8px; }
 body > header > nav h2 { text-align: center; font-size: 2.46rem; }
 

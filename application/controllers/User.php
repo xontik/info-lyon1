@@ -16,7 +16,6 @@ class User extends CI_Controller {
             isset($_POST['password'])) )
         {
             redirect('/');
-            return;
         }
 
         $id = strtolower($_POST['id']);
@@ -96,13 +95,19 @@ class User extends CI_Controller {
 
     // Debug pages
     public function session() {
-        echo '<pre>';
-        print_r($_SESSION);
-        echo '</pre>';
+        $data = array(
+            'js' => array('debug'),
+            'title' => '$_SESSION',
+            'data' => array(
+                'session' => $_SESSION
+            )
+        );
+        show('Debug/session', $data);
     }
 
     public function fillnotif() {
         $this->load->helper('notification');
+
         add_notification('Message court');
         add_notification('Succès', 'success');
         add_notification('Avertissement', 'warning');
