@@ -513,7 +513,7 @@ $(function() {
         var $data = $(div).children();
         var date = getDateFromColumn(cell.index());
 
-        var timeVals = $data.eq(0).text().trim().substr(-5).split(":");
+        var timeVals = $data.eq(0).text().trim().substr(-13).split(" - ");
         var beginTime = new Date(date.getTime() + parseTime(timeVals[0]));
         var endTime = new Date(date.getTime() + parseTime(timeVals[1]));
 
