@@ -7,6 +7,16 @@ $(function() {
 
     var absences = {};
 
+    /**
+     * Absence class
+     * @param {number} absenceId
+     * @param {Student} student
+     * @param {Date} beginTime
+     * @param {Date} endTime
+     * @param {boolean} justified
+     * @param {number} absenceTypeValue
+     * @constructor
+     */
     function Absence(absenceId, student, beginTime, endTime, justified, absenceTypeValue) {
         this.absenceId = absenceId || null;
         this.student = student || null;
@@ -18,14 +28,20 @@ $(function() {
         };
         this.justified = justified || false;
         this.absenceType = {
-            value: absenceTypeValue || 0,
+            value: parseInt(absenceTypeValue) || 0,
             name: getAbsenceTypeName(absenceTypeValue)
         };
     }
 
+    /**
+     * Student class.
+     * @param {string} studentId
+     * @param {string} name
+     * @constructor
+     */
     function Student(studentId, name) {
-        this.id = studentId || '';
-        this.name = name || '';
+        this.id = studentId || "";
+        this.name = name || "";
     }
 
     var DateFormat = {
@@ -36,7 +52,7 @@ $(function() {
 
     /**
      * Format date according to a date format
-     * @param format A value of DateFormat
+     * @param {number} format - A value of DateFormat
      * @returns {String} The formatted date
      */
     Date.prototype.format = function(format) {
@@ -55,28 +71,28 @@ $(function() {
                     "Novembre", "Décembre"
                 ];
 
-                return dayName[this.getUTCDay()] + ' '
-                    + this.getUTCDate() + ' '
-                    + monthNames[this.getUTCMonth()] + ' '
+                return dayName[this.getUTCDay()] + " "
+                    + this.getUTCDate() + " "
+                    + monthNames[this.getUTCMonth()] + " "
                     + this.getUTCFullYear();
             case DateFormat.SQL:
-                return this.getUTCFullYear() + '-'
-                    + twoDigits(1 + this.getUTCMonth()) + '-'
-                    + twoDigits(this.getUTCDate()) + ' '
-                    + twoDigits(this.getUTCHours()) + ':'
-                    + twoDigits(this.getUTCMinutes()) + ':'
+                return this.getUTCFullYear() + "-"
+                    + twoDigits(1 + this.getUTCMonth()) + "-"
+                    + twoDigits(this.getUTCDate()) + " "
+                    + twoDigits(this.getUTCHours()) + ":"
+                    + twoDigits(this.getUTCMinutes()) + ":"
                     + twoDigits(this.getUTCSeconds());
             case DateFormat.SHORT_TIME:
-                return twoDigits(this.getUTCHours()) + ':' + twoDigits(this.getUTCMinutes());
+                return twoDigits(this.getUTCHours()) + ":" + twoDigits(this.getUTCMinutes());
             default:
-                return '';
+                return "";
         }
     };
 
     if (!String.prototype.startsWith) {
         /**
-         * @param searchString The string to search for
-         * @param position The position where to begin to search
+         * @param {string} searchString - The string to search for
+         * @param {number} [position=0] - The position where to begin to search
          * @returns {boolean} true if the string begins with the search string, false otherwise
          */
         String.prototype.startsWith = function (searchString, position) {
@@ -87,13 +103,13 @@ $(function() {
 
     if (!String.prototype.endsWith) {
         /**
-         * @param searchString The string to look for
-         * @param position Search for the search string like this was its length
+         * @param {string} searchString - The string to look for
+         * @param {number} [position] - Search for the search string like this was its length
          * @returns {boolean} true if the string ends with the search string, false otherwise
          */
         String.prototype.endsWith = function(searchString, position) {
             var subjectString = this.toString();
-            if (typeof position !== 'number' || !isFinite(position)
+            if (typeof position !== "number" || !isFinite(position)
                 || Math.floor(position) !== position || position > subjectString.length
             ) {
                 position = subjectString.length;
@@ -108,31 +124,31 @@ $(function() {
      * Activate an element relatively to a field.
      * If the field contained another activated node,
      * it deactivates it then active the target element.
-     * @param field The field of the target
-     * @param target The element to be activated
+     * @param {string} field - The field of the target
+     * @param {jQuery} target - The element to be activated
      */
     function activate(field, target) {
         if (ACTIVE_CONTAINER[field]) {
-            ACTIVE_CONTAINER[field].removeClass('active');
+            ACTIVE_CONTAINER[field].removeClass("active");
         }
-        ACTIVE_CONTAINER[field] = $(target).addClass('active');
+        ACTIVE_CONTAINER[field] = $(target).addClass("active");
     }
 
     /**
      * Deactivate the active element of a field.
-     * @param field The field to be emptied
+     * @param {string} field The field to be emptied
      */
     function deactivate(field) {
         if (ACTIVE_CONTAINER[field]) {
-            ACTIVE_CONTAINER[field].removeClass('active');
+            ACTIVE_CONTAINER[field].removeClass("active");
             delete ACTIVE_CONTAINER[field];
         }
     }
 
     /**
      * Return the activated node in a field.
-     * @param field The field containing the active node
-     * @returns {Node} The active DOM element corresponing to the field
+     * @param {string} field - The field containing the active node
+     * @returns {jQuery} The active DOM element corresponing to the field
      */
     function getActive(field) {
         return ACTIVE_CONTAINER[field]
@@ -140,37 +156,38 @@ $(function() {
 
     /**
      * Add absence to the count of absence of "its" student.
-     * @param absence The absence to be added
+     * @param {Absence} absence - The absence to be added
      */
     function addToCount(absence) {
-        var cell = document.getElementById('absn' + absence.absenceId).parentNode;
+        var cell = $("#absn" + absence.absenceId).parent();
 
-        var $div = $('#' + absence.student.id).find('div')[0];
-        var $datas = $div.children;
+        var counter = $("#" + absence.student.id).find("div");
+        var $datas = counter.children();
 
         var justifyIndex, justifiedAbs;
 
         // always add one halfday, as we add an absence
-        var halfDays = parseInt($datas[0].textContent) + 1;
-        $datas[0].textContent = halfDays + " demi-journée" + (halfDays > 1 ? 's' : '');
+        var halfDays = parseInt($datas.eq(0).text()) + 1;
+        $datas.eq(0).text(halfDays + " demi-journée" + (halfDays > 1 ? "s" : ""));
 
         // If there's more than one absence
         if (halfDays > 1) {
             // If half-day count was 1 and no justified abs
             if ($datas.length === 1) {
-                $div.appendChild(document.createElement('p'));
+                counter.append(document.createElement("p"));
+                $datas = counter.children();
             }
             // if $datas[1] is justified abs
-            else if ($datas[1].textContent.split(' ').length === 3) {
+            else if ($datas.eq(1).text().split(" ").length === 3) {
                 // Store it before it changes
-                justifiedAbs = parseInt($datas[1].textContent);
+                justifiedAbs = parseInt($datas.eq(1).text());
             }
 
             // if there's not already an absence this day, add one day
-            var days = ($datas.length > 1 ? parseInt($datas[1].textContent) || 1 : 1)
-                + !(cell.children.length - 1);
+            var days = ($datas.length > 1 ? parseInt($datas.eq(1).text()) || 1 : 1)
+                + !(cell.children().length - 1);
 
-            $datas[1].textContent = days + " jour" + (days > 1 ? 's' : '');
+            $datas.eq(1).text(days + " jour" + (days > 1 ? "s" : ""));
 
             justifyIndex = 2;
         } else {
@@ -180,7 +197,7 @@ $(function() {
 
         if (!justifiedAbs) {
             justifiedAbs = ($datas.length > justifyIndex
-                ? parseInt($datas[justifyIndex].textContent) : 0);
+                ? parseInt($datas.eq(justifyIndex).text()) : 0);
         }
         if (absence.justified) {
             justifiedAbs++;
@@ -188,64 +205,60 @@ $(function() {
 
         if (justifiedAbs > 0) {
             if ($datas.length <= justifyIndex) {
-                $div.appendChild(document.createElement('p'));
+                counter.append(document.createElement("p"));
+                $datas = counter.children();
             }
 
-            $datas[justifyIndex].textContent = justifiedAbs
-                + " absence" + (justifiedAbs > 1 ? 's' : '')
-                + " justifiée" + (justifiedAbs > 1 ? 's' : '');
+            $datas.eq(justifyIndex).text(justifiedAbs
+                + " absence" + (justifiedAbs > 1 ? "s" : "")
+                + " justifiée" + (justifiedAbs > 1 ? "s" : "")
+            );
         }
     }
 
     /**
      * Remove an absence to the count of "its" student.
-     * @param absence The absence to be removed
+     * @param {Absence} absence - The absence to be removed
      */
     function removeFromCount(absence) {
-        var cell = document.getElementById('absn' + absence.absenceId).parentNode;
+        var cell = $("#absn" + absence.absenceId).parent();
 
-        var $datas = $('#' + absence.student.id)
-            .find('div')[0].children;
+        var $datas = $("#" + absence.student.id)
+            .find("div")
+            .children();
 
         var justifyIndex, justifiedAbs;
 
         // always add halfday, as we add an absence
-        var halfDays = parseInt($datas[0].textContent) - 1;
-        $datas[0].textContent = halfDays + " demi-journée" + (halfDays > 1 ? 's' : '');
+        var halfDays = parseInt($datas.eq(0).text()) - 1;
+        $datas.eq(0).text(halfDays + " demi-journée" + (halfDays > 1 ? "s" : ""));
 
         // After removing
         if (halfDays > 1) {
             // if there's more than one absence
-            var days = parseInt($datas[1].textContent) - !(cell.children.length - 1);
-            $datas[1].textContent = days + " jour" + (days > 1 ? 's' : '');
+            var days = parseInt($datas.eq(1).text()) - !(cell.children().length - 1);
+            $datas.eq(1).text(days + " jour" + (days > 1 ? "s" : ""));
 
             justifyIndex = 2;
         } else {
             // if no or one absence left
             justifyIndex = 1;
-            if (halfDays === 1) $($datas[1]).remove();
-        }
-
-        if (absence.justified && $datas.length > justifyIndex) {
-            justifiedAbs = parseInt($datas[justifyIndex].textContent) - 1;
-            if (justifiedAbs === 0) {
-                $($datas[justifyIndex]).remove();
-            } else {
-                $datas[justifyIndex].textContent = justifiedAbs
-                    + " absence" + (justifiedAbs > 1 ? 's' : '')
-                    + " justifiée" + (justifiedAbs > 1 ? 's' : '');
+            if (halfDays === 1) {
+                $datas.eq(1).remove();
             }
         }
+
+        updateJustifiedCount(absence.student, -1);
     }
 
     /**
      * Change the number of the justified absence for the student.
-     * @param student The student the change
-     * @param add How many justification to add. Can be negative
+     * @param {Student} student - The student the change
+     * @param {number} add - How many justification to add. Can be negative
      */
     function updateJustifiedCount(student, add) {
-        var $div = $('#' + student.id).find('div')[0];
-        var $datas = $div.children;
+        var counter = $("#" + student.id).find("div");
+        var $datas = counter.children();
 
         var justifyIndex, justifiedAbs;
 
@@ -253,12 +266,12 @@ $(function() {
             // If all infos are shown
             if ($datas.length === 3) {
                 justifyIndex = 2;
-                justifiedAbs = parseInt($datas[2].textContent) + add;
+                justifiedAbs = parseInt($datas.eq(2).text()) + add;
             }
-            // if only 2 infos and second 'p' contains justified absence count
-            else if ($datas[1].textContent.split(' ').length === 3) {
+            // if only 2 infos and second "p" contains justified absence count
+            else if ($datas.eq(1).text().split(" ").length === 3) {
                 justifyIndex = 1;
-                justifiedAbs = parseInt($datas[1].textContent) + add;
+                justifiedAbs = parseInt($datas.eq(1).text()) + add;
             }
             // if 2 infos, but no justified absence count
             else {
@@ -271,55 +284,56 @@ $(function() {
 
         if (justifiedAbs > 0) {
             if ($datas.length <= justifyIndex) {
-                $div.appendChild(document.createElement('p'));
+                counter.append(document.createElement("p"));
+                $datas = counter.children();
             }
-            $datas[justifyIndex].textContent = justifiedAbs
-                + " absence" + (justifiedAbs > 1 ? 's' : '')
-                + " justifiée" + (justifiedAbs > 1 ? 's' : '');
+
+            $datas.eq(justifyIndex).text(justifiedAbs
+                + " absence" + (justifiedAbs > 1 ? "s" : "")
+                + " justifiée" + (justifiedAbs > 1 ? "s" : "")
+            );
         } else if ($datas.length > justifyIndex) {
-            $($datas[justifyIndex]).remove();
+            // if justified paragraph exists but should not
+            $datas.eq(justifyIndex).remove();
         }
     }
 
     /**
      * If the integer only contains 1 digit, fill with zeros
-     * @param d int In integer between -99 and 99
+     * @param {number} d - In integer between -99 and 99
      * @returns {string} The number filled with zeros
      */
     function twoDigits(d) {
-        if(d >= 0 && d < 10) return '0' + d.toString();
-        if(d >= -10 && d < 0) return '-0' + (-d).toString();
+        if(d >= 0 && d < 10) return "0" + d.toString();
+        if(d >= -10 && d < 0) return "-0" + (-d).toString();
         return d.toString();
     }
 
     /**
-     * Format a number of seconds into a formatted string :
-     * "HH:mm"
-     * @param seconds The number of seconds
-     * @returns {string} The time formatted string
+     * Parse a time formatted string (HH:mm:ss) in milliseconds.
+     * @param {string} time - A time string with format HH:mm:ss
+     * @returns {number} The number of milliseconds
      */
-    function formatTime(seconds) {
-        var hours = seconds / 3600;
-        return twoDigits(Math.floor(hours)) + ':'
-            + twoDigits(hours % 1 * 60)
-    }
+    function parseTime(time) {
+        var vals = time.split(":").map(function(e) {
+            return parseInt(e) || 0;
+        });
 
-    /**
-     * Parse a time formatted string (HH:mm:ss).
-     * @param time A formatted string: HH:mm:ss
-     * @returns {number} The number of seconds
-     */
-    function parseTimeToSeconds(time) {
-        return (parseInt(time.substr(0, 2)) || 0) * 3600
-            + (parseInt(time.substr(3, 2)) || 0) * 60
-            + (parseInt(time.substr(7, 2)) || 0);
+        if ( (vals[0] && vals[0] < 0 && vals[0] >= 24)
+            || (vals[1] && vals[1] < 0 && vals[1] >= 60)
+            || (vals[2] && vals[2] < 0 && vals[2] >= 60)
+        ) {
+            throw TypeError("Invalid time");
+        }
+
+        return ((vals[0] || 0) * 3600 + (vals[1] || 0) * 60 + (vals[2] || 0)) * 1000;
     }
 
     /**
      * Return the time slot corresponding to the dates.
-     * @param begin Date
-     * @param end Date
-     * @return {int} The index of the time slot, -1 if dates are incorrect
+     * @param {Date} begin
+     * @param {Date} end
+     * @return {number} The index of the time slot, -1 if dates are incorrect
      */
     function getTimeSlot(begin, end) {
         if (begin.getUTCDate() !== end.getUTCDate()
@@ -339,23 +353,23 @@ $(function() {
     }
 
     /**
-     * Return the id and the name of the student corresponding to the row
-     * @param row The row on the table
-     * @returns {object} The informations about the student
+     * Return the Student object corresponding to the row
+     * @param {number} row - The row on the table
+     * @returns {Student} The informations about the student
      */
     function getStudentFromRow(row) {
-        var $studentDiv = $('#table-stud-list').children('div')
-            .eq(row);
+        var $student = $("#table-stud-list").children("div").eq(row);
+
         return new Student(
-            $studentDiv.attr('id'),
-            $studentDiv.children('p').text()
+            $student.prop("id"),
+            $student.children("p").text()
         );
 
     }
 
     /**
      * Return the date corresponding to the column of the table
-     * @param col The column
+     * @param {number} col - The column
      * @returns {Date} The date corresponding
      */
     function getDateFromColumn(col) {
@@ -366,80 +380,92 @@ $(function() {
 
     /**
      * Get the value of an absence type from its name.
-     * @param absenceName The name of the asbence type
+     * @param {string} absenceName - The name of the asbence type
      * @returns {number} The value of the absence type, 0 if it doesn't exists
      */
     function getAbsenceTypeValue(absenceName) {
-        var options = document.getElementById('am-absenceType').children;
-        for (var i = 0; i < options.length; i++) {
-            if (options[i].textContent === absenceName) {
-                return parseInt(options[i].value);
+        var options = $("#am-absenceType").children();
+        var value = 0;
+        options.each(function() {
+            if ($(this).text() === absenceName) {
+                value = $(this).val();
+                return false;
             }
-        }
-        return 0;
+        });
+        return value;
     }
 
     /**
      * Get the name of the absence type from its value.
-     * @param absenceValue The value of the absence type
+     * @param {number} absenceValue - The value of the absence type
      * @returns {string} The name of the absence type
      */
     function getAbsenceTypeName(absenceValue) {
-        absenceValue = parseInt(absenceValue);
         if (!absenceValue) {
-            return '';
+            return "";
         }
-        return document.getElementById('am-absenceType').children[absenceValue].textContent;
+        var absenceTypes = $("#am-absenceType").children();
+        return absenceTypes.eq(absenceValue).text();
     }
 
     /**
      * Check if the element contains an absence that is in the morning or not.
-     * @param $div The absence element to be tested
+     * @param {jQuery} element - The absence element to be tested
      * @returns {null|boolean} Whether the absence is in morning or not,
-     * null if $div is not a valid absence container
+     * null if the element is not a valid absence container
      */
-    function isMorningAbsence($div) {
-        if (!$div) {
+    function isMorningAbsence(element) {
+        if (!element) {
             return null;
         }
-        var time = $($div).children().eq(0).text().substr(-13, 5);
-        return parseTimeToSeconds(time) <= 43200; // midday
+        var time = $(element).children().eq(0).text().trim().substr(-13).split(" - ")[0];
+        return parseTime(time) <= 43200000; // midday
     }
 
     /**
      *
-     * @param array Either 'newAbsence.morning' or 'newAbsence.afternoon'
-     * @param absence The absence to be used to fill the informations (can be null)
-     * @param activeField The field to be used to active things in absence
+     * @param {Object} array - Either "newAbsence.morning" or "newAbsence.afternoon"
+     * @param {jQuery} array.timeSlot
+     * @param {jQuery} array.absenceType
+     * @param {jQuery} array.justified
+     * @param {jQuery} array.delete
+     * @param {Absence} absence - The absence to be used to fill the informations (can be null)
+     * @param {string} activeField - The field to be used to active things in absence
      */
     function setInterfaceAbsence(array, absence, activeField) {
         if (absence) {
             array.activeAbsence = absence;
-            activate(activeField, array.timeSlot.children().eq(absence.time.slot));
-            array.delete.removeClass('scale-out');
-            array.justified.prop('checked', absence.justified);
+            if (absence.time.slot > -1) {
+                activate(activeField, array.timeSlot.children().eq(absence.time.slot));
+            }
+            array.delete.removeClass("scale-out");
+            array.justified.prop("checked", absence.justified);
             array.absenceType.val(absence.absenceType.value);
         } else {
             array.activeAbsence = null;
             deactivate(activeField);
-            array.delete.addClass('scale-out');
-            array.justified.prop('checked', false);
-            array.absenceType.val('0');
+            array.delete.addClass("scale-out");
+            array.justified.prop("checked", false);
+            array.absenceType.val("0");
         }
         array.absenceType.material_select();
     }
 
     /**
      * Create an absence from one of the interface.
-     * @param cell The cell to which belongs the absence
-     * @param array The interface used to create the absence (newAbsence.morning or newAbsense.afternoon)
-     * @param absenceId The id of the absence (only if updating an absence)
+     * @param {jQuery} cell - The cell to which belongs the absence
+     * @param {Object} array - The interface used to create the absence (newAbsence.morning or newAbsense.afternoon)
+     * @param {jQuery} array.timeSlot
+     * @param {jQuery} array.absenceType
+     * @param {jQuery} array.justified
+     * @param {jQuery} array.delete
+     * @param {number} absenceId - The id of the absence (only if updating an absence)
      * @returns {Absence} The absence created, null if a error happened
      */
     function createAbsenceFromInterface(cell, array, absenceId) {
         absenceId = absenceId || null;
 
-        var $timeSlot = array.timeSlot.children('.active');
+        var $timeSlot = array.timeSlot.children(".active");
 
         var timeSlotVal = array.timeSlot.children().index($timeSlot);
         var absenceTypeVal = array.absenceType.val();
@@ -451,7 +477,7 @@ $(function() {
             alert("Vous n'avez pas sélectionné de créneau");
         }
 
-        if (absenceTypeVal === '0') {
+        if (absenceTypeVal === "0") {
             error = true;
             alert("Vous n'avez pas choisi de type d'absence");
         }
@@ -459,14 +485,13 @@ $(function() {
         if (error) return null;
 
         // ### Parse datas
-        var date = getDateFromColumn(cell.cellIndex);
-        var beginTimeVal = $timeSlot.text().substr(0, 5),
-            endTimeVal = $timeSlot.text().substr(-5);
+        var date = getDateFromColumn($(cell).index());
+        var timeVals = $timeSlot.text().trim().split(" - ");
 
-        var student = getStudentFromRow(cell.parentNode.rowIndex - 2);
-        var beginTime = new Date(date.getTime() + parseTimeToSeconds(beginTimeVal) * 1000),
-            endTime = new Date(date.getTime() + parseTimeToSeconds(endTimeVal) * 1000);
-        var justified = array.justified.is(':checked');
+        var student = getStudentFromRow($(cell).parent().index());
+        var beginTime = new Date(date.getTime() + parseTime(timeVals[0])),
+            endTime = new Date(date.getTime() + parseTime(timeVals[1]));
+        var justified = array.justified.is(":checked");
 
         return new Absence(
             absenceId,
@@ -480,39 +505,39 @@ $(function() {
 
     /**
      * Create an absence from the informations in the div
-     * (and its position in the table)
-     * @param div The element you want the absence from
+     * @param {jQuery} div - The element you want the absence from
      * @returns {Absence} An absence
      */
     function createAbsenceFromDiv(div) {
-        var cell = div.parentNode;
-        var date = getDateFromColumn(cell.cellIndex);
+        var cell = $(div).parent();
+        var $data = $(div).children();
+        var date = getDateFromColumn(cell.index());
 
-        var timeContent = div.children[0].textContent.trim();
-        var beginTime = new Date(date.getTime() + parseTimeToSeconds(timeContent.substr(-13, 5)) * 1000);
-        var endTime = new Date(date.getTime() + parseTimeToSeconds(timeContent.substr(-5)) * 1000);
+        var timeVals = $data.eq(0).text().trim().substr(-5).split(":");
+        var beginTime = new Date(date.getTime() + parseTime(timeVals[0]));
+        var endTime = new Date(date.getTime() + parseTime(timeVals[1]));
 
         return new Absence(
-            div.id.substr(4),
-            getStudentFromRow(cell.parentNode.rowIndex - 2),
+            parseInt($(div).prop("id").substr(4)),
+            getStudentFromRow(cell.parent().index()),
             beginTime,
             endTime,
-            div.children[1].textContent.trim().substr(-3) === "Oui",
-            getAbsenceTypeValue(div.children[2].textContent)
+            $data.eq(1).text().trim().endsWith("Oui"),
+            getAbsenceTypeValue($data.eq(2).text())
         );
     }
 
     /**
-     * Deletes an absence from interface and the database
-     * @param absence The absence to be deleted
+     * Deletes an absence the page
+     * @param {Absence} absence - The absence to be deleted
      */
     function deleteAbsence(absence) {
         if (!absence) return;
 
-        var $absence = $('#absn' + absence.absenceId);
-        var cell = $absence.parent()[0];
-        var cellClasses = cell.className.split(' ').filter(function(element) {
-            return element.substring(0, 3) !== "abs";
+        var $absence = $("#absn" + absence.absenceId);
+        var cell = $absence.parent();
+        var cellClasses = cell.attr("class").split(" ").filter(function(el) {
+            return !el.startsWith("abs");
         });
 
         removeFromCount(absence);
@@ -520,23 +545,30 @@ $(function() {
         delete absences[absence.absenceId];
         $absence.remove();
 
-        if (cell.children.length) {
-            var $datas = cell.children[0].children;
+        var cellChildren = cell.children();
+        if (cellChildren.length) {
+            var $otherAbsence = cellChildren.eq(0);
 
             cellClasses.push("abs");
-            if ($datas[1].textContent.trim().substr(-3) === "Oui") {
-                cellClasses.push('abs-justified');
+            if ($otherAbsence.children().eq(1).text().trim().endsWith("Oui")) {
+                cellClasses.push("abs-justifiee");
             }
-            cellClasses.push('abs-' + $datas[2].textContent.toLowerCase());
+            cellClasses.push($otherAbsence.attr("class"));
         }
-        cell.className = cellClasses.join(' ');
+
+        cell.removeClass()
+            .addClass(cellClasses.join(" "));
     }
 
     /**
      * Choose to create or modify an absence.
-     * @param cell The cell that contains the absence
-     * @param array The interface used to create the absence (newAbsence.morning or newAbsense.afternoon)
-     * @param originalAbsence The old absence if it's a modification
+     * @param {jQuery} cell - The cell that contains the absence
+     * @param {Object} array - The interface used to create the absence (newAbsence.morning or newAbsense.afternoon)
+     * @param {jQuery} array.timeSlot
+     * @param {jQuery} array.absenceType
+     * @param {jQuery} array.justified
+     * @param {jQuery} array.delete
+     * @param {Absence} [originalAbsence] - The old absence if it's a modification
      * @return {boolean} true if the operation was successful, false otherwise
      */
     function handleAbsence(cell, array, originalAbsence) {
@@ -553,41 +585,43 @@ $(function() {
 
     /**
      * Permenantly save the absence.
-     * @param cell The cell to which belongs the absence
-     * @param absence The absence to be added or modified
+     * @param {jQuery} cell - The cell to which belongs the absence
+     * @param {Absence} absence - The absence to be added or modified
      * @return {boolean} true if the operation was successful, false otherwise
      */
     function sendAbsence(cell, absence) {
         if (!absence) return false;
 
         var data = {
-            studentId: absence.student.id,
+            studentId: absence.student.id.toString(),
             beginDate: absence.time.begin.format(DateFormat.SQL),
             endDate: absence.time.end.format(DateFormat.SQL),
             absenceTypeId: absence.absenceType.value,
-            justified: absence.justified ? '1' : '0'
+            justified: absence.justified ? "1" : "0"
         };
-        var url = '/Process_secretariat/';
+        var url = "/Process_secretariat/";
 
         if (absence.absenceId) {
-            url += 'modifier_absence';
+            url += "modifier_absence";
             data.absenceId = absence.absenceId;
         } else {
-            url += 'ajout_absence';
+            url += "ajout_absence";
         }
 
         $.post(url, data, function(data) {
             // If success
             if (data.match(/^success [0-9]*$/)) {
-                var oldCellClasses = cell.className.split(" ");
-                cell.className = filterClasses(oldCellClasses, absence).join(" ");
+                var oldCellClasses = $(cell).attr("class").split(" ");
+                $(cell)
+                    .removeClass()
+                    .addClass(filterClasses(oldCellClasses, absence).join(" "));
 
                 var $schedule,
                     $justified,
                     $absenceType;
 
                 if (absence.absenceId) {
-                    // If absence editition
+                    // If absence edition
                     var wasJustified = absences[absence.absenceId].justified;
                     absences[absence.absenceId] = absence;
 
@@ -595,14 +629,16 @@ $(function() {
                         updateJustifiedCount(absence.student, absence.justified - wasJustified);
                     }
 
-                    var $absence = document.getElementById('absn' + absence.absenceId);
-                    $absence.className = "abs-" + absence.absenceType.name.toLowerCase();
+                    var $absence = $("#absn" + absence.absenceId);
+                    $absence
+                        .removeClass()
+                        .addClass("abs-" + absence.absenceType.name.toLowerCase());
 
                     // Fields to be modified
-                    var children = $absence.children;
-                    $schedule = children[0];
-                    $justified = children[1];
-                    $absenceType = children[2];
+                    var children = $absence.children();
+                    $schedule = children.eq(0);
+                    $justified = children.eq(1);
+                    $absenceType = children.eq(2);
                 } else {
                     // if new absence
                     var absenceId = data.substr(8);
@@ -610,36 +646,36 @@ $(function() {
                     absences[absenceId] = absence;
 
                     // create new absence container
-                    var div = document.createElement('div');
-                    div.className = 'abs-' + absence.absenceType.name.toLowerCase();
-                    div.id = 'absn' + absenceId;
+                    var div = document.createElement("div");
+                    div.className = "abs-" + absence.absenceType.name.toLowerCase();
+                    div.id = "absn" + absenceId;
 
                     // add the fields that will be filled to the container
-                    $schedule = div.appendChild(document.createElement('p'));
-                    $justified = div.appendChild(document.createElement('p'));
-                    $absenceType = div.appendChild(document.createElement('p'));
+                    $schedule = $(div.appendChild(document.createElement("p")));
+                    $justified = $(div.appendChild(document.createElement("p")));
+                    $absenceType = $(div.appendChild(document.createElement("p")));
 
                     // if absence is in the morning, add it before the other absence
                     if (absence.time.begin.getUTCHours() <= 12) {
                         $(cell).prepend(div);
                     } else {
-                        cell.appendChild(div);
+                        $(cell).append(div);
                     }
                     addToCount(absence);
                 }
 
-                $schedule.textContent = 'Horaires : ' + absence.time.begin.format(DateFormat.SHORT_TIME)
-                    + ' - ' + absence.time.end.format(DateFormat.SHORT_TIME);
-                $justified.textContent = 'Justifiée : ' + (absence.justified ? 'Oui' : 'Non');
-                $absenceType.textContent = absence.absenceType.name;
+                $schedule.text("Horaires : " + absence.time.begin.format(DateFormat.SHORT_TIME)
+                    + " - " + absence.time.end.format(DateFormat.SHORT_TIME));
+                $justified.text("Justifiée : " + (absence.justified ? "Oui" : "Non"));
+                $absenceType.text(absence.absenceType.name);
 
-            } else if (data === 'cancel') {
-                alert('Erreur interne : requête annulée');
-            } else if (data === 'missing_data') {
-                alert('Erreur interne : données manquantes');
-            } else if(data === 'wrong_data') {
-                alert('Erreur : Les données entrées ne sont pas correctes');
-            } else if (data.substr(0, 9) === 'exception') {
+            } else if (data === "cancel") {
+                alert("Erreur interne : requête annulée");
+            } else if (data === "missing_data") {
+                alert("Erreur interne : données manquantes");
+            } else if(data === "wrong_data") {
+                alert("Erreur : Les données entrées ne sont pas correctes");
+            } else if (data.startsWith("exception")) {
                 alert(data);
             }
         });
@@ -654,18 +690,18 @@ $(function() {
      * If the cell has classes that do not have relation with absence,
      * they will be kept.
      *
-     * @param oldClasses The old classes of the cell
-     * @param absence The absence to be added/modified
-     * @returns {Array.<String>} The new classes of the cell
+     * @param {Array.<string>} oldClasses - The old classes of the cell
+     * @param {Absence} absence - The absence to be added/modified
+     * @returns {Array.<string>} The new classes of the cell
      */
     function filterClasses(oldClasses, absence) {
-        var cellClasses = oldClasses.slice(0).filter(function(klass) {
-            return !klass.startsWith("abs");
+        var cellClasses = oldClasses.slice(0).filter(function(el) {
+            return !el.startsWith("abs");
         });
         cellClasses.push("abs");
 
         var htmlId = "#absn" + absence.absenceId;
-        var $otherChild = $(htmlId).siblings('div:not(' + htmlId + ')');
+        var $otherChild = $(htmlId).siblings("div:not(" + htmlId + ")");
 
         var newClass = "abs-" + absence.absenceType.name.toLowerCase();
 
@@ -674,7 +710,7 @@ $(function() {
             // if absence justified and, if it exists, other one is too
             if (absence.justified
                 && ($otherChild.length
-                    ? $otherChild.find('p:nth-child(2)').text().trim().endsWith("Oui")
+                    ? $otherChild.find("p:nth-child(2)").text().trim().endsWith("Oui")
                     : true)
             ) {
                 cellClasses.push("abs-justifiee");
@@ -682,9 +718,9 @@ $(function() {
 
             // if there's only one absence
             // or the other absence has same class
-            cellClasses.push(!$otherChild.length || $otherChild.attr('class') === newClass
-                ? newClass
-                : "abs-several"
+            cellClasses.push(!$otherChild.length || $otherChild.hasClass(newClass)
+                ? newClass      // then, add the only or common class
+                : "abs-several" // else, there are different classes
             );
         }
         // if adding
@@ -697,88 +733,88 @@ $(function() {
                 cellClasses.push("abs-justifiee");
             }
 
-            var notAbsenceClass = function(klass) {
-                return klass === "abs-justifiee" || !klass.startsWith("abs-");
+            var notAbsenceClass = function(el) {
+                return el === "abs-justifiee" || !el.startsWith("abs-");
             };
 
             // if first absence
             // or new class already existed
             cellClasses.push(oldClasses.every(notAbsenceClass) || oldClasses.indexOf(newClass) > -1
-                ? newClass
-                : "abs-several"
+                ? newClass      // then, add the only or common class
+                : "abs-several" // else, there are different classes
             );
         }
 
         return cellClasses;
     }
 
-    var newAbsence = {
-        content: $('#edition'),
-        name: $('#edition-name'),
-        date: $('#edition-date'),
+    var edition = {
+        content: $("#edition"),
+        name: $("#edition-name"),
+        date: $("#edition-date"),
         morning: {
             activeAbsence: null,
             modified: false,
-            content: $('#edition-morning'),
-            timeSlot: $('#am-time'),
-            justified: $('#am-justified'),
-            absenceType: $('#am-absenceType'),
-            delete: $('#am-delete'),
+            content: $("#edition-morning"),
+            timeSlot: $("#am-time"),
+            justified: $("#am-justified"),
+            absenceType: $("#am-absenceType"),
+            delete: $("#am-delete"),
             setModified: function(modif) {
                 this.modified = modif;
-                if (modif)  this.delete.removeClass('scale-out');
-                else        this.delete.addClass('scale-out');
+                if (modif)  this.delete.removeClass("scale-out");
+                else        this.delete.addClass("scale-out");
             }
         },
         afternoon: {
             activeAbsence: null,
             modified: false,
-            content: $('#edition-afternoon'),
-            timeSlot: $('#pm-time'),
-            justified: $('#pm-justified'),
-            absenceType: $('#pm-absenceType'),
-            delete: $('#pm-delete'),
+            content: $("#edition-afternoon"),
+            timeSlot: $("#pm-time"),
+            justified: $("#pm-justified"),
+            absenceType: $("#pm-absenceType"),
+            delete: $("#pm-delete"),
             setModified: function(modif) {
                 this.modified = modif;
-                if (modif)  this.delete.removeClass('scale-out');
-                else        this.delete.addClass('scale-out');
+                if (modif)  this.delete.removeClass("scale-out");
+                else        this.delete.addClass("scale-out");
             }
         },
-        submitButton: $('#edition-submit'),
+        submitButton: $("#edition-submit"),
 
         edit: function(td) {
-            var $absences = td.children;
-            var amAbs = null,
-                pmAbs = null;
+            var $absences = $(td).children();
+            var amAbsence = null,
+                pmAbsence = null;
 
-            var student = getStudentFromRow(td.parentNode.rowIndex - 2);
+            var student = getStudentFromRow($(td).parent().index());
             var date = getDateFromColumn(td.cellIndex);
             var tmp, absenceId;
 
             if ($absences.length >= 1) {
                 // Morning absence
-                absenceId = parseInt(($absences[0].id || '').substr(4));
+                absenceId = parseInt($absences.eq(0).prop("id").substr(4));
                 tmp = absences[absenceId];
 
                 if (tmp.time.begin.getUTCHours() <= 12) {
-                    amAbs = tmp;
+                    amAbsence = tmp;
 
                     if ($absences.length === 2) {
                         // Afternoon absence
-                        absenceId = parseInt(($absences[1].id || '').substr(4));
-                        pmAbs = absences[absenceId];
+                        absenceId = parseInt($absences.eq(1).prop("id").substr(4));
+                        pmAbsence = absences[absenceId];
                     }
                 } else {
-                    pmAbs = tmp;
+                    pmAbsence = tmp;
                 }
 
             }
 
-            this.prepare(student, date, amAbs, pmAbs);
+            this.prepare(student, date, amAbsence, pmAbsence);
             this.show();
         },
 
-        prepare: function(student, date, amAbs, pmAbs) {
+        prepare: function(student, date, amAbsence, pmAbsence) {
 
             this.name.text(student.name);
             this.date.text(date.format(DateFormat.READABLE));
@@ -786,24 +822,25 @@ $(function() {
             var $pmTimes = this.afternoon.timeSlot.children();
 
             if (date.getUTCDay() === 5) { // Friday
-                $pmTimes[0].textContent = '13h30 - 17h30';
-                $pmTimes[1].textContent = '13h30 - 15h30';
-                $pmTimes[2].textContent = '15h30 - 17h30';
+                $pmTimes.eq(0).text("13:30 - 17:30");
+                $pmTimes.eq(1).text("13:30 - 15:30");
+                $pmTimes.eq(2).text("15:30 - 17:30");
             } else {
-                $pmTimes[0].textContent = '14h00 - 18h00';
-                $pmTimes[1].textContent = '14h00 - 16h00';
-                $pmTimes[2].textContent = '16h00 - 18h00';
+                $pmTimes.eq(0).text("14:00 - 18:00");
+                $pmTimes.eq(1).text("14:00 - 16:00");
+                $pmTimes.eq(2).text("16:00 - 18:00");
             }
 
-            setInterfaceAbsence(this.morning, amAbs, 'morning');
-            setInterfaceAbsence(this.afternoon, pmAbs, 'afternoon');
+            setInterfaceAbsence(this.morning, amAbsence, "morning");
+            setInterfaceAbsence(this.afternoon, pmAbsence, "afternoon");
         },
 
         send: function() {
-            var cell = getActive('cell')[0];
-            var cellChildren = cell.children;
+            var cell = getActive("cell");
+            var cellChildren = cell.children();
+
             var absence;
-            var morningAbsence = isMorningAbsence(cellChildren[0]),
+            var morningAbsence = isMorningAbsence(cellChildren.eq(0)),
                 afternoonAbsence = null;
 
             var handled = true;
@@ -812,7 +849,7 @@ $(function() {
                     handled = handleAbsence(cell, this.morning);
                 }
                 else {
-                    absence = absences[cellChildren[0].id.substr(4)];
+                    absence = absences[(cellChildren.eq(0).prop("id") || "").substr(4)];
                     handled = handleAbsence(cell, this.morning, absence);
                 }
             }
@@ -821,7 +858,7 @@ $(function() {
                 var index = morningAbsence ? (cellChildren.length === 2 ? 1 : -1) : 0;
 
                 if (index > -1) {
-                    afternoonAbsence = isMorningAbsence(cellChildren[index]);
+                    afternoonAbsence = isMorningAbsence(cellChildren.eq(index));
                     if (afternoonAbsence !== null) {
                         afternoonAbsence = !afternoonAbsence;
                     }
@@ -831,7 +868,7 @@ $(function() {
                     handled = handleAbsence(cell, this.afternoon);
                 }
                 else if (afternoonAbsence === true) {
-                    absence = absences[cellChildren[index].id.substr(4)];
+                    absence = absences[cellChildren.eq(index).prop("id").substr(4)];
                     handled = handleAbsence(cell, this.afternoon, absence);
                 }
             }
@@ -840,20 +877,11 @@ $(function() {
         },
 
         show: function() {
-            newAbsence.content.modal('open');
-
-            $(window).on('keydown', function(event) {
-                if (event.keyCode === 27) {
-                    newAbsence.hide();
-                }
-            });
+            edition.content.modal("open");
         },
 
         hide: function() {
-            $(window).off('keydown');
-
-            newAbsence.morning.setModified(false);
-            newAbsence.afternoon.setModified(false);
+            this.content.modal("close");
         }
     };
 
@@ -861,157 +889,160 @@ $(function() {
     // ########  PROGRAM START  ########
     // #################################
 
-    var $absenceTable = $('#absences-table');
-    var $tableWrapper = $('#table-wrapper');
+    var $absenceTable = $("#absences-table");
+    var $tableWrapper = $("#table-wrapper");
 
     // Initialize materialize
-    newAbsence.content.modal({
+    edition.content.modal({
         dismissible: true,
         inDuration: 200,
         outDuration: 125,
-        startingTop: '50%',
-        endingTop: '8%',
-        complete: newAbsence.hide
+        startingTop: "50%",
+        endingTop: "8%",
+        complete: function() {
+            edition.morning.setModified(false);
+            edition.afternoon.setModified(false);
+        }
     });
 
     // Store existing absences in an object
-    $('td.abs').each(function() {
+    $("td.abs").each(function() {
         $(this).children().each(function() {
-            var absence = createAbsenceFromDiv(this);
+            var absence = createAbsenceFromDiv($(this));
             absences[absence.absenceId] = absence;
         });
     });
 
     // Center #active-day
     $tableWrapper.each( function() {
-        var activeDay = $('#active-day');
+        var activeDay = $("#active-day");
         if (activeDay.length) {
             this.scrollLeft = activeDay.position().left - (window.innerWidth / 2);
         }
     });
 
     // Student list events
-    $('#table-stud-list').on('click', 'i', function() {
-        $(this).siblings('div').toggle(DEFAULT_ANIM_TIME);
+    $("#table-stud-list").on("click", "i", function() {
+        $(this).siblings("div").toggle(DEFAULT_ANIM_TIME);
     });
 
     // Absence table events
     $absenceTable
-        .on('click', 'td', function(event) {
+        .on("click", "td", function(event) {
             if (event.which === 1) {
                 activate("cell", this);
-                newAbsence.edit(this);
+                edition.edit(this);
             }
         })
-        .on('mouseenter', 'td.abs', function() {
-            $(this).children('div').show(DEFAULT_ANIM_TIME);
+        .on("mouseenter", "td.abs", function() {
+            $(this).children().show(DEFAULT_ANIM_TIME);
         })
 
-        .on('mouseleave', 'td.abs', function() {
+        .on("mouseleave", "td.abs", function() {
             $(this).children().hide(DEFAULT_ANIM_TIME);
         });
 
-    // New absence interface events
+    // Absence edition interface events
     // Morning
-    newAbsence.morning.timeSlot.on('click', 'p', function() {
-        newAbsence.morning.setModified(true);
+    edition.morning.timeSlot.on("click", "p", function() {
         activate("morning", this);
+        edition.morning.setModified(true);
     });
 
-    newAbsence.morning.content.on('change', ':checkbox, select', function() {
-        newAbsence.morning.setModified(true);
+    edition.morning.content.on("change", ":checkbox, select", function() {
+        edition.morning.setModified(true);
     });
 
-    newAbsence.morning.delete.click(function() {
-        var absence = newAbsence.morning.activeAbsence;
+    edition.morning.delete.click(function() {
+        var absence = edition.morning.activeAbsence;
         if (absence === null) {
-            setInterfaceAbsence(newAbsence.morning, null, 'morning');
-            newAbsence.morning.setModified(false);
+            setInterfaceAbsence(edition.morning, null, "morning");
+            edition.morning.setModified(false);
         } else {
-            $.post('/Process_secretariat/suppression_absence', {absenceId: absence.absenceId}, function(data) {
-                if (data === 'success') {
-                    setInterfaceAbsence(newAbsence.morning, null, 'morning');
+            $.post("/Process_secretariat/suppression_absence", {absenceId: absence.absenceId}, function(data) {
+                if (data === "success") {
+                    setInterfaceAbsence(edition.morning, null, "morning");
                     deleteAbsence(absence);
-                    newAbsence.morning.setModified(false);
-                } else if (data === 'missing_data') {
-                    alert('Erreur de communication avec le serveur.' +
-                        'Nous vous conseillons de rafraîchir la page !');
-                } else if (data === 'unknown id') {
-                    alert('Erreur de communication avec le serveur.' +
-                        'Nous vous conseillons de rafraîchir la page !');
-                } else if (data.substr(0, 9) === 'exception') {
+                    edition.morning.setModified(false);
+                } else if (data === "missing_data") {
+                    alert("Erreur de communication avec le serveur.\n" +
+                        "Nous vous conseillons de rafraîchir la page !");
+                } else if (data === "unknown id") {
+                    alert("Erreur de communication avec le serveur." +
+                        "Nous vous conseillons de rafraîchir la page !");
+                } else if (data.startsWith("exception")) {
                     alert(data);
                 } else {
-                    alert('Message inconnu reçu du serveur');
+                    alert("Message inconnu reçu du serveur");
                 }
             });
         }
     });
 
     // Afternoon
-    newAbsence.afternoon.timeSlot.on('click', 'p', function() {
-        newAbsence.afternoon.setModified(true);
+    edition.afternoon.timeSlot.on("click", "p", function() {
+        edition.afternoon.setModified(true);
         activate("afternoon", this);
     });
 
-    newAbsence.afternoon.content.on('change', ':checkbox, select', function() {
-        newAbsence.afternoon.setModified(true);
+    edition.afternoon.content.on("change", ":checkbox, select", function() {
+        edition.afternoon.setModified(true);
     });
 
-    newAbsence.afternoon.delete.click(function() {
-        var absence = newAbsence.afternoon.activeAbsence;
+    edition.afternoon.delete.click(function() {
+        var absence = edition.afternoon.activeAbsence;
         if (absence === null) {
-            setInterfaceAbsence(newAbsence.afternoon, null, 'afternoon');
-            newAbsence.afternoon.setModified(false);
+            setInterfaceAbsence(edition.afternoon, null, "afternoon");
+            edition.afternoon.setModified(false);
         } else {
-            $.post('/Process_secretariat/suppression_absence', {absenceId: absence.absenceId}, function(data) {
-                if (data === 'success') {
-                    setInterfaceAbsence(newAbsence.afternoon, null, 'afternoon');
+            $.post("/Process_secretariat/suppression_absence", {absenceId: absence.absenceId}, function(data) {
+                if (data === "success") {
+                    setInterfaceAbsence(edition.afternoon, null, "afternoon");
                     deleteAbsence(absence);
-                    newAbsence.afternoon.setModified(false);
-                } else if (data === 'missing_data') {
-                    alert('Erreur de communication avec le serveur.' +
-                        'Nous vous conseillons de rafraîchir la page !');
-                } else if (data === 'unknown id') {
-                    alert('Erreur de communication avec le serveur.' +
-                        'Nous vous conseillons de rafraîchir la page !');
-                } else if (data.substr(0, 9) === 'exception') {
+                    edition.afternoon.setModified(false);
+                } else if (data === "missing_data") {
+                    alert("Erreur de communication avec le serveur." +
+                        "Nous vous conseillons de rafraîchir la page !");
+                } else if (data === "unknown id") {
+                    alert("Erreur de communication avec le serveur." +
+                        "Nous vous conseillons de rafraîchir la page !");
+                } else if (data.startsWith("exception")) {
                     alert(data);
                 } else {
-                    alert('Message inconnu reçu du serveur');
+                    alert("Message inconnu reçu du serveur");
                 }
             });
         }
     });
 
     // New absence footer
-    newAbsence.submitButton.click(function() {
-        newAbsence.send();
+    edition.submitButton.click(function() {
+        edition.send();
         return false;
     });
 
     // Absence table head fixation
-    var $absenceTableHead = $('#absences-table-head');
-    var $fixedHeader = $('#header-fixed').append($absenceTableHead.clone());
+    var $absenceTableHead = $("#absences-table-head");
+    var $fixedHeader = $("#header-fixed").append($absenceTableHead.clone());
 
     var theadTopPosition = $absenceTableHead.position().top;
 
     $(window)
-        .on('scroll', function() {
+        .on("scroll", function() {
             var offset = $(this).scrollTop();
-            if (offset >= theadTopPosition && $fixedHeader.is(':hidden')) {
-                $fixedHeader.css('display', 'table');
+            if (offset >= theadTopPosition && $fixedHeader.is(":hidden")) {
+                $fixedHeader.css("display", "table");
             } else if (offset < theadTopPosition) {
-                $fixedHeader.css('display', 'none');
+                $fixedHeader.css("display", "none");
             }
         })
         // Simulate scroll so fixed header appears if page is scrolled down at loading
         .scroll();
 
     // Make thead follow horizontal scroll of the body
-    var tableStaticWidth = $('#table-static').outerWidth(true);
+    var tableStaticWidth = $("#table-static").outerWidth(true);
     $tableWrapper
-        .on('scroll', function() {
-            $fixedHeader.css('left', -this.scrollLeft + tableStaticWidth);
+        .on("scroll", function() {
+            $fixedHeader.css("left", -this.scrollLeft + tableStaticWidth);
         });
 });

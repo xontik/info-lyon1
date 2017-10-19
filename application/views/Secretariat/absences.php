@@ -202,9 +202,9 @@
                             </div>
                             <div class="col l10 offset-l1">
                                 <div id="am-time" class="center-block">
-                                    <p>08h00 - 12h00</p>
-                                    <p>08h00 - 10h00</p>
-                                    <p>10h00 - 12h00</p>
+                                    <p>08:00 - 12:00</p>
+                                    <p>08:00 - 10:00</p>
+                                    <p>10:00 - 12:00</p>
                                 </div>
                                 <div class="input-field">
                                     <select id="am-absenceType">
@@ -232,9 +232,9 @@
                             </div>
                             <div class="col l10 offset-l1">
                                 <div id="pm-time" class="center-block">
-                                    <p>14h00 - 18h00</p>
-                                    <p>14h00 - 16h00</p>
-                                    <p>16h00 - 18h00</p>
+                                    <p>14:00 - 18:00</p>
+                                    <p>14:00 - 16:00</p>
+                                    <p>16:00 - 18:00</p>
                                 </div>
                                 <div class="input-field">
                                     <select id="pm-absenceType">
