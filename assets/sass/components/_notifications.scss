@@ -1,0 +1,21 @@
+@import '../materialize';
+
+#toast-container .toast {
+  cursor: pointer;
+
+  i:first-of-type {
+    @extend .left;
+  }
+}
+
+.notif-success {
+  @extend .light-green, .accent-3;
+}
+
+.notif-warning {
+  @extend .amber;
+}
+
+.notif-fail {
+  @extend .red;
+}

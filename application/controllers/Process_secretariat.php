@@ -18,6 +18,8 @@ class Process_secretariat extends CI_Controller
 
     public function ajout_absence()
     {
+        header('Content-Type: text/plain');
+
         if (!isset($_POST['studentId'])
             || !isset($_POST['beginDate'])
             || !isset($_POST['endDate'])
