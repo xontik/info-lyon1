@@ -18,7 +18,7 @@
                 <?php
                 foreach ($data['marks'] as $mark)
                 { ?>
-                    <div class="row valign-wrapper">
+                    <div class="row valign-wrapper no-margin">
                         <div class="col s5  pull-s4 right-align">
                             <span><?= $mark->nom . ' ' . $mark->prenom ?></span>
                         </div>
@@ -31,7 +31,7 @@
                 } ?>
             </div>
             <div class="divider"></div>
-            <div class="section">
+            <div class="section btn-footer">
                 <button type="submit" class="btn waves-effect">Envoyer</button>
                 <a class="btn-flat" href="<?= base_url('Professeur/controle')?>">Retour</a>
             </div>

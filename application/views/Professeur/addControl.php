@@ -77,7 +77,7 @@
                 </div>
             </div>
             <div class="divider"></div>
-            <div class="section">
+            <div class="section btn-footer">
                 <button type="submit" class="btn waves-effect">Ajouter</button>
                 <a class="btn-flat" href="<?= site_url("professeur/controle") ?>">Annuler</a>
             </div>
