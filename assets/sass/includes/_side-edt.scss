@@ -1,0 +1,36 @@
+@import '../materialize';
+
+$bradius: 10px;
+$edt-back-color: rgba(0, 0, 0, .02);
+
+#side-edt-computer {
+  @extend .center-align;
+
+  > .row {
+    > .hours {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+
+      > * {
+        &:nth-child(odd) {
+          font-weight: 500;
+        }
+
+        &:nth-child(even) {
+          font-size: 11px;
+        }
+      }
+    }
+
+    > .content {
+      > .header {
+
+      }
+
+      > .content {
+
+      }
+    }
+  }
+}
