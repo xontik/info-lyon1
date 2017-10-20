@@ -1,18 +1,35 @@
 @import '../materialize';
 
-$bradius: 10px;
-$edt-back-color: rgba(0, 0, 0, .02);
+html, body, main > * {
+  height: 100%;
+}
 
-#side-edt-computer {
+main {
+  // Should be 100% - headerHeight
+  height: 90%;
+}
+
+#side-edt-large {
   @extend .center-align;
+  height: 100%;
+  margin-top: 15px;
 
-  > .row {
+  > .card-content {
+    height: 100%;
+  }
+
+  $hourCount: 10;
+  .row {
+    height: calc(100% - 32px);
+
     > .hours {
       display: flex;
+      height: 100%;
       flex-direction: column;
-      justify-content: space-between;
 
       > * {
+        height: 100% / $hourCount;
+
         &:nth-child(odd) {
           font-weight: 500;
         }
@@ -24,13 +41,30 @@ $edt-back-color: rgba(0, 0, 0, .02);
     }
 
     > .content {
-      > .header {
+      height: 100%;
+      padding-bottom: 50% / $hourCount;
 
-      }
+      > div {
+        overflow: hidden;
+        padding: 10px 8px;
+        border-bottom: 1px solid $table-border-color;
 
-      > .content {
+        &:first-child {
+          border-top: 1px solid $table-border-color;
+        }
 
+        > * {
+          @extend .truncate;
+        }
+
+        h5 {
+          @extend .no-margin;
+          white-space: nowrap;
+          overflow: hidden;
+        }
       }
     }
+
   }
+
 }

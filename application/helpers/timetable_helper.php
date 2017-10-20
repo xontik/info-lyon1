@@ -11,8 +11,12 @@ define('DATE_FORMAT', 'Y-m-d');
  * @see getTimetable()
  */
 function getNextTimetable($resources, $period, &$datetime = NULL) {
+    global $timezone;
+    $timezone = new DateTimeZone('Europe/Paris');
+
     if ($datetime === NULL) {
         $datetime = new DateTime();
+        $datetime->setTimezone($timezone);
     }
 
     $originalDate = clone $datetime;
@@ -50,12 +54,15 @@ function getNextTimetable($resources, $period, &$datetime = NULL) {
  */
 function getTimetable($resources, $period, $datetime = NULL)
 {
+    global $timezone;
+
     $CI = get_instance();
     $CI->load->model('timetable_model');
 
     // Default $datetime to today
 	if ($datetime === NULL) {
         $datetime = new DateTime();
+        $datetime->setTimezone($timezone);
     }
 
     // Generalize time period
@@ -88,6 +95,7 @@ function getTimetable($resources, $period, $datetime = NULL)
 
         $temp = clone $firstDate;
         $validTimeLimit = new DateTime();
+        $validTimeLimit->setTimezone($timezone);
         $validTimeLimit = $validTimeLimit->modify('-1 day')->getTimeStamp();
 
         do {
@@ -198,6 +206,8 @@ function _narrow($timetable, $begin, $end, $period)
  */
 function _icsToTimetable($ics_filepath)
 {
+    global $timezone;
+
 	// Remove beginning and ending whitespace characters
 	$content = trim(file_get_contents($ics_filepath));
 
@@ -222,22 +232,25 @@ function _icsToTimetable($ics_filepath)
 		if (array_key_exists('VEVENT', $ics)) {
 			// Sort each event at it's place, week then day
 			foreach ($ics['VEVENT'] as $event) {
-				$start_time = strtotime($event['DTSTART']);
-				$year = date('Y', $start_time);
-				if (!array_key_exists($year, $timetable))
-					$timetable[$year] = array();
+				$start_time = new DateTime($event['DTSTART']);
+				$start_time->setTimezone($timezone);
+
+				$year = $start_time->format('Y');
+				if (!array_key_exists($year, $timetable)) {
+                    $timetable[$year] = array();
+                }
 				
-				$week = date('W', $start_time);
-				if (!array_key_exists($week, $timetable[$year]))
-					$timetable[$year][$week] = array();
+				$week = $start_time->format('W');
+				if (!array_key_exists($week, $timetable[$year])) {
+                    $timetable[$year][$week] = array();
+                }
 				
-				$day = date('N', $start_time);
+				$day = $start_time->format('N');
 				if (!array_key_exists($day, $timetable[$year][$week])) {
 					$timetable[$year][$week][$day] = array();
-					$timetable[$year][$week][$day]['updated'] = time();
 				}
 
-				$description = explode("\\n", $event['DESCRIPTION']);
+                $description = explode('\n', $event['DESCRIPTION']);
 
 				$groupLimit = 1;
 				while (preg_match('/^(G[1-9])?S[1-9]$/i', $description[$groupLimit])) {
@@ -247,14 +260,15 @@ function _icsToTimetable($ics_filepath)
 				$groups = implode(', ', array_slice($description, 1, $groupLimit - 1));
 				$teachers = implode(', ', array_slice($description, $groupLimit, -1));
 
-				$timetable[$year][$week][$day][] = array(
-						'name' => $event['SUMMARY'],
-						'time_start' => date('H:i', $start_time),
-						'time_end' => date('H:i', strtotime($event['DTEND'])),
-						'location' => $event['LOCATION'],
-                        'groups' => $groups,
-                        'teachers' => $teachers
-					);
+                $timetable[$year][$week][$day]['updated'] = time();
+                $timetable[$year][$week][$day][] = array(
+                    'name' => $event['SUMMARY'],
+                    'time_start' => $start_time->format('H:i'),
+                    'time_end' => (new DateTime($event['DTEND']))->setTimezone($timezone)->format('H:i'),
+                    'location' => $event['LOCATION'],
+                    'groups' => $groups,
+                    'teachers' => $teachers
+                );
 			}
 		}
 		
@@ -265,6 +279,7 @@ function _icsToTimetable($ics_filepath)
 		return array();
 	}
 }
+
 
 /**
  * Converts a string to an array that represents an ICS element.
