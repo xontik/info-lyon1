@@ -175,11 +175,49 @@ class Secretariat extends CI_Controller {
       echo 'Gestion du groupe : '.$id;
     }
 
+    public function gestionSemestre($id){
+      $this->load->model('Students_model','studentMod');
+      $this->load->model('Semester_model','semMod');
+      if(!$this->semMod->isSemesterEditable($id)){
+          $this->session->set_flashdata("notif", array("Impossible d'editer ce semestre"));
+          redirect("secretariat/administration");
+      }
+      $semestre = $this->semMod->getSemesterById($id);
+
+      $groups = $this->studentMod->getStudentsBySemestre($id);
+
+      $freeStudents = $this->studentMod->getStudentWithoutGroup();
+
+      $idGroupe = 0;
+      $outGroups = array();
+      foreach ($groups as $key => $group) {
+          if($idGroupe != $group->idGroupe){
+              $idGroupe = $group->idGroupe;
+              $outGroups[] = array('idGroupe' => $idGroupe, 'nomGroupe' => $group->nomGroupe, 'students' => array());
+          }
+          $outGroups[count($outGroups)-1]['students'][] = array('prenom' => $group->prenom, 'nom' => $group->nom, 'numEtudiant' => $group->numEtudiant);
+      }
+      /*
+      echo '<pre>';
+      print_r($outGroups);
+      echo '</pre>';
+      //*/
+      $data = array(
+        "css" => array(),
+        "js" => array('debug'),
+        "title" => "Gestion du semestre",
+        'data' => array('students' => $outGroups, 'semestre' => $semestre, 'freeStudents' => $freeStudents)
+      );
+      show("Secretariat/semestre", $data);
+
+
+    }
+
     public function administration(){
       $this->load->model('Administration_model','adminMod');
       $this->load->model('Semester_model','semMod');
       $parcours = $this->adminMod->getAllParcoursEditable();
-      $semestres = $this->semMod->getAllSemestres();
+      $semestres = $this->semMod->getAllSemesters();
       $outSem = array();
       $idSemestre = 0;
       foreach ($semestres as $key => $semestre) {

@@ -39,4 +39,15 @@ class students_model extends CI_Model {
             ->row();
     }
 
+    public function getStudentsBySemestre($id){
+        $sql = 'SELECT idGroupe, nomGroupe, nom, prenom, numEtudiant from Groupes join EtudiantGroupe using(idGroupe) join Etudiants using(numEtudiant) where idSemestre = ? order by idGroupe ';
+        return $this->db->query($sql,array($id))->result();
+    }
+
+    public function getStudentWithoutGroup(){
+        $sql = 'SELECT * from Etudiants where numEtudiant not in (select numEtudiant from EtudiantGroupe join Groupes using(idGroupe) join semestres using(idSemestre) where actif = 1)';
+        return $this->db->query($sql)->result();
+
+    }
+
 }

@@ -133,19 +133,34 @@ class semester_model extends CI_Model {
     }
 
 
-    public function getAllSemestres(){
+    public function getAllSemesters(){
       // etat sera utiliser pour stocker la difference entre passé et future quand actif = 0
       $sql = 'SELECT *
       from Semestres
       join parcours using(idparcours)
       left join Groupes using (idSemestre)
-      order by anneeScolaire DESC';
+      order by idSemestre DESC , anneeScolaire DESC';
       return $this->db->query($sql)->result();
     }
-
-    public function getGroupsBySemestre($id){
-      $sql = 'SELECT * from Groupes where idSemestre = ?';
-      return $this->db->query($sql,array($id))->result();
+    public function getSemesterById($id){
+        $sql = ' SELECT * from Semestres join Parcours using(idParcours) where idSemestre = ?';
+        return $this->db->query($sql,array($id))->row();
     }
+    public function isSemesterEditable($id){
+        if(is_null($this->getSemesterById($id))){
+            return false;
+        }
+        $dateSem = $this->getSemesterPeriod($id);
+        $now = new DateTime();
+        $dateEnd = $dateSem->getEndDate();
+        $editable = false;
+        if($now>$dateEnd){
+          return false;
+        }
+
+        return true;
+    }
+
+
 
 }

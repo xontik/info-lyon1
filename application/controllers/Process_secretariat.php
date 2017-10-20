@@ -212,4 +212,34 @@ class Process_secretariat extends CI_Controller
   public function deleteSemestre($id){
     echo 'Suppresion du semestre :'.$id;
   }
+
+  public function getCSVSemestre($id){
+      $this->load->model('Students_model','studentMod');
+      $this->load->model('Semester_model','semMod');
+
+      $semestre = $this->semMod->getSemesterById($id);
+
+      $groups = $this->studentMod->getStudentsBySemestre($id);
+      header('Content-Type: text/csv');
+      header('Content-Encoding: UTF-8');
+      header('Content-disposition: attachment; filename='.$semestre->anneeScolaire.'-'.$semestre->type.'.csv');
+
+
+
+      echo 'Identifiant du semestre;'.$semestre->idSemestre.';<--Donnees non modifiable;;;'.PHP_EOL;
+      echo 'Type du semestre;'.$semestre->type.';Annee scolaire;'.$semestre->anneeScolaire.'-'.(((int)$semestre->anneeScolaire)+1).';<--Donnees non modifiable;'.PHP_EOL;
+      $idgroupe = 0;
+      foreach ($groups as $group) {
+          if($idgroupe != $group->idGroupe){
+             $idgroupe = $group->idGroupe;
+             echo PHP_EOL.PHP_EOL.PHP_EOL.PHP_EOL;
+             echo 'Identifiant groupe;'.$group->idGroupe.';Nom du groupe;'.$group->nomGroupe.';<--Donnees non modifiable;'.PHP_EOL;
+
+
+          }
+          echo $group->numEtudiant.';'.$group->nom.';'.$group->prenom.';;;'.PHP_EOL;
+      }
+      //
+
+  }
 }

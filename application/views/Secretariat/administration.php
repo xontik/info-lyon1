@@ -62,12 +62,10 @@
         <table id='tableSemestre'>
           <thead>
             <tr>
-              <th>Suppr</th>
+              <th>Gerer</th>
               <th>Année scolaire</th>
               <th>Type semestre</th>
-              <th>Semestre differé</th>
-              <th>Nombre de groupes</th>
-              <th>Ajouter</th>
+              <th>Groupes</th>
               </tr>
             </thead>
 
@@ -83,34 +81,28 @@
                 <tr class="<?= $semestre['etat'] ?>" >
                   <td>
                     <?php
-                    if(count($semestre['groups'])==0){
+                    if($semestre['etat'] != 'after'){
                       ?>
-                      <a href="<?= base_url('Process_secretariat/deleteSemestre/').$sem->idSemestre ?>"><?= html_img('trash_delete.png','Supprimer')?></a>
+                      <a href="<?= base_url('Secretariat/gestionSemestre/').$sem->idSemestre ?>"><?= html_img('note_edit.png','Gerer')?></a>
                       <?php
                     }
                      ?>
                   </td>
-                  <td><?= $sem->anneeScolaire ?></td>
-                  <td><?= $sem->type ?></td>
+                  <td><?= $sem->anneeScolaire.' - '.$sem->type ?></td>
 
                   <td><?= ($sem->differe == 0)?'Normal':'Différé' ?></td>
                   <td>
                     <?php
                     if(count($semestre['groups']) > 0){
                       foreach ($semestre['groups'] as $key => $group) {
-                        echo /*(($key > 0)?' - ':'').*/'<a href="'.base_url('Secretariat/groupe/').$group['idGroupe'].'" >'.$group['nomGroupe'].'</a> - ';
+                        echo (($key > 0)?' - ':'').$group['nomGroupe'];
                       }
                     }
-                     ?>
-                     <button type="button" name="button">Ajouter</button>
+                    ?>
                   </td>
 
-                  <td>
-                    <!-- Think about that -->
-                    <input type="text" name="add<?= $sem->idSemestre?>" value="" placeholder="G?">
 
-                    <input type="submit" value="Ajouter">
-                  </td>
+
                 </tr>
                 <?php
               }
