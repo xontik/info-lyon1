@@ -74,7 +74,7 @@ class Professeur extends CI_Controller {
 	$var = array(
       'css' => array('Professeurs/questions'),
       'js' => array('debug'),
-      'title' => 'Absences',
+      'title' => 'Questions',
       'data' => array('profQuestions' => $profQuestions)
     );
 
