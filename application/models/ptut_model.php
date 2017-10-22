@@ -13,17 +13,21 @@ class Ptut_model extends CI_Model
     public function getPtutOfProf($professorId)
     {
 
-        $sql = "SELECT nomGroupe, idGroupe, prenom FROM groupesPtut JOIN MembrePTUT USING (idGroupe) JOIN Etudiants USING (numEtudiant) WHERE idProfesseur = ?";
+        $sql = "SELECT nomGroupe, idGroupe, prenom, count(idProposition) as nbProp FROM groupesPtut JOIN MembrePTUT USING (idGroupe) 
+                JOIN Etudiants USING (numEtudiant) 
+                JOIN RDVPTUT USING (idGroupe) 
+                JOIN PropositionsDate USING (idRDV) 
+                WHERE idProfesseur = ? 
+                group by prenom
+                order by idGroupe";
         return $this->db->query($sql, array($professorId))->result();
     }
 
-    public function getPtutMembers($GroupeId){
-        $sql = "SELECT nom, prenom FROM MembrePTUT m
-                                   JOIN Etudiants USING (numEtudiant) 
-                                   WHERE m.idGroupe = ?";
-        return $this->db->query($sql, array($GroupeId))->result();
+    public function getNbreRDV($professorId)
+    {
+        $sqls = "SELECT idGroupe, count(idProposition) as nbProp FROM GroupesPTUT JOIN RDVPTUT USING (idGroupe) JOIN PropositionsDate USING (idRDV) WHERE idProfesseur = ? group by idGroupe";
+        return $this->db->query($sqls, array($professorId))->result();
     }
-
 
 }
 
