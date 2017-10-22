@@ -23,7 +23,7 @@
 					</li>
 					<ul>
 						<?php
-						$listeReponses = $this->repMod->getAnswers($profQuestion->idQuestion);
+						$listeReponses = $this->questionsMod->getAnswers($profQuestion->idQuestion);
 						foreach($listeReponses as $reponse){
 							$estProf='';
 							if($reponse->prof==1){$estProf='isProf';}

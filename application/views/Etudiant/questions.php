@@ -1,6 +1,6 @@
 <main>
     <section>
-        <header>Les questions</header>
+        <header><h1>Les questions</h1></header>
         <ul>
             <?php foreach ($data['etuQuestions'] as $etuQuestion) { ?>
                 <div>
@@ -24,16 +24,15 @@
                                 ?>
                             </div>
                             <div>
-                                <?php /*echo $etuQuestion->numEtudiant . ' - '
-                                . $student->prenom . ' ' . strtoupper($student->nom);*/
-                                    echo $etuQuestion->idProfesseur; // TODO : afficher le nom du prof
+                                <?php
+                                    echo $this->teacherMod->getProfInfo($etuQuestion->idProfesseur)->prenom . ' ' .$this->teacherMod->getProfInfo($etuQuestion->idProfesseur)->nom;
                                 ?>
                             </div>
                         </div>
                     </li>
                     <ul>
                         <?php
-                        $listeReponses = $this->repMod->getAnswers($etuQuestion->idQuestion);
+                        $listeReponses = $this->questionsMod->getAnswers($etuQuestion->idQuestion);
                         foreach ($listeReponses as $reponse) {
                             $estProf = '';
                             if ($reponse->prof == 1) {
@@ -51,17 +50,21 @@
                         </form>
                     </ul>
                 </div>
-            <?php
-            }
-            ?>
+            <?php } ?>
         </ul>
         <section>
             <h1>Poser une question</h1>
             <form action="<?php echo current_url(); ?>" method="POST">
                 <input autocomplete="off" name="q_titre" placeholder="Titre" type="text" />
                 <input autocomplete="off" name="q_texte" placeholder="Question" type="text" />
-                <!-- TODO : Sélection du prof (en attendant via son id) -->
-                <input autocomplete="off" name="q_idProfesseur" placeholder="Professeur" type="text" />
+                <!-- <input autocomplete="off" name="q_idProfesseur" placeholder="Professeur" type="text" /> -->
+                <select name="q_idProfesseur">
+                    <option value="null" disabled selected>Choisir un prof</option>
+                    <?php foreach ($data['etuTeachers'] as $teacher) { ?>
+                        <option value="<?php echo $teacher->idProfesseur; ?>"><?php echo $teacher->prenom . ' ' . $teacher->nom; ?></option>            
+                    <?php } ?>
+
+                </select>
                 <input type="submit" value="Envoyer" />
             </form>
         </section>

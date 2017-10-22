@@ -10,14 +10,14 @@ class question_model extends CI_Model {
                         ->result();
     }
 
-    public function getStudentQuestions($numEtudiant){
+    public function getStudentQuestions($numEtudiant) {
         return $this->db->select('*')
                         ->from('Questions')
                         ->where('numEtudiant', $numEtudiant)
                         ->get()
                         ->result();
     }
-    
+
     public function ask($titre, $texte, $idProfesseur, $numEtudiant) {
         $data = array(
             'titre' => $titre,
@@ -28,4 +28,24 @@ class question_model extends CI_Model {
 
         $this->db->insert('Questions', $data);
     }
+
+    public function getAnswers($idQuestion) {
+        return $this->db->select('*')
+                        ->from('Réponse')
+                        ->where('idQuestion', $idQuestion)
+                        ->order_by('dateReponse', 'asc')
+                        ->get()
+                        ->result();
+    }
+
+    public function answer($idQuestion, $texte, $isProf) {
+        $data = array(
+            'idQuestion' => $idQuestion,
+            'texte' => $texte,
+            'prof' => $isProf
+        );
+
+        $this->db->insert('Réponse', $data);
+    }
+
 }

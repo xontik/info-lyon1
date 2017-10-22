@@ -93,13 +93,14 @@ class Etudiant extends CI_Controller {
 
   public function question() {
     $this->load->model('question_model', 'questionsMod');
-    $this->load->model('reponse_model', 'repMod');
+    $this->load->model('students_model', 'studentsMod');
+    $this->load->model('teacher_model', 'teacherMod');
     
     //Poser une question
     if (isset($_POST['q_titre']) AND isset($_POST['q_texte']) AND isset($_POST['q_idProfesseur']) AND is_numeric($_POST['q_idProfesseur'])) {
         $titre = htmlspecialchars($_POST['q_titre']);
         $texte = htmlspecialchars($_POST['q_texte']);
-        $idProf = (int) $_POST['q_idProfesseur'];
+        $idProf = (int) htmlspecialchars($_POST['q_idProfesseur']);
         $numEtu = $_SESSION['id'];
         $this->questionsMod->ask($titre, $texte, $idProf, $numEtu);
     }
@@ -109,17 +110,21 @@ class Etudiant extends CI_Controller {
         $idQuestion = (int) $_POST['r_idQuestion'];
         $texte = htmlspecialchars($_POST['r_texte']);
         $isProf = ($_SESSION['user_type'] == 'teacher') ? 1 : 0;
-        $this->repMod->answer($idQuestion, $texte, $isProf);
+        $this->questionsMod->answer($idQuestion, $texte, $isProf);
     }
     
     //Récupérer les questions posées
     $etuQuestions = $this->questionsMod->getStudentQuestions($_SESSION['id']);
+    
+    //Récupérer les profs
+    $etuTeachers = $this->studentsMod->getProfesseursByStudent($_SESSION['id']);
 
     $data = array(
       'css' => array(),
       'js' => array('debug'),
       'title' => 'Questions / Réponses',
-      'data' => array('etuQuestions' => $etuQuestions)
+      'data' => array('etuQuestions' => $etuQuestions,
+                      'etuTeachers' => $etuTeachers)
     );
     show('Etudiant/questions', $data);
   }
