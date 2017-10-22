@@ -46,11 +46,11 @@ class students_model extends CI_Model {
                   WHERE idGroupe = (SELECT idGroupe FROM etudiantgroupe 
                                     JOIN groupes USING (idGroupe)
                                     JOIN semestres USING (idSemestre)
-                                    WHERE numEtudiant = '$numEtudiant' AND actif = 1
+                                    WHERE numEtudiant = ? AND actif = 1
                                     )
                   ORDER BY nom ASC";
 
-        return $this->db->query($query)
+        return $this->db->query($query, array($numEtudiant))
                         ->result();
     }
 
