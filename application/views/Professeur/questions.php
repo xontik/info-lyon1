@@ -30,7 +30,7 @@
 							echo '<li class="qr '. $estProf .'">'. $reponse->texte. '</li>';
 						} 
 						?>
-						<form action="<?php echo current_url();?>" method="POST">
+						<form action="/Process_professeur/repondreQuestion" method="POST">
 							<input type="hidden" name="idQuestion" value ="<?php echo $profQuestion->idQuestion;?>"/>
 							<div>
 								<input type="text" name="texte" autocomplete = "off"/>

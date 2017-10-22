@@ -41,7 +41,7 @@
                             echo '<li class="qr ' . $estProf . '">' . $reponse->texte . '</li>';
                         }
                         ?>
-                        <form action="<?php echo current_url(); ?>" method="POST">
+                        <form action="/Process_etudiant/repondreQuestion" method="POST">
                             <input type="hidden" name="r_idQuestion" value ="<?php echo $etuQuestion->idQuestion; ?>"/>
                             <div>
                                 <input type="text" name="r_texte" autocomplete="off"/>
@@ -54,7 +54,7 @@
         </ul>
         <section>
             <h1>Poser une question</h1>
-            <form action="<?php echo current_url(); ?>" method="POST">
+            <form action="/Process_etudiant/envoyerQuestion" method="POST">
                 <input autocomplete="off" name="q_titre" placeholder="Titre" type="text" />
                 <input autocomplete="off" name="q_texte" placeholder="Question" type="text" />
                 <!-- <input autocomplete="off" name="q_idProfesseur" placeholder="Professeur" type="text" /> -->

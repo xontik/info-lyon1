@@ -64,9 +64,6 @@ class Professeur extends CI_Controller {
 	$this->load->model('students_model', 'studentMod');
 	$this->load->model('question_model', 'questionsMod');
 	
-	if(isset($_POST['texte']) AND isset($_POST['idQuestion'])){
-		$this->questionsMod->answer((int) htmlspecialchars($_POST['idQuestion']),htmlspecialchars($_POST['texte']),($_SESSION['user_type'] == 'teacher') ? 1 : 0);
-	}
 	$profQuestions = $this->questionsMod->getProfessorQuestions($_SESSION['id']);
 	$var = array(
       'css' => array('Professeurs/questions'),
