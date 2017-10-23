@@ -1,20 +1,27 @@
 <main>
+
     <?php
     $ptutActu = '';
         if(!empty($data['ptuts'])){
-            foreach($data['ptuts'] as $ptut){
-                if ($ptut->nomGroupe != $ptutActu){?>
-                    <p>- </p>
-                    <p>Nom du groupe : <?=$ptut->nomGroupe ?></p>
-                    <p>Nombre de proposition de Rendez-vous : <?=$ptut->nbProp?></p>
-                    <p>Membres du groupe : </p>
-            <?php } ?>
+            ?>
+            <table>
+                <tr>
+                    <th>Nom du groupe</th>
+                    <th>Nombre de proposition</th>
+                    <th>Membre du groupe</th>
+                </tr>
+                <?php
+                    foreach($data['ptuts'] as $ptut){
+                        if ($ptut->nomGroupe != $ptutActu){ ?>
+                            <tr>
+                                <td><?=$ptut->nomGroupe ?></td>
+                                <td><?=$ptut->nbProp?></td>
+                                <td><?php } ?><?=$ptut->prenom?> <?php
 
-                <p><?=$ptut->prenom ?></p>
 
+                                $ptutActu = $ptut->nomGroupe;}
+            ?></td></tr></table><?php }
+    else {
+     ?> <p> Vous n'avez pas de groupe de Ptut</p> <?php } ?>
 
-        <?php
-                $ptutActu = $ptut->nomGroupe;
-            }}
-    else { ?> <p> Vous n'avez pas de groupe de Ptut</p> <?php } ?>
 </main>
