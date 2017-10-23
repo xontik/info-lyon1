@@ -1054,9 +1054,9 @@
 
 .grey-text.text-darken-4 { color: #212121 !important; }
 
-.black { background-color: #000000 !important; }
+.black { background-color: rgba(0, 0, 0, 0.87) !important; }
 
-.black-text { color: #000000 !important; }
+.black-text { color: rgba(0, 0, 0, 0.87) !important; }
 
 .white { background-color: #FFFFFF !important; }
 

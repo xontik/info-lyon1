@@ -1054,9 +1054,9 @@
 
 .grey-text.text-darken-4 { color: #212121 !important; }
 
-.black { background-color: #000000 !important; }
+.black { background-color: rgba(0, 0, 0, 0.87) !important; }
 
-.black-text { color: #000000 !important; }
+.black-text { color: rgba(0, 0, 0, 0.87) !important; }
 
 .white { background-color: #FFFFFF !important; }
 
@@ -1369,7 +1369,7 @@ td, th { padding: 15px 5px; display: table-cell; text-align: left; vertical-alig
 
 .right-align, .btn-footer { text-align: right; }
 
-.center, .center-align, #nav-user-menu li, #side-edt-large { text-align: center; }
+.center, .center-align, #nav-user-menu li { text-align: center; }
 
 .left, #toast-container .toast i:first-of-type { float: left !important; }
 
@@ -1381,7 +1381,7 @@ td, th { padding: 15px 5px; display: table-cell; text-align: left; vertical-alig
 
 .center-block { display: block; margin-left: auto; margin-right: auto; }
 
-.truncate, #side-edt-large .row > .content > div > * { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.truncate { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 .no-padding { padding: 0 !important; }
 
@@ -3767,9 +3767,9 @@ button.picker__today:focus, button.picker__clear:focus, button.picker__close:foc
 
 .grey-text.text-darken-4 { color: #212121 !important; }
 
-.black { background-color: #000000 !important; }
+.black { background-color: rgba(0, 0, 0, 0.87) !important; }
 
-.black-text { color: #000000 !important; }
+.black-text { color: rgba(0, 0, 0, 0.87) !important; }
 
 .white { background-color: #FFFFFF !important; }
 
@@ -4082,7 +4082,7 @@ td, th { padding: 15px 5px; display: table-cell; text-align: left; vertical-alig
 
 .right-align, .btn-footer { text-align: right; }
 
-.center, .center-align, #nav-user-menu li, #side-edt-large { text-align: center; }
+.center, .center-align, #nav-user-menu li { text-align: center; }
 
 .left, #toast-container .toast i:first-of-type { float: left !important; }
 
@@ -4094,7 +4094,7 @@ td, th { padding: 15px 5px; display: table-cell; text-align: left; vertical-alig
 
 .center-block { display: block; margin-left: auto; margin-right: auto; }
 
-.truncate, #side-edt-large .row > .content > div > * { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.truncate { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 .no-padding { padding: 0 !important; }
 
@@ -5435,7 +5435,7 @@ body > header > nav h2 { text-align: center; font-size: 2.46rem; }
 
 #nav-user-menu li { line-height: 200%; }
 
-.no-margin, #side-edt-large .row > .content > div h5 { margin: 0 !important; }
+.no-margin { margin: 0 !important; }
 
 .small-caps { font-variant: small-caps; }
 
@@ -6495,9 +6495,9 @@ body > header > nav h2 { text-align: center; font-size: 2.46rem; }
 
 .grey-text.text-darken-4 { color: #212121 !important; }
 
-.black { background-color: #000000 !important; }
+.black { background-color: rgba(0, 0, 0, 0.87) !important; }
 
-.black-text { color: #000000 !important; }
+.black-text { color: rgba(0, 0, 0, 0.87) !important; }
 
 .white { background-color: #FFFFFF !important; }
 
@@ -6810,7 +6810,7 @@ td, th { padding: 15px 5px; display: table-cell; text-align: left; vertical-alig
 
 .right-align, .btn-footer { text-align: right; }
 
-.center, .center-align, #nav-user-menu li, #side-edt-large { text-align: center; }
+.center, .center-align, #nav-user-menu li { text-align: center; }
 
 .left, #toast-container .toast i:first-of-type { float: left !important; }
 
@@ -6822,7 +6822,7 @@ td, th { padding: 15px 5px; display: table-cell; text-align: left; vertical-alig
 
 .center-block { display: block; margin-left: auto; margin-right: auto; }
 
-.truncate, #side-edt-large .row > .content > div > * { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.truncate { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 .no-padding { padding: 0 !important; }
 
@@ -8152,21 +8152,21 @@ button.picker__today:focus, button.picker__clear:focus, button.picker__close:foc
 
 .clockpicker-canvas line { stroke: #757575; stroke-width: 4; stroke-linecap: round; /*shape-rendering: crispEdges;*/ }
 
-html, body, main > * { height: 100%; }
+i { font-size: 1em !important; }
 
-main { height: 90%; }
-
-#side-edt-large { height: 100%; min-height: 40rem; margin-top: 15px; }
-#side-edt-large > .card-content { height: 100%; }
-#side-edt-large .row { height: calc(100% - 32px); }
-#side-edt-large .row > .hours { display: flex; height: 100%; flex-direction: column; }
-#side-edt-large .row > .hours > * { height: 10%; }
-#side-edt-large .row > .hours > *:nth-child(odd) { font-weight: 500; }
-#side-edt-large .row > .hours > *:nth-child(even) { font-size: 11px; }
-#side-edt-large .row > .content { height: 100%; padding-bottom: 5%; }
-#side-edt-large .row > .content > div { overflow: hidden; padding: 5px 8px; border-bottom: 1px solid #d0d0d0; font-size: 1em; }
-#side-edt-large .row > .content > div:first-child { border-top: 1px solid #d0d0d0; }
-#side-edt-large .row > .content > div h5 { white-space: nowrap; overflow: hidden; font-size: 1.2em; font-weight: 500; }
-#side-edt-large .row > .content > div i { font-size: 1em; }
+@media only screen and (min-width: 601px) { html, body, main > * { height: 100%; }
+  main { height: 90%; }
+  #side-edt-large { height: 100%; min-height: 40rem; margin-top: 15px; }
+  #side-edt-large > .card-content { height: 100%; }
+  #side-edt-large .row { height: calc(100% - 32px); }
+  #side-edt-large .row > .hours { display: flex; height: 100%; flex-direction: column; }
+  #side-edt-large .row > .hours > * { height: 10%; }
+  #side-edt-large .row > .hours > *:nth-child(odd) { font-weight: 500; }
+  #side-edt-large .row > .hours > *:nth-child(even) { font-size: 11px; }
+  #side-edt-large .row > .content { height: 100%; padding-bottom: 5%; }
+  #side-edt-large .row > .content > div { overflow: hidden; padding: 5px 8px; border-bottom: 1px solid #d0d0d0; font-size: 1em; }
+  #side-edt-large .row > .content > div:first-child { border-top: 1px solid #d0d0d0; }
+  #side-edt-large .row > .content > div > a { display: block; width: 100%; }
+  #side-edt-large .row > .content > div h5 { margin: 0; white-space: nowrap; overflow: hidden; font-size: 1.2em; font-weight: 500; } }
 
 /*# sourceMappingURL=dashboard.css.map */

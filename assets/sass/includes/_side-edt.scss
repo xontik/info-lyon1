@@ -1,85 +1,81 @@
 @import '../materialize';
 
-html, body, main > * {
-  height: 100%;
+i {
+  font-size: 1em !important;
 }
 
-main {
-  height: 90%;
-}
+@media #{$medium-and-up} {
 
-#side-edt-large {
-  @extend .center-align;
-  height: 100%;
-  min-height: 40rem;
-  margin-top: 15px;
-
-  > .card-content {
+  html, body, main > * {
     height: 100%;
   }
 
-  $hourCount: 10;
-  .row {
-    height: calc(100% - 32px);
-
-    > .hours {
-      display: flex;
-      height: 100%;
-      flex-direction: column;
-
-      > * {
-        height: 100% / $hourCount;
-
-        &:nth-child(odd) {
-          font-weight: 500;
-        }
-
-        &:nth-child(even) {
-          font-size: 11px;
-        }
-      }
-    }
-
-    > .content {
-      height: 100%;
-      padding-bottom: 50% / $hourCount;
-
-      > div {
-        $font-size: 1em;
-        overflow: hidden;
-        padding: 5px 8px;
-        border-bottom: 1px solid $table-border-color;
-
-        font-size: $font-size;
-
-        &:first-child {
-          border-top: 1px solid $table-border-color;
-        }
-
-        > * {
-          @extend .truncate;
-        }
-
-        h5 {
-          @extend .no-margin;
-          white-space: nowrap;
-          overflow: hidden;
-
-          font-size: 1.2em;
-          font-weight: 500;
-        }
-
-        i {
-          font-size: $font-size;
-        }
-      }
-
-      @media (max-width: $large-screen) {
-
-      }
-
-    }
-
+  main {
+    height: 90%;
   }
 
+  #side-edt-large {
+    height: 100%;
+    min-height: 40rem;
+    margin-top: 15px;
+
+    > .card-content {
+      height: 100%;
+    }
+
+    $hourCount: 10;
+    .row {
+      height: calc(100% - 32px);
+
+      > .hours {
+        display: flex;
+        height: 100%;
+        flex-direction: column;
+
+        > * {
+          height: 100% / $hourCount;
+
+          &:nth-child(odd) {
+            font-weight: 500;
+          }
+
+          &:nth-child(even) {
+            font-size: 11px;
+          }
+        }
+      }
+
+      > .content {
+        height: 100%;
+        padding-bottom: 50% / $hourCount;
+
+        > div {
+          overflow: hidden;
+          padding: 5px 8px;
+          border-bottom: 1px solid $table-border-color;
+
+          font-size: 1em;
+
+          &:first-child {
+            border-top: 1px solid $table-border-color;
+          }
+
+          > a {
+            display: block;
+            width: 100%;
+          }
+
+          h5 {
+            margin: 0;
+            white-space: nowrap;
+            overflow: hidden;
+
+            font-size: 1.2em;
+            font-weight: 500;
+          }
+        }
+      }
+
+    }
+  }
 }

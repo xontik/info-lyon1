@@ -1054,9 +1054,9 @@
 
 .grey-text.text-darken-4 { color: #212121 !important; }
 
-.black { background-color: #000000 !important; }
+.black { background-color: rgba(0, 0, 0, 0.87) !important; }
 
-.black-text, #edition section > div.header > i { color: #000000 !important; }
+.black-text, #edition section > div.header > i { color: rgba(0, 0, 0, 0.87) !important; }
 
 .white, #table-static, #table-stud-list > div > div, table tbody td > div, #header-fixed { background-color: #FFFFFF !important; }
 
@@ -3767,9 +3767,9 @@ button.picker__today:focus, button.picker__clear:focus, button.picker__close:foc
 
 .grey-text.text-darken-4 { color: #212121 !important; }
 
-.black { background-color: #000000 !important; }
+.black { background-color: rgba(0, 0, 0, 0.87) !important; }
 
-.black-text, #edition section > div.header > i { color: #000000 !important; }
+.black-text, #edition section > div.header > i { color: rgba(0, 0, 0, 0.87) !important; }
 
 .white, #table-static, #table-stud-list > div > div, table tbody td > div, #header-fixed { background-color: #FFFFFF !important; }
 

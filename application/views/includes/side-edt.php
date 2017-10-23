@@ -15,8 +15,17 @@
  * In view
  * <?= $data['side-edt'] ?>
  */
+$edt_url = explode('/', current_url());
+
+$edt_url = array_splice($edt_url, 0, 4);
+$edt_url[] = 'EDT';
+
+$edt_url = join('/', $edt_url);
+
+ksort($timetable);
+
 ?>
-    <div id="side-edt-large" class="hide-on-small-and-down card">
+    <div id="side-edt-large" class="hide-on-small-and-down card center-align">
         <div class="card-content">
             <span class="card-title"><?= translateAndFormat($date) ?></span>
             <div class="row">
@@ -34,6 +43,7 @@
                         <div>Pas de cours</div>
                     <?php
                     } else {
+                        // TODO $timetable is sorted, insert fill in one time
                         $timeAtDate = $date->format('H:i');
                         $events = array();
                         $events_times = array();
@@ -41,7 +51,7 @@
                         foreach ($timetable as $event) {
                             $classes = array('hoverable', 'valign-wrapper');
                             if (isset($timeAtDate) && $timeAtDate >= $event['time_start'] && $timeAtDate < $event['time_end']) {
-                                $classes[] = 'current-event';
+                                $classes[] = 'z-depth-2';
                                 unset($timeAtDate);
                             }
 
@@ -49,17 +59,17 @@
                                 . 'style="height: '
                                 . computeTimeToHeight($event['time_start'], $event['time_end'])
                                 . '; ">' . PHP_EOL;
-                            $event_dom .= '<div>' . PHP_EOL;
+                            $event_dom .= '<a href="' . $edt_url . '" class="black-text">' . PHP_EOL;
 
-                            $event_dom .= '<h5 title="' . $event['name'] .'">' . $event['name'] . '</h5>' . PHP_EOL;
+                            $event_dom .= '<h5 title="' . $event['name'] .'" class="truncate">' . $event['name'] . '</h5>' . PHP_EOL;
+                            $event_dom .= '<div class="truncate">' . $event['teachers'] . '</div>' . PHP_EOL;
                             $event_dom .= '<div>' . $event['groups'] . '</div>' . PHP_EOL;
-                            $event_dom .= '<div>' . $event['teachers'] . '</div>' . PHP_EOL;
 
                             $event_dom .= '<div><i class="material-icons">location_on</i>'
                                 . $event['location']
                                 . '</div>' . PHP_EOL;
 
-                            $event_dom .= '</div>' . PHP_EOL;
+                            $event_dom .= '</a>' . PHP_EOL;
                             $event_dom .= '</div>' . PHP_EOL;
 
                             $events[$event['time_start']] = $event_dom;
@@ -68,7 +78,7 @@
 
                         ksort($events, SORT_STRING);
 
-                        // If time in not in an edt-item
+                        // If time is not during an event
                         // Select next event
                         if (isset($timeAtDate)) {
                             // Reset internal array pointer
@@ -89,6 +99,7 @@
 
                         $lastTimeEnd = null;
 
+                        // Fill the time
                         foreach ($events as $time => $event) {
                             if (is_null($lastTimeEnd)) {
                                 // Fill if day doesn't begin at 08:00
@@ -121,56 +132,58 @@
             </div>
         </div>
     </div>
-    <div id="side-edt-small" class="hide-on-med-and-up container z-depth-3">
-        <div class="edt-content">
-            <div class="edt-day-title">
-                <?= translateAndFormat($date) ?>
+    <div id="side-edt-small" class="hide-on-med-and-up center-align">
+        <?php
+        if (empty($timetable)) { ?>
+            <div class="card">
+                <div class="card-content">
+                    <span class="card-title">Pas de cours</span>
+                </div>
             </div>
-            <div class="column-content">
-                <?php
-                if (empty($timetable)) { ?>
-                    <div class="error">Pas de cours</div>
-                <?php
-                } else {
-                    usort($timetable, function($item1, $item2) {
-                        // There shouldn't be any equal terms
-                        return $item1['time_start'] < $item2['time_start'] ? -1 : 1;
-                    });
+        <?php
+        } else {
+            $currentEvent = NULL;
+            $nextEvent = NULL;
 
-                    $timeAtDate = $date->format('H:i');
+            $now = new DateTime();
+            if ($date->diff($now)->d > 0) {
+                $nextEvent = $timetable[0];
+            } else {
+                $timeAtDate = $date->format('H:i');
 
-                    $currentEvent = NULL;
-                    $nextEvent = NULL;
-
-                    foreach ($timetable as $event) {
-                        if (isset($timeAtDate) && $event['time_start'] <= $timeAtDate && $timeAtDate < $event['time_end']) {
-                            $currentEvent = $event;
-                        } else if ($event['time_start'] > $timeAtDate) {
-                            $nextEvent = $event;
-                            break;
-                        }
+                foreach ($timetable as $event) {
+                    if (isset($timeAtDate) && $event['time_start'] <= $timeAtDate && $timeAtDate < $event['time_end']) {
+                        $currentEvent = $event;
+                    } else if ($event['time_start'] > $timeAtDate) {
+                        $nextEvent = $event;
+                        break;
                     }
+                }
+            }
 
-                    function echoEvent($event, $title) {
-                        if ($event !== NULL) {
-                            $item = '<div class="edt-item">';
+            $events = array(
+                'Actuellement' => $currentEvent,
+                'Prochain cours' => $nextEvent
+            );
 
-                            $item .= '<h1>' . $title . '</h1>';
-                            $item .= '<h2>' . $event['name'] . '</h2>';
-                            $item .= '<p class="groups">' . $event['groups'] . '</p>';
-                            $item .= '<p class="teachers">' . $event['teachers'] . '</p>';
-                            $item .= '<p class="time">' . $event['time_start'] . ' → ' . $event['time_end'] . '</p>';
-                            $item .= '<p class="location"><i class="material-icons">location_on</i>' . $event['location'] . '</p>';
+            foreach ($events as $title => $event) {
+                if (!is_null($event)) { ?>
+                    <div class="card">
+                        <a href="<?= $edt_url ?>" class="black-text">
+                            <div class="card-content flow-text">
+                                <span class="card-title"><?= $title ?></span>
+                                <h5><?= $event['name'] ?></h5>
+                                <p class="truncate"><?= $event['teachers'] ?></p>
+                                <p><i class="material-icons">group</i> <?= $event['groups'] ?></p>
+                                <p>
+                                    <i class="material-icons">location_on</i> <?= $event['location'] ?>
+                                </p>
+                            </div>
+                        </a>
+                    </div>
+                    <?php
+                }
+            }
 
-                            $item .= '</div>' . PHP_EOL;
-                            echo $item;
-                        }
-                    }
-
-                    echoEvent($currentEvent, 'Actuellement');
-                    echoEvent($nextEvent,'Prochain cours');
-
-                } ?>
-            </div>
-        </div>
+        } ?>
     </div>
