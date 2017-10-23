@@ -1,6 +1,7 @@
         <main>
             <section>
                 <h2>Gestion du semestre : <?= $data['semestre']->type.' - '.$data['semestre']->anneeScolaire.' '.(($data['semestre']->differe == 1)?' différé':'')?></h2>
+                <a href="<?= base_url('Process_secretariat/deleteSemestre/').$data['semestre']->idSemestre ?>">Supprimer ce semestre</a>
 
 
 
@@ -56,7 +57,7 @@
                                     } ?>
                                     </tr>
 
-                                <?php endfor; ?>
+                                <?php endfor; /* ?>
                                 <tr>
 
 
@@ -77,40 +78,50 @@
                                         </td>
                                     <?php endforeach; ?>
                                 </tr>
-
+                                <?php
+                                /**/ ?>
                                 <tr>
 
-                                    <?php
-                                    foreach ($data['students'] as $group) {
-                                        ?>
+                                    <?php foreach ($data['students'] as $group): ?>
+                                        <td colspan="3"><a href="<?= base_url('Process_secretariat/deleteGroupe/').$group['idGroupe'].'/'.$data['semestre']->idSemestre ?>">Supprimer ce groupe</a></td>
 
-                                        <td colspan="3"><a href="#">Supprimer ce groupe</a></td>
-
-                                        <?php
-                                    }
-
-                                    ?>
+                                    <?php endforeach;?>
                                 </tr>
                             </tbody>
                         </table>
                     </form>
-
-                        <section>
-                            <h2>Actions</h2>
-                            <form  action="#" method="post" enctype="multipart/form-data">
-
-                            <a href="<?= base_url('Process_secretariat/getCSVSemestre/').$data['semestre']->idSemestre ?>">Exporter ce semestre</a>
-                            <input type="file" name="import" value="">
-                            <button type="submit" name="button">Importer</button>
-                            <!-- TODO Import csv-->
-                            <a href="#">Supprimer ce semestre</a>
-
-                            <!-- TODO form add groupe -->
-                            <a href="#">Ajouter groupe</a>
-                        </form>
-
-                        </section>
-
                 <?php } ?>
-            </section>
+                </section>
+                <section>
+                    <h2>Actions Groupe</h2>
+                    <ul>
+                        <li>
+                            <a href="<?= base_url('Process_secretariat/getCSVGroupeSemestre/').$data['semestre']->idSemestre ?>">Exporter groupes de ce semestre</a>
+                        </li>
+                        <li>
+                            <form  action="<?= base_url('Process_secretariat/importCSV')?>" method="post" enctype="multipart/form-data">
+
+                                <input type="file" name="import" value="">
+                                <input type="hidden" name="MAX_FILE_SIZE" value="30000" />
+                                <button type="submit" name="importSem">Importer</button>
+                            </form>
+                        </li>
+                        <li>
+                            <form action="<?= base_url('Process_secretariat/addGroupe/').$data['semestre']->idSemestre ?>" method="post">
+                                <label for="nomGroupe">Nom du groupe : </label>
+                                <input type="text" name="nomGroupe" id="nomGroupe">
+                                <button type="submit" name="addGroupe">Ajouter Groupe</button>
+                            </form>
+                        </li>
+                    </ul>
+
+                </section>
+                <section>
+                  <h2>Attribution professeurs a un couple Groupe-Matiere</h2>
+                  <p>Ici ajout manuel</p>
+                  <p>Ici export csv pour un smestre</p>
+                  <p>Ici import d'un csv</p>
+                </section>
+
+
         </main>

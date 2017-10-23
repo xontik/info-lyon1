@@ -175,7 +175,7 @@ class Process_secretariat extends CI_Controller
 
   public function addParcours(){
     $this->load->model("administration_model",'adminMod');
-    if(isset($_POST['send']) && isset($_POST['year']) && isset($_POST['type'])){
+    if(isset($_POST['year']) && isset($_POST['type'])){
       if(is_numeric($_POST['year']) && strlen($_POST['type']) == 2){
         if($this->adminMod->addParcours($_POST['year'],$_POST['type'])){
           $this->session->set_flashdata("notif", array("Parcours créé !"));
@@ -209,11 +209,51 @@ class Process_secretariat extends CI_Controller
     redirect('Secretariat/administration');
   }
 
-  public function deleteSemestre($id){
-    echo 'Suppresion du semestre :'.$id;
+  public function addSemestre(){
+      $this->load->model("semester_model",'semMod');
+      $this->load->model("administration_model",'adminMod');
+
+      if(isset($_POST['anneeScolaire']) &&isset($_POST['parcours'])){
+          if($this->adminMod->isThisParcoursExist($_POST['parcours'])){
+              $semester = (object)array('differe' => isset($_POST['chkDiffere'])?1:0,'anneeScolaire' => $_POST['anneeScolaire'], 'idParcours' => $_POST['parcours'], 'type' => $this->adminMod->getParcoursType($_POST['parcours']));
+              $now = new DateTime();
+              $dateStart = $this->semMod->getSemesterObjectPeriod($semester)->getBeginDate();
+              if($now < $dateStart){
+                  if($this->semMod->addSemester($semester->idParcours,$semester->differe,$semester->anneeScolaire)){
+                      $this->session->set_flashdata("notif", array("Semestre créé"));
+                  }else{
+                      $this->session->set_flashdata("notif", array("Impossible d'ajouter car ce semestre existe deja !"));
+                  }
+              }else{
+                  $this->session->set_flashdata("notif", array("Impossible de creer ce semestre car il aurait deja du commencer !"));
+              }
+          }else{
+              $this->session->set_flashdata("notif", array("Parcours inconnu"));
+          }
+      }else{
+          $this->session->set_flashdata("notif", array("Données manquantes !"));
+      }
+      redirect('Secretariat/administration');
+
   }
 
-  public function getCSVSemestre($id){
+  public function deleteSemestre($id){
+      $this->load->model("semester_model",'semMod');
+      if($this->semMod->isSemesterDeletable($id)){
+          if($this->semMod->deleteSemestre($id)){
+              $this->session->set_flashdata("notif", array("Semestre supprimé !"));
+          }else{
+              $this->session->set_flashdata("notif", array("Erreur de suppression bdd !"));
+          }
+      }
+      else{
+          $this->session->set_flashdata("notif", array("Ce semestre ne peut etre supprimé !"));
+      }
+      redirect('Secretariat/administration');
+
+  }
+
+  public function getCSVGroupeSemestre($id){
       $this->load->model('Students_model','studentMod');
       $this->load->model('Semester_model','semMod');
 
@@ -226,20 +266,148 @@ class Process_secretariat extends CI_Controller
 
 
 
-      echo 'Identifiant du semestre;'.$semestre->idSemestre.';<--Donnees non modifiable;;;'.PHP_EOL;
+      echo 'SEMESTRE;'.$semestre->idSemestre.';<--Donnees non modifiable;;;'.PHP_EOL;
       echo 'Type du semestre;'.$semestre->type.';Annee scolaire;'.$semestre->anneeScolaire.'-'.(((int)$semestre->anneeScolaire)+1).';<--Donnees non modifiable;'.PHP_EOL;
       $idgroupe = 0;
       foreach ($groups as $group) {
           if($idgroupe != $group->idGroupe){
              $idgroupe = $group->idGroupe;
              echo PHP_EOL.PHP_EOL.PHP_EOL.PHP_EOL;
-             echo 'Identifiant groupe;'.$group->idGroupe.';Nom du groupe;'.$group->nomGroupe.';<--Donnees non modifiable;'.PHP_EOL;
+             echo 'GROUPE;'.$group->idGroupe.';Nom du groupe;'.$group->nomGroupe.';<--Donnees non modifiable;'.PHP_EOL;
 
 
           }
           echo $group->numEtudiant.';'.$group->nom.';'.$group->prenom.';;;'.PHP_EOL;
       }
       //
+
+  }
+
+  public function addGroupe($idSemestre){
+      $this->load->model("administration_model",'adminMod');
+      $this->load->model("semester_model",'semMod');
+
+      if(isset($_POST['nomGroupe'])){
+          //TODO add preg_match
+        if($this->semMod->isSemesterEditable($idSemestre)) {
+          if($this->adminMod->addGroupe($idSemestre,$_POST['nomGroupe'])){
+            $this->session->set_flashdata("notif", array("Groupe ".$_POST['nomGroupe']." ajouté!"));
+          }else{
+            $this->session->set_flashdata("notif", array("Erreur de création de groupe !"));
+          }
+        }else{
+          $this->session->set_flashdata("notif", array("Ce semestre ne peut etre modifié !"));
+        }
+      }else{
+        $this->session->set_flashdata("notif", array("Données manquantes !"));
+      }
+      redirect('Secretariat/gestionSemestre/'.$idSemestre);
+
+  }
+
+  public function deleteGroupe($idGroupe,$idSemestre){
+      $this->load->model("administration_model",'adminMod');
+      $this->load->model("semester_model",'semMod');
+
+
+      if($this->adminMod->isGroupeEditable($idGroupe)) {
+        if($this->adminMod->deleteGroupe($idGroupe)){
+          $this->session->set_flashdata("notif", array("Groupe supprimé !"));
+        }else{
+          $this->session->set_flashdata("notif", array("Erreur de suppression du groupe !"));
+        }
+      }else{
+        $this->session->set_flashdata("notif", array("Ce semestre ne peut etre modifié !"));
+      }
+      redirect('Secretariat/gestionSemestre/'.$idSemestre);
+
+  }
+
+  public function importCSV(){
+      $this->load->model("administration_model",'adminMod');
+      $this->load->model("semester_model",'semMod');
+      $this->load->model("students_model",'studentMod');
+
+      if(isset($_FILES['import']) && $_FILES['import']['size'] > 0){
+          if($_FILES['import']['type'] == 'text/csv'){
+              $csv = array();
+              ini_set('auto_detect_line_endings',TRUE);
+              $file = fopen($_FILES['import']['tmp_name'],'r');
+              while($line = fgetcsv($file,0,';')){
+                  if($line[0]){
+                      $csv[] = $line;
+                  }
+              }
+              fclose($file);
+              ini_set('auto_detect_line_endings',FALSE);
+
+              /*
+              echo '<pre>';
+              print_r($csv);
+              echo '</pre>';
+              /**/
+              $idSemestre = $csv[0][1];
+              $ajout = array();
+              $modif = array();
+              $refus = array();
+              $dejaIn = array();
+              if($this->semMod->isSemesterEditable($idSemestre)){
+                  //echo 'sem ok' ;
+                  $semestreDuringSamePeriod = $this->semMod->getSemesterIdsSamePeriod($idSemestre);
+                  /*
+                  echo '<pre>';
+                  print_r($semestreDuringSamePeriod);
+                  echo '</pre>';
+                  /**/
+                  $groupeId = 0;
+                  foreach ($csv as $line) {
+                      if($line[0]=="GROUPE"){
+                          $groupeId = $line[1];
+                      }else{
+                          if($groupeId != 0){
+
+                              $student = array('numEtudiant' => $line[0],'nom' => $line[1], 'prenom' => $line[2]);
+                              //1 verifier si il es pas deja dans le groupe cible
+                              if($this->studentMod->isStudentInGroup($student['numEtudiant'],$groupeId)){
+                                  //echo $student['numEtudiant'].' DEJA DANS LE GROUPE<br>';
+                                  $dejaIn[] = $student;
+                              }else{
+                                  //2 verifier si il n'est pas deja dans un autre groupe ?
+                                  if($this->studentMod->isStudentInGroupsOfSemesters($student['numEtudiant'],$semestreDuringSamePeriod)){
+                                      if($this->studentMod->isStudentInGroupsOfSameSemester($student['numEtudiant'],$idSemestre)){
+                                          //echo $student['numEtudiant'].' Move -> <br>';
+                                          $modif[] = $student;
+                                      }else{
+                                          //echo $student['numEtudiant'].' DEJA AILLEUR --> ERREUR <br>';
+                                          $refus[] = $student;
+                                      }
+                                  }else{
+                                      //echo $student['numEtudiant'].' A AJOUTER<br>';
+                                      $ajout[] = $student;
+                                  }
+                              }
+                          }
+                      }
+                  }
+                  // wipe groupe
+                  // add ajout
+                  $this->session->set_flashdata("notif", array("Ajout: ".count($ajout)."Modif: ".count($modif)."Refus: ".count($refus)."Deja: ".count($dejaIn)));
+                  redirect('Secretariat/gestionSemestre/'.$idSemestre);
+                  exit(0);
+
+
+              }else{
+                  $this->session->set_flashdata("notif", array("Identifiant semestre incorrect"));
+              }
+          }else{
+              $this->session->set_flashdata("notif", array("Fichier format incorrect"));
+          }
+      }else{
+          $this->session->set_flashdata("notif", array("Aucun fichier recu"));
+      }
+      redirect('Secretariat/administration');
+
+
 
   }
 }

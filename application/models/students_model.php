@@ -40,14 +40,25 @@ class students_model extends CI_Model {
     }
 
     public function getStudentsBySemestre($id){
-        $sql = 'SELECT idGroupe, nomGroupe, nom, prenom, numEtudiant from Groupes join EtudiantGroupe using(idGroupe) join Etudiants using(numEtudiant) where idSemestre = ? order by idGroupe ';
+        $sql = 'SELECT idGroupe, nomGroupe, nom, prenom, numEtudiant from Groupes left join EtudiantGroupe using(idGroupe) left join Etudiants using(numEtudiant) where idSemestre = ? order by nomGroupe ';
         return $this->db->query($sql,array($id))->result();
     }
 
-    public function getStudentWithoutGroup(){
-        $sql = 'SELECT * from Etudiants where numEtudiant not in (select numEtudiant from EtudiantGroupe join Groupes using(idGroupe) join semestres using(idSemestre) where actif = 1)';
-        return $this->db->query($sql)->result();
+    public function getStudentWithoutGroup($semestreId){
+        //TODO a retravailler
+        $sql = 'SELECT * from Etudiants where numEtudiant not in (select numEtudiant from EtudiantGroupe join Groupes using(idGroupe) join semestres using(idSemestre) where anneeScolaire = (SELECT anneeScolaire from Semestres where idSemestre = ?)) ';
+        return $this->db->query($sql,array($semestreId))->result();
 
+    }
+
+    public function isStudentInGroup($numEtu,$groupId){
+        $sql = 'SELECT  * from EtudiantGroupe where numEtudiant=? and idGroupe = ?';
+        return $this->db->query($sql,array($numEtu,$groupId))->num_rows() > 0;
+    }
+    //semesterIds : les ids des semestre a verifier
+    public function isStudentInGroupsOfSemesters($numEtudiant,$semesterIds){
+        $sql = 'SELECT  * from EtudiantGroupe join groupes using(idGroupe) where numEtudiant=? and idSemestre IN ?';
+        return $this->db->query($sql,array($numEtudiant,$semesterIds))->num_rows() > 0;
     }
 
 }

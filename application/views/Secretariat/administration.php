@@ -52,7 +52,7 @@
           <option value="S3">S3</option>
           <option value="S4">S4</option>
         </select>
-        <input type="submit" name="send" value="Ajouter">
+        <button type="submit" name="addParcours">Ajouter</button>
       </form>
     </section>
     <section>
@@ -110,19 +110,32 @@
             </tbody>
           </table>
         </section>
+        <section>
+            <h2>Ajouter un semestre</h2>
+            <form action="<?= base_url('Process_secretariat/addSemestre')?>" method="post">
+                <label for="parcours">Choix du parcours: </label>
+                <select id="parcours" name="parcours">
+                    <?php foreach ($data['parcoursForSemester'] as $parcours): ?>
+                        <option value="<?= $parcours->idParcours ?>"><?= $parcours->type?> - Programme de <?= $parcours->anneeCreation?></option>
+                    <?php endforeach; ?>
+                </select>
+                <label for="chkDiffere">Differé : </label>
+                <input type="checkbox" name="chkDiffere" id="chkDiffere">
+                <label for="anneeScolaire">Année scolaire :</label>
+                <select id="anneeScolaire" name="anneeScolaire">
+                    <?php for ($i=0; $i < 3; $i++) : ?>
+                    <?php $year = (int)(date('Y'));?>
+                        <option value="<?= $year + $i?>"><?= ($year + $i ). '-'.( $year + $i +1) ?></option>
+                    <?php endfor;?>
+                </select>
+                <button type="submit" name="addSemester">Ajouter</button>
+            </form>
+        </section>
+
 
       </section>
-      <section>
-        <h2>Gestion des groupes</h2>
-        <p>Importer un groupe</p>
-        <p>Liste des groupe</p>
-      </section>
-      <section>
-        <h2>Attribution professeurs a un couple Groupe-Matiere</h2>
-        <p>Ici ajout manuel</p>
-        <p>Ici export csv pour un smestre</p>
-        <p>Ici import d'un csv</p>
-      </section>
+
+
     </section>
 
   </main>

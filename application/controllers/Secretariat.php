@@ -171,9 +171,7 @@ class Secretariat extends CI_Controller {
         show("Secretariat/absences", $data);
     }
 
-    public function groupe($id){
-      echo 'Gestion du groupe : '.$id;
-    }
+
 
     public function gestionSemestre($id){
       $this->load->model('Students_model','studentMod');
@@ -186,7 +184,7 @@ class Secretariat extends CI_Controller {
 
       $groups = $this->studentMod->getStudentsBySemestre($id);
 
-      $freeStudents = $this->studentMod->getStudentWithoutGroup();
+      $freeStudents = $this->studentMod->getStudentWithoutGroup($id);
 
       $idGroupe = 0;
       $outGroups = array();
@@ -217,6 +215,7 @@ class Secretariat extends CI_Controller {
       $this->load->model('Administration_model','adminMod');
       $this->load->model('Semester_model','semMod');
       $parcours = $this->adminMod->getAllParcoursEditable();
+      $parcoursForSemester = $this->adminMod->getAllLastParcours();
       $semestres = $this->semMod->getAllSemesters();
       $outSem = array();
       $idSemestre = 0;
@@ -267,7 +266,7 @@ class Secretariat extends CI_Controller {
         "css" => array('Secretariats/administration'),
         "js" => array('debug','gestionParcours','gestionSemestre'),
         "title" => "Tableau de bord",
-        'data' => array('parcours' => $parcours,'semestres' => $outSem)
+        'data' => array('parcours' => $parcours,'semestres' => $outSem,'parcoursForSemester' =>$parcoursForSemester)
       );
       show("Secretariat/administration", $data);
     }

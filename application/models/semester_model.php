@@ -55,6 +55,19 @@ class semester_model extends CI_Model {
             ->get()
             ->row();
 
+        return $this->getSemesterObjectPeriod($semester);
+
+    }
+    /**
+     * @param $semester object with type,anneeScolaire et differe
+     * @return mixed An array of two dates, the beginning and the end of the semester
+     */
+
+    public function getSemesterObjectPeriod($semester) {
+        require_once(APPPATH . 'libraries/Period.php');
+
+
+
         if (empty($semester)) {
             return FALSE;
         }
@@ -139,7 +152,7 @@ class semester_model extends CI_Model {
       from Semestres
       join parcours using(idparcours)
       left join Groupes using (idSemestre)
-      order by idSemestre DESC , anneeScolaire DESC';
+      order by idSemestre DESC , anneeScolaire DESC, nomGroupe ASC';
       return $this->db->query($sql)->result();
     }
     public function getSemesterById($id){
@@ -153,12 +166,53 @@ class semester_model extends CI_Model {
         $dateSem = $this->getSemesterPeriod($id);
         $now = new DateTime();
         $dateEnd = $dateSem->getEndDate();
-        $editable = false;
         if($now>$dateEnd){
           return false;
         }
 
         return true;
+    }
+    public function isSemesterDeletable($id){
+        if(is_null($this->getSemesterById($id))){
+            return false;
+        }
+        $now = new DateTime();
+        if($now>$this->getSemesterPeriod($id)->getBeginDate()){
+          return false;
+        }
+        return true;
+    }
+
+    public function deleteSemestre($id){
+        return $this->db->query('DELETE FROM Semestres where idSemestre = ?',array($id));
+    }
+    public function addSemester($idParcours,$differe,$anneeScolaire){
+        if($this->isThisSemesterAlreadyExist($idParcours,$differe,$anneeScolaire)){
+            return FALSE;
+        }else{
+            $sql = 'INSERT INTO Semestres VALUES(\'\',?,?,?,0)';
+            return $this->db->query($sql,array($idParcours,$anneeScolaire,$differe));
+        }
+    }
+    public function isThisSemesterAlreadyExist($idParcours,$differe,$anneeScolaire){
+        $sql = 'SELECT * from Semestres where idParcours = ? and differe = ? and anneeScolaire = ?';
+        return $this->db->query($sql,array($idParcours,$differe,$anneeScolaire))->num_rows() > 0;
+    }
+
+    public function getSemesterIdsSamePeriod($idSemestre){
+        $semesters = $this->getAllSemesters();
+        $beginDate = $this->getSemesterPeriod($idSemestre)->getBeginDate();
+        $outSem = array();
+        foreach ($semesters as $semester) {
+            if($beginDate == $this->getSemesterObjectPeriod($semester)->getBeginDate()){
+                if(!in_array($semester->idSemestre,$outSem)){
+                    $outSem[] = $semester->idSemestre;
+                }
+            }
+        }
+
+        return $outSem;
+
     }
 
 
