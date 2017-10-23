@@ -5,13 +5,13 @@ html, body, main > * {
 }
 
 main {
-  // Should be 100% - headerHeight
   height: 90%;
 }
 
 #side-edt-large {
   @extend .center-align;
   height: 100%;
+  min-height: 40rem;
   margin-top: 15px;
 
   > .card-content {
@@ -45,9 +45,12 @@ main {
       padding-bottom: 50% / $hourCount;
 
       > div {
+        $font-size: 1em;
         overflow: hidden;
-        padding: 10px 8px;
+        padding: 5px 8px;
         border-bottom: 1px solid $table-border-color;
+
+        font-size: $font-size;
 
         &:first-child {
           border-top: 1px solid $table-border-color;
@@ -61,8 +64,20 @@ main {
           @extend .no-margin;
           white-space: nowrap;
           overflow: hidden;
+
+          font-size: 1.2em;
+          font-weight: 500;
+        }
+
+        i {
+          font-size: $font-size;
         }
       }
+
+      @media (max-width: $large-screen) {
+
+      }
+
     }
 
   }

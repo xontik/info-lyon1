@@ -31,7 +31,7 @@
                 <div class="content col s10">
                     <?php
                     if ( empty($timetable) ) { ?>
-                        <div class="error">Pas de cours</div>
+                        <div>Pas de cours</div>
                     <?php
                     } else {
                         $timeAtDate = $date->format('H:i');
@@ -39,7 +39,7 @@
                         $events_times = array();
 
                         foreach ($timetable as $event) {
-                            $classes = array('hoverable');
+                            $classes = array('hoverable', 'valign-wrapper');
                             if (isset($timeAtDate) && $timeAtDate >= $event['time_start'] && $timeAtDate < $event['time_end']) {
                                 $classes[] = 'current-event';
                                 unset($timeAtDate);
@@ -49,21 +49,17 @@
                                 . 'style="height: '
                                 . computeTimeToHeight($event['time_start'], $event['time_end'])
                                 . '; ">' . PHP_EOL;
+                            $event_dom .= '<div>' . PHP_EOL;
 
                             $event_dom .= '<h5 title="' . $event['name'] .'">' . $event['name'] . '</h5>' . PHP_EOL;
                             $event_dom .= '<div>' . $event['groups'] . '</div>' . PHP_EOL;
                             $event_dom .= '<div>' . $event['teachers'] . '</div>' . PHP_EOL;
 
-                            $event_dom .= '<div><i class="material-icons">schedule</i> '
-                                . $event['time_start']
-                                . '<i class="material-icons">arrow_forward</i>'
-                                . $event['time_end']
-                                . '</div>' . PHP_EOL;
-
                             $event_dom .= '<div><i class="material-icons">location_on</i>'
                                 . $event['location']
                                 . '</div>' . PHP_EOL;
 
+                            $event_dom .= '</div>' . PHP_EOL;
                             $event_dom .= '</div>' . PHP_EOL;
 
                             $events[$event['time_start']] = $event_dom;
