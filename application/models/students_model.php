@@ -61,4 +61,20 @@ class students_model extends CI_Model {
         return $this->db->query($sql,array($numEtudiant,$semesterIds))->num_rows() > 0;
     }
 
+
+    public function deleteRelationGroupStudent($numEtudiant,$groupId){
+        $sql = 'DELETE FROM EtudiantGroupe where idGroupe = ? and numEtudiant = ?';
+        return $this->db->query($sql,array($groupeId,$numEtudiant));
+    }
+    public function deleteAllRelationForGroup($groupeId){
+        $sql = 'DELETE FROM EtudiantGroupe where idGroupe = ?';
+        return $this->db->query($sql,array($groupeId));
+    }
+
+    public function addToGroupe($numEtudiant,$groupId){
+        $sql = 'INSERT INTO EtudiantGroupe VALUES(\'\',?,?)';
+        return $this->db->query($sql,array($numEtudiant,$groupId));
+    }
+
+
 }

@@ -348,7 +348,6 @@ class Process_secretariat extends CI_Controller
               /**/
               $idSemestre = $csv[0][1];
               $ajout = array();
-              $modif = array();
               $refus = array();
               $dejaIn = array();
               if($this->semMod->isSemesterEditable($idSemestre)){
@@ -363,35 +362,59 @@ class Process_secretariat extends CI_Controller
                   foreach ($csv as $line) {
                       if($line[0]=="GROUPE"){
                           $groupeId = $line[1];
+                          $ajout[$groupeId] = array();
+                          $refus[$groupeId] = array();
+                          $dejaIn[$groupeId] = array();
                       }else{
                           if($groupeId != 0){
 
                               $student = array('numEtudiant' => $line[0],'nom' => $line[1], 'prenom' => $line[2]);
+
                               //1 verifier si il es pas deja dans le groupe cible
                               if($this->studentMod->isStudentInGroup($student['numEtudiant'],$groupeId)){
                                   //echo $student['numEtudiant'].' DEJA DANS LE GROUPE<br>';
-                                  $dejaIn[] = $student;
+                                  //mais ajout car on wipe le groupe
+                                  $ajout[$groupeId][] = $student;
                               }else{
                                   //2 verifier si il n'est pas deja dans un autre groupe ?
                                   if($this->studentMod->isStudentInGroupsOfSemesters($student['numEtudiant'],$semestreDuringSamePeriod)){
-                                      if($this->studentMod->isStudentInGroupsOfSameSemester($student['numEtudiant'],$idSemestre)){
-                                          //echo $student['numEtudiant'].' Move -> <br>';
-                                          $modif[] = $student;
-                                      }else{
-                                          //echo $student['numEtudiant'].' DEJA AILLEUR --> ERREUR <br>';
-                                          $refus[] = $student;
-                                      }
-                                  }else{
-                                      //echo $student['numEtudiant'].' A AJOUTER<br>';
-                                      $ajout[] = $student;
+                                      echo $student['numEtudiant'];
+                                      print_r($semestreDuringSamePeriod);
+                                      $refus[$groupeId][] = $student;
+                                  }else{ // sinon whatever car on wipe chaque groupe TODO A CHANGER
+                                      $ajout[$groupeId][] = $student;
                                   }
                               }
                           }
                       }
+
                   }
-                  // wipe groupe
-                  // add ajout
-                  $this->session->set_flashdata("notif", array("Ajout: ".count($ajout)."Modif: ".count($modif)."Refus: ".count($refus)."Deja: ".count($dejaIn)));
+
+
+                  //TODO maybe delete all relation pour le semestre ?
+
+                  foreach ($ajout as $group => $students) {
+                      $this->studentMod->deleteAllRelationForGroup($group);
+
+
+                      foreach ($students as $student) {
+                          $this->studentMod->addToGroupe($student['numEtudiant'],$group);
+                      }
+                  }
+                  $error = array();
+                  foreach ($refus as $group => $students) {
+                      foreach ($students as $student) {
+                          $error[] = $student;
+                      }
+                  }
+
+                  if(count($error)){
+                      //TODO differencier les erreurs
+                      $this->session->set_flashdata("notif",array("Erreur : ".count($error)));
+                  }else{
+                      $this->session->set_flashdata("notif",array("Alright"));
+                  }
+
                   redirect('Secretariat/gestionSemestre/'.$idSemestre);
                   exit(0);
 

@@ -205,7 +205,7 @@ class semester_model extends CI_Model {
         $outSem = array();
         foreach ($semesters as $semester) {
             if($beginDate == $this->getSemesterObjectPeriod($semester)->getBeginDate()){
-                if(!in_array($semester->idSemestre,$outSem)){
+                if(!in_array($semester->idSemestre,$outSem) && $semester->idSemestre!=$idSemestre){
                     $outSem[] = $semester->idSemestre;
                 }
             }

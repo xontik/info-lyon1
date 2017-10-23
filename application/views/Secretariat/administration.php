@@ -128,6 +128,7 @@
                         <option value="<?= $year + $i?>"><?= ($year + $i ). '-'.( $year + $i +1) ?></option>
                     <?php endfor;?>
                 </select>
+                <!-- TODO l'année en fonction du select #AJAX CHIANT-->
                 <button type="submit" name="addSemester">Ajouter</button>
             </form>
         </section>
