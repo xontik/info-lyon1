@@ -214,6 +214,9 @@ class semester_model extends CI_Model {
         return $outSem;
 
     }
+    public function isThisGroupInSemester($groupId,$semId){
+        return $this->db->query('SELECT * from groupes where idGroupe = ? and idSemestre = ?', array($groupId,$semId))->num_rows() > 0;
+    }
 
 
 

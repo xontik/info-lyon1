@@ -341,78 +341,85 @@ class Process_secretariat extends CI_Controller
               fclose($file);
               ini_set('auto_detect_line_endings',FALSE);
 
-              /*
-              echo '<pre>';
-              print_r($csv);
-              echo '</pre>';
-              /**/
+            
               $idSemestre = $csv[0][1];
-              $ajout = array();
-              $refus = array();
-              $dejaIn = array();
-              if($this->semMod->isSemesterEditable($idSemestre)){
-                  //echo 'sem ok' ;
-                  $semestreDuringSamePeriod = $this->semMod->getSemesterIdsSamePeriod($idSemestre);
-                  /*
-                  echo '<pre>';
-                  print_r($semestreDuringSamePeriod);
-                  echo '</pre>';
-                  /**/
-                  $groupeId = 0;
-                  foreach ($csv as $line) {
-                      if($line[0]=="GROUPE"){
-                          $groupeId = $line[1];
-                          $ajout[$groupeId] = array();
-                          $refus[$groupeId] = array();
-                          $dejaIn[$groupeId] = array();
-                      }else{
-                          if($groupeId != 0){
+              $alreadyAddedIds = array();
+              $groupStudentIds = array();
 
+              $refus = array();
+
+              $conserve = 0;
+              $delete = 0;
+              $ajout = 0;
+
+
+              if($this->semMod->isSemesterEditable($idSemestre)){
+                  $semestreDuringSamePeriod = $this->semMod->getSemesterIdsSamePeriod($idSemestre);
+
+                  $groupId = 0;
+                  foreach ($csv as $line) {
+
+                      if($line[0]=="GROUPE"){
+                          if($groupId != 0){
+                              foreach ($groupStudentIds as $studentId){
+                                  $this->studentMod->deleteRelationGroupStudent($groupId,$studentId);
+                                  $delete++;
+                              }
+                          }
+                          $groupId = $line[1];
+                          if(!$this->semMod->isThisGroupInSemester($groupId,$idSemestre)){
+                              $groupId = 0;
+                          }
+                          $groupStudentIds = $this->studentMod->getIdsFromGroup($groupId);
+
+                      }else{
+                          if($groupId != 0){
                               $student = array('numEtudiant' => $line[0],'nom' => $line[1], 'prenom' => $line[2]);
 
-                              //1 verifier si il es pas deja dans le groupe cible
-                              if($this->studentMod->isStudentInGroup($student['numEtudiant'],$groupeId)){
-                                  //echo $student['numEtudiant'].' DEJA DANS LE GROUPE<br>';
-                                  //mais ajout car on wipe le groupe
-                                  $ajout[$groupeId][] = $student;
+                              if($grp = $this->studentMod->isStudentInGroupsOfSemesters($student['numEtudiant'],$semestreDuringSamePeriod)){
+
+                                  $refus[] = array('student' => $student, 'fromGroup' => $grp, 'toGroup' => $this->adminMod->getGroupDetails($groupId));
                               }else{
-                                  //2 verifier si il n'est pas deja dans un autre groupe ?
-                                  if($this->studentMod->isStudentInGroupsOfSemesters($student['numEtudiant'],$semestreDuringSamePeriod)){
-                                      echo $student['numEtudiant'];
-                                      print_r($semestreDuringSamePeriod);
-                                      $refus[$groupeId][] = $student;
-                                  }else{ // sinon whatever car on wipe chaque groupe TODO A CHANGER
-                                      $ajout[$groupeId][] = $student;
+
+                                  if(($key = array_search($student['numEtudiant'],$groupStudentIds)) !== FALSE){
+                                      $conserve++;
+
+                                      unset($groupStudentIds[$key]);
+                                      $alreadyAddedIds[$student['numEtudiant']] = $groupId;
+
+
+                                  }else{
+                                      if(isset($alreadyAddedIds[$student['numEtudiant']])){
+                                          $refus[] = array('student' => $student, 'fromGroup' => $this->adminMod->getGroupDetails($alreadyAddedIds[$student['numEtudiant']]), 'toGroup' => $this->adminMod->getGroupDetails($groupId));
+                                      }else{
+                                          $ajout++;
+                                          $alreadyAddedIds[$student['numEtudiant']] = $groupId;
+                                          $this->studentMod->addToGroupe($student['numEtudiant'],$groupId);
+                                      }
                                   }
+
                               }
                           }
                       }
-
                   }
-
-
-                  //TODO maybe delete all relation pour le semestre ?
-
-                  foreach ($ajout as $group => $students) {
-                      $this->studentMod->deleteAllRelationForGroup($group);
-
-
-                      foreach ($students as $student) {
-                          $this->studentMod->addToGroupe($student['numEtudiant'],$group);
+                  //TODO duplicate a reflechir cmment faire mieux car deux fois le meme code
+                  if($groupId != 0){
+                      foreach ($groupStudentIds as $studentId){
+                          $this->studentMod->deleteRelationGroupStudent($groupId,$studentId);
+                          $delete++;
                       }
                   }
-                  $error = array();
-                  foreach ($refus as $group => $students) {
-                      foreach ($students as $student) {
-                          $error[] = $student;
-                      }
-                  }
+                  //TODO faire notif correct quand merge avec enzo
+                  if(count($refus)){
+                      $msg = 'Erreur d\'import pour les etudiants:';
+                      foreach ($refus as $refu) {
 
-                  if(count($error)){
-                      //TODO differencier les erreurs
-                      $this->session->set_flashdata("notif",array("Erreur : ".count($error)));
+                          $msg.= $refu['student']['nom'].' '.$refu['student']['prenom'].' de '.$refu['fromGroup']->nomGroupe.$refu['fromGroup']->type.' a '.$refu['toGroup']->nomGroupe.$refu['toGroup']->type.' <br>';
+                      }
+                      $this->session->set_flashdata("notif",array($msg));
+
                   }else{
-                      $this->session->set_flashdata("notif",array("Alright"));
+                      $this->session->set_flashdata("notif",array('Conserve : '.$conserve.' '.'Delete :'.$delete.' '.'Ajout : '.$ajout.' '.'Total : '.($conserve+$delete+$ajout).' '));
                   }
 
                   redirect('Secretariat/gestionSemestre/'.$idSemestre);

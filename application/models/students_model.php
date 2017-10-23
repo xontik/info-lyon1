@@ -57,14 +57,20 @@ class students_model extends CI_Model {
     }
     //semesterIds : les ids des semestre a verifier
     public function isStudentInGroupsOfSemesters($numEtudiant,$semesterIds){
-        $sql = 'SELECT  * from EtudiantGroupe join groupes using(idGroupe) where numEtudiant=? and idSemestre IN ?';
-        return $this->db->query($sql,array($numEtudiant,$semesterIds))->num_rows() > 0;
+        $sql = 'SELECT  * from EtudiantGroupe join groupes using(idGroupe) join Semestres using(idSemestre) join parcours using(idParcours)  where numEtudiant=? and idSemestre IN ?';
+        $row = $this->db->query($sql,array($numEtudiant,$semesterIds))->row();
+        if(empty($row)){
+            return false;
+        }
+        else{
+            return $row;
+        }
     }
 
 
-    public function deleteRelationGroupStudent($numEtudiant,$groupId){
+    public function deleteRelationGroupStudent($groupId,$numEtudiant){
         $sql = 'DELETE FROM EtudiantGroupe where idGroupe = ? and numEtudiant = ?';
-        return $this->db->query($sql,array($groupeId,$numEtudiant));
+        return $this->db->query($sql,array($groupId,$numEtudiant));
     }
     public function deleteAllRelationForGroup($groupeId){
         $sql = 'DELETE FROM EtudiantGroupe where idGroupe = ?';
@@ -74,6 +80,9 @@ class students_model extends CI_Model {
     public function addToGroupe($numEtudiant,$groupId){
         $sql = 'INSERT INTO EtudiantGroupe VALUES(\'\',?,?)';
         return $this->db->query($sql,array($numEtudiant,$groupId));
+    }
+    public function getIdsFromGroup($idGroup){
+        return array_column($this->db->query('SELECT numEtudiant from EtudiantGroupe where idGroupe = ?',array($idGroup))->result_array(),'numEtudiant');
     }
 
 

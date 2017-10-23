@@ -128,5 +128,9 @@ class Administration_model extends CI_Model {
         return $this->db->query($sql,array($idGroupe));
 
     }
+    public function getGroupDetails($idGroup){
+        $sql = 'SELECT * FROM Groupes join Semestres using(idSemestre) join parcours using(idParcours) where idGroupe = ?';
+        return $this->db->query($sql,array($idGroup))->row();
+    }
 
 }
