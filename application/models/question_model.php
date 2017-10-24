@@ -31,7 +31,7 @@ class question_model extends CI_Model {
 
     public function getAnswers($idQuestion) {
         return $this->db->select('*')
-                        ->from('Réponse')
+                        ->from('Reponses')
                         ->where('idQuestion', $idQuestion)
                         ->order_by('dateReponse', 'asc')
                         ->get()
@@ -45,7 +45,7 @@ class question_model extends CI_Model {
             'prof' => $isProf
         );
 
-        $this->db->insert('Réponse', $data);
+        $this->db->insert('Reponses', $data);
     }
 
 }
