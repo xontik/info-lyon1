@@ -1,4 +1,4 @@
-<main>
+<main class="container">
     <table class="bordered">
         <thead>
             <tr>
