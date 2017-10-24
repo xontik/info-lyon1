@@ -9,13 +9,6 @@
 class Process_secretariat extends CI_Controller
 {
 
-    public function __construct()
-    {
-        parent::__construct();
-        if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'secretariat')
-            redirect('/');
-    }
-
     public function ajout_absence()
     {
         header('Content-Type: text/plain');

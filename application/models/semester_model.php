@@ -148,17 +148,11 @@ class semester_model extends CI_Model {
             ->where('type', $semesterType)
             ->get_compiled_select();
 
-        $groupId = $this->db->select_max('Groupes.idGroupe')
+        $semester = $this->db->select_max('Groupes.idSemestre')
             ->from('Groupes')
             ->join('EtudiantGroupe', 'idGroupe')
             ->where('EtudiantGroupe.numEtudiant', $studentId)
             ->where('Groupes.idSemestre IN (' . $compatibleSemesters . ')')
-            ->get()
-            ->row()->idGroupe;
-
-        $semester = $this->db->select('idSemestre')
-            ->from('Groupes')
-            ->where('idGroupe', $groupId)
             ->get()
             ->row();
 

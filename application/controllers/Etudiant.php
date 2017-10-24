@@ -44,12 +44,20 @@ class Etudiant extends CI_Controller {
     }
 
     public function absence($semester = '') {
-        $this->load->model('absence_model', 'absenceMod');
-        $this->load->model('semester_model', 'semesterMod');
+        $this->load->model('absence_model');
+        $this->load->model('semester_model');
 
-        $semesterId = $this->semesterMod->getSemesterId($semester);
+        // Loads the max semester type the student went to
+        $max_semester = intval(
+            substr($this->semester_model->getSemesterTypeFromId(
+                $this->semester_model->getCurrentSemesterId($_SESSION['id'])
+            ), 1)
+        );
 
-        $absences = $this->absenceMod->getStudentSemesterAbsence($_SESSION['id'], $semesterId);
+        $semesterId = $this->semester_model->getSemesterId($semester);
+        $semester = $this->semester_model->getSemesterTypeFromId($semesterId);
+
+        $absences = $this->absence_model->getStudentSemesterAbsence($_SESSION['id'], $semesterId);
 
         $data = array(
             'css' => array('Etudiant/absences'),
@@ -57,6 +65,8 @@ class Etudiant extends CI_Controller {
             'page' => 'absences',
             'title' => 'Absences',
             'data' => array(
+                'max_semester' => $max_semester,
+                'semester' => $semester,
                 'absences' => $absences
             )
         );
@@ -70,13 +80,14 @@ class Etudiant extends CI_Controller {
         $this->load->model('semester_model', 'semesterMod');
 
         $semesterId = $this->semesterMod->getSemesterId($semester);
+
         if ($semesterId === FALSE) {
             $semesterId = $this->semesterMod->getSemesterId();
         }
 
         $marks = $this->markMod->getMarksFromSemester($_SESSION['id'], $semesterId);
 
-        $var = array(
+        $data = array(
             'css' => array('Etudiants/notes'),
             'js' => array('debug'),
             'page' => 'notes',
@@ -85,8 +96,7 @@ class Etudiant extends CI_Controller {
                 'marks' => $marks
             )
         );
-
-        show('Etudiant/notes', $var);
+        show('Etudiant/notes', $data);
     }
 
     public function ptut() {
