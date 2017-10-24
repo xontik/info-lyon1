@@ -44,6 +44,7 @@ class Etudiant extends CI_Controller {
     }
 
     public function absence($semester = '') {
+        $this->load->helper('notification');
         $this->load->model('absence_model');
         $this->load->model('semester_model');
 
@@ -53,6 +54,11 @@ class Etudiant extends CI_Controller {
                 $this->semester_model->getCurrentSemesterId($_SESSION['id'])
             ), 1)
         );
+
+        if ($semester > 'S' . $max_semester) {
+            add_notification('Vous essayez d\'accéder à un semestre futur !<br>Redirection vers votre semestre courant');
+            $semester = '';
+        }
 
         $semesterId = $this->semester_model->getSemesterId($semester);
         $semester = $this->semester_model->getSemesterTypeFromId($semesterId);
