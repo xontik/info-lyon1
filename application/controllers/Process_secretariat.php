@@ -329,7 +329,9 @@ class Process_secretariat extends CI_Controller
       $this->load->model("students_model",'studentMod');
 
       if(isset($_FILES['import']) && $_FILES['import']['size'] > 0){
-          if($_FILES['import']['type'] == 'text/csv'){
+		  $format = strtolower(array_slice(
+                explode('.', $_FILES['import']['name']),-1)[0]);
+          if($format === 'csv'){
               $csv = array();
               ini_set('auto_detect_line_endings',TRUE);
               $file = fopen($_FILES['import']['tmp_name'],'r');
