@@ -1,5 +1,7 @@
 /* This is needed for some mobile phones to display the Google Icon font properly */
 .material-icons {
+  @extend .no-select;
   text-rendering: optimizeLegibility;
   font-feature-settings: 'liga';
+  font-size: 1em;
 }
