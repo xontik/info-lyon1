@@ -79,7 +79,6 @@ class User extends CI_Controller {
             }
 
             add_notification($content, $type, $icon);
-            echo 'success';
         }
 
     }
@@ -114,6 +113,7 @@ class User extends CI_Controller {
         add_notification('Echec', 'fail');
         add_notification('Icône personnalisé', '', 'schedule');
         add_notification('Un message un peu long, mais l\'enlever redimensionne les autres toasts');
+        add_notification('Un message<br>sur deux lignes');
 
         redirect('/');
     }

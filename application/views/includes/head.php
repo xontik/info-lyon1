@@ -96,7 +96,7 @@
                     <li>
                         <a class="dropdown-button" id="m-nav-user-button" href="#!" data-activates="m-nav-user-menu">
                             <?= $_SESSION['surname'] . ' ' . $_SESSION['name'] ?>
-                            <i class="material-icons right">&#xE5C5;<!--arrow_drop_down--></i>
+                            <i class="material-icons right">&#xE313;<!--keyboard_arrow_down--></i>
                         </a>
                         <ul id="m-nav-user-menu" class="dropdown-content">
                             <li><a href="/user/disconnect">Déconnexion</a></li>
