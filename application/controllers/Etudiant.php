@@ -112,13 +112,27 @@ class Etudiant extends CI_Controller {
         show('Etudiant/edt', $data);
     }
 
-    public function question() {
-        $data = array(
-            'css' => array('Etudiant/questions'),
-            'js' => array('debug'),
-            'page' => 'questions',
-            'title' => 'Questions / Réponses'
-        );
-        show('Etudiant/questions', $data);
-    }
+  public function question() {
+    $this->load->model('question_model', 'questionsMod');
+    $this->load->model('students_model', 'studentsMod');
+    $this->load->model('teacher_model', 'teacherMod');
+        
+    //Récupérer les questions posées
+    $etuQuestions = $this->questionsMod->getStudentQuestions($_SESSION['id']);
+    
+    //Récupérer les profs
+    $etuTeachers = $this->studentsMod->getProfesseursByStudent($_SESSION['id']);
+
+    $data = array(
+      'css' => array(),
+      'js' => array('debug'),
+      'title' => 'Questions / Réponses',
+      'data' => array('etuQuestions' => $etuQuestions,
+                      'etuTeachers' => $etuTeachers)
+    );
+    show('Etudiant/questions', $data);
+  }
+  
+  
+  
 }
