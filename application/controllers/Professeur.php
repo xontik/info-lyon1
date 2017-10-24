@@ -54,13 +54,18 @@ class Professeur extends CI_Controller {
     }
     
     public function question() {
+        $this->load->model('students_model', 'studentMod');
+        $this->load->model('question_model', 'questionsMod');
+
+        $profQuestions = $this->questionsMod->getProfessorQuestions($_SESSION['id']);
+
         $data = array(
-            'css' => array('Professeur/questions'),
-            'js' => array(),
-            'page' => 'questions',
-            'title' => 'Questions / Réponses'
+            'css' => array('Professeurs/questions'),
+            'js' => array('debug'),
+            'title' => 'Questions',
+            'data' => array('profQuestions' => $profQuestions)
         );
-        show('Professeur/questions', $data);
+        show("Professeur/questions", $data);
     }
     
     public function controle() {
@@ -99,7 +104,7 @@ class Professeur extends CI_Controller {
         }
         
         
-        $var = array(
+        $data = array(
             'css' => array(),
             'js' => array('debug'),
             'page' => 'controles',
@@ -113,16 +118,17 @@ class Professeur extends CI_Controller {
             )
         );
         
-        show('Professeur/controles',$var);
+        show('Professeur/controles', $data);
     }
     
-    public function addControle($promo = '') {
+    public function addControle($promo = '')
+    {
         $this->load->model('control_model', 'ctrlMod');
 
         $isPromo = strtolower($promo) === 'promo';
 
         if ($promo === '') {
-            $select =  $this->ctrlMod->getEnseignements($_SESSION['id']);
+            $select = $this->ctrlMod->getEnseignements($_SESSION['id']);
         } else if ($isPromo) {
             $select = $this->ctrlMod->getMatieres($_SESSION['id']);
         } else {
@@ -142,124 +148,7 @@ class Professeur extends CI_Controller {
                 'typeControle' => $typeControle
             )
         );
-
-  public function absence() {
-    $data = array(
-      "css" => array(),
-      "js" => array(),
-      "title" => "Absences"
-    );
-    show("Professeur/absences", $data);
-  }
-
-  public function note() {
-    $data = array(
-      "css" => array(),
-      "js" => array(),
-      "title" => "Notes"
-    );
-    show("Professeur/notes", $data);
-  }
-
-  public function ptut() {
-    $data = array(
-      "css" => array(),
-      "js" => array(),
-      "title" => "Projets tuteurés"
-    );
-    show("Professeur/ptut", $data);
-  }
-
-  public function edt() {
-    $data = array(
-      "css" => array(),
-      "js" => array(),
-      "title" => "Emploi du temps"
-    );
-    show("Professeur/edt", $data);
-  }
-
-  public function question() {
-	
-	$this->load->model('students_model', 'studentMod');
-	$this->load->model('question_model', 'questionsMod');
-	
-	$profQuestions = $this->questionsMod->getProfessorQuestions($_SESSION['id']);
-	$var = array(
-      'css' => array('Professeurs/questions'),
-      'js' => array('debug'),
-      'title' => 'Questions',
-      'data' => array('profQuestions' => $profQuestions)
-    );
-
-    show("Professeur/questions", $var);
-  }
-
-  public function controle() {
-    $this->load->model('control_model','ctrlMod');
-
-    $controls = $this->ctrlMod->getControls($_SESSION['id']);
-    $matieres = $this->ctrlMod->getMatieres($_SESSION['id']);
-    $groupes = $this->ctrlMod->getGroupes($_SESSION['id']);
-    $typeControle = $this->ctrlMod->getTypeControle();
-
-
-
-
-    $restrict = array("groupes" => array(),"matieres" => array(), "DS" => array()); //le filtre
-    /*
-    echo "<pre>";
-    var_dump($matieres);
-    echo "</pre>";
-    //*/
-
-    if(isset($_POST["filter"])){
-
-
-      $grp = array(); //from bd
-      $mat = array(); //from bd
-
-
-      foreach ($groupes as $groupe) {
-          array_push($grp,$groupe->idGroupe);
-      }
-      foreach ($matieres as $matiere){
-          array_push($mat,$matiere->idMatiere);
-      }
-
-      $restrict = array(); //le filtre
-
-
-
-
-      if(isset($_POST["typeControle"]) && $_POST["typeControle"] != 0){
-          $restrict["typeControle"] = $_POST["typeControle"];
-      }
-      if(isset($_POST["groupes"]) && $_POST["groupes"] != 0){
-          $restrict["groupes"] = $_POST["groupes"];
-      }
-      if(isset($_POST["matieres"]) && $_POST["matieres"] != 0){
-          $restrict["matieres"] = $_POST["matieres"];
-      }
-
-      //TODO CHECK CE FOREACH un chouilla trop suceptible
-
-      foreach ($controls as $key => $control) {
-          if(!is_null($control->nomGroupe) && isset($restrict["groupes"]) && $control->idGroupe != $restrict["groupes"]){
-            unset($controls[$key]);
-          }
-          if(isset($restrict["matieres"]) && $control->idMatiere != $restrict["matieres"])  {
-            unset($controls[$key]);
-
-          }
-
-          if(isset($restrict["typeControle"]) && $restrict["typeControle"] != $control->idTypeControle){
-            unset($controls[$key]);
-
-          }
-
-      }
-        show('Professeur/addControl', $data);
+        show('Professeur/addControle', $data);
     }
 
     public function editControle($id = '') {
@@ -329,5 +218,4 @@ class Professeur extends CI_Controller {
         
         show('Professeur/addMarks', $data);
     }
-    
 }
