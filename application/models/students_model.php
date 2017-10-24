@@ -38,5 +38,20 @@ class students_model extends CI_Model {
             ->get('Etudiants')
             ->row();
     }
+    
+    public function getProfesseursByStudent($numEtudiant) { 
+        $query = "SELECT idProfesseur, nom, prenom FROM professeurs 
+                  JOIN enseignements USING (idProfesseur) 
+                  JOIN groupes USING (idGroupe) 
+                  WHERE idGroupe = (SELECT idGroupe FROM etudiantgroupe  
+                                    JOIN groupes USING (idGroupe) 
+                                    JOIN semestres USING (idSemestre) 
+                                    WHERE numEtudiant = ? AND actif = 1 
+                                    ) 
+                  ORDER BY nom ASC"; 
+ 
+        return $this->db->query($query, array($numEtudiant)) 
+                        ->result(); 
+    }
 
 }
