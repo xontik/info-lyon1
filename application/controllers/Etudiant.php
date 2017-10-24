@@ -48,9 +48,6 @@ class Etudiant extends CI_Controller {
         $this->load->model('semester_model', 'semesterMod');
 
         $semesterId = $this->semesterMod->getSemesterId($semester);
-        if ($semesterId === FALSE) {
-            $semesterId = $this->semesterMod->getSemesterId();
-        }
 
         $absences = $this->absenceMod->getStudentSemesterAbsence($_SESSION['id'], $semesterId);
 
