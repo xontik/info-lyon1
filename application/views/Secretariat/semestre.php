@@ -38,8 +38,10 @@
                                     <tr>
                                     <?php foreach ($data['groups'] as $group) {
                                         //TODO add lien de delete
-                                        if(isset($group['students'][$i])){?>
+                                        if(isset($group['students'][$i]['numEtudiant'])){?>
                                             <td>
+                                                <?php // TODO: js confirm ?>
+                                                <a class='deleter'  href="<?= base_url('Process_secretariat/deleteRelation/').$group['idGroupe'].'/'.$group['students'][$i]['numEtudiant'].'/'.$data['semestre']->idSemestre ?>" ><?= html_img('trash_delete.png','Supprimer etudiant') ?></a>
                                                 <?= $group['students'][$i]['numEtudiant'] ?>
                                             </td>
                                             <td>

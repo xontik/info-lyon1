@@ -202,7 +202,7 @@ class Secretariat extends CI_Controller {
 
       $data = array(
         "css" => array(),
-        "js" => array('debug'),
+        "js" => array('debug','gestionSemestre'),
         "title" => "Gestion du semestre",
         'data' => array('groups' => $outGroups, 'semestre' => $semestre, 'freeStudents' => $freeStudents)
       );

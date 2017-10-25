@@ -482,6 +482,20 @@ class Process_secretariat extends CI_Controller
 
       redirect('Secretariat/gestionSemestre/'.$idSemestre);
   }
-  //TODO delete un etudiant
+
+  public function deleteRelation($groupId,$numEtudiant,$idSemestre){
+
+      $this->load->model("administration_model",'adminMod');
+      $this->load->model("students_model",'studentMod');
+
+      if($this->adminMod->isGroupeEditable($groupId)){
+          $this->studentMod->deleteRelationGroupStudent($groupId,$numEtudiant);
+          $this->session->set_flashdata("notif", array("Etudiant supprimé !"));
+      }else{
+          $this->session->set_flashdata("notif", array("Impossible d'editer ce groupe"));
+      }
+      redirect('Secretariat/gestionSemestre/'.$idSemestre);
+
+  }
 
 }
