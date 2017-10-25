@@ -5,8 +5,8 @@
 
 
 
-                <?php if(count($data['students']) > 0 ){?>
-                    <form action="index.html" method="post" enctype="multipart/form-data">
+                <?php if(count($data['groups']) > 0 ){?>
+                    <form action="<?= base_url('Process_secretariat/addStudentGroup/').$data['semestre']->idSemestre ?>" method="post" >
 
 
                         <table>
@@ -14,7 +14,7 @@
                                 <tr>
                                     <?php
                                     $maxstudents = 0;
-                                    foreach ($data['students'] as $group) {
+                                    foreach ($data['groups'] as $group) {
                                         echo '<th colspan="3">'.$group['nomGroupe'].'</th>';
                                         if(count($group['students'])>$maxstudents){
                                             $maxstudents = count($group['students']);
@@ -22,7 +22,7 @@
                                     }
                                     echo '</tr>'.PHP_EOL;
                                     echo '<tr>';
-                                    for ($i=0; $i < count($data['students']); $i++) {
+                                    for ($i=0; $i < count($data['groups']); $i++) {
                                         ?>
                                         <th>N°Etudiant</th>
                                         <th>Nom</th>
@@ -36,7 +36,8 @@
                                 <?php
                                 for ($i=0; $i < $maxstudents; $i++):?>
                                     <tr>
-                                    <?php foreach ($data['students'] as $group) {
+                                    <?php foreach ($data['groups'] as $group) {
+                                        //TODO add lien de delete
                                         if(isset($group['students'][$i])){?>
                                             <td>
                                                 <?= $group['students'][$i]['numEtudiant'] ?>
@@ -57,32 +58,41 @@
                                     } ?>
                                     </tr>
 
-                                <?php endfor; /* ?>
+                                <?php endfor;  ?>
                                 <tr>
 
 
-                                    <?php foreach ($data['students'] as $group): ?>
+                                    <?php foreach ($data['groups'] as $group){ ?>
                                         <td>
-                                            <label for="student<?= $group['nomGroupe']?>">Ajout etudiant :</label>
+                                            <label for="grp<?= $group['idGroupe']?>">Ajout etudiant :</label>
                                         </td>
                                         <td>
-                                            <select id="student<?= $group['nomGroupe']?>" name="student<?= $group['nomGroupe']?>">
-                                                <?php foreach ($data['freeStudents'] as $student): ?>
-                                                    <option value="<?= $student->numEtudiant ?>"><?= $student->nom.' '.$student->prenom ?></option>
+                                            <select id="grp<?= $group['idGroupe']?>" name="grp<?= $group['idGroupe']?>">
+                                                <optgroup label="Sans groupe">
+                                                    <?php foreach ($data['freeStudents'] as $student):?>
+                                                            <option value="<?= $student->numEtudiant ?>"><?= $student->nom.' '.$student->prenom ?></option>
+                                                    <?php endforeach; ?>
+                                                    <?php foreach ($data['groups'] as $grp):
+                                                        if($grp['idGroupe'] == $group['idGroupe']){continue;}?>
+                                                        <optgroup label="<?= $grp['nomGroupe'] ?>">
+                                                        <?php foreach ($grp['students'] as $student): ?>
 
-                                                <?php endforeach; ?>
+                                                            <option value="<?= $student['numEtudiant'] ?>"><?= $student['nom'].' '.$student['prenom'] ?></option>
+                                                        <?php endforeach; ?>
+                                                        </optgroup>
+                                                    <?php endforeach; ?>
+                                                </optgroup>
                                             </select>
                                         </td>
                                         <td>
-                                            <button type="submit">Ajouter</button>
+                                            <button type="submit" name="submit" value="<?= $group['idGroupe'] ?>">Ajouter</button>
                                         </td>
-                                    <?php endforeach; ?>
+                                    <?php } ?>
                                 </tr>
-                                <?php
-                                /**/ ?>
+                                <?php /**/ ?>
                                 <tr>
 
-                                    <?php foreach ($data['students'] as $group): ?>
+                                    <?php foreach ($data['groups'] as $group): ?>
                                         <td colspan="3"><a href="<?= base_url('Process_secretariat/deleteGroupe/').$group['idGroupe'].'/'.$data['semestre']->idSemestre ?>">Supprimer ce groupe</a></td>
 
                                     <?php endforeach;?>
@@ -99,7 +109,7 @@
                             <a href="<?= base_url('Process_secretariat/getCSVGroupeSemestre/').$data['semestre']->idSemestre ?>">Exporter groupes de ce semestre</a>
                         </li>
                         <li>
-                            <form  action="<?= base_url('Process_secretariat/importCSV')?>" method="post" enctype="multipart/form-data">
+                            <form  action="<?= base_url('Process_secretariat/importCSV/'.$data['semestre']->idSemestre)?>" method="post" enctype="multipart/form-data">
 
                                 <input type="file" name="import" value="">
                                 <input type="hidden" name="MAX_FILE_SIZE" value="30000" />

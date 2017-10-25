@@ -323,7 +323,7 @@ class Process_secretariat extends CI_Controller
 
   }
 
-  public function importCSV(){
+  public function importCSV($idRedirect){
       $this->load->model("administration_model",'adminMod');
       $this->load->model("semester_model",'semMod');
       $this->load->model("students_model",'studentMod');
@@ -343,7 +343,7 @@ class Process_secretariat extends CI_Controller
               fclose($file);
               ini_set('auto_detect_line_endings',FALSE);
 
-            
+
               $idSemestre = $csv[0][1];
               $alreadyAddedIds = array();
               $groupStudentIds = array();
@@ -437,9 +437,51 @@ class Process_secretariat extends CI_Controller
       }else{
           $this->session->set_flashdata("notif", array("Aucun fichier recu"));
       }
-      redirect('Secretariat/administration');
-
+      redirect('Secretariat/gestionSemestre/'.$idRedirect);
 
 
   }
+
+  public function addStudentGroup($idSemestre){
+      $this->load->model("administration_model",'adminMod');
+      $this->load->model("semester_model",'semMod');
+      $this->load->model("students_model",'studentMod');
+
+      if(isset($_POST['submit']) && isset($_POST['grp'.$_POST['submit']])){
+          $numEtudiant = $_POST['grp'.$_POST['submit']];
+          $idGroupe = $_POST['submit'];
+          $semestreDuringSamePeriod = $this->semMod->getSemesterIdsSamePeriod($idSemestre);
+          $groupStudentIds = $this->studentMod->getIdsFromGroup($idGroupe);
+
+          if($this->adminMod->isGroupeEditable($idGroupe)){
+              if($grp = $this->studentMod->isStudentInGroupsOfSemesters($numEtudiant,$semestreDuringSamePeriod)){
+                  $this->session->set_flashdata("notif", array("Impossible d'ajouter cette etudiant car il est deja en ".$grp->nomGroupe.$grp->type));
+              }else{
+                  $otherGroups = $this->semMod->getOtherGroups($idGroupe);
+                  $delete= false;
+                  foreach ($otherGroups as $idGrp) {
+                      if($this->studentMod->isStudentInGroup($numEtudiant,$idGrp)){
+                          $this->studentMod->deleteRelationGroupStudent($idGrp,$numEtudiant);
+                          $delete  =true;
+                      }
+                  }
+                  if($delete){
+                      $this->session->set_flashdata("notif", array("Etudiant déplacé !"));
+                  }else{
+                      $this->session->set_flashdata("notif", array("Etudiant ajouté !"));
+                  }
+                  $this->studentMod->addToGroupe($numEtudiant,$idGroupe);
+
+              }
+          }else{
+              $this->session->set_flashdata("notif", array("Impossible d'editer ce groupe"));
+          }
+      }else{
+          $this->session->set_flashdata("notif", array("Données manquantes"));
+      }
+
+      redirect('Secretariat/gestionSemestre/'.$idSemestre);
+  }
+  //TODO delete un etudiant
+
 }

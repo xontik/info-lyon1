@@ -184,8 +184,12 @@ class Secretariat extends CI_Controller {
 
       $groups = $this->studentMod->getStudentsBySemestre($id);
 
-      $freeStudents = $this->studentMod->getStudentWithoutGroup($id);
-
+      $freeStudents = $this->semMod->getStudentWithoutGroup($id,false);//false pour recuperer ceux qui non pas dutout de group sahcant qu'on a deja ceux du semestre
+      /*
+      echo '<pre>';
+      print_r($freeStudents);
+      echo '</pre>';
+      //*/
       $idGroupe = 0;
       $outGroups = array();
       foreach ($groups as $key => $group) {
@@ -195,16 +199,12 @@ class Secretariat extends CI_Controller {
           }
           $outGroups[count($outGroups)-1]['students'][] = array('prenom' => $group->prenom, 'nom' => $group->nom, 'numEtudiant' => $group->numEtudiant);
       }
-      /*
-      echo '<pre>';
-      print_r($outGroups);
-      echo '</pre>';
-      //*/
+
       $data = array(
         "css" => array(),
         "js" => array('debug'),
         "title" => "Gestion du semestre",
-        'data' => array('students' => $outGroups, 'semestre' => $semestre, 'freeStudents' => $freeStudents)
+        'data' => array('groups' => $outGroups, 'semestre' => $semestre, 'freeStudents' => $freeStudents)
       );
       show("Secretariat/semestre", $data);
 

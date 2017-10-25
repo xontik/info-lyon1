@@ -199,23 +199,35 @@ class semester_model extends CI_Model {
         return $this->db->query($sql,array($idParcours,$differe,$anneeScolaire))->num_rows() > 0;
     }
 
-    public function getSemesterIdsSamePeriod($idSemestre){
+    public function getSemesterIdsSamePeriod($idSemestre,$strict = true){//$strict true si on exclu le semstre passer en parametre
         $semesters = $this->getAllSemesters();
         $beginDate = $this->getSemesterPeriod($idSemestre)->getBeginDate();
         $outSem = array();
         foreach ($semesters as $semester) {
             if($beginDate == $this->getSemesterObjectPeriod($semester)->getBeginDate()){
-                if(!in_array($semester->idSemestre,$outSem) && $semester->idSemestre!=$idSemestre){
+                if(!in_array($semester->idSemestre,$outSem) && (!$strict OR $semester->idSemestre!=$idSemestre)){
                     $outSem[] = $semester->idSemestre;
                 }
             }
         }
-
         return $outSem;
+    }
+    public function getStudentWithoutGroup($semestreId,$strict = true){//$strict true si on exclu le semstre passer en parametre
+        //TODO a retravailler
+        $sql = 'SELECT * from Etudiants left join EtudiantGroupe using(numEtudiant) left join Groupes using(idGroupe) where numEtudiant not in
+            (select numEtudiant from EtudiantGroupe
+                join Groupes using(idGroupe) where idSemestre in ?) order by idGroupe, nom';
+
+        return $this->db->query($sql,array($this->getSemesterIdsSamePeriod($semestreId,false)))->result();
 
     }
     public function isThisGroupInSemester($groupId,$semId){
         return $this->db->query('SELECT * from groupes where idGroupe = ? and idSemestre = ?', array($groupId,$semId))->num_rows() > 0;
+    }
+
+    public function getOtherGroups($groupeId){
+        $sql = 'SELECT idGroupe from groupes where idSemestre = (SELECT idSemestre from groupes where idGroupe = ?)  and idGroupe != ?';
+        return array_column($this->db->query($sql, array($groupeId,$groupeId))->result_array(),'idGroupe');
     }
 
 

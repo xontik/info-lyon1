@@ -44,12 +44,7 @@ class students_model extends CI_Model {
         return $this->db->query($sql,array($id))->result();
     }
 
-    public function getStudentWithoutGroup($semestreId){
-        //TODO a retravailler
-        $sql = 'SELECT * from Etudiants where numEtudiant not in (select numEtudiant from EtudiantGroupe join Groupes using(idGroupe) join semestres using(idSemestre) where anneeScolaire = (SELECT anneeScolaire from Semestres where idSemestre = ?)) ';
-        return $this->db->query($sql,array($semestreId))->result();
 
-    }
 
     public function isStudentInGroup($numEtu,$groupId){
         $sql = 'SELECT  * from EtudiantGroupe where numEtudiant=? and idGroupe = ?';
@@ -84,6 +79,7 @@ class students_model extends CI_Model {
     public function getIdsFromGroup($idGroup){
         return array_column($this->db->query('SELECT numEtudiant from EtudiantGroupe where idGroupe = ?',array($idGroup))->result_array(),'numEtudiant');
     }
+
 
 
 }
