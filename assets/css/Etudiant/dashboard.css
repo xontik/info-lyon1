@@ -8169,7 +8169,7 @@ button.picker__today:focus, button.picker__clear:focus, button.picker__close:foc
   #side-edt-large .row > .content { height: 100%; padding-bottom: 5%; }
   #side-edt-large .row > .content > div { overflow: hidden; padding: 5px 8px; border-bottom: 1px solid #d0d0d0; font-size: 1em; }
   #side-edt-large .row > .content > div:first-child { border-top: 1px solid #d0d0d0; }
-  #side-edt-large .row > .content > div > a { display: block; width: 100%; }
+  #side-edt-large .row > .content > div > a, #side-edt-large .row > .content > div > div { display: block; width: 100%; }
   #side-edt-large .row > .content > div h5 { margin: 0; white-space: nowrap; overflow: hidden; font-size: 1.2em; font-weight: 500; } }
 
 /*# sourceMappingURL=dashboard.css.map */

@@ -3,12 +3,13 @@
  * DATAS NEEDED
  * DateTime $date - Date displayed, should be date of the displayed timetable
  * array $calendar - The timetable
+ * array $links - The links for each event (optionnal)
  *
  * USAGE:
  * In controller:
  * $data['side-edt'] = $this->load->view(
  *      'includes/side-edt',
- *      array('date' => [...], 'timetable' => [...]),
+ *      array('date' => [...], 'timetable' => [...], 'links' = [...]),
  *      TRUE
  * );
  *
@@ -27,7 +28,8 @@ usort($timetable, 'sortTimetable');
 ?>
     <div id="side-edt-large" class="hide-on-small-and-down card center-align">
         <div class="card-content">
-            <span class="card-title"><?= translateAndFormat($date) ?></span>
+            <!-- href="/Timetable" -->
+            <a href="#!" class="card-title"><?= translateAndFormat($date) ?></a>
             <div class="row">
                 <div class="hours col s2">
                     <?php for($i = 8; $i <= 17; $i++) { ?>
@@ -51,6 +53,7 @@ usort($timetable, 'sortTimetable');
                         }
 
                         $lastTimeEnd = null;
+                        $linksPointer = 0;
 
                         foreach ($timetable as $event) {
                             // Fill time
@@ -64,23 +67,36 @@ usort($timetable, 'sortTimetable');
                             }
                             $lastTimeEnd = $event['time_end'];
 
-                            $classes = array('hoverable', 'valign-wrapper');
+                            $classes = array();
                             if (isset($timeAtDate) && $timeAtDate < $event['time_end']) {
-                                $classes[] = 'z-depth-2';
+                                $classes[] = ' z-depth-2';
                                 unset($timeAtDate);
                             }
 
+                            if (isset($links[$linksPointer]) && $links[$linksPointer] !== null) {
+                                $classes[] = 'hoverable';
+                            }
+
                             ?>
-                                <div class="<?= join(' ', $classes) ?>"
+                                <div class="valign-wrapper <?= join(' ', $classes) ?>"
                                     style="height: <?= computeTimeToHeight($event['time_start'], $event['time_end']) ?>; ">
-                                    <a href="<?= $edt_url ?>" class="black-text">
+                                    <?php
+                                        if (isset($links[$linksPointer]) && $links[$linksPointer] !== null) {
+                                            $endtag = '</a>';
+                                            echo '<a href="' . $links[$linksPointer] . '" class="black-text">';
+                                        } else {
+                                            $endtag = '</div>';
+                                            echo '<div>';
+                                        }
+                                    ?>
                                         <h5 title="<?= $event['name'] ?>" class="truncate"><?= $event['name'] ?></h5>
                                         <div class="truncate"><?= $event['teachers'] ?></div>
                                         <div><?= $event['groups'] ?></div>
                                         <div><i class="material-icons">location_on</i><?= $event['location'] ?></div>
-                                    </a>
+                                    <?= $endtag ?>
                                 </div>
                                 <?php
+                            $linksPointer++;
                         }
 
                         // Add a fill if day doesn't end at 18:00
