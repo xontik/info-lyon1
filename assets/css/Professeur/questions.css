@@ -5439,4 +5439,6 @@ body > header > nav h2 { text-align: center; font-size: 2.46rem; }
 
 .small-caps { font-variant: small-caps; }
 
+.collapsible-header div:nth-child(2) { margin-left: auto; }
+
 /*# sourceMappingURL=questions.css.map */

@@ -57,13 +57,25 @@ class Professeur extends CI_Controller {
         $this->load->model('students_model', 'studentMod');
         $this->load->model('question_model', 'questionsMod');
 
-        $profQuestions = $this->questionsMod->getProfessorQuestions($_SESSION['id']);
+        $questions = $this->questionsMod->getProfessorQuestions($_SESSION['id']);
+
+        $students = array();
+        $answers = array();
+
+        foreach ($questions as $question) {
+            $students[$question->numEtudiant] = $this->studentMod->getStudent($question->numEtudiant);
+            $answers[$question->idQuestion] = $this->questionsMod->getAnswers($question->idQuestion);
+        }
 
         $data = array(
-            'css' => array('Professeurs/questions'),
+            'css' => array('Professeur/questions'),
             'js' => array('debug'),
             'title' => 'Questions',
-            'data' => array('profQuestions' => $profQuestions)
+            'data' => array(
+                'questions' => $questions,
+                'students' => $students,
+                'answers' => $answers
+            )
         );
         show("Professeur/questions", $data);
     }
