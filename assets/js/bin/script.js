@@ -18,33 +18,43 @@ $(function() {
         belowOrigin: true
     });
 
+    function Notification(id, content, notifType, icon, storageType) {
+        this.id = id;
+        this.content = content;
+        this.icon = icon;
+        this.storageType = storageType;
+    }
+
+    var notifications = {};
+    var toastInstance;
+    var notifCount;
+
     // Notifications
-    $.post('/user/get_notifications', function(notifications) {
-        var prefix = 'notif_';
-        var prefixLen = prefix.length;
-        var notifCount = Object.keys(notifications).length;
+    $.post('/notification/get_notifications', function(server_notifications) {
+        notifications = server_notifications;
 
-        var toastInstance;
+        createNotifications(server_notifications);
+        notifCount = Object.keys(notifications).length;
 
-        // Delete notifications
-        $(document).on('click', '#toast-container .toast li', function() {
-            $(this).fadeOut(function() {
-                $(this).remove();
+        createToast();
 
-                notifCount--;
-                if (notifCount > 0) {
-                    $('#notif-counter').text('Vous avez ' + notifCount + ' notification' + (notifCount > 1 ? 's' : ''));
-                } else {
-                    toastInstance.remove();
-                }
 
-                $.post(
-                    '/user/remove_notification/',
-                    { notifId: $(this).prop('id').substr(prefixLen) }
-                );
-            });
+        $(document).on('click', '#toast-container .toast li', deleteNotif);
+    });
+
+    function createNotifications(notifs) {
+        $.each(notifs, function(index, element) {
+            notifications[index] = new Notification(
+                element.id,
+                element.content,
+                element.notifType,
+                element.icon,
+                element.storageType
+            );
         });
+    }
 
+    function createToast() {
         var $toastContent = $('<div></div>');
 
         if (notifCount !== 0) {
@@ -52,7 +62,7 @@ $(function() {
 
             $.each(notifications, function (index, notif) {
                 var $notifContent = $('<li></li>')
-                    .prop('id', prefix + index)
+                    .prop('id', 'notif-' + index)
                     .addClass('notif-' + notif.type)
                     .append('<i class="material-icons">' + notif.icon + '</i>')
                     .append('<span>' + notif.content + '</span>');
@@ -78,5 +88,35 @@ $(function() {
             Materialize.toast($toastContent, Infinity);
             toastInstance = $('.toast').last()[0].M_Toast;
         }
-    });
+    }
+
+    function deleteNotif() {
+        $(this).fadeOut(function() {
+            var notificationId = $(this).prop('id').substr(6);
+            var notification = notifications[notificationId];
+            $(this).remove();
+
+            notifCount--;
+            if (notifCount > 0) {
+                $('#notif-counter').text('Vous avez ' + notifCount + ' notification' + (notifCount > 1 ? 's' : ''));
+            } else {
+                toastInstance.remove();
+            }
+
+            switch (notification.storageType) {
+                case 'session':
+                    break;
+                case 'database':
+                    break;
+            }
+
+            $.post(
+                '/notification/remove_notification/',
+                {
+                    notifId: notification.id,
+                    storageType: notification.storageType
+                }
+            );
+        });
+    }
 });
