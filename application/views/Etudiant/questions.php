@@ -4,23 +4,25 @@
             <h4>Les questions</h4>
         </div>
         <ul class="collapsible" data-collapsible="accordion">
-            <?php foreach ($data['etuQuestions'] as $etuQuestion)
+            <?php foreach ($data['questions'] as $etuQuestion)
             { ?>
                 <li>
                     <div class="collapsible-header">
-                        <div><?= $etuQuestion->texte ?></div>
+                        <div><?= $etuQuestion->titre ?></div>
                         <div>
-                            <?= $data['etuTeachers'][$etuQuestion->idProfesseur]->prenom . ' ' .
-                            $data['etuTeachers'][$etuQuestion->idProfesseur]->nom
+                            <?= $data['teachers'][$etuQuestion->idProfesseur]->prenom . ' ' .
+                            $data['teachers'][$etuQuestion->idProfesseur]->nom
                             ?>
                         </div>
                     </div>
                     <div class="collapsible-body">
+                        <p><?= $etuQuestion->texte ?></p>
                         <ul>
                             <?php
-                            foreach ($data['etuAnswers'][$etuQuestion->idQuestion] as $reponse) {
+                            foreach ($data['answers'][$etuQuestion->idQuestion] as $reponse) {
                                 ?>
-                                <li <?= ($reponse->prof == 0) ? 'class="right-align"' : '' ?>><?= $reponse->texte ?></li>
+                                <li class="divider"></li>
+                                <li><p <?= !$reponse->prof ? 'class="right-align"' : '' ?>><?= $reponse->texte ?></p></li>
                                 <?php
                             }
                             ?>
@@ -29,7 +31,7 @@
                             <input type="hidden" name="r_idQuestion" value ="<?= $etuQuestion->idQuestion ?>"/>
                             <div class="btn-footer">
                                 <div class="input-field">
-                                    <textarea name="r_texte" id="r_texte"></textarea>
+                                    <textarea class="materialize-textarea" name="r_texte" id="r_texte"></textarea>
                                     <label for="r_texte">Réponse</label>
                                 </div>
                                 <button type="submit" class="waves-effect waves-light btn">Répondre</button>
@@ -46,18 +48,18 @@
         </div>
         <form action="/Process_etudiant/envoyerQuestion" method="POST">
             <div class="input-field">
-                <input type="text" name="q_titre" id="q_titre" autocomplete="off"/>
+                <input type="text" name="q_titre" id="q_titre" autocomplete="off" data-length="255"/>
                 <label for="q_titre">Titre</label>
             </div>
-            <div class="input-field">
-                <textarea name="q_texte" id="q_texte"></textarea>
+            <div class="input-field col s12">
+                <textarea class="materialize-textarea" name="q_texte" id="q_texte"></textarea>
                 <label for="q_texte">Question</label>
             </div>
-            <div class="input-field">
-                <select name="q_idProfesseur" id="q_idProfesseur">
+            <div class="input-field row">
+                <select name="q_idProfesseur" id="q_idProfesseur" class="col s12 m8 l5">
                     <option value="null" disabled selected>Choisir un professeur</option>
                     <?php
-                    foreach ($data['etuTeachers'] as $teacher)
+                    foreach ($data['teachers'] as $teacher)
                     { ?>
                         <option value="<?= $teacher->idProfesseur ?>"><?= $teacher->prenom . ' ' . $teacher->nom ?></option>
                         <?php

@@ -117,31 +117,31 @@ class Etudiant extends CI_Controller {
         $this->load->model('students_model', 'studentsMod');
         $this->load->model('teacher_model', 'teacherMod');
 
-        //Récupérer les questions posées et leur réponses
-        $etuQuestions = $this->questionsMod->getStudentQuestions($_SESSION['id']);
-        $etuAnswers = array();
+        // Get questions and answers
+        $questions = $this->questionsMod->getStudentQuestions($_SESSION['id']);
+        $answers = array();
 
-        foreach($etuQuestions as $question) {
-            $etuAnswers[$question->idQuestion] = $this->questionsMod->getAnswers($question->idQuestion);
+        foreach($questions as $question) {
+            $answers[$question->idQuestion] = $this->questionsMod->getAnswers($question->idQuestion);
         }
 
-        //Récupérer les profs
+        // Get teachers
         $unsortedTeachers = $this->studentsMod->getProfesseursByStudent($_SESSION['id']);
-        $etuTeachers = array();
+        $teachers = array();
 
         foreach($unsortedTeachers as $teacher) {
-            $etuTeachers[$teacher->idProfesseur] = $teacher;
+            $teachers[$teacher->idProfesseur] = $teacher;
         }
 
         $data = array(
-            'css' => array(),
+            'css' => array('Etudiant/questions'),
             'js' => array('debug'),
             'page' => 'question',
             'title' => 'Questions / Réponses',
             'data' => array(
-                'etuQuestions' => $etuQuestions,
-                'etuAnswers' => $etuAnswers,
-                'etuTeachers' => $etuTeachers
+                'questions' => $questions,
+                'answers' => $answers,
+                'teachers' => $teachers
             )
         );
         show('Etudiant/questions', $data);
