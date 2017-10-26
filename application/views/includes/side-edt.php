@@ -22,7 +22,7 @@ $edt_url[] = 'EDT';
 
 $edt_url = join('/', $edt_url);
 
-ksort($timetable);
+usort($timetable, 'sortTimetable');
 
 ?>
     <div id="side-edt-large" class="hide-on-small-and-down card center-align">

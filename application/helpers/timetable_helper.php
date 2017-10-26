@@ -271,7 +271,7 @@ function _icsToTimetable($ics_filepath)
                 );
 			}
 		}
-		
+
 		return $timetable;
 	}
 	else {
@@ -365,6 +365,19 @@ function _getAdeRequest($resources, $firstDate, $lastDate)
         . '&projectId=1&calType=ical'
         . '&firstDate=' . $firstDate->format(DATE_FORMAT)
         . '&lastDate=' . $lastDate->format(DATE_FORMAT);
+}
+
+/**
+ * Compare two timetable items.
+ * Should be use with function usort().
+ *
+ * @param $item1
+ * @param $item2
+ * @return int 1 if $item1 is greater, -1 otherwise
+ */
+function sortTimetable($item1, $item2)
+{
+    return $item1['time_start'] > $item2['time_start'] ? 1 : -1;
 }
 
 if(!function_exists('translateAndFormat'))
