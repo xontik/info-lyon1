@@ -16,7 +16,7 @@
                         </div>
                     </div>
                     <div class="collapsible-body">
-                        <p><?= $etuQuestion->texte ?></p>
+                        <p class="right-align"><?= $etuQuestion->texte ?></p>
                         <ul>
                             <?php
                             foreach ($data['answers'][$etuQuestion->idQuestion] as $reponse) {
