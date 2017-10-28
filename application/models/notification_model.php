@@ -15,11 +15,17 @@ class Notification_model extends CI_Model {
      * @param int $userId The id of the user
      * @return array The notifications of the user
      */
-    public function get($userId) {
+    public function getAll($userId) {
         /*
-        return = $this->db->where('idUser', $userId)
+        $res = $this->db->where('idUser', $userId)
             ->get('Notification')
             ->result();
+
+        foreach ($res as $notif) {
+            $notif->storage = 'seen';
+        }
+
+        return $res
         */
         return array();
     }
@@ -36,7 +42,8 @@ class Notification_model extends CI_Model {
         $data = array(
             'content' => $content,
             'type' => $type,
-            'icon' => $icon
+            'icon' => $icon,
+            'idUser' => $userId
         );
 
         /*

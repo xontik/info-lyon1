@@ -63,8 +63,9 @@
         ?><nav class="nav-extended small-caps">
             <div class="nav-wrapper">
                 <a class="brand-logo" href="/">Teckmeb</a>
-                <a href="#" data-activates="nav-mobile" class="button-collapse">
-                    <i class="material-icons">&#xE5D2;<!--menu--></i></a>
+                <a class="button-collapse hide-on-large-only" href="#" data-activates="nav-mobile">
+                    <i class="material-icons">&#xE5D2;<!--menu--></i>
+                </a>
                 <ul class="right hide-on-med-and-down">
                     <?php foreach ($nav[$_SESSION['user_type']] as $item => $url) {
                         $class = (isset($page) ? $page : '') === $item
@@ -72,10 +73,42 @@
                         echo '<li' . $class . '><a href="' . $url . '">' . $item . '</a></li>';
                     } ?>
                     <li>
-                        <a id="nav-user-button" class="dropdown-button" href="#!" data-activates="nav-user-menu">
+                        <?php
+                        if (empty($notifications)) {
+                            ?>
+                            <a class="dropdown-button" href="#!" data-activates="nav-notifications">
+                                <i class="material-icons">&#xE7F5;<!--notifications_none--></i>
+                            </a>
+                            <ul id="nav-notifications" class="dropdown-content">
+                                <li><p>Pas de notifications</p></li>
+                            </ul>
+                        <?php
+                        } else {
+                            ?>
+                            <a class="dropdown-button" href="#!" data-activates="nav-notifications">
+                                <i class="material-icons">&#xE7F4;<!--notifications--></i>
+                            </a>
+                            <ul id="nav-notifications" class="dropdown-content">
+                                <?php
+                                foreach ($notifications as $notif)
+                                { ?>
+                                    <li id="notif-<?= $notif['id'] ?>"
+                                        class="notif notif-<?= $notif['type'] ?> notif-<?= $notif['storage'] ?>">
+                                        <i class="material-icons"><?= $notif['icon'] ?></i>
+                                        <span><?= $notif['content'] ?></span>
+                                    </li>
+                                    <?php
+                                } ?>
+                            </ul>
+                            <?php
+                        }
+                        ?>
+                    </li>
+                    <li>
+                        <a class="dropdown-button" href="#!" data-activates="nav-user">
                             <i class="material-icons">&#xE853;<!--account_circle--></i>
                         </a>
-                        <ul id="nav-user-menu" class="dropdown-content">
+                        <ul id="nav-user" class="dropdown-content">
                             <li>
                                 <div><?= $_SESSION['surname'] ?></div>
                                 <div><?= $_SESSION['name'] ?></div>
@@ -85,6 +118,8 @@
                         </ul>
                     </li>
                 </ul>
+
+                <!-- mobile nav -->
                 <ul class="side-nav" id="nav-mobile">
                     <?php
                     foreach ($nav[$_SESSION['user_type']] as $item => $url)
@@ -94,15 +129,18 @@
                     } ?>
                     <li class="divider"></li>
                     <li>
-                        <a class="dropdown-button" id="m-nav-user-button" href="#!" data-activates="m-nav-user-menu">
+                        <a class="dropdown-button" href="#!" data-activates="m-nav-user">
                             <?= $_SESSION['surname'] . ' ' . $_SESSION['name'] ?>
                             <i class="material-icons right">&#xE313;<!--keyboard_arrow_down--></i>
                         </a>
-                        <ul id="m-nav-user-menu" class="dropdown-content">
+                        <ul id="m-nav-user" class="dropdown-content">
                             <li><a href="/user/disconnect">Déconnexion</a></li>
                         </ul>
                     </li>
                 </ul>
+                <!--
+                Add modal dialog for notifications ?
+                -->
             </div>
             <?php if ($_SESSION['user_type'] === 'student'): ?>
                 <div class="nav-content">

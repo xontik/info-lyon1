@@ -46,7 +46,7 @@ class User extends CI_Controller {
     }
 
     public function disconnect() {
-        $_SESSION = array();
+        session_destroy();
         redirect('/');
     }
 
@@ -68,7 +68,7 @@ class User extends CI_Controller {
         addPageNotification('Message court');
         addPageNotification('Succès', 'success');
         addPageNotification('Avertissement', 'warning');
-        addPageNotification('Echec', 'fail');
+        addPageNotification('Echec', 'danger');
         addPageNotification('Icône personnalisé', '', 'schedule');
         addPageNotification('Un message un peu long, mais l\'enlever redimensionne les autres toasts');
         addSessionNotification('Un message<br>sur plusieurs lignes<br>qui dure toute la session !');

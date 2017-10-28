@@ -1,122 +1,74 @@
 $(function() {
-    "use strict";
+    'use strict';
 
     /* General initialization */
-    $("select").material_select();
+    $('select').material_select();
 
-    $(".button-collapse").sideNav({
+    $('.button-collapse').sideNav({
         draggable: true
     });
 
     // header
-    $("#nav-user-button").dropdown({
+    $('.hide-on-med-and-down .dropdown-button').dropdown({
         constrainWidth: false,
         belowOrigin: true
     });
 
-    $('#m-nav-user-button').dropdown({
+    $('.hide-on-large-only .dropdown-button').dropdown({
         belowOrigin: true
     });
 
-    function Notification(id, content, notifType, icon, storageType) {
-        this.id = id;
-        this.content = content;
-        this.icon = icon;
-        this.storageType = storageType;
-    }
+    var notificationCount = $('.notif').length;
 
-    var notifications = {};
-    var toastInstance;
-    var notifCount;
+    $(document).on('click', '.notif', deleteNotif);
 
     // Notifications
-    $.post('/notification/get_notifications', function(server_notifications) {
-        notifications = server_notifications;
-
-        createNotifications(server_notifications);
-        notifCount = Object.keys(notifications).length;
-
-        createToast();
-
-
-        $(document).on('click', '#toast-container .toast li', deleteNotif);
+    $.post('/notification/get_alerts', function(alerts) {
+        generateToasts(alerts);
     });
 
-    function createNotifications(notifs) {
-        $.each(notifs, function(index, element) {
-            notifications[index] = new Notification(
-                element.id,
-                element.content,
-                element.notifType,
-                element.icon,
-                element.storageType
-            );
+    function generateToasts(alerts) {
+        $.each(alerts, function (index, notif) {
+            var $toastContent = '<i class="material-icons">' + notif.icon + '</i>'
+                + '<span>' + notif.content + '</span>';
+
+            Materialize.toast($toastContent, Infinity, 'notif notif-' + notif.type);
         });
     }
 
-    function createToast() {
-        var $toastContent = $('<div></div>');
-
-        if (notifCount !== 0) {
-            var $list = $('<ul style="display: none;"></ul>');
-
-            $.each(notifications, function (index, notif) {
-                var $notifContent = $('<li></li>')
-                    .prop('id', 'notif-' + index)
-                    .addClass('notif-' + notif.type)
-                    .append('<i class="material-icons">' + notif.icon + '</i>')
-                    .append('<span>' + notif.content + '</span>');
-
-                $list.append($notifContent);
-            });
-
-            $toastContent
-                .append(
-                    $('<div class="right-align"></div>')
-                        .append('<span id="notif-counter">'
-                            + 'Vous avez ' + notifCount + ' notification' + (notifCount > 1 ? 's' : '')
-                            + '</span>'
-                        )
-                        .append('<i class="material-icons right arrow-rotate">keyboard_arrow_left</i>')
-                        .click(function() {
-                            $(this).siblings('ul').slideToggle();
-                            $(this).find('i').toggleClass('rotate');
-                        })
-                )
-                .append($list);
-
-            Materialize.toast($toastContent, Infinity);
-            toastInstance = $('.toast').last()[0].M_Toast;
-        }
-    }
-
-    function deleteNotif() {
+    function deleteNotif(event) {
         $(this).fadeOut(function() {
-            var notificationId = $(this).prop('id').substr(6);
-            var notification = notifications[notificationId];
             $(this).remove();
 
-            notifCount--;
-            if (notifCount > 0) {
-                $('#notif-counter').text('Vous avez ' + notifCount + ' notification' + (notifCount > 1 ? 's' : ''));
-            } else {
-                toastInstance.remove();
-            }
+            var notificationId = $(this).prop('id');
 
-            switch (notification.storageType) {
-                case 'session':
-                    break;
-                case 'database':
-                    break;
-            }
-
-            $.post(
-                '/notification/remove_notification/',
-                {
-                    notifId: notification.id,
-                    storageType: notification.storageType
+            if (notificationId) {
+                if (--notificationCount === 0) {
+                    // Set icon to 'notifications_none'
+                    $('a[data-activates="nav-notifications"] i').html('&#xE7F5;');
+                    $('#nav-notifications')
+                        .append('<li><p>Pas de notifications</p></li>');
                 }
-            );
+
+                var storage;
+                if ($(this).hasClass('notif-session')) {
+                    storage = 'session';
+                } else if ($(this).hasClass('notif-seen')) {
+                    storage = 'seen';
+                } else {
+                    return;
+                }
+
+                var data = {
+                    notifId: parseInt(notificationId.substr(6)),
+                    storage: storage
+                };
+
+                $.post('/notification/remove_notification/', data);
+            }
         });
+
+        // Prevent notification menu from closing
+        event.stopPropagation();
     }
 });

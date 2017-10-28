@@ -5,5 +5,5 @@ $config['notificationIcons'] = array(
     'info' => 'info_outline',
     'success' => 'done',
     'warning' => 'warning',
-    'fail' => 'report_problem'
+    'danger' => 'report_problem'
 );
