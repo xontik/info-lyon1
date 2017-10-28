@@ -1,25 +1,23 @@
 <main class="container">
     <div class="section">
-        <div class="header">
-            <h4>Les questions</h4>
-        </div>
+        <h4 class="header">Les questions</h4>
         <ul class="collapsible" data-collapsible="accordion">
-            <?php foreach ($data['questions'] as $etuQuestion)
+            <?php foreach ($data['questions'] as $question)
             { ?>
                 <li>
                     <div class="collapsible-header">
-                        <div><?= $etuQuestion->titre ?></div>
+                        <div><?= $question->titre ?></div>
                         <div>
-                            <?= $data['teachers'][$etuQuestion->idProfesseur]->prenom . ' ' .
-                            $data['teachers'][$etuQuestion->idProfesseur]->nom
+                            <?= $data['teachers'][$question->idProfesseur]->prenom . ' ' .
+                            $data['teachers'][$question->idProfesseur]->nom
                             ?>
                         </div>
                     </div>
                     <div class="collapsible-body">
-                        <p class="right-align"><?= $etuQuestion->texte ?></p>
+                        <p class="right-align"><?= $question->texte ?></p>
                         <ul>
                             <?php
-                            foreach ($data['answers'][$etuQuestion->idQuestion] as $reponse) {
+                            foreach ($data['answers'][$question->idQuestion] as $reponse) {
                                 ?>
                                 <li class="divider"></li>
                                 <li><p <?= !$reponse->prof ? 'class="right-align"' : '' ?>><?= $reponse->texte ?></p></li>
@@ -28,7 +26,7 @@
                             ?>
                         </ul>
                         <form action="/Process_etudiant/repondreQuestion" method="POST">
-                            <input type="hidden" name="r_idQuestion" value ="<?= $etuQuestion->idQuestion ?>"/>
+                            <input type="hidden" name="r_idQuestion" value ="<?= $question->idQuestion ?>"/>
                             <div class="btn-footer">
                                 <div class="input-field">
                                     <textarea class="materialize-textarea" name="r_texte" id="r_texte"></textarea>
@@ -43,9 +41,7 @@
         </ul>
     </div>
     <div class="section">
-        <div class="header">
-            <h4>Poser une question</h4>
-        </div>
+        <h4 class="header">Poser une question</h4>
         <form action="/Process_etudiant/envoyerQuestion" method="POST">
             <div class="input-field">
                 <input type="text" name="q_titre" id="q_titre" autocomplete="off" data-length="255"/>
@@ -57,7 +53,7 @@
             </div>
             <div class="input-field row">
                 <select name="q_idProfesseur" id="q_idProfesseur" class="col s12 m8 l5">
-                    <option value="null" disabled selected>Choisir un professeur</option>
+                    <option value="" disabled selected>Choisir un professeur</option>
                     <?php
                     foreach ($data['teachers'] as $teacher)
                     { ?>
