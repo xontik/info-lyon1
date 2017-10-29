@@ -29,7 +29,7 @@ function getNextTimetable($resources, $period, &$datetime = NULL) {
     }
 
     $timetable = getTimetable($resources, $period, $datetime);
-
+	
     // Look at next not empty timetable within 3 days
     while ($limit < 3 && empty($timetable)) {
         $datetime->modify('+1 day');

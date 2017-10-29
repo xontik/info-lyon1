@@ -76,7 +76,8 @@
                         <?php
                         if (empty($notifications)) {
                             ?>
-                            <a class="dropdown-button" href="#!" data-activates="nav-notifications">
+                            <a class="dropdown-button" href="#!"
+                               data-activates="nav-notifications" data-constrainwidth="false">
                                 <i class="material-icons">&#xE7F5;<!--notifications_none--></i>
                             </a>
                             <ul id="nav-notifications" class="dropdown-content">
@@ -85,7 +86,8 @@
                         <?php
                         } else {
                             ?>
-                            <a class="dropdown-button" href="#!" data-activates="nav-notifications">
+                            <a class="dropdown-button" href="#!"
+                               data-activates="nav-notifications" data-constrainwidth="false">
                                 <i class="material-icons">&#xE7F4;<!--notifications--></i>
                             </a>
                             <ul id="nav-notifications" class="dropdown-content">
@@ -94,8 +96,10 @@
                                 { ?>
                                     <li id="notif-<?= $notif['id'] ?>"
                                         class="notif notif-<?= $notif['type'] ?> notif-<?= $notif['storage'] ?>">
-                                        <i class="material-icons"><?= $notif['icon'] ?></i>
-                                        <span><?= $notif['content'] ?></span>
+                                        <div class="valign-wrapper">
+                                            <i class="material-icons left"><?= $notif['icon'] ?></i>
+                                            <span><?= $notif['content'] ?></span>
+                                        </div>
                                     </li>
                                     <?php
                                 } ?>
@@ -105,7 +109,8 @@
                         ?>
                     </li>
                     <li>
-                        <a class="dropdown-button" href="#!" data-activates="nav-user">
+                        <a class="dropdown-button" href="#!"
+                           data-activates="nav-user" data-constrainwidth="false">
                             <i class="material-icons">&#xE853;<!--account_circle--></i>
                         </a>
                         <ul id="nav-user" class="dropdown-content">

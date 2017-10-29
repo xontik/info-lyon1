@@ -9,20 +9,14 @@ $(function() {
     });
 
     // header
-    $('.hide-on-med-and-down .dropdown-button').dropdown({
-        constrainWidth: false,
+    $('.dropdown-button').dropdown({
         belowOrigin: true
     });
 
-    $('.hide-on-large-only .dropdown-button').dropdown({
-        belowOrigin: true
-    });
-
+    // Notifications
     var notificationCount = $('.notif').length;
 
     $(document).on('click', '.notif', deleteNotif);
-
-    // Notifications
     $.post('/notification/get_alerts', function(alerts) {
         generateToasts(alerts);
     });
