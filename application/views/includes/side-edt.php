@@ -92,7 +92,7 @@ usort($timetable, 'sortTimetable');
                                         <h5 title="<?= $event['name'] ?>" class="truncate"><?= $event['name'] ?></h5>
                                         <div class="truncate"><?= $event['teachers'] ?></div>
                                         <div><?= $event['groups'] ?></div>
-                                        <div><i class="material-icons">location_on</i><?= $event['location'] ?></div>
+                                        <div><i class="tiny material-icons">location_on</i><?= $event['location'] ?></div>
                                     <?= $endtag ?>
                                 </div>
                                 <?php
