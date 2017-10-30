@@ -63,9 +63,7 @@
         ?><nav class="nav-extended">
             <div class="nav-wrapper">
                 <a class="brand-logo small-caps" href="/">Teckmeb</a>
-                <a class="button-collapse hide-on-large-only" href="#" data-activates="nav-mobile">
-                    <i class="material-icons">menu</i>
-                </a>
+                <!-- computer nav -->
                 <ul class="right hide-on-med-and-down">
                     <?php foreach ($nav[$_SESSION['user_type']] as $item => $url) {
                         $active = (isset($page) ? $page : '') === $item
@@ -73,27 +71,20 @@
                         echo '<li class="small-caps ' . $active . '"><a href="' . $url . '">' . $item . '</a></li>';
                     } ?>
                     <li>
-                        <?php
-                        if (empty($notifications)) {
-                            ?>
-                            <a class="dropdown-button" href="#!"
-                               data-activates="nav-notifications" data-constrainwidth="false">
-                                <i class="material-icons">notifications_none</i>
-                            </a>
-                            <ul id="nav-notifications" class="dropdown-content">
+                        <a class="dropdown-button" href="#!"
+                           data-activates="nav-notifications" data-constrainwidth="false">
+                            <i class="material-icons notifications-icon">
+                                <?= empty($notifications) ? 'notifications_none' : 'notifications' ?>
+                            </i>
+                        </a>
+                        <ul id="nav-notifications" class="dropdown-content">
+                            <?php
+                            if (empty($notifications)) {
+                                ?>
                                 <li><p>Pas de notifications</p></li>
-                            </ul>
-                        <?php
-                        } else {
-                            ?>
-                            <a class="dropdown-button" href="#!"
-                               data-activates="nav-notifications" data-constrainwidth="false">
-                                <i class="material-icons">notifications</i>
-                            </a>
-                            <ul id="nav-notifications" class="dropdown-content">
                                 <?php
-                                foreach ($notifications as $notif)
-                                { ?>
+                            } else {
+                                foreach ($notifications as $notif) { ?>
                                     <li id="notif-<?= $notif['id'] ?>"
                                         class="notif notif-<?= $notif['type'] ?> notif-<?= $notif['storage'] ?>">
                                         <div class="valign-wrapper">
@@ -102,11 +93,9 @@
                                         </div>
                                     </li>
                                     <?php
-                                } ?>
-                            </ul>
-                            <?php
-                        }
-                        ?>
+                                }
+                            } ?>
+                        </ul>
                     </li>
                     <li>
                         <a class="dropdown-button" href="#!"
@@ -125,6 +114,9 @@
                 </ul>
 
                 <!-- mobile nav -->
+                <a class="button-collapse hide-on-large-only" href="#" data-activates="nav-mobile">
+                    <i class="material-icons">menu</i>
+                </a>
                 <ul class="side-nav" id="nav-mobile">
                     <?php
                     foreach ($nav[$_SESSION['user_type']] as $item => $url)
@@ -133,6 +125,15 @@
                             ? ' active' : '';
                         echo '<li class="small-caps' . $active . '"><a href="' . $url . '">' . $item . '</a></li>';
                     } ?>
+                    <li class="divider"></li>
+                    <li>
+                        <a href="#m-notifications" class="modal-trigger">
+                            <span class="small-caps">Notifications</span>
+                            <i class="material-icons right notifications-icon">
+                                <?= empty($notifications) ? 'notifications_none' : 'notifications' ?>
+                            </i>
+                        </a>
+                    </li>
                     <li class="divider"></li>
                     <li>
                         <a class="dropdown-button" href="#!" data-activates="m-nav-user">
@@ -144,9 +145,34 @@
                         </ul>
                     </li>
                 </ul>
-                <!--
-                Add modal dialog for notifications ?
-                -->
+                <div id="m-notifications" class="modal modal-fixed-footer black-text">
+                    <div class="modal-content">
+                        <h4 class="center-align">Notifications</h4>
+                        <div class="collection">
+                            <?php
+                            if (empty($notifications)) {
+                                ?>
+                                <div class="collection-item">Pas de notifications</div>
+                                <?php
+                            } else {
+                                foreach ($notifications as $notif) { ?>
+                                    <div id="notif-<?= $notif['id'] ?>"
+                                        class="collection-item notif notif-<?= $notif['type'] ?> notif-<?= $notif['storage'] ?>">
+                                        <div class="valign-wrapper">
+                                            <i class="material-icons left"><?= $notif['icon'] ?></i>
+                                            <span><?= $notif['content'] ?></span>
+                                        </div>
+                                    </div>
+                                    <?php
+                                }
+                            }
+                            ?>
+                        </div>
+                    </div>
+                    <div class="modal-footer btn-footer">
+                        <button class="btn waves-effect waves-light modal-action modal-close">Fermer</button>
+                    </div>
+                </div>
             </div>
             <?php if ($_SESSION['user_type'] === 'student'): ?>
                 <div class="nav-content">

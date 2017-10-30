@@ -8,13 +8,17 @@ $(function() {
         draggable: true
     });
 
-    // header
     $('.dropdown-button').dropdown({
         belowOrigin: true
     });
 
+    $('.modal').modal({
+        inDuration: 170,
+        outDuration: 115
+    });
+
     // Notifications
-    var notificationCount = $('.notif').length;
+    var notificationCount = $('.notif').length / 2;
 
     $(document).on('click', '.notif', deleteNotif);
     $.post('/notification/get_alerts', function(alerts) {
@@ -37,11 +41,11 @@ $(function() {
             var notificationId = $(this).prop('id');
 
             if (notificationId) {
-                if (--notificationCount === 0) {
-                    // Set icon to 'notifications_none'
-                    $('a[data-activates="nav-notifications"] i').html('notifications_none');
-                    $('#nav-notifications')
-                        .append('<li><p>Pas de notifications</p></li>');
+                if (--notificationCount <= 0) {
+                    $('.notifications-icon').html('notifications_none');
+                    $('#nav-notifications').append('<li><p>Pas de notifications</p></li>');
+                    $('#m-notifications').find('div.collection')
+                        .append('<div class="collection-item">Pas de notifications</div>');
                 }
 
                 var storage;
