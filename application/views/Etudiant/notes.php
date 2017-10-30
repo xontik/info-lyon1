@@ -4,14 +4,29 @@
         <?php
         if (!empty($data['marks'])) {
             $last_subject = null;
+            $subjectSum = 0;
+            $subjectCount = 0;
 
-            foreach ($data['marks'] as $mark) {
+            foreach ($data['marks'] as $mark):
                 // If new subject, put header
-                if ($mark->codeMatiere !== $last_subject) {
-                    if (!is_null($last_subject)) {
-                        // Close card-content then card
-                        echo '</div></div></div>';
+                if ($mark->codeMatiere !== $last_subject):
+                    if (!is_null($last_subject))
+                    { ?>
+                                <div class="divider clearfix"></div>
+                                <div class="footer left-align">
+                                    <span class="flow-text">
+                                        Moyenne : <?= $subjectSum / $subjectCount ?>
+                                        <small>/20</small>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                        <?php
+                        $subjectSum = 0;
+                        $subjectCount = 0;
                     }
+
                     $last_subject = $mark->codeMatiere;
                     ?><div class="card grey lighten-5">
                         <div class="card-content">
@@ -26,7 +41,12 @@
                             </div>
                             <div class="divider row"></div>
                             <div class="row center-align">
-                                <?php } ?>
+                                <?php
+                endif; // if change subsject
+
+                $subjectSum += floatval($mark->valeur) / floatval($mark->diviseur) * 20 * floatval($mark->coefficient);
+                $subjectCount += floatval($mark->coefficient);
+                ?>
                                 <div class="col s12 m6 l4 xl3">
                                     <div class="card card-content grey lighten-4">
                                         <span class="card-title"><?= $mark->nomControle; ?></span>
@@ -40,7 +60,15 @@
                                     </div>
                                 </div>
                                 <?php
-                            } ?>
+            endforeach; // foreach marks
+            ?>
+                                <div class="divider clearfix"></div>
+                                <div class="footer left-align">
+                                    <span class="flow-text">
+                                        Moyenne : <?= $subjectSum / $subjectCount ?>
+                                        <small>/20</small>
+                                    </span>
+                                </div>
                             </div>
                         </div>
                     </div>
