@@ -82,23 +82,34 @@ class Etudiant extends CI_Controller {
 
     public function note($semester = '') {
 
-        $this->load->model('mark_model','markMod');
-        $this->load->model('semester_model', 'semesterMod');
+        $this->load->model('mark_model');
+        $this->load->model('semester_model');
 
-        $semesterId = $this->semesterMod->getSemesterId($semester);
+        // Loads the max semester type the student went to
+        $max_semester = intval(
+            substr($this->semester_model->getSemesterTypeFromId(
+                $this->semester_model->getCurrentSemesterId($_SESSION['id'])
+            ), 1)
+        );
 
-        if ($semesterId === FALSE) {
-            $semesterId = $this->semesterMod->getSemesterId();
+        if ($semester > 'S' . $max_semester) {
+            addPageNotification('Vous essayez d\'accéder à un semestre futur !<br>Redirection vers votre semestre courant');
+            $semester = '';
         }
 
-        $marks = $this->markMod->getMarksFromSemester($_SESSION['id'], $semesterId);
+        $semesterId = $this->semester_model->getSemesterId($semester);
+        $semester = $this->semester_model->getSemesterTypeFromId($semesterId);
+
+        $marks = $this->mark_model->getMarksFromSemester($_SESSION['id'], $semesterId);
 
         $data = array(
-            'css' => array('Etudiants/notes'),
+            'css' => array(),
             'js' => array('debug'),
             'page' => 'notes',
             'title' => 'Notes',
             'data' => array(
+                'max_semester' => $max_semester,
+                'semester' => $semester,
                 'marks' => $marks
             )
         );
