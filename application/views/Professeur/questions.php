@@ -19,7 +19,7 @@
                     </div>
                     <div class="collapsible-body">
                         <ul>
-                            <p class="right-align"><?= $question->texte ?></p>
+                            <p><?= $question->texte ?></p>
                             <?php
                             foreach($data['answers'][$question->idQuestion] as $answer){
                                 $isTeacher = $answer->prof ? 'right-align' : '';

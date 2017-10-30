@@ -1,72 +1,71 @@
-<main>
-    <section>
-        <header><h1>Les questions</h1></header>
-        <ul>
-            <?php foreach ($data['etuQuestions'] as $etuQuestion) { ?>
-                <div>
-                    <li class = "question qr">
+<main class="container">
+    <div class="section">
+        <h4 class="header">Les questions</h4>
+        <ul class="collapsible" data-collapsible="accordion">
+            <?php foreach ($data['questions'] as $question)
+            { ?>
+                <li>
+                    <div class="collapsible-header">
+                        <div><?= $question->titre ?></div>
                         <div>
-                            <div>
-                                <?php
-                                $i = 0;
-                                while (!($i >= 30 OR $i == strlen($etuQuestion->texte))) {
-                                    if (ord($etuQuestion->texte[$i]) <= 127) {
-                                        echo $etuQuestion->texte[$i];
-                                        $i++;
-                                    } else {
-                                        echo $etuQuestion->texte[$i] . $etuQuestion->texte[$i + 1];
-                                        $i = $i + 2;
-                                    }
-                                }
-                                if ($i >= 30 AND $i < strlen($etuQuestion->texte)) {
-                                    echo '...';
-                                }
-                                ?>
-                            </div>
-                            <div>
-                                <?php
-                                    echo $this->teacherMod->getProfInfo($etuQuestion->idProfesseur)->prenom . ' ' .$this->teacherMod->getProfInfo($etuQuestion->idProfesseur)->nom;
-                                ?>
-                            </div>
+                            <?= $data['teachers'][$question->idProfesseur]->prenom . ' ' .
+                            $data['teachers'][$question->idProfesseur]->nom
+                            ?>
                         </div>
-                    </li>
-                    <ul>
-                        <?php
-                        $listeReponses = $this->questionsMod->getAnswers($etuQuestion->idQuestion);
-                        foreach ($listeReponses as $reponse) {
-                            $estProf = '';
-                            if ($reponse->prof == 1) {
-                                $estProf = 'isProf';
+                    </div>
+                    <div class="collapsible-body">
+                        <p class="right-align"><?= $question->texte ?></p>
+                        <ul>
+                            <?php
+                            foreach ($data['answers'][$question->idQuestion] as $reponse) {
+                                ?>
+                                <li class="divider"></li>
+                                <li><p <?= !$reponse->prof ? 'class="right-align"' : '' ?>><?= $reponse->texte ?></p></li>
+                                <?php
                             }
-                            echo '<li class="qr ' . $estProf . '">' . $reponse->texte . '</li>';
-                        }
-                        ?>
+                            ?>
+                        </ul>
                         <form action="/Process_etudiant/repondreQuestion" method="POST">
-                            <input type="hidden" name="r_idQuestion" value ="<?php echo $etuQuestion->idQuestion; ?>"/>
-                            <div>
-                                <input type="text" name="r_texte" autocomplete="off"/>
-                                <input type="submit" value = "Répondre" />
+                            <input type="hidden" name="r_idQuestion" value ="<?= $question->idQuestion ?>"/>
+                            <div class="btn-footer">
+                                <div class="input-field">
+                                    <textarea class="materialize-textarea" name="r_texte" id="r_texte"></textarea>
+                                    <label for="r_texte">Réponse</label>
+                                </div>
+                                <button type="submit" class="waves-effect waves-light btn">Répondre</button>
                             </div>
                         </form>
-                    </ul>
-                </div>
+                    </div>
+                </li>
             <?php } ?>
         </ul>
-        <section>
-            <h1>Poser une question</h1>
-            <form action="/Process_etudiant/envoyerQuestion" method="POST">
-                <input autocomplete="off" name="q_titre" placeholder="Titre" type="text" />
-                <input autocomplete="off" name="q_texte" placeholder="Question" type="text" />
-                <!-- <input autocomplete="off" name="q_idProfesseur" placeholder="Professeur" type="text" /> -->
-                <select name="q_idProfesseur">
-                    <option value="null" disabled selected>Choisir un prof</option>
-                    <?php foreach ($data['etuTeachers'] as $teacher) { ?>
-                        <option value="<?php echo $teacher->idProfesseur; ?>"><?php echo $teacher->prenom . ' ' . $teacher->nom; ?></option>            
-                    <?php } ?>
-
+    </div>
+    <div class="section">
+        <h4 class="header">Poser une question</h4>
+        <form action="/Process_etudiant/envoyerQuestion" method="POST">
+            <div class="input-field">
+                <input type="text" name="q_titre" id="q_titre" autocomplete="off" data-length="255"/>
+                <label for="q_titre">Titre</label>
+            </div>
+            <div class="input-field col s12">
+                <textarea class="materialize-textarea" name="q_texte" id="q_texte"></textarea>
+                <label for="q_texte">Question</label>
+            </div>
+            <div class="input-field row">
+                <select name="q_idProfesseur" id="q_idProfesseur" class="col s12 m8 l5">
+                    <option value="" disabled selected>Choisir un professeur</option>
+                    <?php
+                    foreach ($data['teachers'] as $teacher)
+                    { ?>
+                        <option value="<?= $teacher->idProfesseur ?>"><?= $teacher->prenom . ' ' . $teacher->nom ?></option>
+                        <?php
+                    } ?>
                 </select>
-                <input type="submit" value="Envoyer" />
-            </form>
-        </section>
-    </section>
+                <label for="q_idProfesseur"></label>
+            </div>
+            <div class="btn-footer">
+                <button type="submit" class="waves-effect waves-light btn">Envoyer</button>
+            </div>
+        </form>
+    </div>
 </main>

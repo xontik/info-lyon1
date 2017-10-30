@@ -112,27 +112,38 @@ class Etudiant extends CI_Controller {
         show('Etudiant/edt', $data);
     }
 
-  public function question() {
-    $this->load->model('question_model', 'questionsMod');
-    $this->load->model('students_model', 'studentsMod');
-    $this->load->model('teacher_model', 'teacherMod');
-        
-    //Récupérer les questions posées
-    $etuQuestions = $this->questionsMod->getStudentQuestions($_SESSION['id']);
-    
-    //Récupérer les profs
-    $etuTeachers = $this->studentsMod->getProfesseursByStudent($_SESSION['id']);
+    public function question() {
+        $this->load->model('question_model', 'questionsMod');
+        $this->load->model('students_model', 'studentsMod');
+        $this->load->model('teacher_model', 'teacherMod');
 
-    $data = array(
-      'css' => array(),
-      'js' => array('debug'),
-      'title' => 'Questions / Réponses',
-      'data' => array('etuQuestions' => $etuQuestions,
-                      'etuTeachers' => $etuTeachers)
-    );
-    show('Etudiant/questions', $data);
-  }
-  
-  
-  
+        // Get questions and answers
+        $questions = $this->questionsMod->getStudentQuestions($_SESSION['id']);
+        $answers = array();
+
+        foreach($questions as $question) {
+            $answers[$question->idQuestion] = $this->questionsMod->getAnswers($question->idQuestion);
+        }
+
+        // Get teachers
+        $unsortedTeachers = $this->studentsMod->getProfesseursByStudent($_SESSION['id']);
+        $teachers = array();
+
+        foreach($unsortedTeachers as $teacher) {
+            $teachers[$teacher->idProfesseur] = $teacher;
+        }
+
+        $data = array(
+            'css' => array('Etudiant/questions'),
+            'js' => array('debug'),
+            'page' => 'question',
+            'title' => 'Questions / Réponses',
+            'data' => array(
+                'questions' => $questions,
+                'answers' => $answers,
+                'teachers' => $teachers
+            )
+        );
+        show('Etudiant/questions', $data);
+    }
 }
