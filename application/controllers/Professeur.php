@@ -54,13 +54,30 @@ class Professeur extends CI_Controller {
     }
     
     public function question() {
+        $this->load->model('students_model', 'studentMod');
+        $this->load->model('question_model', 'questionsMod');
+
+        $questions = $this->questionsMod->getProfessorQuestions($_SESSION['id']);
+
+        $students = array();
+        $answers = array();
+
+        foreach ($questions as $question) {
+            $students[$question->numEtudiant] = $this->studentMod->getStudent($question->numEtudiant);
+            $answers[$question->idQuestion] = $this->questionsMod->getAnswers($question->idQuestion);
+        }
+
         $data = array(
             'css' => array('Professeur/questions'),
-            'js' => array(),
-            'page' => 'questions',
-            'title' => 'Questions / Réponses'
+            'js' => array('debug'),
+            'title' => 'Questions',
+            'data' => array(
+                'questions' => $questions,
+                'students' => $students,
+                'answers' => $answers
+            )
         );
-        show('Professeur/questions', $data);
+        show("Professeur/questions", $data);
     }
     
     public function controle() {
@@ -99,7 +116,7 @@ class Professeur extends CI_Controller {
         }
         
         
-        $var = array(
+        $data = array(
             'css' => array(),
             'js' => array('debug'),
             'page' => 'controles',
@@ -113,16 +130,17 @@ class Professeur extends CI_Controller {
             )
         );
         
-        show('Professeur/controles',$var);
+        show('Professeur/controles', $data);
     }
     
-    public function addControle($promo = '') {
+    public function addControle($promo = '')
+    {
         $this->load->model('control_model', 'ctrlMod');
 
         $isPromo = strtolower($promo) === 'promo';
 
         if ($promo === '') {
-            $select =  $this->ctrlMod->getEnseignements($_SESSION['id']);
+            $select = $this->ctrlMod->getEnseignements($_SESSION['id']);
         } else if ($isPromo) {
             $select = $this->ctrlMod->getMatieres($_SESSION['id']);
         } else {
@@ -142,8 +160,7 @@ class Professeur extends CI_Controller {
                 'typeControle' => $typeControle
             )
         );
-
-        show('Professeur/addControl', $data);
+        show('Professeur/addControle', $data);
     }
 
     public function editControle($id = '') {
@@ -213,5 +230,4 @@ class Professeur extends CI_Controller {
         
         show('Professeur/addMarks', $data);
     }
-    
 }

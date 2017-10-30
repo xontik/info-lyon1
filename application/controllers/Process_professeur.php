@@ -180,5 +180,15 @@ public function addmarks($id){
 }
 
 
+    public function repondreQuestion() {
+        $this->load->model('question_model', 'questionsMod');
+        if (isset($_POST['texte']) AND isset($_POST['idQuestion']) AND is_numeric($_POST['idQuestion'])) {
+            $idQuestion = (int) htmlspecialchars($_POST['idQuestion']);
+            $texte = htmlspecialchars($_POST['texte']);
+            $isProf = ($_SESSION['user_type'] == 'teacher') ? 1 : 0;
+            $this->questionsMod->answer($idQuestion, $texte, $isProf);
+        }
+        redirect('Professeur/Question');
+    }
 
 }
