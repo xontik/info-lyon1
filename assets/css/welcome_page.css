@@ -1399,7 +1399,7 @@ nav ul a span.badge { display: inline-block; float: none; margin-left: 4px; line
 .side-nav span.badge { margin-top: calc(24px - 11px); }
 
 /* This is needed for some mobile phones to display the Google Icon font properly */
-.material-icons { text-rendering: optimizeLegibility; font-feature-settings: 'liga'; font-size: 1em; }
+.material-icons { text-rendering: optimizeLegibility; font-feature-settings: 'liga'; }
 
 .container { margin: 0 auto; max-width: 1280px; width: 90%; }
 

@@ -160,7 +160,7 @@ class Professeur extends CI_Controller {
                 'typeControle' => $typeControle
             )
         );
-        show('Professeur/addControle', $data);
+        show('Professeur/addControl', $data);
     }
 
     public function editControle($id = '') {
