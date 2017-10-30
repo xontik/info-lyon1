@@ -62,7 +62,7 @@
         );
         ?><nav class="nav-extended">
             <div class="nav-wrapper">
-                <a class="brand-logo" href="/">Teckmeb</a>
+                <a class="brand-logo small-caps" href="/">Teckmeb</a>
                 <a class="button-collapse hide-on-large-only" href="#" data-activates="nav-mobile">
                     <i class="material-icons">menu</i>
                 </a>
