@@ -56,7 +56,7 @@ class Etudiant extends CI_Controller {
         );
 
         if ($semester > 'S' . $max_semester) {
-            add_notification('Vous essayez d\'accéder à un semestre futur !<br>Redirection vers votre semestre courant');
+            addPageNotification('Vous essayez d\'accéder à un semestre futur !<br>Redirection vers votre semestre courant');
             $semester = '';
         }
 
