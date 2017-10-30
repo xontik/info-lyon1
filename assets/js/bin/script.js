@@ -39,7 +39,7 @@ $(function() {
             if (notificationId) {
                 if (--notificationCount === 0) {
                     // Set icon to 'notifications_none'
-                    $('a[data-activates="nav-notifications"] i').html('&#xE7F5;');
+                    $('a[data-activates="nav-notifications"] i').html('notifications_none');
                     $('#nav-notifications')
                         .append('<li><p>Pas de notifications</p></li>');
                 }

@@ -60,17 +60,17 @@
                 'absences' => '/Secretariat/Absence'
             )
         );
-        ?><nav class="nav-extended small-caps">
+        ?><nav class="nav-extended">
             <div class="nav-wrapper">
                 <a class="brand-logo" href="/">Teckmeb</a>
                 <a class="button-collapse hide-on-large-only" href="#" data-activates="nav-mobile">
-                    <i class="material-icons">&#xE5D2;<!--menu--></i>
+                    <i class="material-icons">menu</i>
                 </a>
                 <ul class="right hide-on-med-and-down">
                     <?php foreach ($nav[$_SESSION['user_type']] as $item => $url) {
-                        $class = (isset($page) ? $page : '') === $item
-                            ? ' class="active"' : '';
-                        echo '<li' . $class . '><a href="' . $url . '">' . $item . '</a></li>';
+                        $active = (isset($page) ? $page : '') === $item
+                            ? ' active' : '';
+                        echo '<li class="small-caps ' . $active . '"><a href="' . $url . '">' . $item . '</a></li>';
                     } ?>
                     <li>
                         <?php
@@ -78,7 +78,7 @@
                             ?>
                             <a class="dropdown-button" href="#!"
                                data-activates="nav-notifications" data-constrainwidth="false">
-                                <i class="material-icons">&#xE7F5;<!--notifications_none--></i>
+                                <i class="material-icons">notifications_none</i>
                             </a>
                             <ul id="nav-notifications" class="dropdown-content">
                                 <li><p>Pas de notifications</p></li>
@@ -88,7 +88,7 @@
                             ?>
                             <a class="dropdown-button" href="#!"
                                data-activates="nav-notifications" data-constrainwidth="false">
-                                <i class="material-icons">&#xE7F4;<!--notifications--></i>
+                                <i class="material-icons">notifications</i>
                             </a>
                             <ul id="nav-notifications" class="dropdown-content">
                                 <?php
@@ -111,7 +111,7 @@
                     <li>
                         <a class="dropdown-button" href="#!"
                            data-activates="nav-user" data-constrainwidth="false">
-                            <i class="material-icons">&#xE853;<!--account_circle--></i>
+                            <i class="material-icons">account_circle</i>
                         </a>
                         <ul id="nav-user" class="dropdown-content">
                             <li>
@@ -119,7 +119,7 @@
                                 <div><?= $_SESSION['name'] ?></div>
                             </li>
                             <li class="divider"></li>
-                            <li><a href="/user/disconnect">Déconnexion</a></li>
+                            <li class="small-caps"><a href="/user/disconnect">Déconnexion</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -128,18 +128,19 @@
                 <ul class="side-nav" id="nav-mobile">
                     <?php
                     foreach ($nav[$_SESSION['user_type']] as $item => $url)
-                    { ?>
-                        <li><a href="<?= $url ?>"><?= $item ?></a></li>
-                        <?php
+                    {
+                        $active = (isset($page) ? $page : '') === $item
+                            ? ' active' : '';
+                        echo '<li class="small-caps' . $active . '"><a href="' . $url . '">' . $item . '</a></li>';
                     } ?>
                     <li class="divider"></li>
                     <li>
                         <a class="dropdown-button" href="#!" data-activates="m-nav-user">
                             <?= $_SESSION['surname'] . ' ' . $_SESSION['name'] ?>
-                            <i class="material-icons right">&#xE313;<!--keyboard_arrow_down--></i>
+                            <i class="material-icons right">keyboard_arrow_down</i>
                         </a>
                         <ul id="m-nav-user" class="dropdown-content">
-                            <li><a href="/user/disconnect">Déconnexion</a></li>
+                            <li class="small-caps"><a href="/user/disconnect">Déconnexion</a></li>
                         </ul>
                     </li>
                 </ul>
