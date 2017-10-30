@@ -1,8 +1,5 @@
 <main class="container">
-    <section class="header">
-        <h4>Absences</h4>
-    </section>
-    <div class="divider"></div>
+    <h4 class="header">Absences</h4>
     <table class="bordered centered">
         <thead>
             <tr>
@@ -12,7 +9,7 @@
                 <th>Justification</th>
             </tr>
         </thead>
-  		<tbody>
+        <tbody>
             <?php
             if(!empty($data['absences'])) {
                 foreach ($data['absences'] as $absence) {
@@ -34,7 +31,7 @@
                     <td colspan="99">Aucune absence</td>
                 </tr>
             <?php } ?>
-  		</tbody>
+        </tbody>
     </table>
 </main>
    

@@ -1,8 +1,6 @@
 <main class="container">
 	<section>
-		<div class="header">
-            <h4>Les questions</h4>
-        </div>
+        <h4>Questions</h4>
 		<ul class="collapsible">
 			<?php
 			foreach ($data['questions'] as $question)

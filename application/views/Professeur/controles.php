@@ -1,77 +1,75 @@
     <main class="container">
+        <h4 class="header">Contrôles</h4>
         <div id="control-add" class="section">
             <a href="<?= base_url('professeur/addControle') ?>" class="btn waves-effect">Ajouter un controle</a>
             <a href="<?= base_url('professeur/addControle/promo') ?>" class="btn waves-effect">Ajouter un DS de promo</a>
         </div>
-        <div class="divider"></div>
-        <?php
-        if (isset($data['controls'])) { ?>
-            <div class="section col s12 m12 l10 offset-l1 no-pad-bot">
-                <form method="post" action="<?php echo base_url('professeur/controle')?>">
-                    <div class="row valign-wrapper">
-                        <div class="input-field col s12 m6 l4">
-                            <select name="groupes" id="groupes">
-                                <option value="0">Tous</option>
-                                <?php
-                                if (count($data['groupes'])) {
-                                    foreach ($data['groupes'] as $groupe) {
-                                        $selected = isset($data['restrict']['groupes'])
-                                            && $data['restrict']['groupes'] == $groupe->idGroupe
-                                            ? 'selected' : '';
-                                        echo '<option value="' . $groupe->idGroupe . '" ' . $selected . ' >'
-                                            . $groupe->nomGroupe . $groupe->type
-                                            . '</option>' . PHP_EOL;
+        <div class="card grey lighten-5">
+            <div class="card-content">
+                <div class="section col s12 m12 l10 offset-l1 no-pad-bot">
+                    <form method="post" action="<?php echo base_url('professeur/controle')?>">
+                        <div class="row valign-wrapper">
+                            <div class="input-field col s12 m6 l4">
+                                <select name="groupes" id="groupes">
+                                    <option value="">Tous</option>
+                                    <?php
+                                    if (isset($data['groupes']) && count($data['groupes'])) {
+                                        foreach ($data['groupes'] as $groupe) {
+                                            $selected = isset($data['restrict']['groupes'])
+                                                && $data['restrict']['groupes'] == $groupe->idGroupe
+                                                ? 'selected' : '';
+                                            echo '<option value="' . $groupe->idGroupe . '" ' . $selected . ' >'
+                                                . $groupe->nomGroupe . $groupe->type
+                                                . '</option>' . PHP_EOL;
+                                        }
                                     }
-                                }
-                                ?>
-                            </select>
-                            <label for="groupes">Groupe</label>
-                        </div>
-                        <div class="input-field col s12 m6 l4">
-                            <select name="matieres" id="matieres">
-                                <option value="0">Tous</option>
-                                <?php
-                                if (isset($data['matieres'])) {
-                                    foreach ($data['matieres'] as $matiere) {
-                                        $selected = isset($data['restrict']['matieres'])
-                                        && $matiere->idMatiere == $data['restrict']['matieres']
-                                            ? 'selected' : '';
-                                        echo '<option value="' . $matiere->idMatiere . '" ' . $selected . '>'
-                                            . $matiere->codeMatiere . ' - ' . $matiere->nomMatiere
-                                            . '</option>' . PHP_EOL;
+                                    ?>
+                                </select>
+                                <label for="groupes">Groupe</label>
+                            </div>
+                            <div class="input-field col s12 m6 l4">
+                                <select name="matieres" id="matieres">
+                                    <option value="">Tous</option>
+                                    <?php
+                                    if (isset($data['matieres'])) {
+                                        foreach ($data['matieres'] as $matiere) {
+                                            $selected = isset($data['restrict']['matieres'])
+                                            && $matiere->idMatiere == $data['restrict']['matieres']
+                                                ? 'selected' : '';
+                                            echo '<option value="' . $matiere->idMatiere . '" ' . $selected . '>'
+                                                . $matiere->codeMatiere . ' - ' . $matiere->nomMatiere
+                                                . '</option>' . PHP_EOL;
+                                        }
                                     }
-                                }
-                                ?>
-                            </select>
-                            <label for="matieres">Matieres : </label>
-                        </div>
-                        <div class="input-field col s12 m6 l4">
-                            <select name="typeControle" id="typeControle">
-                                <option value="0">Tous</option>
-                                <?php
-                                if (isset($data['typeControle'])) {
-                                    foreach ($data['typeControle'] as $typeControle) {
-                                        $selected = isset($data['restrict']['typeControle'])
-                                            && $typeControle->idTypeControle == $data['restrict']['typeControle']
-                                            ? 'selected' : '';
-                                        echo '<option value="' . $typeControle->idTypeControle . '" ' . $selected . '>'
-                                            . $typeControle->nomTypeControle
-                                            . '</option>' . PHP_EOL;
+                                    ?>
+                                </select>
+                                <label for="matieres">Matieres : </label>
+                            </div>
+                            <div class="input-field col s12 m6 l4">
+                                <select name="typeControle" id="typeControle">
+                                    <option value="">Tous</option>
+                                    <?php
+                                    if (isset($data['typeControle'])) {
+                                        foreach ($data['typeControle'] as $typeControle) {
+                                            $selected = isset($data['restrict']['typeControle'])
+                                                && $typeControle->idTypeControle == $data['restrict']['typeControle']
+                                                ? 'selected' : '';
+                                            echo '<option value="' . $typeControle->idTypeControle . '" ' . $selected . '>'
+                                                . $typeControle->nomTypeControle
+                                                . '</option>' . PHP_EOL;
+                                        }
                                     }
-                                }
-                                ?>
-                            </select>
-                            <label for="typeControle">Type de contrôle</label>
+                                    ?>
+                                </select>
+                                <label for="typeControle">Type de contrôle</label>
+                            </div>
                         </div>
-                    </div>
-                    <div class="row col s12 m6 l4 right-align">
-                        <button type="submit" class="btn">Filtrer</button>
-                        <a class="flat-btn" href="<?= base_url('professeur/controle') ?>">Remise à zéro</a>
-                    </div>
-                </form>
-            </div>
-            <div class="divider"></div>
-            <div class="section">
+                        <div class="row col s12 m6 l4 right-align">
+                            <button type="submit" class="btn">Filtrer</button>
+                            <a class="flat-btn" href="<?= base_url('professeur/controle') ?>">Remise à zéro</a>
+                        </div>
+                    </form>
+                </div>
                 <table id="controls-table" class="highlight centered">
                     <thead class="small-caps">
                         <tr>
@@ -127,5 +125,5 @@
                     </tbody>
                 </table>
             </div>
-        <?php } ?>
+        </div>
     </main>
