@@ -29,12 +29,12 @@
                 }
             }
 
-            echo '<pre id="debug">';
-            array_walk($data, 'makeReceivedDataPrintable');
-            print_r($data);
-            echo '</pre>' . PHP_EOL;
-
+            $data_print = $data;
+            array_walk($data_print, 'makeReceivedDataPrintable');
             ?>
+            <pre id="debug">
+                <?php print_r($data_print); ?>
+            </pre>
             <div id="debug-toolbar" class="row no-margin">
                 <a href="/user/session" class="btn-flat">session</a>
                 <a href="/user/fillnotif" class="btn-flat">fill notifs</a>
@@ -104,13 +104,33 @@
                     </li>
                 </ul>
             </div>
-            <?php if ($_SESSION['user_type'] === 'student'): ?>
+            <?php if ($_SESSION['user_type'] === 'student'):
+                $curr_url = explode('/', current_url());
+                $len_url = count($curr_url);
+
+                // If url ends with '/Sx'
+                if (preg_match('/^S\d$/', $curr_url[$len_url - 1])) {
+                    $curr_url = array_slice($curr_url, 0, $len_url - 1);
+                }
+                $curr_url = join('/', $curr_url);
+
+                $active = isset($data['semester']) ? $data['semester'] : '';
+                $class = 'class="active"';
+                ?>
                 <div class="nav-content">
                     <ul class="tabs tabs-transparent">
-                        <li class="tab"><a href="#">Semestre 1</a></li>
-                        <li class="tab"><a href="#">Semestre 2</a></li>
-                        <li class="tab"><a href="#">Semestre 3</a></li>
-                        <li class="tab"><a href="#">Semestre 4</a></li>
+                    <?php
+                    if (!isset($data['max_semester'])) {
+                        $data['max_semester'] = 4;
+                    }
+
+                    for ($i = 1; $i <= $data['max_semester']; $i++)
+                    { ?>
+                        <li class="tab"><a target="_self" href="<?= $curr_url . "/S$i" ?>"
+                                <?= $active == "S$i" ? $class : '' ?>>Semestre <?= $i ?></a></li>
+                        <?php
+                    }
+                    ?>
                     </ul>
                 </div>
             <?php endif; ?>

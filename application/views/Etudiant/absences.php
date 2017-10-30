@@ -1,23 +1,40 @@
-    <main>
-        <table id="tableauAbs" >
-            <thead>
-                <td>Date</td>
-                <td>Type</td>
-                <td>Justification</td>
-            </thead>
+<main class="container">
+    <section class="header">
+        <h4>Absences</h4>
+    </section>
+    <div class="divider"></div>
+    <table class="bordered centered">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Horaire</th>
+                <th>Type</th>
+                <th>Justification</th>
+            </tr>
+        </thead>
+  		<tbody>
             <?php
             if(!empty($data['absences'])) {
-                foreach ($data['absences'] as $absence) { ?>
-                    <tr>
-                        <td><?php echo $absence->dateDebut; ?></td>
-                        <td><?php echo $absence->typeAbsence; ?></td>
-                        <td><?php echo $absence->justifiee ? 'Oui' : 'Non' ?></td>
+                foreach ($data['absences'] as $absence) {
+                    $dateD = new DateTime($absence->dateDebut);
+                    $dateF = new DateTime($absence->dateFin); ?>
+                    <tr <?= !$absence->justifiee ? 'class="red-text text-accent-4"' : '' ?>>
+                        <td><?= $dateD->format('d/m/Y') ?></td>
+                        <td>
+                            <?= $dateD->format('H:i') ?>
+                            <i class="material-icons">arrow_forward</i>
+                            <?= $dateF->format('H:i') ?>
+                        </td>
+                        <td><?= $absence->typeAbsence ?></td>
+                        <td><?= !$absence->justifiee ? 'Injustifiée' : 'Justifiée' ?></td>
                     </tr>
                 <?php }
             } else { ?>
                 <tr>
-                    <td colspan="99">Pas d'absences</td>
+                    <td colspan="99">Aucune absence</td>
                 </tr>
             <?php } ?>
-        </table>
-    </main>
+  		</tbody>
+    </table>
+</main>
+   
