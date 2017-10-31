@@ -41,21 +41,56 @@ class Professeur extends CI_Controller {
     show("Professeur/notes", $data);
   }
 
-  public function ptut() {
-    $this->load->model('ptut_model','ptutMod');
+    public function ptut() {
+        $this->load->model('ptut_model');
 
-    $ptuts = $this->ptutMod->getPtutOfProf($_SESSION['id']);
+        $ptuts = $this->ptut_model->getPtutsOfProf($_SESSION['id']);
 
-    $data = array(
-      'css' => array(),
-      'js' => array('debug'),
-      'title' => "Projets tuteurés",
-      'data' => array('ptuts'=> $ptuts),
+        $data = array(
+            'css' => array(),
+            'js' => array('debug'),
+            'title' => 'Projets tuteurés',
+            'data' => array(
+                'ptuts' => $ptuts
+            )
+        );
+        show('Professeur/ptut', $data);
+    }
 
+    public function project($groupId = '') {
+        if ($groupId === '') {
+            show_404();
+        }
 
-    );
-    show('Professeur/ptut', $data);
-  }
+        $this->load->model('ptut_model');
+
+        $group = $this->ptut_model->getGroup($groupId, $_SESSION['id']);
+        if (empty($group)) {
+            show_404();
+            // Replace by notification, group not found
+        }
+
+        $members = $this->ptut_model->getGroupMembers($groupId);
+        $lastAppointement = $this->ptut_model->getLastAppointement($groupId);
+        $nextAppointement = $this->ptut_model->getNextAppointement($groupId);
+        $proposals = $this->ptut_model->getDateProposals($nextAppointement->idRDV);
+
+        //TODO prposer une date
+
+        $data = array(
+            'css' => array(),
+            'js' => array(),
+            'title' => 'Projet tuteuré',
+            'data' => array(
+                'group' => $group,
+                'members' => $members,
+                'lastAppointement' => $lastAppointement,
+                'nextAppointement' => $nextAppointement,
+                'proposals' => $proposals
+            )
+        );
+        show('Professeur/project', $data);
+    }
 
   public function edt() {
     $data = array(
