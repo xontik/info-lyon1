@@ -69,7 +69,15 @@ class Ptut_model extends CI_Model
             ->result();
     }
 
-    public function createProposal($appointementId, $date, $userId)
+    /**
+     * Creates a date proposal refering to an appointement.
+     *
+     * @param int $appointementId The appointement
+     * @param DateTime $datetime The time of the proposal
+     * @param int $userId The user who makes the proposal
+     * @return bool
+     */
+    public function createProposal($appointementId, $datetime, $userId)
     {
         // Check is user belongs to the project
         $projectId = $this->getGroupId('Appointement', $appointementId);
@@ -81,7 +89,7 @@ class Ptut_model extends CI_Model
         $proposalId = $this->db->trans_start()
             ->insert('DateProposal',
                 array(
-                    'date' => $date,
+                    'date' => $datetime->format('Y-m-d H:i:s'),
                     'idAppointement' => $appointementId
                 )
             )

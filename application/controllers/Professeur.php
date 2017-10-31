@@ -63,6 +63,7 @@ class Professeur extends CI_Controller {
         }
 
         $this->load->model('ptut_model');
+        $this->load->helper('time');
 
         $group = $this->ptut_model->getGroup($groupId, $_SESSION['id']);
         if (empty($group)) {

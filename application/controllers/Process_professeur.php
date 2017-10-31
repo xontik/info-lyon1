@@ -169,17 +169,21 @@ class Process_professeur extends CI_Controller
     public function add_proposal() {
         $this->load->model('ptut_model');
 
-         if (isset($_POST['groupId'])
+        if (isset($_POST['groupId'])
             && isset($_POST['date'])
-         ) {
-             $groupId = intval(htmlspecialchars($_POST['groupId']));
-             $date = htmlspecialchars($_POST['date']);
-             $appointementId = $this->model->getNextAppointement()['idAppointement'];
+            && isset($_POST['time'])
+        ) {
+            $groupId = intval(htmlspecialchars($_POST['groupId']));
+            $date = htmlspecialchars($_POST['date']);
+            $time = htmlspecialchars($_POST['time']);
+            $appointementId = $this->ptut_model->getNextAppointement($groupId)->idAppointement;
 
-             $this->ptut_model->createProposal($appointementId, $date, $_SESSION['userId']);
-         }
+            $datetime = new DateTime($date . ' ' . $time);
 
-         redirect('/Professeur/' . (isset($groupId) ? 'project/' . $groupId : 'ptut'));
+            $this->ptut_model->createProposal($appointementId, $datetime, $_SESSION['userId']);
+        }
+
+        redirect('/Professeur/' . (isset($groupId) ? 'project/' . $groupId : 'ptut'));
     }
 
     public function opt_proposal() {
@@ -197,7 +201,10 @@ class Process_professeur extends CI_Controller
             }
 
             $this->ptut_model->setProposalAccept($proposalId, $_SESSION['userId'], $accept);
-            if ($accept === false) {
+
+            if ($accept) {
+                //TODO If everyone accepted, set project reunion final date
+            } else {
                 $groupId = $this->ptut_model->getGroupId('DateProposal', $proposalId);
                 $this->ptut_model->sendGroupMessage($groupId, 'Une proposition de date à été refusée', 'warning');
             }

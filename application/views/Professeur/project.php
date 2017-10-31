@@ -1,5 +1,8 @@
+<?php
+    $now = new DateTime();
+?>
 <main>
-    <h2 class="header">Groupe <?= $data['group']->nomGroupe ?></h2>
+    <h2 class="header">Projet <?= $data['group']->nomGroupe ?></h2>
     <section>
         <h4>Membres</h4>
         <?php
@@ -9,15 +12,17 @@
             <?php
         } ?>
     </section>
-
     <section>
         <h4>Rendez-vous</h4>
         <?php
         if (!empty($data['lastAppointement']))
-        { ?>
+        {
+            $date = new DateTime($data['lastAppointement']->dateFinale);
+            $diff = $date->diff($now);
+            ?>
             <div>
                 <h5>Dernier rendez-vous</h5>
-                <p><?= (new DateTime($data['lastAppointement']->dateFinale))->format('d/m/Y') ?></p>
+                <p><?= readableTimeDifference($diff) ?></p>
             </div>
             <?php
         } ?>
@@ -25,8 +30,12 @@
             <h5>Prochain rendez-vous</h5>
             <?php
             if (!is_null($data['nextAppointement']->dateFinale))
-            { ?>
-                <p><?= (new DateTime($data['nextAppointement']->dateFinale))->format('d/m/Y') ?></p>
+            {
+                $date = new DateTime($data['nextAppointement']->dateFinale);
+                $diff = $date->diff($now);
+                ?>
+                <p><?= readableTimeDifference($diff) ?></p>
+                <p>Le <?= $date->format('d/m/Y') ?></p>
                 <?php
             } else if (empty($data['proposals'])) {
                 ?>
@@ -35,7 +44,7 @@
             } else {
                 ?>
                 <div>
-                    <h5>Proposition de rendez-vous</h5>
+                    <h5>Propositions de dates</h5>
                     <?php
                     foreach($data['proposals'] as $proposition)
                     { ?>
@@ -57,9 +66,14 @@
 
                 <!-- action="/process_professeur/add_proposal" -->
                 <form method="POST">
+                    <input type="hidden" name="groupId" value="<?= $data['group']->idGroupe ?>">
                     <div>
                         <input type="date" name="date" id="date">
                         <label for="date">Date proposée</label>
+                    </div>
+                    <div>
+                        <input type="time" name="time" id="time">
+                        <label for="time">Heure</label>
                     </div>
                     <button type="submit">Proposer</button>
                 </form>
