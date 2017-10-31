@@ -1,30 +1,11 @@
 @import '../materialize';
 
 .toast {
-  li {
-    @extend .valign-wrapper;
-    line-height: 2rem;
-    padding: 3px 7px;
-
-    word-break: keep-all;
-    cursor: pointer;
-  }
+  cursor: pointer;
 
   .material-icons {
-    @extend .clearfix;
     font-size: 24px;
-
-    &:not(.right) {
-      @extend .left;
-    }
-  }
-}
-
-@media #{$small-and-down} {
-  .toast {
-    > div, > div > ul{
-      width: 100%;
-    }
+    margin-right: 7px;
   }
 }
 
@@ -36,14 +17,6 @@
   @extend .amber;
 }
 
-.notif-fail {
+.notif-danger {
   @extend .red;
-}
-
-.arrow-rotate {
-  transition: transform .4s ease;
-
-  &.rotate {
-    transform: rotate(-90deg);
-  }
 }

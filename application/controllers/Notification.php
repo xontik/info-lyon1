@@ -8,27 +8,11 @@
 
 class Notification extends CI_Controller {
 
-    public function get_notifications() {
-        $this->load->model('notification_model');
-
+    public function get_alerts() {
         header('Content-Type: application/json');
 
-        function castObject(&$element) {
-            $element = (array) $element;
-        }
-
-        /*
-        $seenNotifications = $this->notification_model->get($_SESSION['userId']);
-        array_map('caseObject', $seenNotifications);
-        */
-
-        $notifications = array_merge(
-            isset($_SESSION['notif']) ? $_SESSION['notif'] : array(),
-            isset($_SESSION['notifFlash']) ? $_SESSION['notifFlash'] : array()
-            //$seenNotifications
-        );
-
-        echo json_encode($notifications,
+        echo json_encode(
+            $this->session->flashdata('pageNotif'),
             JSON_HEX_TAG | JSON_HEX_AMP | JSON_FORCE_OBJECT,
             3
         );
@@ -64,7 +48,7 @@ class Notification extends CI_Controller {
                 case 'session':
                     addSessionNotification($content, $type, $icon);
                     break;
-                case 'database':
+                case 'seen':
                     addSeenNotification($content, $type, $icon);
                     break;
                 default:
@@ -78,20 +62,21 @@ class Notification extends CI_Controller {
     }
 
     public function remove_notification() {
-        $this->load->model('notification_model');
-
         header('Content-Type: text/plain');
 
-        if (isset($_POST['notifId']) && isset($_POST['storageType'])) {
+        if (isset($_POST['notifId'])
+            && isset($_POST['storage'])
+        ) {
             $notifId = intval(htmlspecialchars($_POST['notifId']));
-            $storageType = htmlspecialchars($_POST['storageType']);
+            $storage = htmlspecialchars($_POST['storage']);
 
-            switch ($storageType) {
-                case 'database':
-                    $this->notification_model->delete($notifId);
-                    break;
+            switch ($storage) {
                 case 'session':
-                    unset($_SESSION['notif'][$notifId]);
+                    unset($_SESSION['sessionNotif'][$notifId]);
+                    break;
+                case 'seen':
+                    $this->load->model('notification_model');
+                    $this->notification_model->delete($notifId);
                     break;
                 default:
                     echo 'fail';

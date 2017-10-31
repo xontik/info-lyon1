@@ -32,10 +32,20 @@ class Etudiant extends CI_Controller {
             TRUE
         );
 
+        /* Notifications */
+        // To be added on each page that use notifications (aka every page)
+        if (isset($_SESSION['pageNotif'])) {
+            $this->session->keep_flashdata('pageNotif');
+        }
+        $notifications = isset($_SESSION['sessionNotif'])
+            ? $_SESSION['sessionNotif'] : array();
+        /* /Notifications */
+
         $data = array(
             'css' => array('Etudiant/dashboard'),
             'js' => array('debug'),
             'title' => 'Tableau de bord',
+            'notifications' => $notifications,
             'data' => array(
                 'side-edt' => $side_edt
             )

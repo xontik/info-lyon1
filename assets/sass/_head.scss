@@ -22,7 +22,12 @@ body > header > nav {
   }
 }
 
-#nav-user-menu li {
+.hide-on-med-and-down ul.dropdown-content li {
   @extend .center-align;
   line-height: 200%;
+
+  & > *:not(a) {
+    margin-left: 8px;
+    margin-right: 8px;
+  }
 }

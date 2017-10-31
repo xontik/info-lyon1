@@ -11,6 +11,12 @@ class Welcome extends CI_Controller {
                 'teacher' => '/Professeur',
                 'secretariat' => '/Secretariat'
             );
+
+            // Keep all flashdata for one more request
+            foreach ($this->session->flashdata() as $key => $val) {
+                $this->session->keep_flashdata($key);
+            }
+
             redirect($urls[$_SESSION['user_type']]);
         }
         else {
