@@ -10,6 +10,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Ptut_model extends CI_Model
 {
 
+    /**
+     * Return the group corresponding to the id,
+     * with the teacher as referent.
+     *
+     * @param int $groupId The group id
+     * @param int $teacherId The teacher id
+     * @return mixed The group
+     */
     public function getGroup($groupId, $teacherId)
     {
         return $this->db->where('idGroupe', $groupId)
@@ -18,6 +26,12 @@ class Ptut_model extends CI_Model
             ->row();
     }
 
+    /**
+     * Return the members of the group.
+     *
+     * @param int $groupId The group id
+     * @return array The members of the group
+     */
     public function getGroupMembers($groupId)
     {
         return $this->db->select('CONCAT(prenom, " ", nom) as nom')
@@ -29,6 +43,12 @@ class Ptut_model extends CI_Model
             ->result();
     }
 
+    /**
+     * Return the projects where the teacher is referent.
+     *
+     * @param int $professorId The teacher id
+     * @return array The projects
+     */
     public function getPtutsOfProf($professorId)
     {
         return $this->db->select('idGroupe, nomGroupe')
@@ -38,6 +58,12 @@ class Ptut_model extends CI_Model
             ->result();
     }
 
+    /**
+     * Computes the last appointement the group had.
+     *
+     * @param int $groupId The group id
+     * @return mixed
+     */
     public function getLastAppointement($groupId)
     {
         return $this->db->from('RDVPtut')
@@ -49,6 +75,12 @@ class Ptut_model extends CI_Model
             ->row();
     }
 
+    /**
+     * Computes the next appointement the group will have.
+     *
+     * @param int $groupId The group id
+     * @return mixed
+     */
     public function getNextAppointement($groupId)
     {
         return $this->db->from('RDVPtut')
@@ -62,6 +94,12 @@ class Ptut_model extends CI_Model
             ->row();
     }
 
+    /**
+     * Get all date proposals referenced to the appointement.
+     *
+     * @param int $appointementId The appointement id
+     * @return mixed
+     */
     public function getDateProposals($appointementId)
     {
         return $this->db->where('idRDV', $appointementId)
@@ -107,21 +145,28 @@ class Ptut_model extends CI_Model
         return true;
     }
 
+    /**
+     * Set whether an user accepted a proposition or not.
+     *
+     * @param int $proposalId The proposition id
+     * @param int $userId The user id
+     * @param boolean $accept Whether he accepted it or not
+     */
     public function setProposalAccept($proposalId, $userId, $accept)
     {
-        // Check if user belongs to the project
-        $projectId = $this->getGroupId('DateProposal', $proposalId);
-
-        if (!$this->isUserInProject($userId, $projectId)) {
-            redirect('/project/' . $projectId);
-        }
-
         $this->db->set('accepted', $accept)
             ->where('idProposal', $proposalId)
             ->where('idUser', $userId)
             ->update('DateAccept');
     }
 
+    /**
+     * Check if user is in a project.
+     *
+     * @param int $userId The user id
+     * @param int $projectId The project id
+     * @return bool Whether the user is in the project
+     */
     public function isUserInProject($userId, $projectId)
     {
         $userInProject = $this->db->select('userId')
@@ -138,23 +183,45 @@ class Ptut_model extends CI_Model
         return !empty($userInProject);
     }
 
-    public function sendGroupMessage($projectId, $message, $type) {
+    /**
+     * Send a message to all group members,
+     * except the user who is currently connected.
+     *
+     * @param int $projectId The project id
+     * @param string $message The content of the message
+     * @param string $type The type of the notification
+     * @param string $icon The icon of the notification (optionnal)
+     * @param string $link Where notification links to (optionnal)
+     */
+    public function sendGroupMessage($projectId, $message, $type, $icon = '', $link = '') {
         get_instance()->load->helper('notification');
 
-        $users = $this->db->select('idUser')
+        $this->db->select('idUser')
             ->from('Project')
             ->join('ProjectMember', 'idProject')
             ->join('Teacher', 'idTeacher')
             ->join('Student', 'studentId')
-            ->where('idProject', $projectId)
-            ->get()
+            ->where('idProject', $projectId);
+
+        if (isset($_SESSION['idUser'])) {
+            $this->db->where('idUser !=', $_SESSION['idUser']);
+        }
+
+        $users = $this->db->get()
             ->result();
 
         foreach ($users as $user) {
-            addSeenNotification($message, $type, '', $user->idUser);
+            addSeenNotification($message, $type, $icon, $link, $user->idUser);
         }
     }
 
+    /**
+     * Get group id from another table, related to projects
+     *
+     * @param string $table The related table ('DateAccept', 'DateProposal', 'Appointement')
+     * @param int $idInTable The primary key content
+     * @return int
+     */
     public function getGroupId($table, $idInTable) {
         $this->db->select('idProject')
             ->from('Project');
