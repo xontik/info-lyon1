@@ -70,7 +70,7 @@ class User extends CI_Controller {
         addPageNotification('Echec', 'danger');
         addPageNotification('Icône personnalisé', '', 'schedule');
         addPageNotification('Un message<br>sur plusieurs lignes');
-        addSessionNotification('Un message d\'info qui dure toute la session !');
+        addSessionNotification('Un lien qui dure toute la session !', '', '', '#!');
         addSessionNotification('Un message de succès qui dure toute la session !', 'success');
 
         redirect('/');
