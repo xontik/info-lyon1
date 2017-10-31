@@ -36,11 +36,12 @@ $(function() {
 
     function deleteNotif(event) {
         $(this).fadeOut(function() {
-            $(this).remove();
-
-            var notificationId = $(this).prop('id');
+            var notificationId = $(this).data('notif-id');
 
             if (notificationId) {
+                // Session or seen notification
+                $('.notif[data-notif-id="' + notificationId + '"]').remove();
+
                 if (--notificationCount <= 0) {
                     $('.notifications-icon').html('notifications_none');
                     $('#nav-notifications').append('<li><p>Pas de notifications</p></li>');
@@ -58,11 +59,14 @@ $(function() {
                 }
 
                 var data = {
-                    notifId: parseInt(notificationId.substr(6)),
+                    notifId: parseInt(notificationId),
                     storage: storage
                 };
 
                 $.post('/notification/remove_notification/', data);
+            } else {
+                // Page notification
+                $(this).remove();
             }
         });
 

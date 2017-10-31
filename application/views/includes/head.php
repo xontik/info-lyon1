@@ -71,7 +71,7 @@
                         echo '<li class="small-caps ' . $active . '"><a href="' . $url . '">' . $item . '</a></li>';
                     } ?>
                     <li>
-                        <a class="dropdown-button" href="#!"
+                        <a class="dropdown-button"
                            data-activates="nav-notifications" data-constrainwidth="false">
                             <i class="material-icons notifications-icon">
                                 <?= empty($notifications) ? 'notifications_none' : 'notifications' ?>
@@ -85,7 +85,7 @@
                                 <?php
                             } else {
                                 foreach ($notifications as $notif) { ?>
-                                    <li id="notif-<?= $notif['id'] ?>"
+                                    <li data-notif-id="<?= $notif['id'] ?>"
                                         class="notif notif-<?= $notif['type'] ?> notif-<?= $notif['storage'] ?>">
                                         <div class="valign-wrapper">
                                             <i class="material-icons left"><?= $notif['icon'] ?></i>
@@ -98,7 +98,7 @@
                         </ul>
                     </li>
                     <li>
-                        <a class="dropdown-button" href="#!"
+                        <a class="dropdown-button"
                            data-activates="nav-user" data-constrainwidth="false">
                             <i class="material-icons">account_circle</i>
                         </a>
@@ -117,6 +117,15 @@
                 <a class="button-collapse hide-on-large-only" href="#" data-activates="nav-mobile">
                     <i class="material-icons">menu</i>
                 </a>
+                <ul class="right hide-on-large-only">
+                    <li>
+                        <a href="#m-notifications" class="modal-trigger">
+                            <i class="material-icons right notifications-icon">
+                                <?= empty($notifications) ? 'notifications_none' : 'notifications' ?>
+                            </i>
+                        </a>
+                    </li>
+                </ul>
                 <ul class="side-nav" id="nav-mobile">
                     <?php
                     foreach ($nav[$_SESSION['user_type']] as $item => $url)
@@ -127,16 +136,7 @@
                     } ?>
                     <li class="divider"></li>
                     <li>
-                        <a href="#m-notifications" class="modal-trigger">
-                            <span class="small-caps">Notifications</span>
-                            <i class="material-icons right notifications-icon">
-                                <?= empty($notifications) ? 'notifications_none' : 'notifications' ?>
-                            </i>
-                        </a>
-                    </li>
-                    <li class="divider"></li>
-                    <li>
-                        <a class="dropdown-button" href="#!" data-activates="m-nav-user">
+                        <a class="dropdown-button" data-activates="m-nav-user">
                             <?= $_SESSION['surname'] . ' ' . $_SESSION['name'] ?>
                             <i class="material-icons right">keyboard_arrow_down</i>
                         </a>
@@ -156,7 +156,7 @@
                                 <?php
                             } else {
                                 foreach ($notifications as $notif) { ?>
-                                    <div id="notif-<?= $notif['id'] ?>"
+                                    <div data-notif-id="<?= $notif['id'] ?>"
                                         class="collection-item notif notif-<?= $notif['type'] ?> notif-<?= $notif['storage'] ?>">
                                         <div class="valign-wrapper">
                                             <i class="material-icons left"><?= $notif['icon'] ?></i>
