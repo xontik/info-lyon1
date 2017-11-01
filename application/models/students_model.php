@@ -1,10 +1,5 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: enzob
- * Date: 17/09/2017
- * Time: 12:06
- */
+defined('BASEPATH') OR exit('No direct script access allowed');
 
 class students_model extends CI_Model {
 
@@ -39,47 +34,118 @@ class students_model extends CI_Model {
             ->row();
     }
 
-    public function getStudentsBySemestre($id){
-        $sql = 'SELECT idGroupe, nomGroupe, nom, prenom, numEtudiant from Groupes left join EtudiantGroupe using(idGroupe) left join Etudiants using(numEtudiant) where idSemestre = ? order by nomGroupe ';
-        return $this->db->query($sql,array($id))->result();
+    /**
+     * Returns the students that are in a semester
+     *
+     * @param int $semesterId
+     * @return array The students
+     */
+    public function getStudentsBySemestre($semesterId)
+    {
+        $sql = 'SELECT idGroupe, nomGroupe, nom, prenom, numEtudiant
+            FROM Groupes
+            LEFT JOIN EtudiantGroupe USING (idGroupe)
+            LEFT JOIN Etudiants USING (numEtudiant)
+            WHERE idSemestre = ?
+            ORDER BY nomGroupe ';
+        
+        return $this->db->query($sql, array($semesterId))
+            ->result();
     }
 
-
-
-    public function isStudentInGroup($numEtu,$groupId){
-        $sql = 'SELECT  * from EtudiantGroupe where numEtudiant=? and idGroupe = ?';
-        return $this->db->query($sql,array($numEtu,$groupId))->num_rows() > 0;
+    /**
+     * Checks if a student is an a group.
+     *
+     * @param string $numEtu
+     * @param int $groupId
+     * @return bool
+     */
+    public function isStudentInGroup($numEtu, $groupId)
+    {
+        return $this->db->where('numEtudiant', $numEtu)
+            ->where('idGroupe', $groupId)
+            ->get('EtudiantGroupe')
+            ->num_rows() > 0;
     }
-    //semesterIds : les ids des semestre a verifier
-    public function isStudentInGroupsOfSemesters($numEtudiant,$semesterIds){
-        $sql = 'SELECT  * from EtudiantGroupe join groupes using(idGroupe) join Semestres using(idSemestre) join parcours using(idParcours)  where numEtudiant=? and idSemestre IN ?';
-        $row = $this->db->query($sql,array($numEtudiant,$semesterIds))->row();
-        if(empty($row)){
+
+    /**
+     * @param string $numEtudiant
+     * @param array $semesterIds
+     * @return bool|array
+     */
+    public function isStudentInGroupsOfSemesters($numEtudiant, $semesterIds)
+    {
+        $sql = 'SELECT *
+            FROM EtudiantGroupe
+            JOIN Groupes USING (idGroupe)
+            JOIN Semestres USING (idSemestre)
+            JOIN Parcours USING (idParcours)
+            WHERE numEtudiant = ? AND idSemestre IN ?';
+
+        $row = $this->db->query($sql, array($numEtudiant, $semesterIds))
+            ->row();
+
+        if (empty($row)) {
             return false;
         }
-        else{
-            return $row;
-        }
+        return $row;
     }
 
-
-    public function deleteRelationGroupStudent($groupId,$numEtudiant){
-        $sql = 'DELETE FROM EtudiantGroupe where idGroupe = ? and numEtudiant = ?';
-        return $this->db->query($sql,array($groupId,$numEtudiant));
-    }
-    public function deleteAllRelationForGroup($groupeId){
-        $sql = 'DELETE FROM EtudiantGroupe where idGroupe = ?';
-        return $this->db->query($sql,array($groupeId));
-    }
-
-    public function addToGroupe($numEtudiant,$groupId){
-        $sql = 'INSERT INTO EtudiantGroupe VALUES(\'\',?,?)';
-        return $this->db->query($sql,array($numEtudiant,$groupId));
-    }
-    public function getIdsFromGroup($idGroup){
-        return array_column($this->db->query('SELECT numEtudiant from EtudiantGroupe where idGroupe = ?',array($idGroup))->result_array(),'numEtudiant');
+    /**
+     * Remove a student from a group.
+     *
+     * @param $groupId
+     * @param $numEtudiant
+     * @return bool
+     */
+    public function deleteRelationGroupStudent($groupId, $numEtudiant)
+    {
+        return $this->db->where('idGroupe', $groupId)
+            ->where('numEtudiant', $numEtudiant)
+            ->delete('EtudiantGroupe');
     }
 
+    /**
+     * Remove all students from a group.
+     *
+     * @param $groupId
+     * @return bool
+     */
+    public function deleteAllRelationForGroup($groupId)
+    {
+        return $this->db->delete('EtudiantGroupe', array('idGroupe' => $groupId));
+    }
 
+    /**
+     * Add a student to a group.
+     *
+     * @param $numEtudiant
+     * @param $groupId
+     * @return bool
+     */
+    public function addToGroupe($numEtudiant, $groupId)
+    {
+        $data = array(
+            'numEtudiant' => $numEtudiant,
+            'idGroupe' => $groupId
+        );
+        return $this->db->insert('EtudiantGroupe', $data);
+    }
+
+    /**
+     * Get the ids of the students in a group.
+     *
+     * @param $idGroup
+     * @return array
+     */
+    public function getIdsFROMGroup($idGroup)
+    {
+        $res = $this->db->select('numEtudiant')
+            ->from('EtudiantGroupe')
+            ->where('idGroupe', $idGroup)
+            ->get()
+            ->result_array();
+        return array_column($res, 'numEtudiant');
+    }
 
 }
