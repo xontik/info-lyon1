@@ -16,13 +16,29 @@ class Ptut_model extends CI_Model
      *
      * @param int $groupId The group id
      * @param int $teacherId The teacher id
-     * @return mixed The group
+     * @return stdClass The group
      */
     public function getGroup($groupId, $teacherId)
     {
         return $this->db->where('idGroupe', $groupId)
             ->where('idProfesseur', $teacherId)
             ->get('GroupesPTUT')
+            ->row();
+    }
+
+    /**
+     * Return the group to which the student belongs
+     *
+     * @param $studentId
+     * @return stdClass The group
+     */
+    public function getStudentGroup($studentId) {
+        return $this->db->select('*')
+            ->from('MembrePTUT')
+            ->join('GroupesPTUT', 'idGroupe')
+            ->where('numEtudiant', $studentId)
+            ->order_by('idGroupe', 'DESC')
+            ->get()
             ->row();
     }
 

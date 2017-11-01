@@ -76,12 +76,10 @@ class Professeur extends CI_Controller {
         $nextAppointement = $this->ptut_model->getNextAppointement($groupId);
         $proposals = $this->ptut_model->getDateProposals($nextAppointement->idRDV);
 
-        //TODO prposer une date
-
         $data = array(
             'css' => array(),
             'js' => array(),
-            'title' => 'Projet tuteuré',
+            'title' => 'Projets tuteurés',
             'data' => array(
                 'group' => $group,
                 'members' => $members,
