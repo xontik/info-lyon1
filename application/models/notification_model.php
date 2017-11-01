@@ -35,14 +35,16 @@ class Notification_model extends CI_Model {
      * @param string $content
      * @param string $type
      * @param string $icon
+     * @param string $link
      * @param int $userId The id of the user to send it to
      * @return int The id of the created notification
      */
-    public function create($content, $type, $icon, $userId) {
+    public function create($content, $type, $icon, $link, $userId) {
         $data = array(
             'content' => $content,
             'type' => $type,
             'icon' => $icon,
+            'link' => $link,
             'idUser' => $userId
         );
 
