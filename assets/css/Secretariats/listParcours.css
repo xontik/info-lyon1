@@ -47,22 +47,17 @@ li { list-style-type: none; }
 
 .dropdown::after { content: ''; width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 9px solid #ffffff; }
 
-main #control-add a { display: inline-block; color: #e7bd26; border: 1px groove #403e3f; border-radius: 5px; box-shadow: 3px 3px 12px #999; padding: 10px 5px; margin-right: 8px; margin-bottom: 10px; }
-main #control-add a:hover { background-color: #403e3f; }
-main #filters { color: #e7bd26; font-size: 1.2em; }
-main #filters h2 { color: #403e3f; font-size: 1.3em; }
-main #filters input[type="submit"] { border: 1px solid #403e3f; border-radius: 2px; box-shadow: 3px 3px 12px #999; padding: 2px 6px; margin: 5px; font-size: .9em; }
-main #controls-table { width: 100%; border-collapse: collapse; margin-bottom: 2em; }
-main #controls-table > caption { color: #e7bd26; text-align: left; font-size: 2em; border-bottom: 0.2em solid #403e3f; margin-bottom: .6em; }
-main #controls-table thead td { text-align: center; font-size: 1.4em; font-variant: small-caps; color: #e7bd26; background-color: #403e3f; border: 2px solid #e7bd26; padding: 8px; }
-main #controls-table tbody td { text-align: center; padding: .5em 1em; color: #403e3f; }
-main #controls-table tbody tr:nth-child(even) { background: #d4d4d4; }
-main #controls-table tbody tr:nth-child(odd) { background: #fafafa; }
-main #controls-table tbody tr:hover { background: #848484; }
-main #controls-table tbody img { width: 20px; }
-main input[type="submit"] { border: 1.5px groove #403e3f; padding: 7px 12px; border-radius: 5px; }
-main input[type="submit"]:hover { color: white; box-shadow: 3px 3px 12px #999; }
-main form { margin-top: 30px; margin-bottom: 30px; }
-main select { padding: 4px; border: solid 1px #c9c9c9; transition: border 0.3s; margin-right: 5px; }
+main li.depliant { list-style-type: square; }
+main li.depliant:hover { cursor: pointer; }
 
-/*# sourceMappingURL=notes.css.map */
+main li { list-style-type: circle; font-size: 1em; }
+main li:hover { cursor: auto; }
+main li strong:last-of-type { color: red; }
+
+.editable { color: blue; }
+
+li a img { height: 15px; }
+
+#ulroot ul { display: none; list-style-type: none; margin: 0; padding-left: 20px; }
+
+/*# sourceMappingURL=listParcours.css.map */
