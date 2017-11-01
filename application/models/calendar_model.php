@@ -6,16 +6,16 @@ class Calendar_model extends CI_Model
 
     public function getCalendarJSON($resources)
     {
-        $query = 'SELECT * FROM edt WHERE ressource = ?';
-        $result = $this->db->query($query, array($resources))->row();
-        if (isset($result))
-            return $result->edt;
+        return $this->db->where('ressource', $resources)
+            ->get('edt')
+            ->row();
     }
 
     public function setCalendarJSON($resources, $json)
     {
-        $query = 'UPDATE edt SET edt = ? WHERE ressource = ?';
-        return $this->db->query($query, array($json, $resources));
+        return $this->db->set('edt', $json)
+            ->where('ressource', $resources)
+            ->update();
     }
 
     public function createCalendar($resources, $json, $who = NULL, $isGroup = true) {
@@ -24,7 +24,7 @@ class Calendar_model extends CI_Model
             'edt' => $json
         );
 
-        if ($who != NULL) {
+        if (!is_null($who)) {
             if ($isGroup)
                 $data['idGroupe'] = $who;
             else
@@ -40,13 +40,11 @@ class Calendar_model extends CI_Model
             'idProfesseur' => null
         );
 
-        if ($isGroup)
-            $data['idGroupe'] = $who;
-        else
-            $data['idProfesseur'] = $who;
+        $data[$isGroup ? 'idGroupe' : 'idProfesseur'] = $who;
 
-        $this->db->set($data)->where('ressource', $resources);
-        return $this->db->update('edt');
+        return $this->db->set($data)
+            ->where('ressource', $resources)
+            ->update('edt');
     }
 
 }

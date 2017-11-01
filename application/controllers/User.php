@@ -1,11 +1,6 @@
 <?php
+defined('BASEPATH') OR exit('No direct script access allowed');
 
-/**
- * Created by PhpStorm.
- * User: Enzo
- * Date: 17/08/2017
- * Time: 15:17
- */
 class User extends CI_Controller {
 
     public function connect() {
@@ -24,9 +19,9 @@ class User extends CI_Controller {
         $stay_connected = isset($_POST['stayConnected']) && $_POST['stayConnected'] === 'on';
 
         if ( empty($id) )
-            $_SESSION['form_errors']['id'] = 'Merci d\'entrer un identifiant';
+            $_SESSION['form_errors']['id'] = 'Veuillez entrer un identifiant';
         if ( empty($password) )
-            $_SESSION['form_errors']['password'] = 'Merci d\'entrer un mot de passe';
+            $_SESSION['form_errors']['password'] = 'Veuillez entrer un mot de passe';
 
 
         if ( !empty($_SESSION['form_errors']) ) {

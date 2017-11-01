@@ -1,19 +1,21 @@
 <?php
-
-/**
- * Created by PhpStorm.
- * User: Enzo
- * Date: 08/08/2017
- * Time: 19:05
- */
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class semester_model extends CI_Model {
 
+    /**
+     * Return the semester corresponding to the string passed in parameter.
+     *
+     * @param string $semester Can be empty or S1-4
+     * @return bool|int The id of the semester,
+     * FALSE if $semester is not a correct value
+     */
     public function getSemesterId($semester) {
         $semesterId = FALSE;
         if ($semester === '') {
-            $semesterId = $this->getCurrentSemesterId($_SESSION['user_type'] === 'student' ? $_SESSION['id'] : '');
+            if ($_SESSION['user_type'] === 'student') {
+                $semesterId = $this->getCurrentSemesterId($_SESSION['id']);
+            }
         }
         else if ( in_array($semester, array('S1', 'S2', 'S3', 'S4') ) ) {
             $semesterId = $this->getLastSemesterOfType($semester, $_SESSION['id']);
@@ -23,8 +25,8 @@ class semester_model extends CI_Model {
     }
 
     /**
-     * @param $semesterId int The semester id
-     * @return String The type (S1-4) of the semester
+     * @param int $semesterId The semester id
+     * @return string The type (S1-4) of the semester
      */
     public function getSemesterTypeFromId($semesterId) {
         $semesterType = $this->db->select('Parcours.type')
@@ -34,17 +36,17 @@ class semester_model extends CI_Model {
             ->get()
             ->row();
 
-        if ( empty($semesterType) ) {
+        if (empty($semesterType)) {
             return FALSE;
         }
         return $semesterType->type;
     }
 
     /**
-     * @param $semesterId int The id of the semester
-     * @return mixed An array of two dates, the beginning and the end of the semester
+     * @param int $semesterId The id of the semester
+     * @return Period|bool The period of the semester,
+     * FALSE if the semester doesn't exists
      */
-
     public function getSemesterPeriod($semesterId) {
         require_once(APPPATH . 'libraries/Period.php');
 
@@ -75,7 +77,7 @@ class semester_model extends CI_Model {
     }
 
     /**
-     * @param $studentId String The id of the student
+     * @param string $studentId The id of the student
      * @return int The current semester for the student
      */
     public function getCurrentSemesterId($studentId = '') {
@@ -99,9 +101,9 @@ class semester_model extends CI_Model {
 
     /**
      * Returns the id of the student's `type` semester
-     * @param $semesterType String A type of semester (S1-4)
-     * @param $studentId String The student id
-     * @return int The id of the corresponding semester, FALSE if it doesn't exists
+     * @param string $semesterType A type of semester (S1-4)
+     * @param string $studentId The student id
+     * @return int|bool The id of the corresponding semester, FALSE if it doesn't exists
      */
     public function getLastSemesterOfType($semesterType, $studentId)
     {

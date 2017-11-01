@@ -1,10 +1,5 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: enzob
- * Date: 18/09/2017
- * Time: 21:46
- */
+defined('BASEPATH') OR exit('No direct script access allowed');
 
 /**
 * Returns the number of days in a given month and year, taking into account leap years.

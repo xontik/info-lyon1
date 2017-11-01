@@ -1,11 +1,4 @@
 <?php
-/**
-* Created by PhpStorm.
-* User: xontik
-* Date: 24/04/2017
-* Time: 01:22
-*/
-
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Process_professeur extends CI_Controller {
@@ -17,168 +10,189 @@ class Process_professeur extends CI_Controller {
 
   }
 
-  public function addcontrole($promo = ""){
-    $this->load->model('control_model','ctrlMod');
+    public function addcontrole($promo = '')
+    {
+        $this->load->model('control_model', 'ctrlMod');
+        $this->load->helper('notification');
 
+        if ($promo === '') {
+            if (isset($_POST['enseignementId'])
+                && isset($_POST['nom'])
+                && isset($_POST['coeff'])
+                && isset($_POST['diviseur'])
+                && isset($_POST['date'])
+                && isset($_POST['typeId'])
+            ) {
+                $enseignementId = intval(htmlspecialchars($_POST['enseignementId']));
+                $nom = htmlspecialchars($_POST['nom']);
+                $coeff = floatval(htmlspecialchars($_POST['coeff']));
+                $diviseur = floatval(htmlspecialchars($_POST['diviseur']));
+                $date = htmlspecialchars($_POST['date']);
+                $typeId = intval(htmlspecialchars($_POST['typeId']));
 
-    if($promo=="") {
-      if (isset($_POST['enseignement']) && isset($_POST['nom']) && isset($_POST['coeff']) && isset($_POST['diviseur'])
-      && isset($_POST['date']) && isset($_POST['type'])
-    ) {
-      if ($_POST["enseignement"] != "" && $_POST["nom"] != "" && $_POST["coeff"] != "" && $_POST["diviseur"] != ""
-      && $_POST["date"] != "" && $_POST["typeControle"] != ""
-    ) {
-      if(!$this->ctrlMod->checkEnseignementProf($_POST["enseignement"],$_SESSION['id'])){
-        $this->session->set_flashdata("notif", array("Vous n'avez pas les droit sur cet enseignement"));
-        redirect("professeur/controle");
-      }
-      if ($this->ctrlMod->addControl($_POST['nom'], $_POST['coeff'], $_POST['diviseur'], $_POST['typeControle'], $_POST['date'], $_POST['enseignement'])) {
-        $this->session->set_flashdata("notif", array("Controle ajoutée avec succes"));
-        redirect("professeur/controle");
-      }else{
-        $this->session->set_flashdata("notif", array("Erreur de requete base de données impossible d'ajouter le controle"));
-        redirect("professeur/controle");
+                if ($enseignementId !== 0
+                    && !empty($nom)
+                    && $coeff !== 0
+                    && $diviseur !== 0
+                    && !empty($date)
+                    && $typeId !== 0
+                ) {
+                    if (!$this->ctrlMod->checkEnseignementProf($enseignementId, $_SESSION['id'])) {
+                        addPageNotification('Vous n\'avez pas les droit sur cet enseignement', 'danger');
+                        redirect('professeur/controle');
+                    }
 
-      }
-
-
-    }
-  }
-  $this->session->set_flashdata("notif", array("Erreur controle pas add"));
-  redirect("professeur/controle");
-}else if ($promo=="promo"){
-
-  if (isset($_POST['matiere']) && isset($_POST['nom']) && isset($_POST['coeff']) && isset($_POST['diviseur'])
-  && isset($_POST['date'])
-) {
-  if ( $_POST["matiere"] != "" && $_POST["nom"] != "" && $_POST["coeff"] != "" && $_POST["diviseur"] != ""
-  && $_POST["date"] != ""
-) {
-
-  if ($this->ctrlMod->addDsPromo($_POST['nom'], $_POST['coeff'], $_POST['diviseur'], 1, $_POST['date'],$_POST['matiere'])) {
-    $this->session->set_flashdata("notif", array("Controle promo ajoutée avec succes"));
-    redirect("professeur/controle");
-  }
-  else{
-    $this->session->set_flashdata("notif", array("Erreur de requete base de données impossible d'ajouter le controle"));
-    redirect("professeur/controle");
-  }
-
-
-}
-}
-$this->session->set_flashdata("notif", array("Erreur controle promo pas add"));
-redirect("professeur/controle");
-}else{
-  show_404();
-}
-
-}
-public function editcontrole($id = ""){
-  if($id == ""){
-    show_404();
-  }
-  $this->load->model('control_model','ctrlMod');
-  if(!$this->ctrlMod->checkProfessorRightOnControl($_SESSION['id'],$id)){
-    $this->session->set_flashdata("notif", array("Vous n'avez pas les droit sur ce controle"));
-    redirect("professeur/controle");
-  }
-
-  $control = $this->ctrlMod->getControl($id);
-
-  if(isset($_POST['nom']) && isset($_POST['coeff']) && isset($_POST['diviseur'])
-  && isset($_POST['date'])) {
-
-    if($_POST["nom"] != "" && $_POST["coeff"] != "" && $_POST["diviseur"] != ""
-    && $_POST["date"] != ""){
-      if(!is_null($control->idDSPromo)){
-        $res = $this->ctrlMod->editControl($_POST['nom'],$_POST['coeff'],$_POST['diviseur'],1,$_POST['date'],$id);
-      }else{
-        if(isset($_POST['typeControle'])){
-          $res = $this->ctrlMod->editControl($_POST['nom'],$_POST['coeff'],$_POST['diviseur'],$_POST['typeControle'],$_POST['date'],$id);
-        }else{
-          $res= false;
+                    if ($this->ctrlMod->addControl($nom, $coeff, $diviseur, $typeId, $date, $enseignementId)) {
+                        addPageNotification('Contrôle ajoutée avec succès', 'success');
+                        redirect('professeur/controle');
+                    }
+                }
+            }
+            addPageNotification('Erreur lors de l\'ajout du contrôle', 'danger');
+            redirect('professeur/controle');
         }
-      }
+        else if ($promo == 'promo') {
 
-      if($res){
-        $this->session->set_flashdata("notif",array("Controle ajoutée avec succes"));
-        redirect("professeur/controle");
-      }
-      else{
-        $this->session->set_flashdata("notif",array("Erreur requete bd"));
-        redirect("professeur/controle");
+            if (isset($_POST['matiereId'])
+                && isset($_POST['nom'])
+                && isset($_POST['coeff'])
+                && isset($_POST['diviseur'])
+                && isset($_POST['date'])
+            ) {
+                $matiereId = inval(htmlspecialchars($_POST['matiereId']));
+                $nom = htmlspecialchars($_POST['nom']);
+                $coeff = floatval(htmlspecialchars($_POST['coeff']));
+                $diviseur = floatval(htmlspecialchars($_POST['diviseur']));
+                $date = htmlspecialchars($_POST['date']);
 
-      }
+                if ($matiereId !== 0
+                    && !empty($nom)
+                    && $coeff !== 0
+                    && $diviseur !== 0
+                    && !empty($date)
+                ) {
+                    if ($this->ctrlMod->addDsPromo($nom, $coeff, $diviseur, 1, $date, $matiereId)) {
+                        addPageNotification('Contrôle de promo ajouté avec succès', 'success');
+                        redirect('professeur/controle');
+                    }
+                }
+            }
+
+            addPageNotification('Impossible d\'ajouter le contrôle de promo', 'danger');
+            redirect('professeur/controle');
+        } else {
+            show_404();
+        }
+
     }
-  }
-  $this->session->set_flashdata("notif",array("Erreur controle pas add"));
-  redirect("professeur/controle");
 
-}
-public function deletecontrole($id = "")
-{
-  if($id == ""){
-    show_404();
-  }
-  $this->load->model('control_model','ctrlMod');
+    public function editcontrole($id = '')
+    {
+        $id = intval(htmlspecialchars($id));
+        if ($id === 0) {
+            show_404();
+        }
 
-  if(!$this->ctrlMod->checkProfessorRightOnControl($_SESSION['id'],$id)){
-    $this->session->set_flashdata("notif", array("Vous n'avez pas les droit sur ce controle"));
-    redirect("professeur/controle");
-  }
-  if ($this->ctrlMod->deleteControl($id)) {
-    $this->session->set_flashdata("notif", array("Controle supprimé avec succes"));
-    redirect("professeur/controle");
-  }
+        $this->load->model('control_model', 'ctrlMod');
+        $this->load->helper('notification');
 
-  $this->session->set_flashdata("notif", array("Erreur controle pas delete"));
-  redirect("professeur/controle");
-
-}
-
-public function addmarks($id){
+        if (!$this->ctrlMod->checkProfessorRightOnControl($_SESSION['id'], $id)) {
+            addPageNotification('Vous n\'avez pas droit d\'accès à ce contrôle', 'danger');
+            redirect('professeur/controle');
+        }
 
 
-  $this->load->model('control_model','ctrlMod');
-  $this->load->model('mark_model','markMod');
+        if (isset($_POST['nom'])
+            && isset($_POST['coeff'])
+            && isset($_POST['diviseur'])
+            && isset($_POST['date'])
+            && isset($_POST['typeId'])
+        ) {
+            $nom = htmlspecialchars($_POST['nom']);
+            $coeff = floatval(htmlspecialchars($_POST['coeff']));
+            $diviseur = floatval(htmlspecialchars($_POST['diviseur']));
+            $date = htmlspecialchars($_POST['date']);
+            $typeId = intval(htmlspecialchars($_POST['typeId']));
 
+            if (!empty($nom)
+                && $coeff !== 0
+                && $diviseur !== 0
+                && !empty($date)
+                && $typeId !== 0
+            ) {
+                if ($this->ctrlMod->editControl($nom, $coeff, $diviseur, $typeId, $date, $id)) {
+                    addPageNotification('Contrôle modifié avec succès');
+                    redirect('professeur/controle');
+                }
+            }
+        }
 
-  if(!$this->ctrlMod->checkProfessorRightOnControl($_SESSION['id'],$id)){
-    $this->session->set_flashdata("notif", array("Vous n'avez pas les droit sur ce controle"));
-    redirect("professeur/controle");
-  }
-  $control = $this->ctrlMod->getControl($id);
-  $marks = $this->markMod->getMarks($control,$_SESSION["id"]);
-
-
-
-  $i = 0;
-  $ok = true;
-  foreach ($_POST as $key => $value) {
-    if($key != $marks[$i]->numEtudiant){
-      $ok = false;
-      break;
+        addPageNotification('Erreur lors de l\'ajout du contrôle', 'danger');
+        redirect('professeur/controle');
     }
-    $i++;
 
-    if($i==count($_POST)-1){
-      break;
+    public function deletecontrole($id = '')
+    {
+        $id = intval(htmlspecialchars($id));
+        if ($id === 0) {
+            show_404();
+        }
+
+        $this->load->model('control_model', 'ctrlMod');
+        $this->load->helper('notification');
+
+        if (!$this->ctrlMod->checkProfessorRightOnControl($_SESSION['id'], $id)) {
+            addPageNotification('Vous n\'avez pas les droit sur ce contrôle', 'danger');
+            redirect('professeur/controle');
+        }
+
+        if ($this->ctrlMod->deleteControl($id)) {
+            addPageNotification('Contrôle supprimé avec succès', 'success');
+            redirect('professeur/controle');
+        }
+
+        addPageNotification('Erreur lors de la suppression du contrôle', 'danger');
+        redirect('professeur/controle');
     }
-  }
-  if(!$ok){
-    $this->session->set_flashdata("notif", array("Aucune modification, incoherence des données recues"));
-    redirect("professeur/controle");
-  }
-  array_pop($_POST);
-  //TODO ajoter verification sur value
 
-  $this->markMod->addMarks($id,$_POST);
+    public function addmarks($id)
+    {
+        $this->load->model('control_model', 'ctrlMod');
+        $this->load->model('mark_model', 'markMod');
+        $this->load->helper('notification');
 
-  $this->session->set_flashdata("notif", array("Note modifiées avec succes !"));
-  redirect("professeur/controle");
-}
+        if (!$this->ctrlMod->checkProfessorRightOnControl($_SESSION['id'], $id)) {
+            addPageNotification('Vous n\'avez pas les droit sur ce contrôle', 'danger');
+            redirect('professeur/controle');
+        }
 
+        $control = $this->ctrlMod->getControl($id);
+        $marks = $this->markMod->getMarks($control, $_SESSION['id']);
 
+        $i = 0;
+        $correctData = true;
+        foreach ($_POST as $key => $value) {
+            if ($key !== $marks[$i]->numEtudiant) {
+                $correctData = false;
+                break;
+            }
+            $i++;
 
+            if ($i === count($_POST) - 1) {
+                break;
+            }
+        }
+
+        if (!$correctData) {
+            addPageNotification('Données reçues incohérentes', 'warning');
+            redirect('professeur/controle');
+        }
+        array_pop($_POST);
+        //TODO Ajouter verification sur value
+
+        $this->markMod->addMarks($id, $_POST);
+
+        addPageNotification('Note modifiées avec succès', 'success');
+        redirect('professeur/controle');
+    }
 }

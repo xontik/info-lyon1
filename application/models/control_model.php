@@ -1,274 +1,330 @@
 <?php
-/**
-* Created by PhpStorm.
-* User: xontik
-* Date: 21/04/2017
-* Time: 07:47
-*/
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 
 class Control_model extends CI_Model
 {
 
-  public function __construct()
-  {
-
-  }
-
-  public function getControl($controlId)
-  {
-    $sql = "SELECT * FROM Controles WHERE idControle = ? ";
-    return $this->db->query($sql, array($controlId))->row();
-  }
-
-  public function getControls($professorId)
-  {
-    $sql = "SELECT foo.codeMatiere,foo.idMatiere,foo.nomMatiere,foo.idControle,foo.nomControle,
-    foo.coefficient,foo.diviseur,foo.nomTypeControle,foo.idTypeControle,foo.median,foo.average,
-    foo.dateControle,foo.coefficientMatiere,foo.nomGroupe,foo.idGroupe
-    from (
-      Select codeMatiere,idMatiere,nomMatiere,idControle,nomControle,
-      coefficient,diviseur,idTypeControle,nomTypeControle,median,average,
-      dateControle,coefficientMatiere,nomGroupe,idGroupe FROM Controles
-        join TypeControle USING (idTypeControle)
-        JOIN Enseignements USING (idEnseignement)
-        JOIN Matieres USING (idMatiere)
-        JOIN Groupes USING (idGroupe)
-        join Semestres using (idSemestre)
-        where idProfesseur = ? and actif = 1
-      UNION
-      Select distinct codeMatiere,idMatiere,nomMatiere,idControle,nomControle,
-      coefficient,diviseur,idTypeControle,nomTypeControle,median,average,
-      dateControle,coefficientMatiere,null as nomGroupe,null as idGroupe FROM Controles
-        join TypeControle USING (idTypeControle)
-        JOIN DsPromo USING (idDSPromo)
-        join Matieres using (idMatiere)
-        join Enseignements USING (idMatiere)
-        join Semestres using (idSemestre)
-        where idProfesseur = ? and actif = 1
-      UNION
-      Select codeMatiere,idMatiere,nomMatiere,idControle,nomControle,
-      coefficient,diviseur,idTypeControle,nomTypeControle,median,average,
-      dateControle,coefficientMatiere,nomGroupe,idGroupe FROM Controles
-        join TypeControle USING (idTypeControle)
-        JOIN Enseignements USING (idEnseignement)
-        JOIN Matieres USING (idMatiere)
-        JOIN Groupes USING (idGroupe)
-        join MatieresDeModules using (idMatiere)
-        JOIN Referents using (idModule,idSemestre)
-        join Semestres using (idSemestre)
-        where Referents.idProfesseur = ? and  actif = 1
-      UNION
-      Select codeMatiere,idMatiere,nomMatiere,idControle,nomControle,
-      controles.coefficient,diviseur,idTypeControle,nomTypeControle,median,average,
-      dateControle,coefficientMatiere,null as nomGroupe,null as idGroupe FROM Controles
-        join TypeControle USING (idTypeControle)
-        JOIN DsPromo USING (idDSPromo)
-        join Matieres USING (idMatiere)
-        join MatieresDeModules using (idMatiere)
-        JOIN Modules using (idModule)
-        JOIN Referents using (idModule,idSemestre)
-        join Semestres using (idSemestre)
-
-        where idProfesseur = ? and actif = 1
-    ) as foo ";
-
-    //TODO continuer de verifier les different cas pour les ds surtout via Referents
-    return $this->db->query($sql, array($professorId,$professorId,$professorId,$professorId))->result();
-  }
-
-
-
-  public function isReferent($profId,$controlId){
-    $sql = "SELECT count(*) as nb from Referents join MatieresDeModules USING (idModule)
-    left join DsPromo USING (idMatiere)
-    join Controles using (idDSPromo) where idControle = ? and idProfesseur = ?";
-    return $this->db->query($sql,array($controlId,$profId))->row()->nb > 0;
-
-
-  }
-  public function getControlIdsFromTeacherStatus($profId){
-    $sql = "SELECT idControle from (Select idControle from Controles
-      JOIN Enseignements using (idEnseignement)
-      join groupes using (idGroupe)
-      join Semestres using (idSemestre)
-      where idProfesseur = ? and actif = 1
-      UNION
-      Select idControle from Controles
-      join DsPromo USING (idDSPromo)
-      join Semestres using (idSemestre)
-      join Enseignements using (idMatiere)
-      where idProfesseur = ? and actif = 1) as foo";
-      return $this->db->query($sql, array($profId,$profId))->result();
-
+    public function getControl($controlId)
+    {
+        return $this->db->where('idControle', $controlId)
+            ->get('Controles')
+            ->row();
     }
-    public function getControlIdsFromReferentStatus($profId){
-      $sql = "SELECT idControle FRom Referents
-      join MatieresDeModules using(idModule)
-      JOIN Enseignements using (idMatiere)
-      join Semestres using (idSemestre)
-      JOIN Controles USING (idEnseignement)
-      where Referents.idProfesseur = ? and actif = 1
-      UNION
-      SELECT idControle FRom Referents
-      join MatieresDeModules using(idModule)
-      JOIN DsPromo using (idMatiere,idSemestre)
-      join Semestres using (idSemestre)
-      JOIN Controles USING (idDSPromo)
-      where Referents.idProfesseur = ? and actif = 1
 
-      ";
+    public function getControls($professorId)
+    {
+        $sql = 'SELECT foo.codeMatiere,foo.idMatiere,foo.nomMatiere,foo.idControle,foo.nomControle,
+        foo.coefficient,foo.diviseur,foo.nomTypeControle,foo.idTypeControle,foo.median,foo.average,
+        foo.dateControle,foo.coefficientMatiere,foo.nomGroupe,foo.idGroupe
+        FROM (
+          SELECT codeMatiere,idMatiere,nomMatiere,idControle,nomControle,
+          coefficient,diviseur,idTypeControle,nomTypeControle,median,average,
+          dateControle,coefficientMatiere,nomGroupe,idGroupe FROM Controles
+            JOIN TypeControle USING (idTypeControle)
+            JOIN Enseignements USING (idEnseignement)
+            JOIN Matieres USING (idMatiere)
+            JOIN Groupes USING (idGroupe)
+            JOIN Semestres USING (idSemestre)
+            WHERE idProfesseur = ? AND actif = 1
+          UNION
+          SELECT DISTINCT codeMatiere,idMatiere,nomMatiere,idControle,nomControle,
+          coefficient,diviseur,idTypeControle,nomTypeControle,median,average,
+          dateControle,coefficientMatiere,NULL AS nomGroupe,NULL AS idGroupe FROM Controles
+            JOIN TypeControle USING (idTypeControle)
+            JOIN DsPromo USING (idDSPromo)
+            JOIN Matieres USING (idMatiere)
+            JOIN Enseignements USING (idMatiere)
+            JOIN Semestres USING (idSemestre)
+            WHERE idProfesseur = ? AND actif = 1
+          UNION
+          SELECT codeMatiere,idMatiere,nomMatiere,idControle,nomControle,
+          coefficient,diviseur,idTypeControle,nomTypeControle,median,average,
+          dateControle,coefficientMatiere,nomGroupe,idGroupe FROM Controles
+            JOIN TypeControle USING (idTypeControle)
+            JOIN Enseignements USING (idEnseignement)
+            JOIN Matieres USING (idMatiere)
+            JOIN Groupes USING (idGroupe)
+            JOIN MatieresDeModules USING (idMatiere)
+            JOIN Referents USING (idModule,idSemestre)
+            JOIN Semestres USING (idSemestre)
+            WHERE Referents.idProfesseur = ? AND  actif = 1
+          UNION
+          SELECT codeMatiere,idMatiere,nomMatiere,idControle,nomControle,
+          controles.coefficient,diviseur,idTypeControle,nomTypeControle,median,average,
+          dateControle,coefficientMatiere,NULL AS nomGroupe,NULL AS idGroupe FROM Controles
+            JOIN TypeControle USING (idTypeControle)
+            JOIN DsPromo USING (idDSPromo)
+            JOIN Matieres USING (idMatiere)
+            JOIN MatieresDeModules USING (idMatiere)
+            JOIN Modules USING (idModule)
+            JOIN Referents USING (idModule,idSemestre)
+            JOIN Semestres USING (idSemestre)
+    
+            WHERE idProfesseur = ? AND actif = 1
+        ) AS foo ';
 
-      return $this->db->query($sql, array($profId,$profId))->result();
-
+        //TODO continuer de verifier les different cas pour les ds surtout via Referents
+        return $this->db->query($sql, array($professorId, $professorId, $professorId, $professorId))
+            ->result();
     }
+
+
+    public function isReferent($profId, $controlId)
+    {
+        $sql = 'SELECT count(*) AS nb
+            FROM Referents
+            JOIN MatieresDeModules USING (idModule)
+            LEFT JOIN DsPromo USING (idMatiere)
+            JOIN Controles USING (idDSPromo)
+            WHERE idControle = ?
+            AND idProfesseur = ?';
+
+        return $this->db->query($sql, array($controlId, $profId))
+                ->row()
+                ->nb > 0;
+    }
+
     public function checkProfessorRightOnControl($profId, $controlId)
     {
-      $ids = array_merge($this->getControlIdsFromTeacherStatus($profId),
-      $this->getControlIdsFromReferentStatus($profId));
+        $ids = array_merge($this->getControlIdsFromTeacherStatus($profId),
+            $this->getControlIdsFromReferentStatus($profId));
 
-      foreach ($ids as $id) {
-        if($id->idControle == $controlId){
-          return true;
+        foreach ($ids as $id) {
+            if ($id->idControle == $controlId) {
+                return true;
+            }
         }
-      }
-      return false;
+        return false;
     }
 
-    public function getCurrentSemestreFromMatiere($idMat){
-      $sql = "SELECT idSemestre FROM Matieres JOIN MatieresDeModules USING (idMatiere) JOIN ModulesDeUE using(idModule)
-      join UEdeParcours  USING (idUE)
-      join Parcours using (idParcours)
-      join Semestres using (idParcours) where idMatiere = ? and actif = 1 ";
-      return $this->db->query($sql,array($idMat))->row()->idSemestre;
-    }
-    public function addDsPromo($nom, $coeff, $div,$type, $date, $idMat)
+    public function getControlIdsFromTeacherStatus($profId)
     {
+        $sql = 'SELECT idControle
+            FROM Controles
+            JOIN Enseignements USING (idEnseignement)
+            JOIN groupes USING (idGroupe)
+            JOIN Semestres USING (idSemestre)
+            WHERE idProfesseur = ? AND actif = 1
+            UNION
+            SELECT idControle
+            FROM Controles
+            JOIN DsPromo USING (idDSPromo)
+            JOIN Semestres USING (idSemestre)
+            JOIN Enseignements USING (idMatiere)
+            WHERE idProfesseur = ? AND actif = 1';
 
-      $sql = "INSERT INTO DsPromo VALUES ('', ?,?) ";
+        return $this->db->query($sql, array($profId, $profId))
+            ->result();
+    }
 
-      $semestre = $this->ctrlMod->getCurrentSemestreFromMatiere($idMat);
+    public function getControlIdsFromReferentStatus($profId)
+    {
+        $sql = 'SELECT idControle
+            FROM Referents
+            JOIN MatieresDeModules USING (idModule)
+            JOIN Enseignements USING (idMatiere)
+            JOIN Semestres USING (idSemestre)
+            JOIN Controles USING (idEnseignement)
+            WHERE Referents.idProfesseur = ? AND actif = 1
+            UNION
+            SELECT idControle
+            FROM Referents
+            JOIN MatieresDeModules USING (idModule)
+            JOIN DsPromo USING (idMatiere,idSemestre)
+            JOIN Semestres USING (idSemestre)
+            JOIN Controles USING (idDSPromo)
+            WHERE Referents.idProfesseur = ? AND actif = 1';
 
-      $this->db->query($sql, array($codeMat,$semestre));
-      $sql = " SELECT * FROM DsPromo order by idDSPromo desc limit 1";
-      $idpromo = $this->db->query($sql)->row()->idDSPromo;
+        return $this->db->query($sql, array($profId, $profId))->result();
 
-      $sql = "INSERT INTO Controles VALUES ('',?,?,?,?,null,null,?,null,?)";
-      return $this->db->query($sql, array($nom, $coeff, $div, $type, $date, $idpromo));
+    }
+
+    public function getCurrentSemestreFromMatiere($idMat)
+    {
+        $sql = 'SELECT idSemestre
+            FROM Matieres
+            JOIN MatieresDeModules USING (idMatiere)
+            JOIN ModulesDeUE USING (idModule)
+            JOIN UEdeParcours USING (idUE)
+            JOIN Parcours USING (idParcours)
+            JOIN Semestres USING (idParcours)
+            WHERE idMatiere = ? AND actif = 1';
+
+        return $this->db->query($sql, array($idMat))
+            ->row()
+            ->idSemestre;
+    }
+
+    public function addDsPromo($nom, $coeff, $div, $type, $date, $idMat)
+    {
+        $data = array(
+            'idSemestre' => $this->ctrlMod->getCurrentSemestreFromMatiere($idMat),
+            'idMatière' => $idMat
+        );
+        $this->db->insert('DSPromo', $data);
+
+        $idpromo = $this->db->insert_id();
+
+        $data = array(
+            'nomControle' => $nom,
+            'coefficient' => $coeff,
+            'diviseur' => $div,
+            'idTypeControle' => $type,
+            'dateControle' => $date,
+            'idDSPromo' => $idpromo
+        );
+        return $this->db->insert('Controles', $data);
     }
 
     public function addControl($nom, $coeff, $div, $type, $date, $idEnseignement)
     {
-
-      $sql = "INSERT INTO Controles VALUES ('',?,?,?,?,null,null,?,?,null)";
-      return $this->db->query($sql, array($nom, $coeff, $div, $type, $date, $idEnseignement));
-
+        $data = array(
+            'nomControle' => $nom,
+            'coefficient' => $coeff,
+            'diviseur' => $div,
+            'idTypeControle' => $type,
+            'dateControle' => $date,
+            'idEnseignement' => $idEnseignement
+        );
+        return $this->db->insert('Controles', $data);
     }
 
     public function editControl($nom, $coeff, $div, $type, $date, $controlId)
     {
+        $data = array(
+            'nomControle' => $nom,
+            'coefficient' => $coeff,
+            'diviseur' => $div,
+            'idTypeControle' => $type,
+            'dateControle' => $date,
+        );
 
-      $sql = "UPDATE Controles SET nomControle = ? , coefficient = ?, diviseur = ?, idTypeControle= ?,dateControle = ?  WHERE idControle = ?";
-      return $this->db->query($sql, array($nom, $coeff, $div, $type, $date, $controlId));
-
-
+        return $this->db->set($data)
+            ->where('idControle', $controlId)
+            ->update('Controles');
     }
 
     public function deleteControl($controlId)
     {
-
-      $sql = "DELETE FROM Controles WHERE idControle = ? ";
-      return $this->db->query($sql, array($controlId));
+        return $this->db->delete('Controles', array('idControle' => $controlId));
     }
 
     public function getEnseignements($profId)
     {
 
-      $sql = "SELECT distinct * from (
-      SELECT nomGroupe,nomMatiere,idEnseignement FROM Enseignements
-  join Groupes using(idGroupe)
-  join Matieres using(idMatiere)
-  join Semestres using (idSemestre)
-  WHERE idProfesseur = ? and actif = 1
-UNION
-  SELECT nomGroupe,nomMatiere,idEnseignement FROM Referents
-  join MatieresDeModules using(idModule)
-  JOIN Matieres using (idMatiere)
-  join Enseignements using(idMatiere)
-  join Semestres using (idSemestre)
-  JOIN Groupes using (idGroupe,idSemestre)
-  WHERE Referents.idProfesseur = ? and actif = 1) as foo ";
+        $sql = 'SELECT DISTINCT * FROM (
+            (
+                SELECT nomGroupe, nomMatiere, idEnseignement
+                FROM Enseignements
+                JOIN Groupes USING (idGroupe)
+                JOIN Matieres USING (idMatiere)
+                JOIN Semestres USING (idSemestre)
+                WHERE idProfesseur = ? AND actif = 1
+            )
+            UNION
+            (
+                SELECT nomGroupe, nomMatiere, idEnseignement
+                FROM Referents
+                JOIN MatieresDeModules USING (idModule)
+                JOIN Matieres USING (idMatiere)
+                JOIN Enseignements USING (idMatiere)
+                JOIN Semestres USING (idSemestre)
+                JOIN Groupes USING (idGroupe,idSemestre)
+                WHERE Referents.idProfesseur = ? AND actif = 1
+            )
+        ) AS foo ';
 
-      return $this->db->query($sql, array($profId,$profId))->result();
+        return $this->db->query($sql, array($profId, $profId))->result();
     }
 
-    public function getGroupes($profId){
-      $sql = "SELECT distinct * from (
-      SELECT nomGroupe,type,idGroupe FROM Enseignements
-  join Groupes using(idGroupe)
-  join Semestres using (idSemestre)
-  join Parcours using(idParcours)
-  WHERE idProfesseur = ? and actif = 1
-  UNION
-  SELECT nomGroupe,type,idGroupe FROM Referents
-  join MatieresDeModules using(idModule)
-  JOIN Enseignements using (idMatiere)
-  join Groupes using(idGroupe,idSemestre)
-  join Semestres using (idSemestre)
-  join Parcours using (idParcours)
-  WHERE Referents.idProfesseur = ? and actif = 1) as foo ORDER BY type ";
-
-      return $this->db->query($sql, array($profId,$profId))->result();
-    }
-    /*public function getEnseignementWithMatiere($profId,$codeMatiere)
+    public function getGroupes($profId)
     {
-    $sql = "SELECT nomGroupe,nomMatiere FROM Enseignements join Groupes using(idGroupe) join Matieres using(codeMatiere)  WHERE idProfesseur = ? and actif = 1 and codeMatiere = ? ";
-    return $this->db->query($sql, array($profId,$codeMatiere))->row();
-  }
-  //*/
+        $sql = 'SELECT DISTINCT * FROM (
+            (
+                SELECT nomGroupe, type, idGroupe
+                FROM Enseignements
+                JOIN Groupes USING (idGroupe)
+                JOIN Semestres USING (idSemestre)
+                JOIN Parcours USING (idParcours)
+                WHERE idProfesseur = ? AND actif = 1
+            )
+            UNION
+            (
+                SELECT nomGroupe, type, idGroupe
+                FROM Referents
+                JOIN MatieresDeModules USING (idModule)
+                JOIN Enseignements USING (idMatiere)
+                JOIN Groupes USING (idGroupe,idSemestre)
+                JOIN Semestres USING (idSemestre)
+                JOIN Parcours USING (idParcours)
+                WHERE Referents.idProfesseur = ? AND actif = 1
+            )
+        ) AS foo
+        ORDER BY type';
 
-  public function checkEnseignementProf($ens,$prof){
-    $sql = "SELECT idEnseignement from Enseignements
-    join groupes using(idGroupe)
-    join Semestres using (idSemestre)
-    where  idEnseignement = ? and actif = 1 and idProfesseur = ?
-    UNION
-    select idEnseignement from Referents
-    join MatieresDeModules using(idModule)
-    join Enseignements using(idMatiere)
-    join Semestres using(idSemestre)
-    where  idEnseignement = ? and actif = 1 and Referents.idProfesseur = ? ";
-    return (count($this->db->query($sql, array($ens, $prof,$ens, $prof))->row()) > 0);
-  }
-  //*/
+        return $this->db->query($sql, array($profId, $profId))->result();
+    }
 
-  public function getMatieres($profId)
-  {
-    $sql = "SELECT distinct idMatiere,codeMatiere,nomMatiere FROM Enseignements
-  join Groupes using(idGroupe)
-  join Matieres using(idMatiere)
-  join Semestres using (idSemestre)
-  WHERE idProfesseur = ? and actif = 1
-  UNION
-  SELECT distinct idMatiere,codeMatiere,nomMatiere FROM Referents
-  join MatieresDeModules using( idModule)
-  JOIN Matieres using (idMatiere)
-  join Semestres using (idSemestre)
-  where idProfesseur = ? and actif = 1";
+    public function checkEnseignementProf($ens, $prof)
+    {
+        $sql = 'SELECT idEnseignement FROM Enseignements
+                JOIN groupes USING (idGroupe)
+                JOIN Semestres USING (idSemestre)
+                WHERE  idEnseignement = ? AND actif = 1 AND idProfesseur = ?
+            UNION
+                SELECT idEnseignement FROM Referents
+                JOIN MatieresDeModules USING (idModule)
+                JOIN Enseignements USING (idMatiere)
+                JOIN Semestres USING (idSemestre)
+                WHERE  idEnseignement = ? AND actif = 1
+                AND Referents.idProfesseur = ?';
 
-    return $this->db->query($sql, array($profId,$profId))->result();
+        return count($this->db->query($sql, array($ens, $prof, $ens, $prof))->row()) > 0;
+    }
 
-  }
-  public function getMatiere($idControle){
-    $sql = "SELECT distinct * from (SELECT codeMatiere, nomMatiere FROM Controles JOIN DsPromo using (idDSPromo) join Matieres using (idMatiere)  WHERE idControle = ?
-    UNION SELECT codeMatiere, nomMatiere FROM Controles JOIN Enseignements using (idEnseignement) join Matieres using (idMatiere)  WHERE idControle = ?) as foo ";
-    return $this->db->query($sql, array($idControle,$idControle))->row();
-  }
+    public function getMatieres($profId)
+    {
+        $sql = 'SELECT DISTINCT idMatiere, codeMatiere, nomMatiere
+                FROM Enseignements
+                JOIN Groupes USING (idGroupe)
+                JOIN Matieres USING (idMatiere)
+                JOIN Semestres USING (idSemestre)
+                WHERE idProfesseur = ? AND actif = 1
+            UNION
+                SELECT DISTINCT idMatiere,codeMatiere,nomMatiere FROM Referents
+                JOIN MatieresDeModules USING ( idModule)
+                JOIN Matieres USING (idMatiere)
+                JOIN Semestres USING (idSemestre)
+                WHERE idProfesseur = ? AND actif = 1';
 
-  public function getTypeControle(){
-    $sql = "SELECT  idTypeControle,nomTypeControle FROM typeControle";
+        return $this->db->query($sql, array($profId, $profId))
+            ->result();
+    }
 
-    return $this->db->query($sql)->result();
-  }
+    public function getMatiere($idControle)
+    {
+        $sql = 'SELECT DISTINCT * FROM (
+                    SELECT codeMatiere, nomMatiere
+                    FROM Controles
+                    JOIN DsPromo USING (idDSPromo)
+                    JOIN Matieres USING (idMatiere)
+                    WHERE idControle = ?
+                UNION
+                    SELECT codeMatiere, nomMatiere
+                    FROM Controles
+                    JOIN Enseignements USING (idEnseignement)
+                    JOIN Matieres USING (idMatiere)
+                    WHERE idControle = ?
+            ) AS foo';
+
+        return $this->db->query($sql, array($idControle, $idControle))
+            ->row();
+    }
+
+    public function getTypeControle()
+    {
+        return $this->db->get('TypeControle')
+            ->result();
+    }
 }

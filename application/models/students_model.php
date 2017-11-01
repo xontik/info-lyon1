@@ -1,10 +1,5 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: enzob
- * Date: 17/09/2017
- * Time: 12:06
- */
+defined('BASEPATH') OR exit('No direct script access allowed');
 
 class students_model extends CI_Model {
 
@@ -37,6 +32,23 @@ class students_model extends CI_Model {
             ->where('numEtudiant', $studentId)
             ->get('Etudiants')
             ->row();
+    }
+
+    /**
+     * Return the students name and surname from a group
+     *
+     * @param $idGroupe
+     * @return array The students
+     */
+    public function getStudentNameSurnameFromGroup($idGroupe)
+    {
+        return $this->db->select('nom, prenom')
+            ->from('Etudiants')
+            ->join('EtudiantGroupe', 'Etudiants.numEtudiant = EtudiantGroupe.numEtudiant')
+            ->join('Groupes', 'Groupes.idGroupe = EtudiantGroupe.idGroupe')
+            ->where('Groupes.idGroupe', $idGroupe)
+            ->get()
+            ->result();
     }
 
 }

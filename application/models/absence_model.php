@@ -1,10 +1,12 @@
 <?php
-
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Absence_model extends CI_Model
 {
 
+    /**
+     * @return array The absence types
+     */
     public function getAbsenceTypes() {
         return $this->db->order_by('idTypeAbsence', 'asc')
             ->get('TypeAbsence')
@@ -13,11 +15,11 @@ class Absence_model extends CI_Model
 
     /**
      * Creates a new absence entry.
-     * @param $studentId String The student id
-     * @param $startDate String The time at which absence started
-     * @param $endDate String The time at which absence ended
-     * @param $absenceType String|int The type of the absence
-     * @param $justify boolean Whether the absence is justified or not
+     * @param string $studentId The student id
+     * @param string $startDate The time at which absence started
+     * @param string $endDate The time at which absence ended
+     * @param String|int $absenceType The type of the absence
+     * @param boolean $justify Whether the absence is justified or not
      * @return boolean Whether the insert was successful or not
      */
 	public function add($studentId, $startDate, $endDate, $absenceType, $justify)
@@ -45,8 +47,7 @@ class Absence_model extends CI_Model
             'justifiee' => $justify
         );
 
-		$this->db->insert('Absences', $data);
-		return TRUE;
+		return $this->db->insert('Absences', $data);
     }
 
     /**
@@ -72,16 +73,16 @@ class Absence_model extends CI_Model
      * The period can be either expressed by two DateTime objects,
      * corresponding to the beginning and the end of the period,
      * or by a Period object.
-     * @param $begin_date mixed A period object or the datetime of the beginning of the period
-     * @param null $end_date DateTime The datetime of the end of the period
+     * @param DateTime|Period $beginDate A period object or the datetime of the beginning of the period
+     * @param DateTime $endDate The datetime of the end of the period (optionnal)
      * @return array The absences of the students
      */
-    public function getAbsencesInPeriod($begin_date, $end_date = null)
+    public function getAbsencesInPeriod($beginDate, $endDate = null)
     {
-        if (is_null($end_date)) {
-            // $begin_date must be a period
-            $end_date = $begin_date->getEndDate();
-            $begin_date = $begin_date->getBeginDate();
+        if (is_null($endDate)) {
+            // $beginDate must be a period
+            $endDate = $beginDate->getEndDate();
+            $beginDate = $beginDate->getBeginDate();
         }
 
         return $this->db->select('numEtudiant, nom, prenom, mail,
@@ -89,8 +90,8 @@ class Absence_model extends CI_Model
             ->from('Absences')
             ->join('TypeAbsence', 'idTypeAbsence')
             ->join('Etudiants', 'numEtudiant')
-            ->where('dateDebut BETWEEN "' . $begin_date->format('Y-m-d')
-                . '" AND "' . $end_date->format('Y-m-d') . '"')
+            ->where('dateDebut BETWEEN "' . $beginDate->format('Y-m-d')
+                . '" AND "' . $endDate->format('Y-m-d') . '"')
             ->order_by('etudiants.nom', 'asc')
             ->order_by('etudiants.prenom', 'asc')
             ->order_by('absences.dateDebut', 'asc')

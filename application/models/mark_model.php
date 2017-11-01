@@ -1,11 +1,4 @@
 <?php
-
-/**
-* Created by PhpStorm.
-* User: xontik
-* Date: 13/04/2017
-* Time: 15:42
-*/
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Mark_model extends CI_Model {
@@ -19,26 +12,26 @@ class Mark_model extends CI_Model {
     public function getMarksFromSemester($studentId, $semestreId)
     {
         $sql = 'SELECT codeMatiere, nomMatiere, nomControle,
-            coefficient, diviseur, nomTypeControle, median, average,
-            dateControle, coefficientMatiere, valeur, idDSPromo
-            FROM Notes
-            JOIN Controles USING (idControle)
-            JOIN TypeControle USING (idTypeControle)
-            JOIN Enseignements USING (idEnseignement)
-            JOIN Matieres USING (idMatiere)
-            JOIN Groupes USING  (idGroupe)
-            WHERE numEtudiant = ? AND idSemestre = ?
+                coefficient, diviseur, nomTypeControle, median, average,
+                dateControle, coefficientMatiere, valeur, idDSPromo
+                FROM Notes
+                JOIN Controles USING (idControle)
+                JOIN TypeControle USING (idTypeControle)
+                JOIN Enseignements USING (idEnseignement)
+                JOIN Matieres USING (idMatiere)
+                JOIN Groupes USING  (idGroupe)
+                WHERE numEtudiant = ? AND idSemestre = ?
             UNION
-            SELECT DISTINCT codeMatiere, nomMatiere, nomControle,
-            coefficient, diviseur, nomTypeControle, median, average,
-            dateControle, coefficientMatiere, valeur, idDSPromo
-            FROM Notes
-            JOIN Controles USING (idControle)
-            JOIN TypeControle USING (idTypeControle)
-            JOIN DsPromo USING (idDSPromo)
-            JOIN Matieres USING (idMatiere)
-            JOIN Enseignements USING (idMatiere)
-            where numEtudiant = ? AND idSemestre = ?';
+                SELECT DISTINCT codeMatiere, nomMatiere, nomControle,
+                coefficient, diviseur, nomTypeControle, median, average,
+                dateControle, coefficientMatiere, valeur, idDSPromo
+                FROM Notes
+                JOIN Controles USING (idControle)
+                JOIN TypeControle USING (idTypeControle)
+                JOIN DsPromo USING (idDSPromo)
+                JOIN Matieres USING (idMatiere)
+                JOIN Enseignements USING (idMatiere)
+                WHERE numEtudiant = ? AND idSemestre = ?';
         
         return $this->db->query($sql, array($studentId, $semestreId, $studentId, $semestreId))
             ->result();
@@ -148,9 +141,6 @@ class Mark_model extends CI_Model {
         
         return $this->db->query($sql, array($controlId, $profId))
             ->result();
-        
-        
-        
     }
         
     public function getMarks($control,$profId) {
