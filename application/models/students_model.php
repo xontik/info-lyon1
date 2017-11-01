@@ -8,6 +8,7 @@ class students_model extends CI_Model {
      * ordered by semester type, then group
      */
     public function getStudentsOrganized() {
+        //TODO Check results
         return $this->db->select('numEtudiant, nom, prenom, mail, CONCAT(Groupes.nomGroupe, Parcours.type) as nomGroupe')
             ->from('Etudiants')
             ->join('EtudiantGroupe', 'numEtudiant')
@@ -29,9 +30,24 @@ class students_model extends CI_Model {
      */
     public function getStudent($studentId) {
         return $this->db->select('numEtudiant, nom, prenom, mail')
-            ->where('numEtudiant', $studentId)
-            ->get('Etudiants')
-            ->row();
+                        ->where('numEtudiant', $studentId)
+                        ->get('Etudiants')
+                        ->row();
+    }
+
+    public function getProfesseursByStudent($numEtudiant) {
+        $query = "SELECT idProfesseur, nom, prenom FROM professeurs
+                  JOIN enseignements USING (idProfesseur)
+                  JOIN groupes USING (idGroupe)
+                  WHERE idGroupe = (SELECT idGroupe FROM etudiantgroupe 
+                                    JOIN groupes USING (idGroupe)
+                                    JOIN semestres USING (idSemestre)
+                                    WHERE numEtudiant = ? AND actif = 1
+                                    )
+                  ORDER BY nom ASC";
+
+        return $this->db->query($query, array($numEtudiant))
+                        ->result();
     }
 
     /**
@@ -92,6 +108,10 @@ class students_model extends CI_Model {
      */
     public function isStudentInGroupsOfSemesters($numEtudiant, $semesterIds)
     {
+        if (empty($semesterIds)) {
+            return false;
+        }
+
         $sql = 'SELECT *
             FROM EtudiantGroupe
             JOIN Groupes USING (idGroupe)

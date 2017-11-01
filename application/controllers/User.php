@@ -11,7 +11,6 @@ class User extends CI_Controller {
             isset($_POST['password'])) )
         {
             redirect('/');
-            return;
         }
 
         $id = strtolower(htmlspecialchars($_POST['id']));
@@ -27,7 +26,6 @@ class User extends CI_Controller {
         if ( !empty($_SESSION['form_errors']) ) {
             $this->session->mark_as_flash('form_errors');
             redirect('/');
-            return;
         }
 
         $userdata = $this->userModel->getUserInformations($id, $password);
@@ -37,21 +35,45 @@ class User extends CI_Controller {
             if ($stay_connected) {
                 //TODO Cookies
             }
+        } else {
+            $_SESSION['form']['id'] = $id;
+            $this->session->mark_as_flash('form_errors');
+            $this->session->mark_as_flash('form');
         }
 
         redirect('/');
     }
 
-    public function disconnect() {
-        $_SESSION = array();
+    public function disconnect()
+    {
+        session_destroy();
         redirect('/');
     }
 
-    public function session() {
-        //Debug page
-        echo '<pre>';
-        print_r($_SESSION);
-        echo '</pre>';
+    // Debug pages
+    public function session()
+    {
+        $data = array(
+            'js' => array('debug'),
+            'title' => '$_SESSION',
+            'data' => array(
+                'session' => $_SESSION
+            )
+        );
+        show('Debug/session', $data);
+    }
+
+    public function fillnotif()
+    {
+        addPageNotification('Succès', 'success');
+        addPageNotification('Avertissement', 'warning');
+        addPageNotification('Echec', 'danger');
+        addPageNotification('Icône personnalisé', '', 'schedule');
+        addPageNotification('Un message<br>sur plusieurs lignes');
+        addSessionNotification('Un lien qui dure toute la session !', '', '', '#!');
+        addSessionNotification('Un message de succès qui dure toute la session !', 'success');
+
+        redirect('/');
     }
 
 }

@@ -1,4 +1,4 @@
-<main>
+<main class="container">
   <section>
     <h2>Gestion des parcours</h2>
 
@@ -83,7 +83,9 @@
                     <?php
                     if($semestre['etat'] != 'after'){
                       ?>
-                      <a href="<?= base_url('Secretariat/gestionSemestre/').$sem->idSemestre ?>"><?= html_img('note_edit.png','Gerer')?></a>
+                      <a href="<?= base_url('Secretariat/gestionSemestre/').$sem->idSemestre ?>">
+                          <i class="material-icons">edit</i>
+                      </a>
                       <?php
                     }
                      ?>
@@ -113,29 +115,33 @@
         <section>
             <h2>Ajouter un semestre</h2>
             <form action="<?= base_url('Process_secretariat/addSemestre')?>" method="post">
-                <label for="parcours">Choix du parcours: </label>
-                <select id="parcours" name="parcours">
-                    <?php foreach ($data['parcoursForSemester'] as $parcours): ?>
-                        <option value="<?= $parcours->idParcours ?>"><?= $parcours->type?> - Programme de <?= $parcours->anneeCreation?></option>
-                    <?php endforeach; ?>
-                </select>
-                <label for="chkDiffere">Differé : </label>
-                <input type="checkbox" name="chkDiffere" id="chkDiffere">
-                <label for="anneeScolaire">Année scolaire :</label>
-                <select id="anneeScolaire" name="anneeScolaire">
-                    <?php for ($i=0; $i < 3; $i++) : ?>
-                    <?php $year = (int)(date('Y'));?>
-                        <option value="<?= $year + $i?>"><?= ($year + $i ). '-'.( $year + $i +1) ?></option>
-                    <?php endfor;?>
-                </select>
+                <div class="input-field">
+                    <select id="parcours" name="parcours">
+                        <?php foreach ($data['parcoursForSemester'] as $parcours): ?>
+                            <option value="<?= $parcours->idParcours ?>"><?= $parcours->type?> - Programme de <?= $parcours->anneeCreation?></option>
+                        <?php endforeach; ?>
+                    </select>
+                    <label for="parcours">Choix du parcours: </label>
+                </div>
+                <p>
+                    <input type="checkbox" name="chkDiffere" id="chkDiffere">
+                    <label for="chkDiffere">Differé : </label>
+                </>
+                <div class="input-field">
+                    <select id="anneeScolaire" name="anneeScolaire">
+                        <?php for ($i=0; $i < 3; $i++) :
+                            $year = (int)(date('Y'));?>
+                            <option value="<?= $year + $i?>"><?= ($year + $i ). '-'.( $year + $i +1) ?></option>
+                        <?php endfor;?>
+                    </select>
+                    <label for="anneeScolaire">Année scolaire :</label>
+                </div>
                 <!-- TODO l'année en fonction du select #AJAX CHIANT-->
-                <button type="submit" name="addSemester">Ajouter</button>
+                <button type="submit" name="addSemester" class="btn waves-effect">Ajouter</button>
             </form>
         </section>
 
-
       </section>
-
 
     </section>
 

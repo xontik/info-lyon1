@@ -1,127 +1,33 @@
-@import '_var';
+@import 'materialize';
+@import 'components/notifications';
 
 #debug {
-  background-color: #dedede;
-  padding-left: 16px;
+  @extend .grey, .lighten-2;
+  display: none;
+  margin-left: 7px;
+}
+
+#debug-toolbar {
   display: none;
 }
 
-$notif_height: 30px;
-#notifications {
-  height: $notif_height;
-  max-height: $notif_height;
+body > header > nav {
+  .brand-logo {
+    margin-left: 8px;
+  }
 
-  padding-left: 15px;
-  overflow: hidden;
-
-  background-color: #dedede;
-
-  img {
-    position: absolute;
-    right: 20px; top: 3px;
+  h2 {
+    text-align: center;
+    font-size: 2.46rem;
   }
 }
 
-.notif {
-  height: $notif_height;
-  line-height: $notif_height;
+.hide-on-med-and-down ul.dropdown-content li {
+  @extend .center-align;
+  line-height: 200%;
 
-  vertical-align: middle  ;
-}
-
-body {
-
-  > header {
-
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    margin-bottom: 1.2em;
-
-    color: $header-text-color;
-    background-color: $second-color;
-
-    a { color: $header-text-color; }
-
-    #header_title {
-      margin: 0 1%;
-      img {
-        width: 1.7em;
-        vertical-align: bottom;
-      }
-    }
-
-    > nav {
-      flex-grow: 5;
-
-      ul {
-        display: flex;
-        flex-flow: row nowrap;
-        justify-content: space-around;
-        align-items: center;
-
-        li {
-          width: 100%;
-          height: 2em;
-          line-height: 2em;
-
-          border-left: 2px SOLID $background-color;
-
-          text-align: center;
-          text-transform: uppercase;
-
-          &:last-child {
-            border-right: 2px SOLID $background-color;
-          }
-
-          &:hover a {
-            color: lighten($foreground-color, 5);
-          }
-
-          a {
-            display: inline-block;
-            width: 100%;
-            height: 100%;
-          }
-        }
-      }
-    }
-
-    #header_profile {
-      margin: 0 .9em;
-      position: relative;
-
-      text-align: center;
-      cursor: pointer;
-
-      img {
-        display: block;
-        width: 1.4em;
-        margin: auto auto 5px;
-      }
-
-      ul {
-        display: none;
-
-        position: absolute;
-        right: 0; top: 1.95em;
-
-        z-index: 100;
-
-        background-color: $second-color;
-
-        li {
-          padding: .2em .5em;
-          border-top: 1px SOLID #000000;
-
-          font-size: 1em;
-          word-wrap: break-word;
-        }
-      }
-
-    }
-
+  & > *:not(a) {
+    margin-left: 8px;
+    margin-right: 8px;
   }
-
 }

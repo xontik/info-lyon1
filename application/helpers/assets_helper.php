@@ -25,6 +25,6 @@ if (!function_exists('img_url')) {
 if (!function_exists('html_img')) {
     function html_img($name, $alt, $id = '')
     {
-        return '<img src="' . img_url($name) . '" '.(($id!='')?'id="'.$id.'" ':'').' alt="' . $alt . '" />';
+        return '<img src="' . img_url($name) . '" '.($id !== '' ? 'id="' . $id . '" ' : '').' alt="' . $alt . '" />';
     }
 }

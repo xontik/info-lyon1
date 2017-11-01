@@ -1,21 +1,11 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Process_professeur extends CI_Controller
-{
-
-    public function __construct()
-    {
-        parent::__construct();
-        if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'teacher')
-            redirect('/');
-
-    }
+class Process_professeur extends CI_Controller {
 
     public function addcontrole($promo = '')
     {
         $this->load->model('control_model', 'ctrlMod');
-        $this->load->helper('notification');
 
         if ($promo === '') {
             if (isset($_POST['enseignementId'])
@@ -85,7 +75,6 @@ class Process_professeur extends CI_Controller
         } else {
             show_404();
         }
-
     }
 
     public function editcontrole($id = '')
@@ -96,7 +85,6 @@ class Process_professeur extends CI_Controller
         }
 
         $this->load->model('control_model', 'ctrlMod');
-        $this->load->helper('notification');
 
         if (!$this->ctrlMod->checkProfessorRightOnControl($_SESSION['id'], $id)) {
             addPageNotification('Vous n\'avez pas droit d\'accès à ce contrôle', 'danger');
@@ -145,7 +133,6 @@ class Process_professeur extends CI_Controller
         }
 
         $this->load->model('control_model', 'ctrlMod');
-        $this->load->helper('notification');
 
         if (!$this->ctrlMod->checkProfessorRightOnControl($_SESSION['id'], $id)) {
             addPageNotification('Vous n\'avez pas les droit sur ce contrôle', 'danger');
@@ -170,7 +157,6 @@ class Process_professeur extends CI_Controller
 
         $this->load->model('control_model', 'ctrlMod');
         $this->load->model('mark_model', 'markMod');
-        $this->load->helper('notification');
 
         if (!$this->ctrlMod->checkProfessorRightOnControl($_SESSION['id'], $id)) {
             addPageNotification('Vous n\'avez pas les droit sur ce contrôle', 'danger');
@@ -204,6 +190,23 @@ class Process_professeur extends CI_Controller
         $this->markMod->addMarks($id, $_POST);
 
         addPageNotification('Note modifiées avec succès', 'success');
-        redirect('professeur/controle');
+        redirect('Professeur/Controle');
     }
+
+    public function repondreQuestion() {
+        $this->load->model('question_model', 'questionsMod');
+
+        if (isset($_POST['texte'])
+            && isset($_POST['idQuestion'])
+            && is_numeric($_POST['idQuestion'])
+        ) {
+            $idQuestion = intval(htmlspecialchars($_POST['idQuestion']));
+            $texte = htmlspecialchars($_POST['texte']);
+            $isProf = $_SESSION['user_type'] == 'teacher' ? '1' : '0';
+
+            $this->questionsMod->answer($idQuestion, $texte, $isProf);
+        }
+        redirect('Professeur/Question');
+    }
+
 }

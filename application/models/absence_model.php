@@ -123,6 +123,7 @@ class Absence_model extends CI_Model
             ->where('numEtudiant', $studentId)
             ->where('dateDebut BETWEEN "' . $bounds->getBeginDate()->format('Y-m-d')
             . '" AND "' . $bounds->getEndDate()->format('Y-m-d') . '"')
+            ->order_by('dateDebut')
             ->get()
             ->result();
     }

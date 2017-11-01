@@ -41,7 +41,9 @@
                                         if(isset($group['students'][$i]['numEtudiant'])){?>
                                             <td>
                                                 <?php // TODO: js confirm ?>
-                                                <a class='deleter'  href="<?= base_url('Process_secretariat/deleteRelation/').$group['idGroupe'].'/'.$group['students'][$i]['numEtudiant'].'/'.$data['semestre']->idSemestre ?>" ><?= html_img('trash_delete.png','Supprimer etudiant') ?></a>
+                                                <a class='deleter'  href="<?= base_url('Process_secretariat/deleteRelation/').$group['idGroupe'].'/'.$group['students'][$i]['numEtudiant'].'/'.$data['semestre']->idSemestre ?>" >
+                                                    <i class="material-icons">delete</i>
+                                                </a>
                                                 <?= $group['students'][$i]['numEtudiant'] ?>
                                             </td>
                                             <td>
@@ -65,29 +67,29 @@
 
 
                                     <?php foreach ($data['groups'] as $group){ ?>
-                                        <td>
-                                            <label for="grp<?= $group['idGroupe']?>">Ajout etudiant :</label>
-                                        </td>
-                                        <td>
-                                            <select id="grp<?= $group['idGroupe']?>" name="grp<?= $group['idGroupe']?>">
-                                                <optgroup label="Sans groupe">
-                                                    <?php foreach ($data['freeStudents'] as $student):?>
-                                                            <option value="<?= $student->numEtudiant ?>"><?= $student->nom.' '.$student->prenom ?></option>
-                                                    <?php endforeach; ?>
-                                                    <?php foreach ($data['groups'] as $grp):
-                                                        if($grp['idGroupe'] == $group['idGroupe']){continue;}?>
-                                                        <optgroup label="<?= $grp['nomGroupe'] ?>">
-                                                        <?php foreach ($grp['students'] as $student): ?>
-
-                                                            <option value="<?= $student['numEtudiant'] ?>"><?= $student['nom'].' '.$student['prenom'] ?></option>
+                                        <td colspan="2">
+                                            <div class="input-field">
+                                                <select id="grp<?= $group['idGroupe']?>" name="grp<?= $group['idGroupe']?>">
+                                                    <optgroup label="Sans groupe">
+                                                        <?php foreach ($data['freeStudents'] as $student):?>
+                                                                <option value="<?= $student->numEtudiant ?>"><?= $student->nom.' '.$student->prenom ?></option>
                                                         <?php endforeach; ?>
-                                                        </optgroup>
-                                                    <?php endforeach; ?>
-                                                </optgroup>
-                                            </select>
+                                                        <?php foreach ($data['groups'] as $grp):
+                                                            if($grp['idGroupe'] == $group['idGroupe']){continue;}?>
+                                                            <optgroup label="<?= $grp['nomGroupe'] ?>">
+                                                            <?php foreach ($grp['students'] as $student): ?>
+
+                                                                <option value="<?= $student['numEtudiant'] ?>"><?= $student['nom'].' '.$student['prenom'] ?></option>
+                                                            <?php endforeach; ?>
+                                                            </optgroup>
+                                                        <?php endforeach; ?>
+                                                    </optgroup>
+                                                </select>
+                                                <label for="grp<?= $group['idGroupe']?>">Ajout etudiant :</label>
+                                            </div>
                                         </td>
                                         <td>
-                                            <button type="submit" name="submit" value="<?= $group['idGroupe'] ?>">Ajouter</button>
+                                            <button type="submit" name="submit" class="btn-flat" value="<?= $group['idGroupe'] ?>">Ajouter</button>
                                         </td>
                                     <?php } ?>
                                 </tr>

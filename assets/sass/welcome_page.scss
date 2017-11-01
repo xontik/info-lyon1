@@ -1,65 +1,27 @@
-// Do not import "_style" on this stylesheet
-@import '_var';
+@import 'materialize';
 
-main {
-  display: flex;
-  width: 65%;
-  height: 32em;
-
-  margin-top: 5em;
-  margin-left: 15%;
-
-  border: 1.5px solid black;
-  box-shadow: 1px 1px 8px #555;
-
-  section {
-    width: 50%;
-    background-color: #f6f6f6;
-  }
-
-  #blocDroit {
-    width: 50%;
-    background-color: #f6f6f6;
-    border-left: 2px solid black;
-
-    text-align: center;
-
-    #logo {
-      width: 12em;
-      margin-bottom: 1.8em;
-    }
-
-    img {
-      //Icones
-      width: 40px;
-      vertical-align: middle;
-    }
-
-    div {
-      margin-bottom: 15px;
-    }
-
-    input[type="text"], input[type="password"] {
-      height: 2em;
-      width: 15em;
-      padding: 0 2px;
-      margin-left: 1em;
-    }
-
-    input[type="checkbox"] {
-
-    }
-
-    #connect {
-      margin-top: 10%;
-      height: 2.5em;
-      width: 8em;
-      -webkit-border-radius: 6px;
-      -moz-border-radius: 6px;
-      border-radius: 4px;
-    }
-  }
-
+.material-icons {
+  @extend .no-select;
 }
 
+main {
+  min-height: 100vh
+}
 
+section {
+  @extend .col, .s12, .m12, .l6
+}
+
+#connect_block img {
+  width: 50%
+}
+
+form {
+  @extend .center-align;
+
+  button {
+    @extend .yellow, .accent-4;
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+  }
+}

@@ -1,7 +1,6 @@
     <main>
-        <section id="color-code">
-            <ul>
-                <li>Pas d'absence</li>
+        <div id="color-code" class="section">
+            <ul class="row">
                 <li>Absence justifiée</li>
                 <li>Absence</li>
                 <li>Retard</li>
@@ -9,20 +8,20 @@
                 <li>Infirmerie</li>
                 <li>Plusieurs types</li>
             </ul>
-        </section>
-        <section id="absences-table">
-            <div id="table-static">
-                <h1>Étudiants</h1>
-                <div class="wrapper">
-                    <div id="table-group-list">
+        </div>
+        <div id="absences-table" class="section row">
+            <div id="table-static" class="col l3 xl2 no-padding">
+                <h5 class="center-align">Étudiants</h5>
+                <div class="row">
+                    <div id="table-group-list" class="col l1 no-padding">
                         <?php
                         foreach($data['groups'] as $group => $students_number) {
-                            $height = $students_number * 26 - 1;
+                            $height = $students_number * 22 - 1;
                             echo "<p style=\"height: ${height}px;\">$group</p>";
                         }
                         ?>
                     </div>
-                    <div id="table-stud-list">
+                    <div id="table-stud-list" class="col l11 no-padding">
                         <?php
                         $last_group = null;
                         foreach($data['absences'] as $student) {
@@ -40,15 +39,17 @@
 
                             echo '<div id="' . $student['numEtudiant'] . '"' . $class . '>'
                                 . '<p>' . $student['nom'] . ' ' . $student['prenom'] . '</p>'
-                                . html_img('info.png', 'infos');
+                                . '<i class="material-icons">info</i>';
                             ?>
                                 <div>
-                                    <p><?= $missCount ?> demi-journée(s)</p>
-                                    <?= $missCount >= 2
-                                        ? '<p>sur ' . $dayMissCount . ' jour(s)</p>'
+                                    <p><?= $missCount ?> demi-journée<?= $missCount > 1 ? 's' : ''?></p>
+                                    <?= $missCount > 1
+                                        ? '<p>' . $dayMissCount . ' jour' . ($dayMissCount > 1 ? 's' : '') . '</p>'
                                         : '' ?>
                                     <?= $justifiedMiss > 0
-                                        ? '<p>' . $justifiedMiss . ' absence(s) justifiée(s)</p>'
+                                        ? '<p>' . $justifiedMiss
+                                        . ' absence' . ($justifiedMiss > 1 ? 's' : '')
+                                        . ' justifiée' . ($justifiedMiss > 1 ? 's' : '') . '</p>'
                                         : '' ?>
                                 </div>
                             <?php
@@ -58,59 +59,24 @@
                     </div>
                 </div>
             </div>
-            <div id="table-wrapper">
-                <div id="new-absences-wrapper">
-                    <div id="new-absences">
-                        <header>
-                            <h2 id="new-absences-name">Text nom</h2>
-                            <h3 id="new-absences-date">Text date</h3>
-                        </header>
-                        <section>
-                            <article>
-                                <label for="add-beginTime">Heure de début</label>
-                                <p><input type="time" min="07:00" max="21:00" step="1800" name="begin-time" id="add-beginTime"></p>
-                            </article>
-                            <article>
-                                <label for="add-endTime">Heure de fin</label>
-                                <p><input type="time" min="07:00" max="21:00" step="1800" name="end-time" id="add-endTime"></p>
-                            </article>
-                            <article>
-                                <label for="add-justified">Justifiée</label>
-                                <p><input type="checkbox" name="justified" id="add-justified"></p>
-                            </article>
-                            <article>
-                                <label for="add-absenceType">Type d'absence</label>
-                                <p>
-                                    <select name="absenceType" id="add-absenceType">
-                                        <option value="0" selected>Selectionner...</option>
-                                        <?php
-                                        foreach($data['absenceTypes'] as $option) {
-                                            echo '<option value="' . $option->idTypeAbsence . '">'
-                                                . $option->nomTypeAbsence
-                                                . '</option>';
-                                        }
-                                        ?>
-                                    </select>
-                                </p>
-                            </article>
-                        </section>
-                        <div>
-                            <button id="new-absences-submit">Enregistrer</button>
-                            <button id="new-absences-cancel">Annuler</button>
-                        </div>
-                    </div>
-                </div>
-                <table>
+            <div id="table-wrapper" class="col l9 xl10 no-padding">
+                <table class="striped">
                     <thead id="absences-table-head">
                         <tr>
                             <?php
+                            $monthes = array('Janvier', 'Février',
+                                'Mars', 'Avril', 'Mai', 'Juin', 'Juillet',
+                                'Août', 'Septembre', 'Octobre',
+                                'Novembre', 'Décembre'
+                            );
+
                             $curr_date = clone $data['begin_date'];
                             $last_month = null;
                             for ($i = 0; $i <= $data['day_number']; $i++) {
-                                $curr_month = $curr_date->format('F');
+                                $curr_month = $curr_date->format('n');
                                 if ($last_month !== $curr_month) {
                                     $colspan = days_in_month($curr_date->format('n'), $curr_date->format('Y'));
-                                    echo '<td colspan="' . $colspan . '">' . $curr_month . '</td>';
+                                    echo '<td colspan="' . $colspan . '">' . $monthes[$curr_month - 1] . '</td>';
                                     $last_month = $curr_month;
                                 }
 
@@ -189,9 +155,10 @@
 
                                     // td has absences
                                     $classes[] = 'abs';
-                                    $classes[] = $justified === count($student['absences'][$i])
-                                        ? 'abs-justifiee'
-                                        : $td_class;
+                                    $classes[] = $td_class;
+                                    if ($justified === count($student['absences'][$i])) {
+                                        $classes[] = 'abs-justifiee';
+                                    }
                                 }
 
                                 echo '<td ' . (!empty($classes)
@@ -209,9 +176,6 @@
                                         </div>
                                         <?php
                                     }
-                                    if (count($infos) < 2) {
-                                        echo '<button>Nouveau</button>';
-                                    }
                                 }
                                 echo '</td>';
 
@@ -224,7 +188,81 @@
                 </table>
                 <table id="header-fixed"></table>
             </div>
-        </section>
+            <div id="edition" class="modal">
+                <div class="modal-content">
+                    <div>
+                        <h4 id="edition-name">Text nom</h4>
+                        <h5 id="edition-date">Text date</h5>
+                    </div>
+                    <div class="row">
+                        <section id="edition-morning" class="col s12 m10 l6">
+                            <div class="header col l10 offset-l1">
+                                <h4>Matinée</h4>
+                                <i id="am-delete" class="material-icons scale-transition scale-out">delete</i>
+                            </div>
+                            <div class="col l10 offset-l1">
+                                <div id="am-time" class="center-block">
+                                    <p>08:00 - 12:00</p>
+                                    <p>08:00 - 10:00</p>
+                                    <p>10:00 - 12:00</p>
+                                </div>
+                                <div class="input-field">
+                                    <select id="am-absenceType">
+                                        <option value="0" disabled selected>Selectionner...</option>
+                                        <?php
+                                        foreach($data['absenceTypes'] as $option) {
+                                            echo '<option value="' . $option->idTypeAbsence . '">'
+                                                . $option->nomTypeAbsence
+                                                . '</option>';
+                                        }
+                                        ?>
+                                    </select>
+                                    <label for="am-absenceType">Type d'absence</label>
+                                </div>
+                                <div>
+                                    <input type="checkbox" id="am-justified">
+                                    <label for="am-justified">Justifiée</label>
+                                </div>
+                            </div>
+                        </section>
+                        <section id="edition-afternoon" class="col s12 m10 l6">
+                            <div class="header col l10 offset-l1">
+                                <h4>Après-midi</h4>
+                                <i id="pm-delete" class="material-icons scale-transition scale-out">delete</i>
+                            </div>
+                            <div class="col l10 offset-l1">
+                                <div id="pm-time" class="center-block">
+                                    <p>14:00 - 18:00</p>
+                                    <p>14:00 - 16:00</p>
+                                    <p>16:00 - 18:00</p>
+                                </div>
+                                <div class="input-field">
+                                    <select id="pm-absenceType">
+                                        <option value="0" disabled selected>Selectionner...</option>
+                                        <?php
+                                        foreach($data['absenceTypes'] as $option) {
+                                            echo '<option value="' . $option->idTypeAbsence . '">'
+                                                . $option->nomTypeAbsence
+                                                . '</option>';
+                                        }
+                                        ?>
+                                    </select>
+                                    <label for="pm-absenceType">Type d'absence</label>
+                                </div>
+                                <div>
+                                    <input type="checkbox" id="pm-justified">
+                                    <label for="pm-justified">Justifiée</label>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="edition-submit" class="btn">Enregistrer</button>
+                    <a href="#!" class="btn modal-action modal-close">Annuler</a>
+                </div>
+            </div>
+        </div>
     </main>
     <script>
         // Needed for absence_table script
