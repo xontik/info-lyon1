@@ -2,9 +2,7 @@
     $now = new DateTime();
 ?>
 <main>
-    <h2 class="header">Projets tuteurés</h2>
-    <h3><?= $data['group']->nomGroupe ?></h3>
-
+    <h2 class="header">Projet <?= $data['group']->nomGroupe ?></h2>
     <section>
         <h4>Membres</h4>
         <?php

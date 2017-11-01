@@ -76,10 +76,31 @@ class Etudiant extends CI_Controller
 
     public function ptut()
     {
+        $this->load->model('ptut_model');
+        $this->load->helper('time');
+
+        $group = $this->ptut_model->getStudentGroup($_SESSION['id']);
+        if (empty($group)) {
+            addPageNotification('Vous ne faites pas parti d\'un groupe de projet');
+            redirect('/');
+        }
+
+        $members = $this->ptut_model->getGroupMembers($group->idGroupe);
+        $lastAppointement = $this->ptut_model->getLastAppointement($group->idGroupe);
+        $nextAppointement = $this->ptut_model->getNextAppointement($group->idGroupe);
+        $proposals = $this->ptut_model->getDateProposals($nextAppointement->idRDV);
+
         $data = array(
             'css' => array(),
             'js' => array(),
-            'title' => 'Projets tuteurés'
+            'title' => 'Projet tuteuré',
+            'data' => array(
+                'group' => $group,
+                'members' => $members,
+                'lastAppointement' => $lastAppointement,
+                'nextAppointement' => $nextAppointement,
+                'proposals' => $proposals
+            )
         );
         show('Etudiant/ptut', $data);
     }

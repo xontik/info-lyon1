@@ -3,7 +3,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Professeur extends CI_Controller
 {
-
     public function __construct()
     {
         parent::__construct();
@@ -47,14 +46,54 @@ class Professeur extends CI_Controller
         show('Professeur/notes', $data);
     }
 
-    public function ptut()
-    {
+    public function ptut() {
+        $this->load->model('ptut_model');
+
+        $ptuts = $this->ptut_model->getPtutsOfProf($_SESSION['id']);
+
+        $data = array(
+            'css' => array(),
+            'js' => array('debug'),
+            'title' => 'Projets tuteurés',
+            'data' => array(
+                'ptuts' => $ptuts
+            )
+        );
+        show('Professeur/ptut', $data);
+    }
+
+    public function project($groupId = '') {
+        if ($groupId === '') {
+            show_404();
+        }
+
+        $this->load->model('ptut_model');
+        $this->load->helper('time');
+
+        $group = $this->ptut_model->getGroup($groupId, $_SESSION['id']);
+        if (empty($group)) {
+            show_404();
+            // Replace by notification, group not found
+        }
+
+        $members = $this->ptut_model->getGroupMembers($groupId);
+        $lastAppointement = $this->ptut_model->getLastAppointement($groupId);
+        $nextAppointement = $this->ptut_model->getNextAppointement($groupId);
+        $proposals = $this->ptut_model->getDateProposals($nextAppointement->idRDV);
+
         $data = array(
             'css' => array(),
             'js' => array(),
-            'title' => 'Projets tuteurés'
+            'title' => 'Projets tuteurés',
+            'data' => array(
+                'group' => $group,
+                'members' => $members,
+                'lastAppointement' => $lastAppointement,
+                'nextAppointement' => $nextAppointement,
+                'proposals' => $proposals
+            )
         );
-        show('Professeur/ptut', $data);
+        show('Professeur/project', $data);
     }
 
     public function edt()

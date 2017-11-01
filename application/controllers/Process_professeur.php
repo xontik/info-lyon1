@@ -1,14 +1,16 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Process_professeur extends CI_Controller {
+class Process_professeur extends CI_Controller
+{
 
-  public function __construct() {
-    parent::__construct();
-    if ( !isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'teacher')
-    redirect('/');
+    public function __construct()
+    {
+        parent::__construct();
+        if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'teacher')
+            redirect('/');
 
-  }
+    }
 
     public function addcontrole($promo = '')
     {
@@ -101,6 +103,10 @@ class Process_professeur extends CI_Controller {
             redirect('professeur/controle');
         }
 
+        if (!$this->ctrlMod->checkProfessorRightOnControl($_SESSION['id'], $id)) {
+            $this->session->set_flashdata("notif", array("Vous n'avez pas les droit sur ce controle"));
+            redirect("professeur/controle");
+        }
 
         if (isset($_POST['nom'])
             && isset($_POST['coeff'])
@@ -157,6 +163,11 @@ class Process_professeur extends CI_Controller {
 
     public function addmarks($id)
     {
+        $id = intval(htmlspecialchars($id));
+        if ($id === 0) {
+            show_404();
+        }
+
         $this->load->model('control_model', 'ctrlMod');
         $this->load->model('mark_model', 'markMod');
         $this->load->helper('notification');
