@@ -1,13 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: enzob
- * Date: 26/10/2017
- * Time: 15:51
- */
+defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Notification extends CI_Controller {
 
+    /*
+     * AJAX
+     */
     public function get_alerts() {
         header('Content-Type: application/json');
 

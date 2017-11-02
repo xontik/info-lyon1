@@ -1,4 +1,4 @@
-$(function() {
+$(document).ready(function() {
     'use strict';
 
     /* General initialization */
@@ -55,9 +55,9 @@ $(function() {
 
             $.post('/notification/remove_notification/', data);
 
-            var link = $(this).data('notif-link').toString();
+            var link = $(this).data('notif-link');
             if (link) {
-                window.location.href = link
+                window.location.href = link.toString();
             }
 
             $('.notif[data-notif-id="' + notificationId + '"]').fadeOut(function() {

@@ -15,8 +15,7 @@
         echo '<link rel="stylesheet" type="text/css" href="' . css_url('style') . '">';
     }
 
-    $debug = isset($js) && in_array('debug', $js) && isset($data); ?>
-
+    $debug = ENVIRONMENT === 'development'; ?>
 </head>
 <body>
     <header>
@@ -36,28 +35,28 @@
                 <?php print_r($data_print); ?>
             </pre>
             <div id="debug-toolbar" class="row no-margin">
-                <a href="/user/session" class="btn-flat">session</a>
-                <a href="/user/fillnotif" class="btn-flat">fill notifs</a>
+                <a href="/debug/session" class="btn-flat">session</a>
+                <a href="/debug/fillnotif" class="btn-flat">fill notifs</a>
             </div>
             <?php
         }
 
         $nav = array(
             'student' => array(
-                'absences' => '/Etudiant/Absence',
-                'notes' => '/Etudiant/Note',
-                'ptut' => '/Etudiant/PTUT',
-                'questions' => '/Etudiant/Question'
+                'absences' => '/Absence',
+                'notes' => '/Mark',
+                'ptut' => '/Project',
+                'questions' => '/Question'
             ),
             'teacher' => array(
-                'absences' => '/Professeur/Absence',
-                'controles' => '/Professeur/Controle',
-                'ptut' => '/Professeur/PTUT',
-                'questions' => '/Professeur/Question'
+                'absences' => '/Absence',
+                'controles' => '/Control',
+                'ptut' => '/Project',
+                'questions' => '/Question'
             ),
             'secretariat' => array(
-                'absences' => '/Secretariat/Absence',
-                'administration' => '/Secretariat/Administration'
+                'absences' => '/Absence',
+                'administration' => '/Administration'
             )
         );
         ?><nav class="nav-extended">
@@ -65,8 +64,8 @@
                 <a class="brand-logo small-caps" href="/">Teckmeb</a>
                 <!-- computer nav -->
                 <ul class="right hide-on-med-and-down">
-                    <?php foreach ($nav[$_SESSION['user_type']] as $item => $url) {
-                        $active = (isset($page) ? $page : '') === $item
+                    <?php foreach ($nav[$_SESSION['userType']] as $item => $url) {
+                        $active = '/' . ucfirst($pageName) === $url
                             ? ' active' : '';
                         echo '<li class="small-caps ' . $active . '"><a href="' . $url . '">' . $item . '</a></li>';
                     } ?>
@@ -85,7 +84,11 @@
                                 <?php
                             } else {
                                 foreach ($notifications as $notif) { ?>
-                                    <li data-notif-id="<?= $notif['id'] ?>" data-notif-link="<?= $notif['link'] ?>"
+                                    <li data-notif-id="<?= $notif['id'] ?>"
+                                        <?php
+                                        if (!empty($notif['link'])) { ?>
+                                        data-notif-link="<?= base_url($notif['link']) ?>"
+                                        <?php } ?>
                                         class="notif notif-<?= $notif['type'] ?> notif-<?= $notif['storage'] ?>">
                                         <div class="valign-wrapper">
                                             <i class="material-icons left"><?= $notif['icon'] ?></i>
@@ -114,7 +117,7 @@
                 </ul>
 
                 <!-- mobile nav -->
-                <a class="button-collapse hide-on-large-only" href="#" data-activates="nav-mobile">
+                <a class="button-collapse hide-on-large-only" data-activates="nav-mobile">
                     <i class="material-icons">menu</i>
                 </a>
                 <ul class="right hide-on-large-only">
@@ -128,9 +131,9 @@
                 </ul>
                 <ul class="side-nav" id="nav-mobile">
                     <?php
-                    foreach ($nav[$_SESSION['user_type']] as $item => $url)
+                    foreach ($nav[$_SESSION['userType']] as $item => $url)
                     {
-                        $active = (isset($page) ? $page : '') === $item
+                        $active = '/' . ucfirst($pageName) === $url
                             ? ' active' : '';
                         echo '<li class="small-caps' . $active . '"><a href="' . $url . '">' . $item . '</a></li>';
                     } ?>
@@ -156,7 +159,7 @@
                                 <?php
                             } else {
                                 foreach ($notifications as $notif) { ?>
-                                    <div data-notif-id="<?= $notif['id'] ?>" data-notif-link="<?= $notif['link'] ?>"
+                                    <div data-notif-id="<?= $notif['id'] ?>" data-notif-link="<?= base_url($notif['link']) ?>"
                                         class="collection-item notif notif-<?= $notif['type'] ?> notif-<?= $notif['storage'] ?>">
                                         <div class="valign-wrapper">
                                             <i class="material-icons left"><?= $notif['icon'] ?></i>
@@ -174,35 +177,24 @@
                     </div>
                 </div>
             </div>
-            <?php if ($_SESSION['user_type'] === 'student'):
-                $curr_url = explode('/', current_url());
-                $len_url = count($curr_url);
-
-                // If url ends with '/Sx'
-                if (preg_match('/^S\d$/', $curr_url[$len_url - 1])) {
-                    $curr_url = array_slice($curr_url, 0, $len_url - 1);
-                }
-                $curr_url = join('/', $curr_url);
-
-                $active = isset($data['semester']) ? $data['semester'] : '';
-                $class = 'class="active"';
+            <?php if (isset($data['maxSemester'])
+                && isset($data['semesterType'])
+                && isset($data['basePage'])
+            ) {
+                $active = $data['semesterType'];
                 ?>
                 <div class="nav-content">
                     <ul class="tabs tabs-transparent">
                     <?php
-                    if (!isset($data['max_semester'])) {
-                        $data['max_semester'] = 4;
-                    }
-
-                    for ($i = 1; $i <= $data['max_semester']; $i++)
+                    for ($i = 1; $i <= $data['maxSemester']; $i++)
                     { ?>
-                        <li class="tab"><a target="_self" href="<?= $curr_url . "/S$i" ?>"
-                                <?= $active == "S$i" ? $class : '' ?>>Semestre <?= $i ?></a></li>
+                        <li class="tab"><a target="_self" href="<?= base_url($data['basePage'] . "/S$i") ?>"
+                                <?= $active === "S$i" ? 'class="active"' : '' ?>>Semestre <?= $i ?></a></li>
                         <?php
                     }
                     ?>
                     </ul>
                 </div>
-            <?php endif; ?>
+            <?php } ?>
         </nav>
     </header>

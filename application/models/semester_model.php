@@ -7,19 +7,16 @@ class semester_model extends CI_Model {
      * Return the semester corresponding to the string passed in parameter.
      *
      * @param string $semester Can be empty or S1-4
-     * @return bool|int The id of the semester,
-     * FALSE if $semester is not a correct value
+     * @param string $studentId
+     * @return bool|int FALSE if $semester is not a correct value
      */
-    public function getSemesterId($semester) {
+    public function getSemesterId($semester, $studentId) {
         $semesterId = FALSE;
         if ($semester === '') {
-            if ($_SESSION['user_type'] === 'student') {
-                $semesterId = $this->getCurrentSemesterId($_SESSION['id']);
-            }
+            $semesterId = $this->getCurrentSemesterId($studentId);
         }
         else if ( in_array($semester, array('S1', 'S2', 'S3', 'S4') ) ) {
-
-            $semesterId = $this->getLastSemesterOfType($semester, $_SESSION['id']);
+            $semesterId = $this->getLastSemesterOfType($semester, $studentId);
         }
 
         return $semesterId;
@@ -279,7 +276,7 @@ class semester_model extends CI_Model {
     public function isThisGroupInSemester($groupId, $semId) {
         return $this->db->where('idGroupe', $groupId)
             ->where('idSemestre', $semId)
-            ->get()
+            ->get('Groupes')
             ->num_rows() > 0;
     }
 

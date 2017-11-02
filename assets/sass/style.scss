@@ -1,4 +1,4 @@
-@import 'head';
+@import 'includes/head';
 
 .no-margin {
   margin: 0 !important;
@@ -6,21 +6,6 @@
 
 .small-caps {
   font-variant: small-caps;
-}
-h2{
-  font-size: 1.5em;
-}
-h3{
-  font-size: 1.4em;
-}
-h4{
-  font-size: 1.3em;
-}
-h5{
-  font-size: 1.2em;
-}
-h6{
-  font-size: 1.1em;
 }
 
 .btn-footer {

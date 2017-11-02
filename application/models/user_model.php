@@ -50,7 +50,7 @@ class user_model extends CI_Model
         }
 
         return array(
-            'user_type' => 'student',
+            'userType' => 'student',
             'id' => $data->numEtudiant,
             'name' => $data->prenom,
             'surname' => $data->nom,
@@ -93,7 +93,7 @@ class user_model extends CI_Model
         }
 
         return array(
-            'user_type' => $is_teacher ? 'teacher' : 'secretariat',
+            'userType' => $is_teacher ? 'teacher' : 'secretariat',
             'id' => $is_teacher ? $data->idProfesseur : $data->idSecretaire,
             'name' => $data->prenom,
             'surname' => $data->nom,

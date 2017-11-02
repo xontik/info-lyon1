@@ -5,11 +5,11 @@ class Welcome extends CI_Controller {
 
 	public function index()
     {
-        if ( isset($_SESSION['user_type']) ) {
+        if ( isset($_SESSION['userType']) ) {
             $urls = array(
-                'student' => '/Etudiant',
-                'teacher' => '/Professeur',
-                'secretariat' => '/Secretariat'
+                'student' => 'Dashboard',
+                'teacher' => 'Absence',
+                'secretariat' => 'Absence'
             );
 
             // Keep all flashdata for one more request
@@ -17,7 +17,7 @@ class Welcome extends CI_Controller {
                 $this->session->keep_flashdata($key);
             }
 
-            redirect($urls[$_SESSION['user_type']]);
+            redirect($urls[$_SESSION['userType']]);
         }
         else {
             $this->load->view('welcome');

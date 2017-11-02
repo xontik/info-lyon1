@@ -36,18 +36,21 @@ class students_model extends CI_Model {
     }
 
     public function getProfesseursByStudent($numEtudiant) {
-        $query = "SELECT idProfesseur, nom, prenom FROM professeurs
-                  JOIN enseignements USING (idProfesseur)
-                  JOIN groupes USING (idGroupe)
-                  WHERE idGroupe = (SELECT idGroupe FROM etudiantgroupe 
-                                    JOIN groupes USING (idGroupe)
-                                    JOIN semestres USING (idSemestre)
-                                    WHERE numEtudiant = ? AND actif = 1
-                                    )
-                  ORDER BY nom ASC";
+        $query =
+            'SELECT idProfesseur, nom, prenom FROM professeurs
+            JOIN enseignements USING (idProfesseur)
+            JOIN groupes USING (idGroupe)
+            WHERE idGroupe = (
+                SELECT idGroupe
+                FROM etudiantgroupe 
+                JOIN groupes USING (idGroupe)
+                JOIN semestres USING (idSemestre)
+                WHERE numEtudiant = ? AND actif = 1
+            )
+            ORDER BY nom ASC';
 
         return $this->db->query($query, array($numEtudiant))
-                        ->result();
+            ->result();
     }
 
     /**
@@ -75,7 +78,8 @@ class students_model extends CI_Model {
      */
     public function getStudentsBySemestre($semesterId)
     {
-        $sql = 'SELECT idGroupe, nomGroupe, nom, prenom, numEtudiant
+        $sql =
+            'SELECT idGroupe, nomGroupe, nom, prenom, numEtudiant
             FROM Groupes
             LEFT JOIN EtudiantGroupe USING (idGroupe)
             LEFT JOIN Etudiants USING (numEtudiant)
@@ -112,12 +116,14 @@ class students_model extends CI_Model {
             return false;
         }
 
-        $sql = 'SELECT *
+        $sql =
+            'SELECT *
             FROM EtudiantGroupe
             JOIN Groupes USING (idGroupe)
             JOIN Semestres USING (idSemestre)
             JOIN Parcours USING (idParcours)
-            WHERE numEtudiant = ? AND idSemestre IN ?';
+            WHERE numEtudiant = ?
+            AND idSemestre IN ?';
 
         $row = $this->db->query($sql, array($numEtudiant, $semesterIds))
             ->row();

@@ -160,7 +160,7 @@ class Control_model extends CI_Model
     {
         $data = array(
             'idSemestre' => $this->ctrlMod->getCurrentSemestreFromMatiere($idMat),
-            'idMatière' => $idMat
+            'idMatiere' => $idMat
         );
         $this->db->insert('DSPromo', $data);
 

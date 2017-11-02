@@ -7,7 +7,8 @@ class Administration_model extends CI_Model
     public function getAllAdministration()
     {
         $sql =
-            'SELECT * FROM Parcours
+            'SELECT *
+            FROM Parcours
             JOIN UEdePArcours USING (idParcours)
             JOIN UE USING (idue)
             JOIN modulesdeue USING (idue)
@@ -75,13 +76,12 @@ class Administration_model extends CI_Model
 
     public function getAllLastParcours()
     {
-        $sql = 'SELECT  * FROM Parcours ORDER BY type';
+        $sql = 'SELECT * FROM Parcours ORDER BY type';
         return $this->db->query($sql)->result();
     }
 
     public function getAllUEParcours()
     {
-        // TODO que les plus recente pour un code donné
         $sql =
             'SELECT DISTINCT idUE, nomUE, codeUE, Parcours.anneeCreation, idParcours
             FROM Parcours
@@ -95,10 +95,10 @@ class Administration_model extends CI_Model
     public function isThisParcoursEditable($id)
     {
         return $this->db
-                ->where('DATE(CONCAT(anneeCreation,\'-08-31\' > CURDATE()')
-                ->where('idParcours', $id)
-                ->get('Parcours')
-                ->num_rows() > 0;
+            ->where('DATE(CONCAT(anneeCreation,\'-08-31\')) > CURDATE()')
+            ->where('idParcours', $id)
+            ->get('Parcours')
+            ->num_rows() > 0;
     }
 
     public function addUEtoParcours($idParcours, $idUE)

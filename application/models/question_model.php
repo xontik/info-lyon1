@@ -4,18 +4,18 @@ class question_model extends CI_Model {
 
     public function getProfessorQuestions($idProfessor) {
         return $this->db->select('*')
-                        ->from('Questions')
-                        ->where('idProfesseur', $idProfessor)
-                        ->get()
-                        ->result();
+            ->from('Questions')
+            ->where('idProfesseur', $idProfessor)
+            ->get()
+            ->result();
     }
 
     public function getStudentQuestions($numEtudiant) {
         return $this->db->select('*')
-                        ->from('Questions')
-                        ->where('numEtudiant', $numEtudiant)
-                        ->get()
-                        ->result();
+            ->from('Questions')
+            ->where('numEtudiant', $numEtudiant)
+            ->get()
+            ->result();
     }
 
     public function ask($titre, $texte, $idProfesseur, $numEtudiant) {
@@ -25,17 +25,16 @@ class question_model extends CI_Model {
             'idProfesseur' => $idProfesseur,
             'numEtudiant' => $numEtudiant
         );
-
-        $this->db->insert('Questions', $data);
+        return $this->db->insert('Questions', $data);
     }
 
     public function getAnswers($idQuestion) {
         return $this->db->select('*')
-                        ->from('Reponses')
-                        ->where('idQuestion', $idQuestion)
-                        ->order_by('dateReponse', 'asc')
-                        ->get()
-                        ->result();
+            ->from('Reponses')
+            ->where('idQuestion', $idQuestion)
+            ->order_by('dateReponse', 'asc')
+            ->get()
+            ->result();
     }
 
     public function answer($idQuestion, $texte, $isProf) {

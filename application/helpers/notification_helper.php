@@ -73,13 +73,3 @@ function addSeenNotification($content, $type = '', $icon = '', $link = '', $user
 
     $this->notification_model->create($content, $type, $icon, $link, $userId);
 }
-
-/**
- * Converts the object to an array.
- * Function can be used in array_map.
- *
- * @param Object $object The object to be converted to an array
- */
-function convertObjectToArray(&$object) {
-    $object = (array) $object;
-}

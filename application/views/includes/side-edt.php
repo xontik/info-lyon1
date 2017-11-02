@@ -16,20 +16,12 @@
  * In view
  * <?= $data['side-edt'] ?>
  */
-$edt_url = explode('/', current_url());
-
-$edt_url = array_splice($edt_url, 0, 4);
-$edt_url[] = 'EDT';
-
-$edt_url = join('/', $edt_url);
 
 usort($timetable, 'sortTimetable');
-
 ?>
     <div id="side-edt-large" class="hide-on-small-and-down card center-align">
         <div class="card-content">
-            <!-- href="/Timetable" -->
-            <a href="#!" class="card-title"><?= translateAndFormat($date) ?></a>
+            <a href="<?= base_url('Timetable') ?>" class="card-title"><?= translateAndFormat($date) ?></a>
             <div class="row">
                 <div class="hours col s2">
                     <?php for($i = 8; $i <= 17; $i++) { ?>
@@ -41,7 +33,7 @@ usort($timetable, 'sortTimetable');
                 </div>
                 <div class="content col s10">
                     <?php
-                    if ( empty($timetable) ) { ?>
+                    if (empty($timetable)) { ?>
                         <div>Pas de cours</div>
                     <?php
                     } else {
@@ -83,7 +75,7 @@ usort($timetable, 'sortTimetable');
                                     <?php
                                         if (isset($links[$linksPointer]) && $links[$linksPointer] !== null) {
                                             $endtag = '</a>';
-                                            echo '<a href="' . $links[$linksPointer] . '" class="black-text">';
+                                            echo '<a href="' . base_url($links[$linksPointer]) . '" class="black-text">';
                                         } else {
                                             $endtag = '</div>';
                                             echo '<div>';
@@ -114,7 +106,7 @@ usort($timetable, 'sortTimetable');
         if (empty($timetable)) { ?>
             <div class="card">
                 <div class="card-content">
-                    <span class="card-title">Pas de cours</span>
+                    <a href="<?= base_url('Timetable') ?>" class="card-title">Pas de cours</a>
                 </div>
             </div>
         <?php
@@ -146,7 +138,7 @@ usort($timetable, 'sortTimetable');
             foreach ($events as $title => $event) {
                 if (!is_null($event)) { ?>
                     <div class="card">
-                        <a href="<?= $edt_url ?>" class="black-text">
+                        <a href="<?= base_url('Timetable') ?>" class="black-text">
                             <div class="card-content flow-text">
                                 <span class="card-title"><?= $title ?></span>
                                 <h5><?= $event['name'] ?></h5>

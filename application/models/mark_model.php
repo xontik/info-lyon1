@@ -44,13 +44,12 @@ class Mark_model extends CI_Model {
     * @param $value float The note
     */
     public function add($controlId, $studentId, $value) {
-        $data = array(
-            'numEtudiant' => $studentId,
-            'idControle' => $controlId,
-            'valeur' => $value
-        );
-        
-        $this->db->insert('Notes', $data);
+        $sql =
+            'INSERT INTO Notes
+            VALUES (?, ?, ?)
+            ON DUPLICATE KEY UPDATE valeur = ?';
+
+        $this->db->query($sql, array($studentId, $controlId, $value, $value));
     }
     
     /**

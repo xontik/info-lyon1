@@ -18,7 +18,7 @@ defined('BASEPATH') OR exit('No direct script access allowed'); ?>
             </section>
             <section id="connect_block">
                 <img class="responsive-img center-block" src="<?= img_url('logo/logo_800.png') ?>" alt="TECKMEB">
-                <form action="/user/connect" method="post">
+                <form action="<?= base_url('user/connect') ?>" method="post">
                     <div class="input-field">
                         <i class="material-icons prefix">account_circle</i>
                         <input type="text" id="form-id" name="id"
@@ -41,6 +41,6 @@ defined('BASEPATH') OR exit('No direct script access allowed'); ?>
             </section>
         </main>
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-        <script type="text/javascript" src="<?= js_url('materialize.min') ?>"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
     </body>
 </html>
