@@ -22,14 +22,12 @@
         <?php
         if ($debug) {
 
-            function makeReceivedDataPrintable(&$value) {
-                if (is_string($value)) {
-                    $value = '"""' . htmlspecialchars($value, ENT_QUOTES, 'UTF-8') . '"""';
-                }
-            }
-
             $data_print = $data;
-            array_walk($data_print, 'makeReceivedDataPrintable');
+            array_walk($data_print, function(&$value) {
+                if (is_string($value)) {
+                    $value = '"""' . htmlspecialchars($value, ENT_QUOTES | ENT_HTML5) . '"""';
+                }
+            });
             ?>
             <pre id="debug">
                 <?php print_r($data_print); ?>
@@ -56,7 +54,7 @@
             ),
             'secretariat' => array(
                 'absences' => '/Absence',
-                'administration' => '/Administration'
+                'Administration' => '/Administration'
             )
         );
         ?><nav class="nav-extended">
@@ -177,18 +175,15 @@
                     </div>
                 </div>
             </div>
-            <?php if (isset($data['maxSemester'])
-                && isset($data['semesterType'])
-                && isset($data['basePage'])
-            ) {
-                $active = $data['semesterType'];
+            <?php if (isset($data['semesterTabs'])) {
+                $active = $data['semesterTabs']['semester'];
                 ?>
                 <div class="nav-content">
                     <ul class="tabs tabs-transparent">
                     <?php
-                    for ($i = 1; $i <= $data['maxSemester']; $i++)
+                    for ($i = 1; $i <= $data['semesterTabs']['max']; $i++)
                     { ?>
-                        <li class="tab"><a target="_self" href="<?= base_url($data['basePage'] . "/S$i") ?>"
+                        <li class="tab"><a target="_self" href="<?= base_url($data['semesterTabs']['basePage'] . "/S$i") ?>"
                                 <?= $active === "S$i" ? 'class="active"' : '' ?>>Semestre <?= $i ?></a></li>
                         <?php
                     }

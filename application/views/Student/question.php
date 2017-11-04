@@ -6,31 +6,37 @@
             { ?>
                 <li>
                     <div class="collapsible-header">
-                        <div><?= $question->titre ?></div>
+                        <div><?= $question->title ?></div>
                         <div>
-                            <?= $data['teachers'][$question->idProfesseur]->prenom . ' ' .
-                            $data['teachers'][$question->idProfesseur]->nom
+                            <?= $question->teacherName
                             ?>
                         </div>
                     </div>
                     <div class="collapsible-body">
-                        <p class="right-align"><?= $question->texte ?></p>
-                        <ul>
-                            <?php
-                            foreach ($data['answers'][$question->idQuestion] as $answer) {
-                                ?>
-                                <li class="divider"></li>
-                                <li><p <?= !$answer->prof ? 'class="right-align"' : '' ?>><?= $answer->texte ?></p></li>
-                                <?php
-                            }
+                        <p class="right-align"><?= $question->content ?></p>
+                        <?php
+                        if (!empty($question->answers)) {
                             ?>
-                        </ul>
+                            <ul>
+                                <?php
+                                foreach ($question->answers as $answer) {
+                                    $isTeacher = !$answer->teacher ? 'class="right-align"' : '';
+                                    ?>
+                                    <li class="divider"></li>
+                                    <li><p <?= $isTeacher ?>><?= $answer->content ?></p></li>
+                                    <?php
+                                }
+                                ?>
+                            </ul>
+                            <?php
+                        }
+                        ?>
                         <form action="<?= base_url('Process_Question/answer') ?>" method="POST">
                             <input type="hidden" name="idQuestion" value ="<?= $question->idQuestion ?>"/>
                             <div class="btn-footer">
                                 <div class="input-field">
-                                    <textarea class="materialize-textarea" name="texte" id="texte"></textarea>
-                                    <label for="texte">Réponse</label>
+                                    <textarea class="materialize-textarea" name="text" id="text"></textarea>
+                                    <label for="text">Réponse</label>
                                 </div>
                                 <button type="submit" class="waves-effect waves-light btn">Répondre</button>
                             </div>
@@ -45,24 +51,24 @@
             <span class="card-title">Poser une question</span>
             <form action="<?= base_url('/Process_Question/send') ?>" method="POST">
                 <div class="input-field">
-                    <input type="text" name="titre" id="titre" autocomplete="off" data-length="255"/>
-                    <label for="titre">Titre</label>
+                    <input type="text" name="title" id="title" autocomplete="off" data-length="255"/>
+                    <label for="title">Titre</label>
                 </div>
                 <div class="input-field col s12">
-                    <textarea class="materialize-textarea" name="texte" id="texte"></textarea>
-                    <label for="texte">Question</label>
+                    <textarea class="materialize-textarea" name="text" id="text"></textarea>
+                    <label for="text">Question</label>
                 </div>
                 <div class="input-field row">
-                    <select name="idProfesseur" id="idProfesseur" class="col s12 m8 l5">
+                    <select name="teacherId" id="teacherId" class="col s12 m8 l5">
                         <option value="" disabled selected>Choisir un professeur</option>
                         <?php
                         foreach ($data['teachers'] as $teacher)
                         { ?>
-                            <option value="<?= $teacher->idProfesseur ?>"><?= $teacher->prenom . ' ' . $teacher->nom ?></option>
+                            <option value="<?= $teacher->idTeacher?>"><?= $teacher->name ?></option>
                             <?php
                         } ?>
                     </select>
-                    <label for="idProfesseur"></label>
+                    <label for="teacherId">Professeur</label>
                 </div>
                 <div class="btn-footer">
                     <button type="submit" class="waves-effect waves-light btn">Envoyer</button>

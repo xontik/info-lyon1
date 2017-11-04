@@ -9,30 +9,32 @@ class Mark extends TM_Controller
             $semester = '';
         }
 
-        $this->load->model('mark_model');
-        $this->load->model('semester_model');
+        $this->load->model('Students');
+        $this->load->model('Marks');
+        $this->load->model('Semesters');
 
         // Loads the max semester type the student went to
-        $max_semester = intval(
-            substr($this->semester_model->getSemesterTypeFromId(
-                $this->semester_model->getCurrentSemesterId($_SESSION['id'])
-            ), 1)
+        $max_semester = (int) substr($this->Semesters->getType(
+                $this->Semesters->getStudentCurrent($_SESSION['id'])
+            ), 1
         );
 
-        if ($semester > 'S' . $max_semester) {
-            addPageNotification('Vous essayez d\'accéder à un semestre futur !<br>Redirection vers votre semestre courant');
+        if ($semester !== '' && $semester > 'S' . $max_semester) {
+            addPageNotification('Vous essayez d\'accéder à un semestre futur !<br>Redirection vers le semestre courant');
             $semester = '';
         }
 
-        $semesterId = $this->semester_model->getSemesterId($semester, $_SESSION['id']);
-        $semester = $this->semester_model->getSemesterTypeFromId($semesterId);
+        $semesterId = $this->Semesters->getSemesterId($semester, $_SESSION['id']);
+        $semester = $this->Semesters->getType($semesterId);
 
-        $marks = $this->mark_model->getMarksFromSemester($_SESSION['id'], $semesterId);
+        $marks = $this->Semesters->getStudentMarks($_SESSION['id'], $semesterId);
 
         $this->data = array(
-            'maxSemester' => $max_semester,
-            'semesterType' => $semester,
-            'basePage' => 'Mark',
+            'semesterTabs' => array(
+                'max' => $max_semester,
+                'semester' => $semester,
+                'basePage' => 'Mark',
+            ),
             'marks' => $marks
         );
 
@@ -46,27 +48,28 @@ class Mark extends TM_Controller
             show_404();
         }
 
-        $this->load->model('control_model', 'ctrlMod');
-        $this->load->model('mark_model', 'markMod');
+        $this->load->model('Teachers');
+        $this->load->model('Controls');
+        $this->load->model('Marks');
 
-        $control = $this->ctrlMod->getControl($controlId);
-        if (empty($control)) {
+        $control = $this->Controls->get($controlId);
+        if ($control === FALSE) {
             addPageNotification('Contrôle introuvable', 'danger');
             redirect('/Control');
         }
 
-        if (!$this->ctrlMod->checkProfessorRightOnControl($_SESSION['id'], $controlId)) {
+        if (!$this->Teachers->hasRightOn($controlId, $_SESSION['id'])) {
             addPageNotification('Vous n\'avez pas les droit sur ce contrôle', 'danger');
             redirect('/Control');
         }
 
-        $marks = $this->markMod->getMarks($control, $_SESSION['id']);
-        $matiere = $this->ctrlMod->getMatiere($controlId);
+        $marks = $this->Controls->getMarks($control, $_SESSION['id']);
+        $subject = $this->Controls->getSubject($controlId);
 
         $this->data = array(
             'control' => $control,
             'marks' => $marks,
-            'matiere' => $matiere
+            'subject' => $subject
         );
 
         $this->show('Ajout de notes');

@@ -28,20 +28,20 @@ $(function() {
     });
 
     var modalPromo = $('#modalPromo');
-    var typeControl = $('#typeControle');
-    var saveTCVal;
+    var controlType = $('#typeId');
+    var CTValue;
 
     modalPromo.modal({
         dismissible: true
     });
 
-    // if ds promo page creation
+    // if promo page
     if (location.href.split('/').slice(-1)[0].toLowerCase().substr(0, 5) === 'promo') {
-        saveTCVal = '1'; // Promo
+        CTValue = '1'; // Promo
 
-        typeControl.on('change', function () {
-            saveTCVal = $(this).val();
-            if (saveTCVal !== '1') {
+        controlType.on('change', function () {
+            CTValue = $(this).val();
+            if (CTValue !== '1') {
                 // Confirm change
                 modalPromo.modal('open');
             }
@@ -51,11 +51,11 @@ $(function() {
             location.href = '/Control/add';
         });
     } else {
-        saveTCVal = '2'; // Group
+        CTValue = '2'; // Group
 
-        typeControl.on('change', function () {
-            saveTCVal = $(this).val();
-            if (saveTCVal === '1') {
+        controlType.on('change', function () {
+            CTValue = $(this).val();
+            if (CTValue === '1') {
                 // Confirm change
                 modalPromo.modal('open');
             }
@@ -67,7 +67,7 @@ $(function() {
     }
 
     $('#promoNoRedirect').on('click', function () {
-        typeControl.val(saveTCVal);
-        typeControl.material_select();
+        controlType.val(CTValue);
+        controlType.material_select();
     });
 });

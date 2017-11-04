@@ -58,7 +58,7 @@ function getTimetable($resources, $period, $datetime = NULL)
     global $timezone;
 
     $CI = get_instance();
-    $CI->load->model('timetable_model');
+    $CI->load->model('Timetables');
 
     // Default $datetime to today
 	if ($datetime === NULL) {
@@ -89,7 +89,7 @@ function getTimetable($resources, $period, $datetime = NULL)
 
     $updated = false;
 	$existedInDB = true;
-	$timetable = $CI->timetable_model->getTimetableJSON($resources);
+	$timetable = $CI->Timetables->getJSON($resources);
 
     if (!empty($timetable)) {
 	    $timetable = json_decode($timetable, true);
@@ -130,9 +130,9 @@ function getTimetable($resources, $period, $datetime = NULL)
 
 	if ($updated === true) {
         if ($existedInDB) {
-            $CI->timetable_model->setTimetableJSON($resources, json_encode($timetable, JSON_PRETTY_PRINT));
+            $CI->Timetables->setJSON($resources, json_encode($timetable, JSON_PRETTY_PRINT));
         } else {
-            $CI->timetable_model->createTimetable($resources, json_encode($timetable, JSON_PRETTY_PRINT));
+            $CI->Timetables->create($resources, json_encode($timetable, JSON_PRETTY_PRINT));
         }
     }
 
@@ -221,10 +221,10 @@ function _icsToTimetable($ics_filepath)
 		$ics = _strToIcs($content);
 
 		// Check if file version is supported
-		if (array_key_exists('VERSION', $ics) &&
-            !in_array($ics['VERSION'] , $VERSION_SUPPORTED)
+		if (!array_key_exists('VERSION', $ics)
+            || !in_array($ics['VERSION'] , $VERSION_SUPPORTED)
         ) {
-			trigger_error('ICS File: Unsupported timetable version', E_USER_WARNING);
+			trigger_error('ICS File: Unsupported file version', E_USER_WARNING);
 			return array();
 		}
 

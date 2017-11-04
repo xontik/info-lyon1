@@ -6,19 +6,19 @@ class Process_Question extends CI_Controller
 
     public function send()
     {
-        $this->load->model('question_model', 'questionsMod');
+        $this->load->model('Questions');
 
-        if (isset($_POST['titre'])
-            && isset($_POST['texte'])
-            && isset($_POST['idProfesseur'])
-            && is_numeric($_POST['idProfesseur'])
+        if (isset($_POST['title'])
+            && isset($_POST['text'])
+            && isset($_POST['teacherId'])
+            && is_numeric($_POST['teacherId'])
         ) {
-            $titre = htmlspecialchars($_POST['titre']);
-            $texte = htmlspecialchars($_POST['texte']);
-            $idProf = intval(htmlspecialchars($_POST['idProfesseur']));
-            $numEtu = $_SESSION['id'];
+            $title = htmlspecialchars($_POST['title']);
+            $text = htmlspecialchars($_POST['text']);
+            $teacherId = (int) htmlspecialchars($_POST['teacherId']);
+            $studentId = $_SESSION['id'];
 
-            if (!$this->questionsMod->ask($titre, $texte, $idProf, $numEtu)) {
+            if (!$this->Questions->ask($title, $text, $teacherId, $studentId)) {
                 addPageNotification('Erreur model lors de l\'envoi de la question', 'danger');
             }
         } else {
@@ -28,26 +28,24 @@ class Process_Question extends CI_Controller
         redirect('Question');
     }
 
-    public function answer()
+    public function answer($questionId)
     {
-        $this->load->model('question_model', 'questionsMod');
+        $questionId = (int) htmlspecialchars($questionId);
 
-        if (isset($_POST['texte'])
-            && isset($_POST['idQuestion'])
-            && is_numeric($_POST['idQuestion'])
+        $this->load->model('Questions');
+
+        if ($questionId !== 0
+            && isset($_POST['text'])
         ) {
-            $idQuestion = intval(htmlspecialchars($_POST['idQuestion']));
-            $texte = htmlspecialchars($_POST['texte']);
-            $isProf = $_SESSION['userType'] == 'teacher' ? true : false;
+            $text = htmlspecialchars($_POST['text']);
+            $isTeacher = $_SESSION['userType'] === 'teacher';
 
-            $this->questionsMod->answer($idQuestion, $texte, $isProf);
+            $this->Questions->answer($questionId, $text, $isTeacher);
         } else {
             addPageNotification('Erreur lors de l\'envoi de la réponse', 'danger');
         }
 
         redirect('Question');
-
-        $this->load->model('question_model', 'questionsMod');
     }
 
 }

@@ -6,29 +6,25 @@ class Question extends TM_Controller
 
     public function student_index()
     {
-        $this->load->model('question_model', 'questionsMod');
-        $this->load->model('students_model', 'studentsMod');
-        $this->load->model('teacher_model', 'teacherMod');
+        $this->load->model('Students');
 
         // Get questions and answers
-        $questions = $this->questionsMod->getStudentQuestions($_SESSION['id']);
-        $answers = array();
+        $unsortedQuestions = $this->Students->getQuestions($_SESSION['id']);
+        $unsortedAnswers = $this->Students->getAnswers($_SESSION['id']);
+        $teachers = $this->Students->getTeachers($_SESSION['id']);
 
-        foreach($questions as $question) {
-            $answers[$question->idQuestion] = $this->questionsMod->getAnswers($question->idQuestion);
+        $questions = array();
+        foreach ($unsortedQuestions as $question) {
+            $questions[$question->idQuestion] = $question;
         }
 
-        // Get teachers
-        $unsortedTeachers = $this->studentsMod->getProfesseursByStudent($_SESSION['id']);
-        $teachers = array();
-
-        foreach($unsortedTeachers as $teacher) {
-            $teachers[$teacher->idProfesseur] = $teacher;
+        foreach ($unsortedAnswers as $answer) {
+            $questions[$answer->idQuestion]->answers[] = $answer;
         }
+
 
         $this->data = array(
             'questions' => $questions,
-            'answers' => $answers,
             'teachers' => $teachers
         );
         $this->show('Questions / Réponses');
@@ -36,23 +32,22 @@ class Question extends TM_Controller
 
     public function teacher_index()
     {
-        $this->load->model('students_model', 'studentMod');
-        $this->load->model('question_model', 'questionsMod');
+        $this->load->model('Teachers');
 
-        $questions = $this->questionsMod->getProfessorQuestions($_SESSION['id']);
+        $unsortedQuestions = $this->Teachers->getQuestions($_SESSION['id']);
+        $unsortedAnswers = $this->Teachers->getAnswers($_SESSION['id']);
 
-        $students = array();
-        $answers = array();
+        $questions = array();
+        foreach ($unsortedQuestions as $question) {
+            $questions[$question->idQuestion] = $question;
+        }
 
-        foreach ($questions as $question) {
-            $students[$question->numEtudiant] = $this->studentMod->getStudent($question->numEtudiant);
-            $answers[$question->idQuestion] = $this->questionsMod->getAnswers($question->idQuestion);
+        foreach ($unsortedAnswers as $answer) {
+            $questions[$answer->idQuestion]->answers[] = $answer;
         }
 
         $this->data = array(
-            'questions' => $questions,
-            'students' => $students,
-            'answers' => $answers
+            'questions' => $questions
         );
         $this->show('Questions / Réponses');
     }

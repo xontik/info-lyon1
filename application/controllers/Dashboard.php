@@ -5,19 +5,30 @@ class Dashboard extends TM_Controller
 {
     public function student_index()
     {
+        $this->load->model('Students');
+
         $this->load->helper('timetable');
 
-        $date = new DateTime();
-        $timetable = getNextTimetable(9311, 'day', $date);
+        $now = new DateTime();
 
-        $side_edt = $this->load->view(
-            'includes/side-edt',
-            array('date' => $date, 'timetable' => $timetable),
-            TRUE
-        );
+        $adeResource = $this->Students->getADEResource($_SESSION['id']);
+        if ($adeResource === FALSE) {
+            $sideEDT = $this->load->view(
+                'includes/side-edt',
+                array('date' => $now, 'timetable' => false),
+                TRUE
+            );
+        } else {
+            $timetable = getNextTimetable($adeResource, 'day', $date);
+            $sideEDT = $this->load->view(
+                'includes/side-edt',
+                array('date' => $now, 'timetable' => $timetable),
+                TRUE
+            );
+        }
 
         $this->data = array(
-            'side-edt' => $side_edt
+            'side-edt' => $sideEDT
         );
 
         $this->show('Tableau de bord');

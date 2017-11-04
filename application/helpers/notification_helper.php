@@ -49,7 +49,8 @@ function addPageNotification($content, $type = '', $icon = '') {
  * @param string $icon The icon to be displayed (optional)
  * @param string $link The link to redirect to on click
  */
-function addSessionNotification($content, $type = '', $icon = '', $link = '') {
+function addSessionNotification($content, $type = '', $icon = '', $link = '')
+{
     $id = isset($_SESSION['sessionNotif']) && count($_SESSION['sessionNotif'])
         ? max(array_keys($_SESSION['sessionNotif'])) + 1 : 1;
 
@@ -62,14 +63,15 @@ function addSessionNotification($content, $type = '', $icon = '', $link = '') {
  * This is the only way to send
  *
  * @param string $content The content of the notification (can be html)
+ * @param string $link The link to redirect to on click (optionnal)
+ * @param int $userId The user who will receive it (optionnal)
  * @param string $type The type of the notification (optional)
  * @param string $icon The icon to be displayed (optional)
- * @param string $link The link to redirect to on click
- * @param int $userId The user who will receive it (optionnal)
  */
-function addSeenNotification($content, $type = '', $icon = '', $link = '', $userId = -1) {
-    get_instance()->load->model('notification_model');
+function addSeenNotification($content, $link = '', $userId = -1, $type = '', $icon = '')
+{
+    get_instance()->load->model('Notifications');
     $userId = $userId === -1 ? $_SESSION['userId'] : $userId;
 
-    $this->notification_model->create($content, $type, $icon, $link, $userId);
+    $this->notification_model->create($content, $link, $userId, $type, $icon);
 }

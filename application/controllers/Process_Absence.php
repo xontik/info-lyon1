@@ -9,40 +9,38 @@ class Process_Absence extends CI_Controller
      */
     public function add()
     {
-        header('Content-Type: text/plain');
+        $this->load->model('Absences');
 
-        if (!isset($_POST['studentId'])
-            || !isset($_POST['beginDate'])
-            || !isset($_POST['endDate'])
-            || !isset($_POST['absenceTypeId'])
-            || !isset($_POST['justified'])
+        //header('Content-Type: text/plain');
+
+        if (!(isset($_POST['studentId'])
+            && isset($_POST['beginDate'])
+            && isset($_POST['endDate'])
+            && isset($_POST['absenceTypeId'])
+            && isset($_POST['justified']))
         ) {
             echo 'missing_data';
             return;
         }
 
-        $data = array(
-            'numEtudiant' => htmlspecialchars($_POST['studentId']),
-            'dateDebut' => htmlspecialchars($_POST['beginDate']),
-            'dateFin' => htmlspecialchars($_POST['endDate']),
-            'idTypeAbsence' => htmlspecialchars($_POST['absenceTypeId']),
-            'justifiee' => htmlspecialchars($_POST['justified'])
-        );
+        $studentId = htmlspecialchars($_POST['studentId']);
+        $beginDate = htmlspecialchars($_POST['beginDate']);
+        $endDate = htmlspecialchars($_POST['endDate']);
+        $idAbsenceType = (int) htmlspecialchars($_POST['absenceTypeId']);
+        $justified = htmlspecialchars($_POST['justified']);
 
-        if (!$this->_checkAbsenceData($data)) {
+        if (!$this->_checkAbsenceData($beginDate, $endDate, $idAbsenceType, $justified)) {
             echo 'wrong_data';
             return;
         }
 
-        try {
-            $this->db->insert('Absences', $data);
-            $absenceId = $this->db->select_max('idAbsence')
-                ->get('Absences')
-                ->row()->idAbsence;
-            echo 'success ' . $absenceId;
-        } catch (PDOException $e) {
-            echo 'exception : ' . $e->getMessage();
+        $absenceId = $this->Absences->create($studentId, $beginDate, $endDate, $idAbsenceType, $justified);
+        if ($absenceId === FALSE) {
+            echo 'fail';
         }
+
+        echo 'success ' . $absenceId;
+
 
     }
 
@@ -51,6 +49,8 @@ class Process_Absence extends CI_Controller
      */
     public function update()
     {
+        $this->load->model('Absences');
+
         header('Content-Type: text/plain');
 
         if (!isset($_POST['absenceId'])
@@ -64,27 +64,21 @@ class Process_Absence extends CI_Controller
             return;
         }
 
-        $absenceId = htmlspecialchars($_POST['absenceId']);
-        $data = array(
-            'numEtudiant' => htmlspecialchars($_POST['studentId']),
-            'dateDebut' => htmlspecialchars($_POST['beginDate']),
-            'dateFin' => htmlspecialchars($_POST['endDate']),
-            'idTypeAbsence' => htmlspecialchars($_POST['absenceTypeId']),
-            'justifiee' => htmlspecialchars($_POST['justified'])
-        );
+        $absenceId = (int) htmlspecialchars($_POST['absenceId']);
+        $beginDate = htmlspecialchars($_POST['beginDate']);
+        $endDate = htmlspecialchars($_POST['endDate']);
+        $idAbsenceType = (int) htmlspecialchars($_POST['absenceTypeId']);
+        $justified = htmlspecialchars($_POST['justified']);
 
-        if (!$this->_checkAbsenceData($data)) {
+        if (!$this->_checkAbsenceData($beginDate, $endDate, $idAbsenceType, $justified)) {
             echo 'wrong_data';
             return;
         }
 
-        try {
-            $this->db->set($data)
-                ->where('idAbsence', $absenceId)
-                ->update('Absences', $data);
+        if ($this->Absences->update($absenceId, $beginDate, $endDate, $idAbsenceType, $justified)) {
             echo 'success ' . $absenceId;
-        } catch (Exception $e) {
-            echo 'exception : ' . $e->getMessage();
+        } else {
+            echo 'fail';
         }
     }
 
@@ -93,6 +87,8 @@ class Process_Absence extends CI_Controller
      */
     public function delete()
     {
+        $this->load->model('Absences');
+
         header('Content-Type: text/plain');
 
         if (!isset($_POST['absenceId'])) {
@@ -100,24 +96,22 @@ class Process_Absence extends CI_Controller
             return;
         }
 
-        $absenceId = htmlspecialchars($_POST['absenceId']);
+        $absenceId = (int) htmlspecialchars($_POST['absenceId']);
 
-        try {
-            $this->db->delete('Absences', array('idAbsence' => $absenceId));
+        if ($this->Absences->delete($absenceId)) {
             echo 'success';
-        } catch (Exception $e) {
-            echo 'exception: ' . $e->getMessage();
+        } else {
+            echo 'fail';
         }
-
     }
 
-    private function _checkAbsenceData($data)
+    private function _checkAbsenceData($beginDate, $endDate, $idAbsenceType, $justified)
     {
-        return !empty($data['numEtudiant'])
-            && !empty($data['dateDebut'])
-            && !empty($data['dateFin'])
-            && $data['dateDebut'] !== $data['dateFin']
-            && ($data['justifiee'] == 0 || $data['justifiee'] == 1);
+        return !empty($beginDate)
+            && !empty($endDate)
+            && $beginDate !== $endDate
+            && $idAbsenceType !== 0
+            && ($justified == 0 || $justified == 1);
     }
 
 }

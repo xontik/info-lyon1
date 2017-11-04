@@ -5,42 +5,45 @@
 			<?php
 			foreach ($data['questions'] as $question)
 			{
-                $student = $data['students'][$question->numEtudiant];
                 ?>
                 <li>
                     <div class="collapsible-header">
-                        <div>
-                            <?= $question->titre ?>
-                        </div>
-                        <div><?= $question->numEtudiant . ' - '
-                        . $student->prenom . ' ' . $student->nom ?></div>
+                        <div><?= $question->title ?></div>
+                        <div><?= $question->studentName ?></div>
                     </div>
                     <div class="collapsible-body">
-                        <ul>
-                            <p><?= $question->texte ?></p>
-                            <?php
-                            foreach($data['answers'][$question->idQuestion] as $answer){
-                                $isTeacher = $answer->prof ? 'right-align' : '';
-                                ?>
-                                <li class="divider"></li>
-                                <li><p class="<?= $isTeacher ?>"><?= $answer->texte ?></p></li>
+                        <p><?= $question->content ?></p>
+                        <?php
+                        if (!empty($question->answers)) {
+                            ?>
+                            <ul>
+
                                 <?php
-                            } ?>
-                            <form action="<?= base_url('/Process_Question/answer') ?>" method="POST">
-                                <input type="hidden" name="idQuestion" value ="<?= $question->idQuestion;?>"/>
-                                <div class="input-field">
-                                    <textarea class="materialize-textarea" name="texte" id="texte"></textarea>
-                                    <label for="texte">Réponse</label>
-                                </div>
-                                <p>
-                                    <input type="checkbox" name="public" id="public">
-                                    <label for="public">Rendre publique</label>
-                                </p>
-                                <div class="btn-footer">
-                                    <button class="btn" type="submit">Envoyer</button>
-                                </div>
-                            </form>
-                        </ul>
+                                foreach ($question->answers as $answer) {
+                                    $isTeacher = $answer->teacher ? 'right-align' : '';
+                                    ?>
+                                    <li class="divider"></li>
+                                    <li><p class="<?= $isTeacher ?>"><?= $answer->content ?></p></li>
+                                    <?php
+                                } ?>
+                            </ul>
+
+                            <?php
+                        } ?>
+                        <form action="<?= base_url('/Process_Question/answer/' . $question->idQuestion) ?>"
+                              method="POST">
+                            <div class="input-field">
+                                <textarea class="materialize-textarea" name="text" id="text"></textarea>
+                                <label for="text">Réponse</label>
+                            </div>
+                            <p>
+                                <input type="checkbox" name="public" id="public">
+                                <label for="public">Rendre publique</label>
+                            </p>
+                            <div class="btn-footer">
+                                <button class="btn" type="submit">Envoyer</button>
+                            </div>
+                        </form>
                     </div>
                 </li>
 			    <?php

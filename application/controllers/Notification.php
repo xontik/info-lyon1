@@ -65,7 +65,7 @@ class Notification extends CI_Controller {
         if (isset($_POST['notifId'])
             && isset($_POST['storage'])
         ) {
-            $notifId = intval(htmlspecialchars($_POST['notifId']));
+            $notifId = (int) htmlspecialchars($_POST['notifId']);
             $storage = htmlspecialchars($_POST['storage']);
 
             switch ($storage) {
@@ -73,8 +73,7 @@ class Notification extends CI_Controller {
                     unset($_SESSION['sessionNotif'][$notifId]);
                     break;
                 case 'seen':
-                    $this->load->model('notification_model');
-                    $this->notification_model->delete($notifId);
+                    $this->Notifications->delete($notifId);
                     break;
                 default:
                     echo 'fail';

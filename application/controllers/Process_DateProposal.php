@@ -4,48 +4,75 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Process_DateProposal extends CI_Controller
 {
 
-    public function add() {
-        $this->load->model('ptut_model');
+    public function add($groupId)
+    {
+        $groupId = (int) htmlspecialchars($groupId);
 
-        if (isset($_POST['groupId'])
+        $this->load->model('DateProposals');
+        $this->load->model('Projects');
+
+        if ($groupId !== 0
             && isset($_POST['date'])
             && isset($_POST['time'])
         ) {
-            $groupId = intval(htmlspecialchars($_POST['groupId']));
-            $date = htmlspecialchars($_POST['date']);
-            $time = htmlspecialchars($_POST['time']);
-            $appointementId = $this->ptut_model->getNextAppointement($groupId)->idAppointement;
+            $datetime = new DateTime(
+                htmlspecialchars($_POST['date'])
+                . ' ' . htmlspecialchars($_POST['time'])
+            );
+            $appointementId = $this->Projects->getNextAppointement($groupId)->idAppointement;
 
-            $datetime = new DateTime($date . ' ' . $time);
-
-            $this->ptut_model->createProposal($appointementId, $datetime, $_SESSION['userId']);
+            if ($this->DateProposals->create($appointementId, $datetime, $_SESSION['userId'])) {
+                addPageNotification('Proposition ajoutée avec succès', 'success');
+            } else {
+                addPageNotification('Impossible de créer la proposition de rendez-vous', 'danger');
+            }
+        } else {
+            addPageNotification('Données reçu corrompues', 'danger');
         }
 
-        redirect('Project' . (isset($groupId) ? '/detail/' . $groupId : ''));
+        redirect('Project/detail/' . $groupId);
     }
 
-    public function choose() {
-        $this->load->model('ptut_model');
+    public function choose($proposalId)
+    {
 
-        if (isset($_POST['proposalId'])) {
-            $proposalId = intval(htmlspecialchars($_POST['proposalId']));
+        $proposalId = (int) htmlspecialchars($proposalId);
 
+        $this->load->model('Projects');
+        $this->load->model('Appointments');
+        $this->load->model('DateProposals');
+
+        if ($proposalId !== 0) {
             if (isset($_POST['accept'])) {
                 $accept = true;
             } else if ($_POST['decline']) {
                 $accept = false;
             } else {
-                redirect('/Professeur/Ptut');
+                addPageNotification('Données corrompues', 'danger');
+                redirect('/Project');
             }
 
-            $this->ptut_model->setProposalAccept($proposalId, $_SESSION['userId'], $accept);
+            $this->DateProposals->setAccept($proposalId, $_SESSION['userId'], $accept);
+            $projectId = $this->Projects->getProjectId('DateProposal', $proposalId);
 
             if ($accept) {
-                //TODO If everyone accepted, set project reunion final date
+                if ($this->DateProposals->isAccepted($proposalId)) {
+
+                    $this->Appointements->setFinalDate($proposalId);
+                    $this->Projects->sendProjectMessage(
+                        $projectId,
+                        'Une proposition de date à été acceptée',
+                        'success'
+                    );
+                }
             } else {
-                $groupId = $this->ptut_model->getGroupId('DateProposal', $proposalId);
-                $this->ptut_model->sendGroupMessage($groupId, 'Une proposition de date à été refusée', 'warning');
+                $this->Projects->sendProjectStudentsMessage(
+                    $projectId,
+                    'Une proposition de date à été refusée',
+                    'warning'
+                );
             }
+
         }
 
         redirect('Project');

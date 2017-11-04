@@ -4,23 +4,24 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Process_Mark extends CI_Controller
 {
 
-    public function add($id)
+    public function add($controlId)
     {
-        $id = intval(htmlspecialchars($id));
-        if ($id === 0) {
+        $controlId = (int) htmlspecialchars($controlId);
+        if ($controlId === 0) {
             show_404();
         }
 
-        $this->load->model('control_model', 'ctrlMod');
-        $this->load->model('mark_model', 'markMod');
+        $this->load->model('Marks');
+        $this->load->model('Controls');
+        $this->load->model('Teacher');
 
-        if (!$this->ctrlMod->checkProfessorRightOnControl($_SESSION['id'], $id)) {
+        if (!$this->Teachers->hasRightOn($controlId, $_SESSION['id'])) {
             addPageNotification('Vous n\'avez pas les droit sur ce contrôle', 'danger');
             redirect('Control');
         }
 
-        $control = $this->ctrlMod->getControl($id);
-        $marks = $this->markMod->getMarks($control, $_SESSION['id']);
+        $control = $this->Controls->get($controlId);
+        $marks = $this->Controls->getMarks($control, $_SESSION['id']);
 
         $i = 0;
         $correctData = true;
@@ -33,12 +34,12 @@ class Process_Mark extends CI_Controller
         }
 
         if (!$correctData) {
-            addPageNotification('Données reçues incohérentes', 'warning');
+            addPageNotification('Données corrompues', 'danger');
             redirect('Control');
         }
 
         //TODO Ajouter verification sur value
-        $this->markMod->addMarks($id, $_POST);
+        $this->Marks->createAll($_POST, $controlId);
 
         addPageNotification('Note modifiées avec succès', 'success');
         redirect('Control');

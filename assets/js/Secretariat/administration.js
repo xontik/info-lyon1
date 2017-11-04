@@ -1,51 +1,64 @@
 $(document).ready(function() {
-    var UEin = $("#UEin");
-    var UEout = $("#UEout");
-    var parcours = $("#parcours");
+    var TUin = $("#TUin");
+    var TUout = $("#TUout");
+    var course = $("#courseId");
 
-    parcours
+    var checkboxId = 0;
+
+    course
         .change(function() {
             $.ajax({
                 dataType: 'json',
-                data: {'idParcours': parcours.val()},
-                url: '/Process_Administration/get_UEs',
+                data: {'courseId': course.val()},
+                url: '/Process_Administration/get_teaching_units',
                 type: 'POST',
                 success: function(data) {
-                    UEin.find('.collection-item').remove();
-                    UEout.find('.collection-item').remove();
+                    console.log(data);
+                    TUin.find('.collection-item').remove();
+                    TUout.find('.collection-item').remove();
 
-                    $.each(data['in'], function(key, UE) {
-                        UEin.append(
+                    $.each(data['in'], function(key, TU) {
+                        TUin.append(
                             $('<li></li>')
                                 .addClass('collection-item')
-                                .data('ue-id', UE.idUE)
+                                .data('tu-id', TU.idTeachingUnit)
                                 .append(
                                     $('<div></div>')
-                                        .append(UE.anneeCreation + ' ' + UE.codeUE + ' - ' + UE.nomUE)
+                                        .append($('<span></span>')
+                                            .text(
+                                                TU.creationYear
+                                                + ' ' + TU.teachingUnitCode
+                                                + ' - ' + TU.teachingUnitName
+                                            )
+                                        )
                                         .append($('<div></div>')
                                             .addClass('secondary-content')
-                                            .append('<input id="linked' + key + '" type="checkbox">')
+                                            .append('<input id="' + ++checkboxId + '" type="checkbox">')
                                             .append($('<label></label>')
-                                                .prop('for', 'linked' + key)
+                                                .prop('for', checkboxId)
                                             )
                                         )
                                 )
                         )
                     });
 
-                    $.each(data['out'], function(key, UE) {
-                        UEout.append(
+                    $.each(data['out'], function(key, TU) {
+                        TUout.append(
                             $('<li></li>')
                                 .addClass('collection-item')
-                                .data('ue-id', UE.idUE)
+                                .data('tu-id', TU.idTeachingUnit)
                                 .append(
                                     $('<div></div>')
-                                        .append(UE.anneeCreation + ' ' + UE.codeUE + ' - ' + UE.nomUE)
+                                        .append($('<span></span>')
+                                            .text(TU.creationYear
+                                                + ' ' + TU.teachingUnitCode
+                                                + ' - ' + TU.teachingUnitName)
+                                        )
                                         .append($('<div></div>')
                                             .addClass('secondary-content')
-                                            .append('<input id="available' + key + '" type="checkbox">')
+                                            .append('<input id="' + ++checkboxId + '" type="checkbox">')
                                             .append($('<label></label>')
-                                                .prop('for', 'available' + key)
+                                                .prop('for', checkboxId)
                                             )
                                         )
                                 )
@@ -58,28 +71,27 @@ $(document).ready(function() {
 
     $("#add").click(function(e) {
         var ids = [];
-        UEout
+        TUout
             .children('.collection-item')
             .has(':checkbox:checked')
             .each(function(index, element) {
-                ids.push($(element).data('ue-id'));
+                ids.push($(element).data('tu-id'));
             });
 
         if (ids && ids.length > 0) {
             $.ajax({
                 dataType: 'json',
-                data: {'idParcours': parcours.val(), 'idUEs': ids},
-                url: '/Process_Parcours/add_UE',
+                data: {'courseId': course.val(), 'TUids': ids},
+                url: '/Process_Course/add_teaching_unit',
                 type: 'POST',
                 success: function(data) {
-                    console.log(data);
                     $.each(data, function(key, val) {
-                        UEout.find('.collection-item')
+                        TUout.find('.collection-item')
                             .filter(function() {
-                                return $(this).data('ue-id') === val
+                                return $(this).data('tu-id') === val
                             })
                             .detach()
-                            .appendTo(UEin);
+                            .appendTo(TUin);
                     });
                 }
             });
@@ -88,28 +100,27 @@ $(document).ready(function() {
 
     $("#remove").click(function(e) {
         var ids = [];
-        UEin
+        TUin
             .children('.collection-item')
             .has(':checkbox:checked')
             .each(function(index, element) {
-                ids.push($(element).data('ue-id'));
+                ids.push($(element).data('tu-id'));
             });
 
         if (ids && ids.length > 0) {
             $.ajax({
                 dataType: 'json',
-                data: {'idParcours': parcours.val(), 'idUEs': ids},
-                url: '/Process_Parcours/remove_UE',
+                data: {'courseId': course.val(), 'TUids': ids},
+                url: '/Process_Course/remove_teaching_unit',
                 type: 'POST',
                 success: function(data) {
                     $.each(data, function(key, val) {
-                        UEin.find('.collection-item')
+                        TUin.find('.collection-item')
                             .filter(function() {
-                                return $(this).data('ue-id') === val
+                                return $(this).data('tu-id') === val
                             })
-                            .prop('id', 'available' + val)
                             .detach()
-                            .appendTo(UEout);
+                            .appendTo(TUout);
                     });
                 }
             });

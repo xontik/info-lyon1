@@ -4,21 +4,21 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Process_Group extends CI_Controller
 {
 
-    public function add($idSemestre)
+    public function add($semesterId)
     {
-        $idSemestre = intval(htmlspecialchars($idSemestre));
+        $semesterId = (int) htmlspecialchars($semesterId);
 
-        $this->load->model('administration_model', 'adminMod');
-        $this->load->model('semester_model', 'semMod');
+        $this->load->model('Groups');
+        $this->load->model('Semesters');
 
-        if (isset($_POST['nomGroupe'])) {
-            $nomGroupe = htmlspecialchars($_POST['nomGroupe']);
+        if (isset($_POST['groupName'])) {
+            $groupName = htmlspecialchars($_POST['groupName']);
 
             //TODO add preg_match
-            if ($this->semMod->isSemesterEditable($idSemestre))
+            if ($this->Semesters->isEditable($semesterId))
             {
-                if ($this->adminMod->addGroupe($idSemestre, $nomGroupe)) {
-                    addPageNotification('Groupe ' . $nomGroupe . ' ajouté', 'success');
+                if ($this->Groups->create($semesterId, $groupName)) {
+                    addPageNotification('Groupe ' . $groupName . ' ajouté avec succès', 'success');
                 } else {
                     addPageNotification('Erreur lors de la création du groupe', 'danger');
                 }
@@ -29,16 +29,15 @@ class Process_Group extends CI_Controller
             addPageNotification('Données manquantes', 'danger');
         }
 
-        redirect('Administration/Semestre/' . $idSemestre);
+        redirect('Administration/Semester/' . $semesterId);
     }
 
-    public function delete($idGroupe, $idSemestre)
+    public function delete($groupId, $semesterId)
     {
-        $this->load->model('administration_model', 'adminMod');
-        $this->load->model('semester_model', 'semMod');
+        $this->load->model('Groups');
 
-        if ($this->adminMod->isGroupeEditable($idGroupe)) {
-            if ($this->adminMod->deleteGroupe($idGroupe)) {
+        if ($this->Groups->isEditable($groupId)) {
+            if ($this->Groups->delete($groupId)) {
                 addPageNotification('Groupe supprimé', 'success');
             } else {
                 addPageNotification('Erreur lors de la suppression du groupe', 'danger');
@@ -47,39 +46,39 @@ class Process_Group extends CI_Controller
             addPageNotification('Ce semestre ne peut etre modifié', 'warning');
         }
 
-        redirect('Administration/Semestre/' . $idSemestre);
+        redirect('Administration/Semester/' . $semesterId);
     }
 
-    public function add_student($idSemestre)
+    public function add_student($semesterId)
     {
-        $this->load->model('administration_model', 'adminMod');
-        $this->load->model('semester_model', 'semMod');
-        $this->load->model('students_model', 'studentMod');
+        $this->load->model('Groups');
+        $this->load->model('Semesters');
 
         if (isset($_POST['submit'])
-            && isset($_POST['grp' . $_POST['submit']])
+            && isset($_POST['group' . $_POST['submit']])
         ) {
-            $numEtudiant = htmlspecialchars($_POST['grp' . $_POST['submit']]);
-            $idGroupe = intval(htmlspecialchars($_POST['submit']));
-            $semestreDuringSamePeriod = $this->semMod->getSemesterIdsSamePeriod($idSemestre);
-            $groupStudentIds = $this->studentMod->getIdsFromGroup($idGroupe);
+            $studentId = htmlspecialchars($_POST['group' . $_POST['submit']]);
+            $groupId = (int) htmlspecialchars($_POST['submit']);
 
-            if ($this->adminMod->isGroupeEditable($idGroupe))
+            $concurrentSemesters = $this->Semesters->getConcurrent($semesterId);
+
+            if ($this->Groups->isEditable($groupId))
             {
-                if ($grp = $this->studentMod->isStudentInGroupsOfSemesters($numEtudiant, $semestreDuringSamePeriod))
+                if ($group = $this->Semesters->anyHasStudent($studentId, $concurrentSemesters))
                 {
                     addPageNotification(
-                        'Impossible d\'ajouter cet étudiant car il est déjà en ' . $grp->nomGroupe . $grp->type,
+                        'Impossible d\'ajouter cet étudiant car il est déjà en '
+                        . $group->groupName . $group->courseType,
                         'danger'
                     );
                 }
                 else {
-                    $otherGroups = $this->semMod->getOtherGroups($idGroupe);
+                    $otherGroups = $this->Semesters->getOtherGroups($groupId);
 
                     $delete = false;
-                    foreach ($otherGroups as $idGrp) {
-                        if ($this->studentMod->isStudentInGroup($numEtudiant, $idGrp)) {
-                            $this->studentMod->deleteRelationGroupStudent($idGrp, $numEtudiant);
+                    foreach ($otherGroups as $otherGroup) {
+                        if ($this->Groups->hasStudent($studentId, $otherGroup->idGroup)) {
+                            $this->Groups->removeStudent($studentId, $otherGroup->idGroup);
                             $delete = true;
                         }
                     }
@@ -89,32 +88,31 @@ class Process_Group extends CI_Controller
                     } else {
                         addPageNotification('Etudiant ajouté', 'success');
                     }
-                    $this->studentMod->addToGroupe($numEtudiant, $idGroupe);
+                    $this->Groups->addStudent($studentId, $groupId);
 
                 }
             } else {
                 addPageNotification('Impossible de modifier ce groupe', 'danger');
             }
         } else {
-            addPageNotification('Données manquantes', 'danger');
+            addPageNotification('Données corrompues', 'danger');
         }
 
-        redirect('Administration/Semestre/' . $idSemestre);
+        redirect('Administration/Semester/' . $semesterId);
     }
 
-    public function delete_student($groupId, $numEtudiant, $idSemestre)
+    public function delete_student($groupId, $studentId, $semesterId)
     {
-        $this->load->model('administration_model', 'adminMod');
-        $this->load->model('students_model', 'studentMod');
+        $this->load->model('Groups');
 
-        if ($this->adminMod->isGroupeEditable($groupId))
+        if ($this->Groups->isEditable($groupId))
         {
-            $this->studentMod->deleteRelationGroupStudent($groupId, $numEtudiant);
+            $this->Groups->removeStudent($studentId, $groupId);
             addPageNotification('Etudiant supprimé du groupe', 'success');
         } else {
             addPageNotification('Impossible de modifier ce groupe', 'danger');
         }
-        redirect('Administration/Semestre/' . $idSemestre);
+        redirect('Administration/Semester/' . $semesterId);
 
     }
 }

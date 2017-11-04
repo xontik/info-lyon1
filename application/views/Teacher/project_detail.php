@@ -2,22 +2,22 @@
     $now = new DateTime();
 ?>
 <main>
-    <h2 class="header">Projet <?= $data['group']->nomGroupe ?></h2>
+    <h2 class="header">Projet <?= $data['project']->projectName ?></h2>
     <section>
         <h4>Membres</h4>
         <?php
         foreach($data['members'] as $member)
         { ?>
-            <p><?= $member->nom ?></p>
+            <p><?= $member->name ?></p>
             <?php
         } ?>
     </section>
     <section>
         <h4>Rendez-vous</h4>
         <?php
-        if (!empty($data['lastAppointement']))
+        if (!empty($data['lastAppointment']))
         {
-            $date = new DateTime($data['lastAppointement']->dateFinale);
+            $date = new DateTime($data['lastAppointment']->finalDate);
             $diff = $date->diff($now);
             ?>
             <div>
@@ -29,9 +29,9 @@
         <div>
             <h5>Prochain rendez-vous</h5>
             <?php
-            if (!is_null($data['nextAppointement']->dateFinale))
+            if (!is_null($data['nextAppointment']->finalDate))
             {
-                $date = new DateTime($data['nextAppointement']->dateFinale);
+                $date = new DateTime($data['nextAppointment']->finalDate);
                 $diff = $date->diff($now);
                 ?>
                 <p><?= readableTimeDifference($diff) ?></p>
@@ -46,12 +46,11 @@
                 <div>
                     <h5>Propositions de dates</h5>
                     <?php
-                    foreach($data['proposals'] as $proposition)
+                    foreach($data['proposals'] as $proposal)
                     { ?>
-                        <p><?= (new DateTime($proposition->date))->format('d/m/Y') ?></p>
-                        <!-- action="/process_professeur/opt_proposal" -->
-                        <form action="<?= base_url('Process_DateProposal/choose') ?>" method="POST">
-                            <input type="hidden" name="proposalId" value="<?= $proposition->idProposition ?>">
+                        <p><?= (new DateTime($proposal->date))->format('d/m/Y') ?></p>
+                        <form action="<?= base_url('Process_DateProposal/choose/' . $proposal->idDateProposal) ?>"
+                              method="POST">
                             <button type="submit" name="accept">Accepter</button>
                             <button type="submit" name="decline">Refuser</button>
                         </form>
@@ -63,8 +62,8 @@
             } ?>
             <div>
                 <h6>Proposer un rendez-vous</h6>
-                <form action="<?= base_url('/Process_DateProposal/add') ?>" method="POST">
-                    <input type="hidden" name="groupId" value="<?= $data['group']->idGroupe ?>">
+                <form action="<?= base_url('/Process_DateProposal/add/' . $data['project']->idProject) ?>"
+                      method="POST">
                     <div>
                         <input type="date" name="date" id="date">
                         <label for="date">Date proposée</label>

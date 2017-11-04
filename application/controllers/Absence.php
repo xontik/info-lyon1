@@ -8,31 +8,30 @@ class Absence extends TM_Controller
         if (!preg_match('/^S[1-4]$/', $semester)) {
             $semester = '';
         }
-
-        $this->load->model('absence_model');
-        $this->load->model('semester_model');
+        $this->load->model('Semesters');
 
         // Loads the max semester type the student went to
-        $max_semester = intval(
-            substr($this->semester_model->getSemesterTypeFromId(
-                $this->semester_model->getCurrentSemesterId($_SESSION['id'])
-            ), 1)
+        $max_semester = (int) substr($this->Semesters->getType(
+                $this->Semesters->getStudentCurrent($_SESSION['id'])
+            ), 1
         );
 
-        if ($semester > 'S' . $max_semester) {
+        if ($semester !== '' && $semester > 'S' . $max_semester) {
             addPageNotification('Vous essayez d\'accéder à un semestre futur !<br>Redirection vers votre semestre courant');
             $semester = '';
         }
 
-        $semesterId = $this->semester_model->getSemesterId($semester, $_SESSION['id']);
-        $semesterType = $this->semester_model->getSemesterTypeFromId($semesterId);
+        $semesterId = $this->Semesters->getSemesterId($semester, $_SESSION['id']);
+        $semesterType = $this->Semesters->getType($semesterId);
 
-        $absences = $this->absence_model->getStudentSemesterAbsence($_SESSION['id'], $semesterId);
+        $absences = $this->Semesters->getStudentAbsence($_SESSION['id'], $semesterId);
 
         $this->data = array(
-            'maxSemester' => $max_semester,
-            'semesterType' => $semesterType,
-            'basePage' => 'Absence',
+            'semesterTabs' => array(
+                'max' => $max_semester,
+                'semester' => $semesterType,
+                'basePage' => 'Absence',
+            ),
             'absences' => $absences
         );
 
@@ -46,20 +45,20 @@ class Absence extends TM_Controller
 
     public function secretariat_index()
     {
-        $this->load->model('absence_model');
-        $this->load->model('semester_model');
-        $this->load->model('students_model');
+        $this->load->model('Absences');
+        $this->load->model('Semesters');
+        $this->load->model('Students');
 
         $this->load->helper('time');
 
-        $period = $this->semester_model->getCurrentPeriod();
-        $students = $this->students_model->getStudentsOrganized();
-        $absences = $this->absence_model->getAbsencesInPeriod($period);
+        $period = $this->Semesters->getCurrentPeriod();
+        $students = $this->Students->getAllOrganized();
+        $unsortedAbsences = $this->Absences->getInPeriod($period);
 
         // Associate absence to the student
-        $abs_assoc = array();
-        foreach ($absences as $absence) {
-            $abs_assoc[$absence->numEtudiant][] = $absence;
+        $absences = array();
+        foreach ($unsortedAbsences as $absence) {
+            $absences[$absence->idStudent][] = $absence;
         }
 
         // Associate students absences to the day it happened
@@ -67,44 +66,38 @@ class Absence extends TM_Controller
         $assoc = array();
 
         foreach ($students as $student) {
-            if (!isset($assoc[$student->numEtudiant])) {
-                $assoc[$student->numEtudiant] = array(
-                    'numEtudiant' => $student->numEtudiant,
-                    'nom' => $student->nom,
-                    'prenom' => $student->prenom,
-                    'mail' => $student->mail,
-                    'groupe' => $student->nomGroupe,
-                    'absences' => array(
-                        'total' => 0,
-                        'totalDays' => 0,
-                        'justified' => 0
-                    )
+
+            if (!isset($assoc[$student->idStudent])) {
+                $student->absences = array(
+                    'total' => 0,
+                    'totalDays' => 0,
+                    'justified' => 0
                 );
 
-                if (isset($groups[$student->nomGroupe])) {
-                    $groups[$student->nomGroupe] += 1;
+                $assoc[$student->idStudent] = $student;
+
+                if (isset($groups[$student->groupName])) {
+                    $groups[$student->groupName] += 1;
                 } else {
-                    $groups[$student->nomGroupe] = 1;
+                    $groups[$student->groupName] = 1;
                 }
             }
 
-            if (isset($abs_assoc[$student->numEtudiant])) {
+            if (isset($absences[$student->idStudent])) {
 
-                $assoc[$student->numEtudiant]['absences']['justified'] = 0;
+                foreach ($absences[$student->idStudent] as $absence) {
+                    $index = $period->getDays(new DateTime($absence->beginDate));
+                    $assoc[$student->idStudent]->absences[$index][] = $absence;
 
-                foreach ($abs_assoc[$student->numEtudiant] as $absence) {
-                    $index = $period->getDays(new DateTime($absence->dateDebut));
-                    $assoc[$student->numEtudiant]['absences'][$index][] = $absence;
-
-                    if ($absence->justifiee) {
-                        $assoc[$student->numEtudiant]['absences']['justified'] += 1;
+                    if ($absence->justified) {
+                        $assoc[$student->idStudent]->absences['justified'] += 1;
                     }
                 }
 
-                $assoc[$student->numEtudiant]['absences']['total'] =
-                    count($abs_assoc[$student->numEtudiant]);
-                $assoc[$student->numEtudiant]['absences']['totalDays'] =
-                    count($assoc[$student->numEtudiant]['absences']) - 3;
+                $assoc[$student->idStudent]->absences['total'] =
+                    count($absences[$student->idStudent]);
+                $assoc[$student->idStudent]->absences['totalDays'] =
+                    count($assoc[$student->idStudent]->absences) - 3;
             }
         }
 
@@ -113,7 +106,7 @@ class Absence extends TM_Controller
             'groups' => $groups,
             'beginDate' => $period->getBeginDate(),
             'dayNumber' => $period->getDays(),
-            'absenceTypes' => $this->absence_model->getAbsenceTypes()
+            'absenceTypes' => $this->Absences->getTypes()
         );
 
         $this->show('Absences');

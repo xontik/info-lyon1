@@ -1,9 +1,9 @@
 <main>
     <h4>Projets Tuteurés</h4>
     <?php
-    foreach ($data['ptuts'] as $ptut)
+    foreach ($data['projects'] as $project)
     { ?>
-        <p><a href="<?= base_url('/Project/detail/' . $ptut->idGroupe) ?>"><?= $ptut->nomGroupe?></a></p>
+        <p><a href="<?= base_url('/Project/detail/' . $project->idProject) ?>"><?= $project->projectName ?></a></p>
         <?php
     }
     ?>

@@ -6,64 +6,66 @@ class Process_Administration extends CI_Controller
     /*
      * AJAX
      */
-    public function get_UEs()
+    public function get_teaching_units()
     {
-        $this->load->model('administration_model', 'adminMod');
+        $this->load->model('Courses');
 
-        $idParcours = intval(htmlspecialchars($_POST['idParcours']));
-
-        $UEsIn = $this->adminMod->getUEInParcours($idParcours);
-        $UEsOut = $this->adminMod->getUENotInParcours($idParcours);
+        $courseId = (int) htmlspecialchars($_POST['courseId']);
 
         $output = array(
-            'in' => $UEsIn,
-            'out' => $UEsOut
+            'in' => $this->Courses->getTeachingUnitsIn($courseId),
+            'out' => $this->Courses->getTeachingUnitsOut($courseId)
         );
 
         header('Content-Type: application/json');
         echo json_encode($output);
     }
 
-    public function getCSVGroupeSemestre($semesterId)
+    public function getSemesterCSV($semesterId)
     {
-        $semesterId = intval(htmlspecialchars($semesterId));
+        $semesterId = (int) htmlspecialchars($semesterId);
 
-        $this->load->model('Students_model', 'studentMod');
-        $this->load->model('Semester_model', 'semMod');
+        $this->load->model('Semesters');
 
-        $semestre = $this->semMod->getSemesterById($semesterId);
+        $semester = $this->Semesters->get($semesterId);
+        $students = $this->Semesters->getStudents($semesterId);
 
-        $groups = $this->studentMod->getStudentsBySemestre($semesterId);
         header('Content-Type: text/csv');
         header('Content-Encoding: UTF-8');
-        header('Content-disposition: attachment; filename=' . $semestre->anneeScolaire . '-' . $semestre->type . '.csv');
+        header('Content-disposition: attachment; filename=' . $semester->schoolYear . '-' . $semester->courseType . '.csv');
 
 
-        echo 'SEMESTRE;' . $semestre->idSemestre . ';<--Donnees non modifiable;;;' . PHP_EOL;
-        echo 'Type du semestre;' . $semestre->type . ';Annee scolaire;' . $semestre->anneeScolaire . '-' . (((int)$semestre->anneeScolaire) + 1) . ';<--Donnees non modifiable;' . PHP_EOL;
-        $idgroupe = 0;
-        foreach ($groups as $group) {
-            if ($idgroupe != $group->idGroupe) {
-                $idgroupe = $group->idGroupe;
+        echo 'SEMESTRE;' . $semester->idSemester . ';<--Donnees non modifiable;;;' . PHP_EOL;
+        echo 'Type du semestre;' . $semester->courseType
+            . ';Annee scolaire;' . $semester->schoolYear . '-' . ($semester->schoolYear + 1)
+            . ';<--Donnees non modifiable;' . PHP_EOL;
+
+        $lastGroup = 0;
+        foreach ($students as $student) {
+
+            if ($lastGroup != $student->idGroup) {
+                $lastGroup = $student->idGroup;
                 echo PHP_EOL . PHP_EOL . PHP_EOL . PHP_EOL;
-                echo 'GROUPE;' . $group->idGroupe . ';Nom du groupe;' . $group->nomGroupe . ';<--Donnees non modifiable;' . PHP_EOL;
+                echo 'GROUPE;' . $student->idGroup
+                    . ';Nom du groupe;' . $student->groupName
+                    . ';<--Donnees non modifiable;' . PHP_EOL;
             }
-            echo $group->numEtudiant . ';' . $group->nom . ';' . $group->prenom . ';;;' . PHP_EOL;
+            echo $student->idStudent
+                . ';' . $student->surname
+                . ';' . $student->name
+                . ';;;' . PHP_EOL;
         }
     }
 
     public function importCSV($idRedirect)
     {
-        $this->load->model('administration_model', 'adminMod');
-        $this->load->model('semester_model', 'semMod');
-        $this->load->model('students_model', 'studentMod');
+        $this->load->model('Semesters');
+        $this->load->model('Groups');
 
-        if (isset($_FILES['import']) && $_FILES['import']['size'] > 0)
-        {
+        if (isset($_FILES['import']) && $_FILES['import']['size'] > 0) {
             $format = strtolower(array_slice(
                 explode('.', $_FILES['import']['name']), -1)[0]);
-            if ($format === 'csv')
-            {
+            if ($format === 'csv') {
                 $csv = array();
 
                 ini_set('auto_detect_line_endings', TRUE);
@@ -79,20 +81,19 @@ class Process_Administration extends CI_Controller
                 ini_set('auto_detect_line_endings', FALSE);
 
 
-                $idSemestre = $csv[0][1];
+                $idSemester = $csv[0][1];
                 $alreadyAddedIds = array();
                 $groupStudentIds = array();
 
-                $refus = array();
+                $refusals = array();
 
-                $conserve = 0;
-                $delete = 0;
-                $ajout = 0;
+                $preserved = 0;
+                $deleted = 0;
+                $added = 0;
 
 
-                if ($this->semMod->isSemesterEditable($idSemestre))
-                {
-                    $semestreDuringSamePeriod = $this->semMod->getSemesterIdsSamePeriod($idSemestre);
+                if ($this->Semesters->isEditable($idSemester)) {
+                    $concurrentSemesters = $this->Semesters->getConcurrent($idSemester);
 
                     $groupId = 0;
                     foreach ($csv as $line) {
@@ -100,76 +101,89 @@ class Process_Administration extends CI_Controller
                         if ($line[0] == 'GROUPE') {
                             if ($groupId != 0) {
                                 foreach ($groupStudentIds as $studentId) {
-                                    $this->studentMod->deleteRelationGroupStudent($groupId, $studentId);
-                                    $delete++;
+                                    $this->Groups->removeStudent($studentId, $groupId);
+                                    $deleted++;
                                 }
                             }
+
                             $groupId = $line[1];
-                            if (!$this->semMod->isThisGroupInSemester($groupId, $idSemestre)) {
+
+                            if (!$this->Semesters->hasGroup($groupId, $idSemester)) {
                                 $groupId = 0;
                             }
-                            $groupStudentIds = $this->studentMod->getIdsFromGroup($groupId);
 
-                        } else {
-                            if ($groupId != 0) {
-                                $student = array('numEtudiant' => $line[0], 'nom' => $line[1], 'prenom' => $line[2]);
+                            $groupStudentIds = array_map(function($element) {
+                                return $element->idStudent;
+                            }, $this->Groups->getStudents($groupId));
 
-                                if ($grp = $this->studentMod->isStudentInGroupsOfSemesters($student['numEtudiant'], $semestreDuringSamePeriod)) {
+                        } else if ($groupId != 0) {
+                            $student = array(
+                                'idStudent' => $line[0],
+                                'surname' => $line[1],
+                                'name' => $line[2]
+                            );
 
-                                    $refus[] = array('student' => $student, 'fromGroup' => $grp, 'toGroup' => $this->adminMod->getGroupDetails($groupId));
+                            if ($group = $this->Semesters->anyHasStudent($student['idStudent'], $concurrentSemesters)) {
+
+                                $refusals[] = array(
+                                    'student' => $student,
+                                    'fromGroup' => $group,
+                                    'toGroup' => $this->Groups->get($groupId)
+                                );
+                            } else {
+
+                                if (($key = array_search($student['idStudent'], $groupStudentIds)) !== FALSE) {
+                                    $preserved++;
+
+                                    unset($groupStudentIds[$key]);
+                                    $alreadyAddedIds[$student['idStudent']] = $groupId;
+
                                 } else {
-
-                                    if (($key = array_search($student['numEtudiant'], $groupStudentIds)) !== FALSE) {
-                                        $conserve++;
-
-                                        unset($groupStudentIds[$key]);
-                                        $alreadyAddedIds[$student['numEtudiant']] = $groupId;
-
-
+                                    if (isset($alreadyAddedIds[$student['idStudent']])) {
+                                        $refusals[] = array(
+                                            'student' => $student,
+                                            'fromGroup' => $this->Groups->get($alreadyAddedIds[$student['idStudent']]),
+                                            'toGroup' => $this->Groups->get($groupId));
                                     } else {
-                                        if (isset($alreadyAddedIds[$student['numEtudiant']])) {
-                                            $refus[] = array('student' => $student, 'fromGroup' => $this->adminMod->getGroupDetails($alreadyAddedIds[$student['numEtudiant']]), 'toGroup' => $this->adminMod->getGroupDetails($groupId));
-                                        } else {
-                                            $ajout++;
-                                            $alreadyAddedIds[$student['numEtudiant']] = $groupId;
-                                            $this->studentMod->addToGroupe($student['numEtudiant'], $groupId);
-                                        }
+                                        $added++;
+                                        $alreadyAddedIds[$student['idStudent']] = $groupId;
+                                        $this->Groups->addStudent($student['idStudent'], $groupId);
                                     }
-
                                 }
                             }
                         }
                     }
-                    //TODO duplicate a reflechir cmment faire mieux car deux fois le meme code
+
+                    //TODO DUPLICATE Réflechir à comment faire mieux car deux fois le même code
                     if ($groupId != 0) {
                         foreach ($groupStudentIds as $studentId) {
-                            $this->studentMod->deleteRelationGroupStudent($groupId, $studentId);
-                            $delete++;
+                            $this->Groups->removeStudent($studentId, $groupId);
+                            $deleted++;
                         }
                     }
 
-                    if (count($refus)) {
-                        $msg = 'Erreur d\'import pour les etudiants:';
-                        foreach ($refus as $refu) {
+                    if (!empty($refusals)) {
+                        $msg = 'Erreur d\'import pour les etudiants suivants :<br>';
+                        foreach ($refusals as $refusal) {
 
-                            $msg .= $refu['student']['nom']
-                                . ' ' . $refu['student']['prenom']
-                                . ' de ' . $refu['fromGroup']->nomGroupe . $refu['fromGroup']->type
-                                . ' a ' . $refu['toGroup']->nomGroupe . $refu['toGroup']->type . '<br>';
+                            $msg .= $refusal['student']['surname']
+                                . ' ' . $refusal['student']['name']
+                                . ' de ' . $refusal['fromGroup']->groupName . $refusal['fromGroup']->courseType
+                                . ' a ' . $refusal['toGroup']->groupName . $refusal['toGroup']->courseType . '<br>';
                         }
                         addPageNotification($msg, 'danger');
 
                     } else {
                         addPageNotification(
-                            'Conservé : ' . $conserve
-                            . ', Supprimé : ' . $delete
-                            . ', Ajouté : ' . $ajout
-                            . ', Total : ' . ($conserve + $delete + $ajout));
+                            'Conservé : ' . $preserved . '<br>'
+                            . 'Supprimé : ' . $deleted . '<br>'
+                            . 'Ajouté : ' . $added . '<br>'
+                            . 'Total : ' . ($preserved + $deleted + $added));
                     }
 
-                    redirect('Administration/Semestre/' . $idSemestre);
+                    redirect('Administrations/Semester/' . $idSemester);
                 } else {
-                    addPageNotification('Semestre non éditable', 'danger');
+                    addPageNotification('Semester non éditable', 'danger');
                 }
             } else {
                 addPageNotification('Format du fichier incorrect', 'danger');
@@ -177,7 +191,7 @@ class Process_Administration extends CI_Controller
         } else {
             addPageNotification('Aucun fichier selectionné', 'danger');
         }
-        redirect('Administration/Semestre/' . $idRedirect);
+        redirect('Administration/Semester/' . $idRedirect);
     }
 
 }

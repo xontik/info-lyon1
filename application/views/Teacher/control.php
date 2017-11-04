@@ -10,58 +10,64 @@
                     <form method="post" action="<?= base_url('Control')?>">
                         <div class="row valign-wrapper">
                             <div class="input-field col s12 m6 l4">
-                                <select name="groupes" id="groupes">
+                                <select name="groupId" id="groupId">
                                     <option value="">Tous</option>
                                     <?php
-                                    if (isset($data['groupes']) && count($data['groupes'])) {
-                                        foreach ($data['groupes'] as $groupe) {
-                                            $selected = isset($data['restrict']['groupes'])
-                                                && $data['restrict']['groupes'] == $groupe->idGroupe
+                                    if (isset($data['groups']) && count($data['groups'])) {
+                                        foreach ($data['groups'] as $group) {
+                                            $selected = isset($data['restrict']['group'])
+                                                && $data['restrict']['group'] == $group->idGroup
                                                 ? 'selected' : '';
-                                            echo '<option value="' . $groupe->idGroupe . '" ' . $selected . ' >'
-                                                . $groupe->nomGroupe . $groupe->type
-                                                . '</option>' . PHP_EOL;
+                                            ?>
+                                            <option value="<?= $group->idGroup ?>" <?= $selected ?>
+                                                ><?= $group->groupName . $group->courseType ?>
+                                            </option>
+                                            <?php
                                         }
                                     }
                                     ?>
                                 </select>
-                                <label for="groupes">Groupe</label>
+                                <label for="groupId">Groupe</label>
                             </div>
                             <div class="input-field col s12 m6 l4">
-                                <select name="matieres" id="matieres">
+                                <select name="subjectId" id="subjectId">
                                     <option value="">Tous</option>
                                     <?php
-                                    if (isset($data['matieres'])) {
-                                        foreach ($data['matieres'] as $matiere) {
-                                            $selected = isset($data['restrict']['matieres'])
-                                            && $matiere->idMatiere == $data['restrict']['matieres']
+                                    if (isset($data['subjects'])) {
+                                        foreach ($data['subjects'] as $subject) {
+                                            $selected = isset($data['restrict']['subject'])
+                                            && $data['restrict']['subject'] == $subject->idSubject
                                                 ? 'selected' : '';
-                                            echo '<option value="' . $matiere->idMatiere . '" ' . $selected . '>'
-                                                . $matiere->codeMatiere . ' - ' . $matiere->nomMatiere
-                                                . '</option>' . PHP_EOL;
+                                            ?>
+                                            <option value="<?= $subject->idSubject ?>" <?= $selected ?>
+                                                ><?= $subject->subjectCode . ' - ' . $subject->subjectName ?>
+                                            </option>
+                                            <?php
                                         }
                                     }
                                     ?>
                                 </select>
-                                <label for="matieres">Matieres</label>
+                                <label for="subjectId">Matières</label>
                             </div>
                             <div class="input-field col s12 m6 l4">
-                                <select name="typeControle" id="typeControle">
+                                <select name="controlTypeId" id="controlTypeId">
                                     <option value="">Tous</option>
                                     <?php
-                                    if (isset($data['typeControle'])) {
-                                        foreach ($data['typeControle'] as $typeControle) {
-                                            $selected = isset($data['restrict']['typeControle'])
-                                                && $typeControle->idTypeControle == $data['restrict']['typeControle']
+                                    if (isset($data['controlTypes'])) {
+                                        foreach ($data['controlTypes'] as $controlType) {
+                                            $selected = isset($data['restrict']['controlType'])
+                                                && $data['restrict']['controlType'] == $controlType->idControlType
                                                 ? 'selected' : '';
-                                            echo '<option value="' . $typeControle->idTypeControle . '" ' . $selected . '>'
-                                                . $typeControle->nomTypeControle
-                                                . '</option>' . PHP_EOL;
+                                            ?>
+                                            <option value="<?= $controlType->idControlType ?>" <?= $selected ?>
+                                                ><?= $controlType->controlTypeName ?>
+                                            </option>
+                                            <?php
                                         }
                                     }
                                     ?>
                                 </select>
-                                <label for="typeControle">Type de contrôle</label>
+                                <label for="controlTypeId">Type de contrôle</label>
                             </div>
                         </div>
                         <div class="row col s12 m6 l4 right-align">
@@ -91,29 +97,29 @@
                         <?php
                         if (count($data['controls'])) {
                             foreach ($data['controls'] as $control) {
-                                $date = DateTime::createFromFormat('Y-m-d', $control->dateControle); ?>
+                                $date = DateTime::createFromFormat('Y-m-d', $control->controlDate); ?>
                                 <tr>
-                                    <td><?= $control->codeMatiere . '-' . $control->nomMatiere ?></td>
-                                    <td><?= $control->nomControle ?></td>
-                                    <td><?= $control->nomGroupe ?></td>
-                                    <td><?= $control->nomTypeControle ?> </td>
-                                    <td><?= floatval($control->coefficient) ?></td>
-                                    <td><?= floatval($control->diviseur) ?></td>
-                                    <td><?= $control->median != null ? $control->median : 'Non calculée' ?> </td>
-                                    <td><?= $control->average != null ? $control->average : 'Non calculée' ?>  </td>
+                                    <td><?= $control->subjectCode . '-' . $control->subjectName ?></td>
+                                    <td><?= $control->controlName ?></td>
+                                    <td><?= $control->groupName ?></td>
+                                    <td><?= $control->controlTypeName ?> </td>
+                                    <td><?= (float) $control->coefficient ?></td>
+                                    <td><?= (float) $control->divisor ?></td>
+                                    <td><?= is_null($control->median) ? 'Non calculée' : $control->median ?></td>
+                                    <td><?= is_null($control->average) ? 'Non calculée' : $control->average ?></td>
                                     <td><?= $date->format('d/m/Y') ?></td>
                                     <td>
-                                        <a href="<?= base_url('Process_Control/delete/' . $control->idControle) ?>">
+                                        <a href="<?= base_url('Process_Control/delete/' . $control->idControl) ?>">
                                             <i class="material-icons">delete</i>
                                         </a>
                                     </td>
                                     <td>
-                                        <a href="<?= base_url('Control/edit/' . $control->idControle) ?>">
+                                        <a href="<?= base_url('Control/edit/' . $control->idControl) ?>">
                                             <i class="material-icons">edit</i>
                                         </a>
                                     </td>
                                     <td>
-                                        <a href="<?= base_url('Mark/add/' . $control->idControle) ?>">
+                                        <a href="<?= base_url('Mark/add/' . $control->idControl) ?>">
                                             <i class="material-icons">note_add</i>
                                         </a>
                                     </td>

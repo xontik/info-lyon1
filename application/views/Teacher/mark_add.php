@@ -1,18 +1,18 @@
     <main class="container">
         <div class="section">
-            <h4>Contrôle <?= $data['control']->nomControle ?></h4>
-            <h5><?= $data['matiere']->codeMatiere . ' - ' . $data['matiere']->nomMatiere ?></h5>
-            <h5>le <?= (new DateTime($data['control']->dateControle))->format('d/m/Y') ?></h5>
+            <h4>Contrôle <?= $data['control']->controlName ?></h4>
+            <h5><?= $data['subject']->subjectCode . ' - ' . $data['subject']->subjectName ?></h5>
+            <h5>le <?= (new DateTime($data['control']->controlDate))->format('d/m/Y') ?></h5>
         </div>
         <div class="divider"></div>
-        <form method="post" action="<?php echo base_url('Process_Mark/add/'. ($data['control']->idControle)); ?>">
+        <form method="post" action="<?= base_url('Process_Mark/add/'. ($data['control']->idControl)) ?>">
             <div class="section container">
                 <div class="row">
                     <div class="col s5 right-align">
                         <h5>Élève</h5>
                     </div>
                     <div class="col s2 offset-s1">
-                        <h5>Note /<?= floatval($data['control']->diviseur) ?></h5>
+                        <h5>Note /<?= (float) $data['control']->divisor ?></h5>
                     </div>
                 </div>
                 <?php
@@ -20,11 +20,11 @@
                 { ?>
                     <div class="row valign-wrapper no-margin">
                         <div class="col s5  pull-s4 right-align">
-                            <span><?= $mark->nom . ' ' . $mark->prenom ?></span>
+                            <span><?= $mark->surname . ' ' . $mark->name ?></span>
                         </div>
                         <div class="col s2 offset-s1 pull-s4">
-                            <input type="number" name="<?= $mark->numEtudiant ?>" id="<?= $mark->numEtudiant ?>"
-                                   value="<?= !is_null($mark->valeur) ? $mark->valeur : '' ?>"
+                            <input type="number" name="<?= $mark->idStudent ?>" id="<?= $mark->idStudent ?>"
+                                   value="<?= !is_null($mark->value) ? $mark->value : '' ?>"
                                     min="0" step="0.25"/>
                         </div>
                     </div>

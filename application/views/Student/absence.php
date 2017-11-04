@@ -13,17 +13,17 @@
             <?php
             if(!empty($data['absences'])) {
                 foreach ($data['absences'] as $absence) {
-                    $dateD = new DateTime($absence->dateDebut);
-                    $dateF = new DateTime($absence->dateFin); ?>
-                    <tr <?= !$absence->justifiee ? 'class="red-text text-accent-4"' : '' ?>>
-                        <td><?= $dateD->format('d/m/Y') ?></td>
+                    $beginDate = new DateTime($absence->beginDate);
+                    $endDate = new DateTime($absence->endDate); ?>
+                    <tr <?= !$absence->justified ? 'class="red-text text-accent-4"' : '' ?>>
+                        <td><?= $beginDate->format('d/m/Y') ?></td>
                         <td>
-                            <?= $dateD->format('H:i') ?>
+                            <?= $beginDate->format('H:i') ?>
                             <i class="material-icons">arrow_forward</i>
-                            <?= $dateF->format('H:i') ?>
+                            <?= $endDate->format('H:i') ?>
                         </td>
-                        <td><?= $absence->typeAbsence ?></td>
-                        <td><?= !$absence->justifiee ? 'Injustifiée' : 'Justifiée' ?></td>
+                        <td><?= $absence->absenceTypeName ?></td>
+                        <td><?= $absence->justified ? 'Justifiée' : 'Injustifiée' ?></td>
                     </tr>
                 <?php }
             } else { ?>

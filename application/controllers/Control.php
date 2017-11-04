@@ -5,35 +5,32 @@ class Control extends TM_Controller
 {
     public function teacher_index()
     {
-        $this->load->model('control_model','ctrlMod');
+        $this->load->model('Teachers');
+        $this->load->model('Controls');
 
-        $controls = $this->ctrlMod->getControls($_SESSION['id']);
-        $matieres = $this->ctrlMod->getMatieres($_SESSION['id']);
-        $groupes = $this->ctrlMod->getGroupes($_SESSION['id']);
-        $typeControle = $this->ctrlMod->getTypeControle();
+        $controls = $this->Teachers->getControls($_SESSION['id']);
+        $subjects = $this->Teachers->getSubjects($_SESSION['id']);
+        $groups = $this->Teachers->getGroups($_SESSION['id']);
+        $controlTypes = $this->Controls->getTypes();
 
         $restrict = array(
-            'typeControle' => isset($_POST['typeControle']) ? intval(htmlspecialchars($_POST['typeControle'])) : 0,
-            'groupes' => isset($_POST['groupes']) ? intval(htmlspecialchars($_POST['groupes'])) : 0,
-            'matieres' => isset($_POST['matieres']) ? intval(htmlspecialchars($_POST['matieres'])) : 0
+            'controlType' => isset($_POST['controlTypeId']) ? (int) htmlspecialchars($_POST['controlTypeId']) : 0,
+            'group' => isset($_POST['groupId']) ? (int) htmlspecialchars($_POST['groupId']) : 0,
+            'subject' => isset($_POST['subjectId']) ? (int) htmlspecialchars($_POST['subjectId']) : 0
         );
 
-        foreach ($controls as $key => $control) {
-            if (!is_null($control->nomGroupe)
-                && $restrict['groupes'] !== 0
-                && $control->idGroupe != $restrict['groupes']
-            ) {
-                unset($controls[$key]);
-            }
-
-            if ($restrict['matieres'] !== 0
-                && $control->idMatiere != $restrict['matieres']
-            ) {
-                unset($controls[$key]);
-            }
-
-            if ($restrict['typeControle'] !== 0
-                && $restrict['typeControle'] != $control->idTypeControle
+        foreach ($controls as $key => $control)
+        {
+            if ((!is_null($control->groupName)
+                    && $restrict['group'] !== 0
+                    && $control->idGroup != $restrict['group']
+                )
+                || ($restrict['subject'] !== 0
+                    && $control->idSubject != $restrict['subject']
+                )
+                || ($restrict['controlType'] !== 0
+                    && $restrict['controlType'] != $control->idControlType
+                )
             ) {
                 unset($controls[$key]);
             }
@@ -41,10 +38,10 @@ class Control extends TM_Controller
 
         $this->data = array(
             'controls' => $controls,
-            'groupes' => $groupes,
-            'matieres' => $matieres,
+            'groups' => $groups,
+            'subjects' => $subjects,
             'restrict' => $restrict,
-            'typeControle' => $typeControle
+            'controlTypes' => $controlTypes
         );
 
         $this->show('Contrôles');
@@ -52,55 +49,57 @@ class Control extends TM_Controller
 
     public function teacher_add($promo = '')
     {
-        $this->load->model('control_model', 'ctrlMod');
+        $this->load->model('Teachers');
+        $this->load->model('Controls');
 
         $isPromo = strtolower($promo) === 'promo';
 
         if ($promo === '') {
-            $select = $this->ctrlMod->getEnseignements($_SESSION['id']);
+            $select = $this->Teachers->getEducations($_SESSION['id']);
         } else if ($isPromo) {
-            $select = $this->ctrlMod->getMatieres($_SESSION['id']);
+            $select = $this->Teachers->getSubjects($_SESSION['id']);
         } else {
             show_404();
             return;
         }
 
-        $typeControle = $this->ctrlMod->getTypeControle();
+        $controlTypes = $this->Controls->getTypes();
 
         $this->data = array(
             'select' => $select,
             'promo' => $isPromo,
-            'typeControle' => $typeControle
+            'controlTypes' => $controlTypes
         );
 
-        $this->show('title', 'Ajout de controle');
+        $this->show('Ajout de controle');
     }
 
     public function teacher_edit($controlId)
     {
-        $controlId = intval(htmlspecialchars($controlId[0]));
+        $controlId = (int) htmlspecialchars($controlId[0]);
         if ($controlId === 0) {
             show_404();
         }
 
-        $this->load->model('control_model', 'ctrlMod');
+        $this->load->model('Teachers');
+        $this->load->model('Controls');
 
-        $control = $this->ctrlMod->getControl($controlId);
+        $control = $this->Controls->get($controlId);
         if (empty($control)) {
             addPageNotification('Controle introuvable', 'danger');
             redirect('Controle');
         }
 
-        if (!$this->ctrlMod->checkProfessorRightOnControl($_SESSION['id'], $controlId)) {
+        if (!$this->Teachers->hasRightOn($controlId, $_SESSION['id'])) {
             addPageNotification('Vous n\'avez pas les droit sur ce controle', 'danger');
             redirect('Controle');
         }
 
-        $typeControle = $this->ctrlMod->getTypeControle();
+        $controlTypes = $this->Controls->getTypes();
 
         $this->data = array(
             'control' => $control,
-            'typeControle' => $typeControle
+            'controlTypes' => $controlTypes
         );
 
         $this->show('Edition de contrôle');

@@ -5,25 +5,28 @@ class Project extends TM_Controller
 {
     public function student_index()
     {
-        $this->load->model('ptut_model');
+        $this->load->model('Students');
+        $this->load->model('Projects');
+        $this->load->model('DateProposals');
+
         $this->load->helper('time');
 
-        $group = $this->ptut_model->getStudentGroup($_SESSION['id']);
-        if (empty($group)) {
+        $project = $this->Students->getProject($_SESSION['id']);
+        if ($project === FALSE) {
             addPageNotification('Vous ne faites pas parti d\'un groupe de projet');
             redirect('/');
         }
 
-        $members = $this->ptut_model->getGroupMembers($group->idGroupe);
-        $lastAppointement = $this->ptut_model->getLastAppointement($group->idGroupe);
-        $nextAppointement = $this->ptut_model->getNextAppointement($group->idGroupe);
-        $proposals = $this->ptut_model->getDateProposals($nextAppointement->idRDV);
+        $members = $this->Projects->getMembers($project->idProject);
+        $lastAppointment = $this->Projects->getLastAppointment($project->idProject);
+        $nextAppointment = $this->Projects->getNextAppointment($project->idProject);
+        $proposals = $this->DateProposals->getAll($nextAppointment->idAppointment);
 
         $this->data = array(
-            'group' => $group,
+            'project' => $project,
             'members' => $members,
-            'lastAppointement' => $lastAppointement,
-            'nextAppointement' => $nextAppointement,
+            'lastAppointment' => $lastAppointment,
+            'nextAppointment' => $nextAppointment,
             'proposals' => $proposals
         );
 
@@ -32,12 +35,12 @@ class Project extends TM_Controller
 
     public function teacher_index()
     {
-        $this->load->model('ptut_model');
+        $this->load->model('Teachers');
 
-        $ptuts = $this->ptut_model->getPtutsOfProf($_SESSION['id']);
+        $projects = $this->Teachers->getProjects($_SESSION['id']);
 
         $this->data = array(
-            'ptuts' => $ptuts
+            'projects' => $projects
         );
 
         $this->show('Projets tuteurés');
@@ -45,32 +48,38 @@ class Project extends TM_Controller
 
     public function teacher_detail($projectId)
     {
-        $projectId = intval(htmlspecialchars($projectId));
+        $projectId = (int) htmlspecialchars($projectId);
 
         if ($projectId === 0) {
             show_404();
         }
 
-        $this->load->model('ptut_model');
+        $this->load->model('Teachers');
+        $this->load->model('Projects');
+        $this->load->model('DateProposals');
+
         $this->load->helper('time');
 
-        $group = $this->ptut_model->getGroup($projectId, $_SESSION['id']);
-        if (empty($group)) {
+        $project = $this->Projects->get($projectId);
+        if ($project === FALSE) {
             addPageNotification('Projet introuvable', 'warning');
-            redirect('/Project');
+            redirect('Project');
+        }
+        if (!$this->Teachers->isTutor($projectId, $_SESSION['id'])) {
+            addPageNotification('Vous n\'avez pas accès à ce projet tuteuré', 'danger');
+            redirect('Project');
         }
 
-
-        $members = $this->ptut_model->getGroupMembers($projectId);
-        $lastAppointement = $this->ptut_model->getLastAppointement($projectId);
-        $nextAppointement = $this->ptut_model->getNextAppointement($projectId);
-        $proposals = $this->ptut_model->getDateProposals($nextAppointement->idRDV);
+        $members = $this->Projects->getMembers($projectId);
+        $lastAppointment = $this->Projects->getLastAppointment($projectId);
+        $nextAppointment = $this->Projects->getNextAppointment($projectId);
+        $proposals = $this->DateProposals->getAll($nextAppointment->idAppointment);
 
         $this->data = array(
-            'group' => $group,
+            'project' => $project,
             'members' => $members,
-            'lastAppointement' => $lastAppointement,
-            'nextAppointement' => $nextAppointement,
+            'lastAppointment' => $lastAppointment,
+            'nextAppointment' => $nextAppointment,
             'proposals' => $proposals
         );
 

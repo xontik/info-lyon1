@@ -5,19 +5,19 @@ class User extends CI_Controller {
 
     public function connect() {
 
-        $this->load->model('user_model', 'userModel');
+        $this->load->model('Users');
 
-        if ( !(isset($_POST['id']) &&
+        if ( !(isset($_POST['login']) &&
             isset($_POST['password'])) )
         {
             redirect('/');
         }
 
-        $id = strtolower(htmlspecialchars($_POST['id']));
+        $login = strtolower(htmlspecialchars($_POST['login']));
         $password = htmlspecialchars($_POST['password']);
-        $stay_connected = isset($_POST['stayConnected']) && $_POST['stayConnected'] === 'on';
+        $stayConnected = isset($_POST['stayConnected']) && $_POST['stayConnected'] === 'on';
 
-        if (empty($id)) {
+        if (empty($login)) {
             $_SESSION['form_errors']['id'] = 'Veuillez entrer un identifiant';
         }
         if (empty($password)) {
@@ -30,15 +30,15 @@ class User extends CI_Controller {
             redirect('/');
         }
 
-        $userdata = $this->userModel->getUserInformations($id, $password);
+        $userdata = $this->Users->getUserInformations($login, $password);
         if ($userdata !== FALSE) {
             $this->session->set_userdata($userdata);
 
-            if ($stay_connected) {
+            if ($stayConnected) {
                 //TODO Cookies
             }
         } else {
-            $_SESSION['form']['id'] = $id;
+            $_SESSION['form']['id'] = $login;
             $this->session->mark_as_flash('form_errors');
             $this->session->mark_as_flash('form');
         }

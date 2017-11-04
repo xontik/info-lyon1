@@ -5,8 +5,6 @@ class Process_Control extends CI_Controller
 {
     public function add($promo = '')
     {
-        $this->load->model('control_model', 'ctrlMod');
-
         if ($promo === '') {
             $this->_addSimple();
         } else if ($promo == 'promo') {
@@ -18,63 +16,74 @@ class Process_Control extends CI_Controller
 
     private function _addSimple()
     {
-        if (isset($_POST['enseignementId'])
-            && isset($_POST['nom'])
-            && isset($_POST['coeff'])
-            && isset($_POST['diviseur'])
-            && isset($_POST['date'])
-            && isset($_POST['typeId'])
-        ) {
-            $enseignementId = intval(htmlspecialchars($_POST['enseignementId']));
-            $nom = htmlspecialchars($_POST['nom']);
-            $coeff = floatval(htmlspecialchars($_POST['coeff']));
-            $diviseur = floatval(htmlspecialchars($_POST['diviseur']));
-            $date = htmlspecialchars($_POST['date']);
-            $typeId = intval(htmlspecialchars($_POST['typeId']));
+        $this->load->model('Teachers');
+        $this->load->model('Controls');
 
-            if ($enseignementId !== 0
-                && !empty($nom)
-                && $coeff !== 0
-                && $diviseur !== 0
-                && !empty($date)
+        echo '<pre>';
+        print_r($_POST);
+        echo '</pre>';
+
+        if (isset($_POST['name'])
+            && isset($_POST['typeId'])
+            && isset($_POST['coefficient'])
+            && isset($_POST['divisor'])
+            && isset($_POST['educationId'])
+            && isset($_POST['date'])
+        ) {
+            $name = htmlspecialchars($_POST['name']);
+            $typeId = (int) htmlspecialchars($_POST['typeId']);
+            $coefficient = (float) htmlspecialchars($_POST['coefficient']);
+            $divisor = (float) htmlspecialchars($_POST['divisor']);
+            $educationId = (int) htmlspecialchars($_POST['educationId']);
+            $date = htmlspecialchars($_POST['date']);
+
+            if (!empty($name)
                 && $typeId !== 0
+                && $coefficient !== 0
+                && $divisor !== 0
+                && $educationId !== 0
+                && !empty($date)
             ) {
-                if (!$this->ctrlMod->checkEnseignementProf($enseignementId, $_SESSION['id'])) {
+                if (!$this->Teachers->hasEducation($educationId, $_SESSION['id'])) {
                     addPageNotification('Vous n\'avez pas les droit sur cet enseignement', 'danger');
                     redirect('Control');
                 }
 
-                if ($this->ctrlMod->addControl($nom, $coeff, $diviseur, $typeId, $date, $enseignementId)) {
+                if ($this->Controls->create($name, $coefficient, $divisor, $typeId, $date, $educationId)) {
                     addPageNotification('Contrôle ajoutée avec succès', 'success');
                     redirect('Control');
                 }
             }
         }
+        
         addPageNotification('Erreur lors de l\'ajout du contrôle', 'danger');
-        redirect('Control');
+        //redirect('Control');
     }
 
     private function _addPromo()
     {
-        if (isset($_POST['matiereId'])
-            && isset($_POST['nom'])
-            && isset($_POST['coeff'])
-            && isset($_POST['diviseur'])
+        $this->load->model('Controls');
+
+        if (
+            isset($_POST['name'])
+            && isset($_POST['coefficient'])
+            && isset($_POST['divisor'])
+            && isset($_POST['subjectId'])
             && isset($_POST['date'])
         ) {
-            $matiereId = intval(htmlspecialchars($_POST['matiereId']));
-            $nom = htmlspecialchars($_POST['nom']);
-            $coeff = floatval(htmlspecialchars($_POST['coeff']));
-            $diviseur = floatval(htmlspecialchars($_POST['diviseur']));
+            $name = htmlspecialchars($_POST['name']);
+            $coefficient = (float) htmlspecialchars($_POST['coefficient']);
+            $divisor = (float) htmlspecialchars($_POST['divisor']);
+            $subjectId = (int) htmlspecialchars($_POST['subjectId']);
             $date = htmlspecialchars($_POST['date']);
 
-            if ($matiereId !== 0
-                && !empty($nom)
-                && $coeff !== 0
-                && $diviseur !== 0
+            if (!empty($name)
+                && $coefficient !== 0
+                && $divisor !== 0
+                && $subjectId !== 0
                 && !empty($date)
             ) {
-                if ($this->ctrlMod->addDsPromo($nom, $coeff, $diviseur, 1, $date, $matiereId)) {
+                if ($this->Controls->createPromo($name, $coefficient, $divisor, $date, $subjectId)) {
                     addPageNotification('Contrôle de promo ajouté avec succès', 'success');
                     redirect('Control');
                 }
@@ -85,44 +94,40 @@ class Process_Control extends CI_Controller
         redirect('Control');
     }
 
-    public function update($id = '')
+    public function update($controlId = '')
     {
-        $id = intval(htmlspecialchars($id));
-        if ($id === 0) {
+        $controlId = (int) htmlspecialchars($controlId);
+        if ($controlId === 0) {
             show_404();
         }
 
-        $this->load->model('control_model', 'ctrlMod');
+        $this->load->model('Teachers');
+        $this->load->model('Controls');
 
-        if (!$this->ctrlMod->checkProfessorRightOnControl($_SESSION['id'], $id)) {
+        if (!$this->Teachers->hasRightOn($controlId, $_SESSION['id'])) {
             addPageNotification('Vous n\'avez pas droit d\'accès à ce contrôle', 'danger');
             redirect('Controle');
         }
 
-        if (!$this->ctrlMod->checkProfessorRightOnControl($_SESSION['id'], $id)) {
-            addPageNotification('Vous n\'avez pas les droit sur ce controle', 'danger');
-            redirect('Controle');
-        }
-
-        if (isset($_POST['nom'])
-            && isset($_POST['coeff'])
-            && isset($_POST['diviseur'])
+        if (isset($_POST['name'])
+            && isset($_POST['coefficient'])
+            && isset($_POST['divisor'])
             && isset($_POST['date'])
             && isset($_POST['typeId'])
         ) {
-            $nom = htmlspecialchars($_POST['nom']);
-            $coeff = floatval(htmlspecialchars($_POST['coeff']));
-            $diviseur = floatval(htmlspecialchars($_POST['diviseur']));
+            $name = htmlspecialchars($_POST['name']);
+            $coefficient = (float) htmlspecialchars($_POST['coefficient']);
+            $divisor = (float) htmlspecialchars($_POST['divisor']);
             $date = htmlspecialchars($_POST['date']);
-            $typeId = intval(htmlspecialchars($_POST['typeId']));
+            $typeId = (int) htmlspecialchars($_POST['typeId']);
 
-            if (!empty($nom)
-                && $coeff !== 0
-                && $diviseur !== 0
+            if (!empty($name)
+                && $coefficient !== 0
+                && $divisor !== 0
                 && !empty($date)
                 && $typeId !== 0
             ) {
-                if ($this->ctrlMod->editControl($nom, $coeff, $diviseur, $typeId, $date, $id)) {
+                if ($this->Controls->update($controlId, $name, $coefficient, $divisor, $typeId, $date)) {
                     addPageNotification('Contrôle modifié avec succès');
                     redirect('Controle');
                 }
@@ -133,21 +138,22 @@ class Process_Control extends CI_Controller
         redirect('Controle');
     }
 
-    public function delete($id = '')
+    public function delete($controlId = '')
     {
-        $id = intval(htmlspecialchars($id));
-        if ($id === 0) {
+        $controlId = (int) htmlspecialchars($controlId);
+        if ($controlId === 0) {
             show_404();
         }
 
-        $this->load->model('control_model', 'ctrlMod');
+        $this->load->model('Teachers');
+        $this->load->model('Controls');
 
-        if (!$this->ctrlMod->checkProfessorRightOnControl($_SESSION['id'], $id)) {
+        if (!$this->Teachers->hasRightOn($controlId, $_SESSION['id'])) {
             addPageNotification('Vous n\'avez pas les droit sur ce contrôle', 'danger');
             redirect('Control');
         }
 
-        if ($this->ctrlMod->deleteControl($id)) {
+        if ($this->Controls->delete($controlId)) {
             addPageNotification('Contrôle supprimé avec succès', 'success');
             redirect('Control');
         }
@@ -155,4 +161,5 @@ class Process_Control extends CI_Controller
         addPageNotification('Erreur lors de la suppression du contrôle', 'danger');
         redirect('Control');
     }
+
 }

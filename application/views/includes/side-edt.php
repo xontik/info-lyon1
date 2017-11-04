@@ -17,7 +17,9 @@
  * <?= $data['side-edt'] ?>
  */
 
-usort($timetable, 'sortTimetable');
+if ($timetable !== false) {
+    usort($timetable, 'sortTimetable');
+}
 ?>
     <div id="side-edt-large" class="hide-on-small-and-down card center-align">
         <div class="card-content">
@@ -33,7 +35,10 @@ usort($timetable, 'sortTimetable');
                 </div>
                 <div class="content col s10">
                     <?php
-                    if (empty($timetable)) { ?>
+                    if ($timetable === false) {
+                        // TODO Proposer set ressource
+                    }
+                    else if (empty($timetable)) { ?>
                         <div>Pas de cours</div>
                     <?php
                     } else {
@@ -99,11 +104,15 @@ usort($timetable, 'sortTimetable');
                     } ?>
                 </div>
             </div>
+            <!-- TODO Proposer changer ressource-->
         </div>
     </div>
     <div id="side-edt-small" class="hide-on-med-and-up center-align">
         <?php
-        if (empty($timetable)) { ?>
+        if ($timetable === false) {
+            // TODO Proposer set ressource
+        }
+        else if (empty($timetable)) { ?>
             <div class="card">
                 <div class="card-content">
                     <a href="<?= base_url('Timetable') ?>" class="card-title">Pas de cours</a>
@@ -153,6 +162,6 @@ usort($timetable, 'sortTimetable');
                     <?php
                 }
             }
-
+            // TODO Proposer changer ressource
         } ?>
     </div>

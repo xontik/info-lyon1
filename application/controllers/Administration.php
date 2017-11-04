@@ -5,43 +5,45 @@ class Administration extends TM_Controller
 {
     public function secretariat_index()
     {
-        $this->load->model('Administration_model', 'adminMod');
-        $this->load->model('Semester_model', 'semMod');
+        $this->load->model('Courses');
+        $this->load->model('Semesters');
 
-        $parcours = $this->adminMod->getAllParcoursEditable();
-        $parcoursForSemester = $this->adminMod->getAllLastParcours();
-        $semestres = $this->semMod->getAllSemesters();
+        $course = $this->Courses->getEditable();
+        $courseTypes = $this->Courses->getCourseTypes();
+        $semesters = $this->Semesters->getAll();
 
         $outSem = array();
-        $idSemestre = 0;
+        $idSemester = 0;
 
-        foreach ($semestres as $key => $semestre)
+        foreach ($semesters as $semester)
         {
-            if ($idSemestre != $semestre->idSemestre) {
-                $idSemestre = $semestre->idSemestre;
-                $dateSem = $this->semMod->getSemesterPeriod($semestre->idSemestre);
+            if ($idSemester != $semester->idSemester) {
+                $idSemester = $semester->idSemester;
+                $period = $this->Semesters->getPeriod($idSemester);
 
                 $now = new DateTime();
-                $dateStart = $dateSem->getBeginDate();
-                $dateEnd = $dateSem->getEndDate();
 
-                if ($now > $dateEnd) {
-                    $etat = 'after';
-                } else if ($now > $dateStart) {
-                    $etat = 'now';
+                if ($now > $period->getEndDate()) {
+                    $state = 'after';
+                } else if ($now >= $period->getBeginDate()) {
+                    $state = 'now';
                 } else {
-                    $etat = 'before';
+                    $state = 'before';
                 }
 
-                $outSem[] = array('data' => $semestre,
-                    'etat' => $etat,
-                    'period' => $dateSem,
+                $outSem[] = array(
+                    'data' => $semester,
+                    'state' => $state,
+                    'period' => $period,
                     'groups' => array()
                 );
             }
 
-            if (!is_null($semestre->idGroupe)) {
-                $outSem[count($outSem) - 1]['groups'][] = array('idGroupe' => $semestre->idGroupe, 'nomGroupe' => $semestre->nomGroupe);
+            if (!is_null($semester->idGroup)) {
+                $outSem[count($outSem) - 1]['groups'][] = array(
+                    'idGroup' => $semester->idGroup,
+                    'groupName' => $semester->groupName
+                );
             }
         }
 
@@ -58,55 +60,45 @@ class Administration extends TM_Controller
         //$UEs = $this->adminMod->getAllUEParcours();
 
         $this->data = array(
-            'parcours' => $parcours,
-            'semestres' => $outSem,
-            'parcoursForSemester' => $parcoursForSemester
+            'courses' => $course,
+            'semesters' => $outSem,
+            'courseTypes' => $courseTypes
         );
 
         $this->show('Tableau de bord');
     }
 
-    public function secretariat_semestre($semesterId)
+    public function secretariat_semester($semesterId)
     {
-        $semesterId = intval(htmlspecialchars($semesterId));
+        $semesterId = (int) htmlspecialchars($semesterId);
 
-        $this->load->model('Students_model', 'studentMod');
-        $this->load->model('Semester_model', 'semMod');
+        $this->load->model('Semesters');
 
-        if (!$this->semMod->isSemesterEditable($semesterId)) {
-            addPageNotification('Impossible d\'editer ce semestre', 'danger');
+        if (!$this->Semesters->isEditable($semesterId)) {
+            addPageNotification('Impossible d\'éditer ce semestre', 'danger');
             redirect('Administration');
         }
-        $semestre = $this->semMod->getSemesterById($semesterId);
 
-        $groups = $this->studentMod->getStudentsBySemestre($semesterId);
+        $semester = $this->Semesters->get($semesterId);
+        $unsortedGroups = $this->Semesters->getGroups($semesterId);
+        $unsortedStudent = $this->Semesters->getStudents($semesterId);
 
-        //false pour recuperer ceux qui non pas dutout de group sahcant qu'on a deja ceux du semestre
-        $freeStudents = $this->semMod->getStudentWithoutGroup($semesterId, false);
+        // false pour récuperer ceux qui non pas du tout de groupe sachant qu'on a déjà ceux du semestre
+        $freeStudents = $this->Semesters->getStudentsWithoutGroup($semesterId, false);
 
-        $idGroupe = 0;
-        $outGroups = array();
-        foreach ($groups as $key => $group)
-        {
-            if ($idGroupe != $group->idGroupe) {
-                $idGroupe = $group->idGroupe;
-                $outGroups[] = array(
-                    'idGroupe' => $idGroupe,
-                    'nomGroupe' => $group->nomGroupe,
-                    'students' => array()
-                );
-            }
+        $groups = array();
+        foreach ($unsortedGroups as $group) {
+            $group->students = array();
+            $groups[$group->idGroup] = $group;
+        }
 
-            $outGroups[count($outGroups) - 1]['students'][] = array(
-                'prenom' => $group->prenom,
-                'nom' => $group->nom,
-                'numEtudiant' => $group->numEtudiant
-            );
+        foreach ($unsortedStudent as $student) {
+            $groups[$student->idGroup]->students[] = $student;
         }
 
         $this->data = array(
-            'groups' => $outGroups,
-            'semestre' => $semestre,
+            'semester' => $semester,
+            'groups' => $groups,
             'freeStudents' => $freeStudents
         );
 

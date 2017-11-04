@@ -1,24 +1,22 @@
 <main class="container">
+    <h4 class="header">Ajouter un contrôle</h4>
     <form method="post"
         action="<?= base_url('Process_Control/add' . ($data['promo'] ? '/promo' : '')) ?>">
         <div class="section">
-            <h4>Ajouter un contrôle</h4>
-        </div>
-        <div class="divider"></div>
-        <div class="section">
             <div class="row">
                 <div class="input-field col s12 l8">
-                    <input type="text" id="nom" name="nom"/>
-                    <label for="nom">Libellé</label>
+                    <input type="text" id="name" name="name"/>
+                    <label for="name">Libellé</label>
                 </div>
                 <div class="input-field col s12 m6 l4">
                     <select name="typeId" id="typeId">
                         <?php
-                        foreach ($data['typeControle'] as $typeControle)
+                        foreach ($data['controlTypes'] as $controlType)
                         { ?>
-                            <option value="<?= $typeControle->idTypeControle ?>"
-                                <?= $data['promo'] && $typeControle->idTypeControle == '1' ? 'selected' : '' ?>
-                            ><?= $typeControle->nomTypeControle ?></option>
+                            <option value="<?= $controlType->idControlType ?>"
+                                <?= $data['promo'] && $controlType->idControlType == 1 ? 'selected' : '' ?>
+                                ><?= $controlType->controlTypeName ?>
+                            </option>
                             <?php
                         }
                         ?>
@@ -28,36 +26,40 @@
             </div>
             <div class="row">
                 <div class="input-field col s6 m4 l1">
-                    <input type="number" id="coeff" name="coeff" step="0.5" min="0" value="1"/>
-                    <label for="coeff">Coefficient</label>
+                    <input type="number" id="coefficient" name="coefficient" step="0.5" min="0" value="1"/>
+                    <label for="coefficient">Coefficient</label>
                 </div>
                 <div class="input-field col s6 m4 l1">
-                    <input type="number" id="diviseur" name="diviseur" min="1" value="20"/>
-                    <label for="diviseur">Diviseur</label>
+                    <input type="number" id="divisor" name="divisor" min="1" value="20"/>
+                    <label for="divisor">Diviseur</label>
                 </div>
                 <div class="input-field col s12 m6 l5">
                     <?php if ($data['promo'] === false)
                     { ?>
-                        <select name="enseignementId" id="enseignementId">
+                        <select name="educationId" id="educationId">
                             <?php
-                            foreach ($data['select'] as $d)
+                            foreach ($data['select'] as $education)
                             { ?>
-                                <option value="<?= $d->idEnseignement ?>"><?= $d->nomGroupe . ' en ' . $d->nomMatiere ?></option>
+                                <option value="<?= $education->idEducation ?>"
+                                    ><?= $education->groupName . ' en ' . $education->subjectName ?>
+                                </option>
                                 <?php
                             } ?>
                         </select>
-                        <label for="enseignementId">Groupe</label>
+                        <label for="educationId">Groupe</label>
                         <?php
                     } else { ?>
-                        <select name="matiereId" id="matiereId">
+                        <select name="subjectId" id="subjectId">
                             <?php
-                            foreach ($data['select'] as $d)
+                            foreach ($data['select'] as $subject)
                             { ?>
-                                <option value="<?= $d->idMatiere ?>"><?= $d->codeMatiere . ' - ' . $d->nomMatiere ?></option>
+                                <option value="<?= $subject->idSubject ?>"
+                                    ><?= $subject->subjectCode . ' - ' . $subject->subjectName ?>
+                                </option>
                                 <?php
                             } ?>
                         </select>
-                        <label for="matiereId">Matière</label>
+                        <label for="subjectId">Matière</label>
                         <?php
                     } ?>
                 </div>

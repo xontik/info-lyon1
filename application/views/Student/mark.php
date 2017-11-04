@@ -9,7 +9,7 @@
 
             foreach ($data['marks'] as $mark):
                 // If new subject, put header
-                if ($mark->codeMatiere !== $last_subject):
+                if ($mark->subjectCode !== $last_subject):
                     if (!is_null($last_subject))
                     { ?>
                                 <div class="divider clearfix"></div>
@@ -27,16 +27,16 @@
                         $subjectCount = 0;
                     }
 
-                    $last_subject = $mark->codeMatiere;
+                    $last_subject = $mark->subjectCode;
                     ?><div class="card grey lighten-5">
                         <div class="card-content">
                             <div class="card-title row">
                                 <div class="col s12 m6">
                                     <i class="material-icons small left">school</i>
-                                    <h5><?= $mark->codeMatiere . ' - ' . $mark->nomMatiere ?></h5>
+                                    <h5><?= $mark->subjectCode . ' - ' . $mark->subjectName ?></h5>
                                 </div>
                                 <div class="col s12 m6 right-align">
-                                    <span>Coefficient : <?= floatval($mark->coefficientMatiere) ?></span>
+                                    <span>Coefficient : <?= floatval($mark->subjectCoefficient) ?></span>
                                 </div>
                             </div>
                             <div class="divider row"></div>
@@ -44,14 +44,14 @@
                                 <?php
                 endif; // if change subject
 
-                $subjectSum += floatval($mark->valeur) / floatval($mark->diviseur) * 20 * floatval($mark->coefficient);
+                $subjectSum += floatval($mark->value) / floatval($mark->divisor) * 20 * floatval($mark->coefficient);
                 $subjectCount += floatval($mark->coefficient);
                 ?>
                                 <div class="col s12 m6 l4 xl3">
                                     <div class="card card-content grey lighten-4">
-                                        <span class="card-title"><?= $mark->nomControle; ?></span>
-                                        <p>Note : <?= floatval($mark->valeur) . ' / ' . floatval($mark->diviseur) ?></p>
-                                        <p>Date : <?= (new DateTime($mark->dateControle))->format('d/m/Y') ?></p>
+                                        <span class="card-title"><?= $mark->controlName; ?></span>
+                                        <p>Note : <?= floatval($mark->value) . ' / ' . floatval($mark->divisor) ?></p>
+                                        <p>Date : <?= (new DateTime($mark->controlDate))->format('d/m/Y') ?></p>
                                         <p>Coefficient : <?= floatval($mark->coefficient) ?></p>
                                         <p>Moyenne
                                             : <?= isset($mark->average) ? $mark->average : 'Non calculée' ?></p>

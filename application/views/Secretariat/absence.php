@@ -26,21 +26,21 @@
                         $last_group = null;
                         foreach($data['absences'] as $student) {
                             $class = '';
-                            if ($last_group !== $student['groupe']) {
+                            if ($last_group !== $student->groupName) {
                                 if (!is_null($last_group)) {
                                     $class = ' class="group-change"';
                                 }
-                                $last_group = $student['groupe'];
+                                $last_group = $student->groupName;
                             }
 
-                            $missCount = $student['absences']['total'];
-                            $dayMissCount = $student['absences']['totalDays'];
-                            $justifiedMiss = $student['absences']['justified'];
+                            $missCount = $student->absences['total'];
+                            $dayMissCount = $student->absences['totalDays'];
+                            $justifiedMiss = $student->absences['justified'];
 
-                            echo '<div id="' . $student['numEtudiant'] . '"' . $class . '>'
-                                . '<p>' . $student['nom'] . ' ' . $student['prenom'] . '</p>'
-                                . '<i class="material-icons">info</i>';
                             ?>
+                            <div id="<?= $student->idStudent ?>" <?= $class ?>>
+                                <p><?= $student->name ?></p>
+                                <i class="material-icons">info</i>
                                 <div>
                                     <p><?= $missCount ?> demi-journée<?= $missCount > 1 ? 's' : ''?></p>
                                     <?= $missCount > 1
@@ -52,8 +52,8 @@
                                         . ' justifiée' . ($justifiedMiss > 1 ? 's' : '') . '</p>'
                                         : '' ?>
                                 </div>
+                            </div>
                             <?php
-                            echo '</div>';
                         }
                         ?>
                     </div>
@@ -76,7 +76,9 @@
                                 $curr_month = $curr_date->format('n');
                                 if ($last_month !== $curr_month) {
                                     $colspan = days_in_month($curr_date->format('n'), $curr_date->format('Y'));
-                                    echo '<td colspan="' . $colspan . '">' . $monthes[$curr_month - 1] . '</td>';
+                                    ?>
+                                    <td colspan="<?= $colspan ?>"><?= $monthes[$curr_month - 1] ?></td>
+                                    <?php
                                     $last_month = $curr_month;
                                 }
 
@@ -90,23 +92,19 @@
                             <?php
                             // table head
                             $curr_date = clone $data['beginDate'];
-                            $today = new DateTime();
+                            $now = new DateTime();
+
                             $last_month = null;
                             for ($i = 0; $i <= $data['dayNumber']; $i++) {
-                                $class = '';
-                                if ($last_month !== $curr_date->format('F')) {
-                                    $class = ' class="first-month-day"';
-                                    $last_month = $curr_date->format('F');
-                                }
-
-                                echo '<td'
-                                    . ($curr_date->format('Y-m-d') == $today->format('Y-m-d') ? ' id="active-day"' : '')
-                                    . $class . '>'
-                                    . $curr_date->format('j')
-                                    . '</td>';
+                                $activeDay = $curr_date->format('Y-m-d') == $now->format('Y-m-d')
+                                    ? ' id="active-day"' : ''
+                                ?>
+                                <td <?= $activeDay ?>><?= $curr_date->format('j') ?></td>
+                                <?php
                                 $curr_date->modify('+1 day');
                             }
                             unset($curr_date);
+                            unset($last_month);
                             ?>
                         </tr>
                     </thead>
@@ -115,75 +113,75 @@
                         // table content
                         $last_group = null;
                         foreach ($data['absences'] as $student) {
-                            echo '<tr';
-                            if ($last_group !== $student['groupe']) {
+                            $groupChange = '';
+                            if ($last_group !== $student->groupName) {
                                 if (!is_null($last_group)) {
-                                    echo ' class="group-change"';
+                                    $groupChange = 'class="group-change"';
                                 }
-                                $last_group = $student['groupe'];
+                                $last_group = $student->groupName;
                             }
-                            echo '>';
+                            ?>
+                            <tr <?= $groupChange ?>>
+                                <?php
+                                for ($i = 0; $i <= $data['dayNumber']; $i++) {
+                                    $infos = array();
+                                    $classes = array();
+                                    $eventClass = '';
 
-                            for ($i = 0; $i <= $data['dayNumber']; $i++) {
-                                $infos = array();
-                                $classes = array();
-                                $eventClass = '';
+                                    if (isset($student->absences[$i])) {
+                                        $justified = 0;
 
-                                if (isset($student['absences'][$i])) {
-                                    $justified = 0;
+                                        foreach($student->absences[$i] as $curr_absence) {
+                                            $absenceClass = 'abs-' . strtolower($curr_absence->absenceTypeName);
+                                            $eventClass = $eventClass === ''
+                                                ? $absenceClass
+                                                : ($eventClass !== $absenceClass
+                                                    ? 'abs-several'
+                                                    : $eventClass);
 
-                                    foreach($student['absences'][$i] as $curr_absence) {
-                                        $absenceClass = 'abs-' . strtolower($curr_absence->typeAbsence);
-                                        $eventClass = $eventClass === ''
-                                            ? $absenceClass
-                                            : ($eventClass !== $absenceClass
-                                                ? 'abs-several'
-                                                : $eventClass);
+                                            if ($curr_absence->justified) {
+                                                $justified += 1;
+                                            }
 
-                                        if ($curr_absence->justifiee) {
-                                            $justified += 1;
+                                            $curr_infos['absenceId'] = $curr_absence->idAbsence;
+                                            $curr_infos['timePeriod'] = substr($curr_absence->beginDate, -8, 5)
+                                                . ' - '
+                                                . substr($curr_absence->endDate, -8, 5);
+                                            $curr_infos['justify'] = $curr_absence->justified ? 'Oui' : 'Non';
+                                            $curr_infos['absenceType'] = $curr_absence->absenceTypeName;
+                                            $infos[] = $curr_infos;
                                         }
 
-                                        $curr_infos['absenceId'] = $curr_absence->idAbsence;
-                                        $curr_infos['timePeriod'] = substr($curr_absence->dateDebut, -8, 5)
-                                            . ' - '
-                                            . substr($curr_absence->dateFin, -8, 5);
-                                        $curr_infos['justify'] = $curr_absence->justifiee ? 'Oui' : 'Non';
-                                        $curr_infos['absenceType'] = $curr_absence->typeAbsence;
-                                        $infos[] = $curr_infos;
+                                        // td has absences
+                                        $classes[] = 'abs';
+                                        $classes[] = $eventClass;
+                                        if ($justified === count($student->absences[$i])) {
+                                            $classes[] = 'abs-justifiee';
+                                        }
                                     }
 
-                                    // td has absences
-                                    $classes[] = 'abs';
-                                    $classes[] = $eventClass;
-                                    if ($justified === count($student['absences'][$i])) {
-                                        $classes[] = 'abs-justifiee';
-                                    }
-                                }
-
-                                echo '<td ' . (!empty($classes)
-                                        ? ' class="' . join(' ', $classes) . '"' : '')
-                                    . '>';
-
-                                if (!empty($infos)) {
-                                    foreach($infos as $info) {
-                                        ?>
-                                        <div id="absn<?= $info['absenceId'] ?>"
-                                        class="<?= 'abs-' . strtolower($info['absenceType']) ?>">
-                                            <p>Horaires : <?= $info['timePeriod'] ?></p>
-                                            <p>Justifiée : <?= $info['justify'] ?>  </p>
-                                            <p><?= $info['absenceType'] ?></p>
-                                        </div>
+                                    ?>
+                                    <td <?= (!empty($classes) ? ' class="' . join(' ', $classes) . '"' : '') ?>>
                                         <?php
-                                    }
-                                }
-                                echo '</td>';
-
-                            } // for each day
-
-                            echo '</tr>';
-                        } // for each student
-                        ?>
+                                        if (!empty($infos)) {
+                                            foreach($infos as $info) {
+                                                ?>
+                                                <div id="absn<?= $info['absenceId'] ?>"
+                                                class="<?= 'abs-' . strtolower($info['absenceType']) ?>">
+                                                    <p>Horaires : <?= $info['timePeriod'] ?></p>
+                                                    <p>Justifiée : <?= $info['justify'] ?>  </p>
+                                                    <p><?= $info['absenceType'] ?></p>
+                                                </div>
+                                                <?php
+                                            }
+                                        }
+                                        ?>
+                                    </td>
+                                    <?php
+                                } // for each day ?>
+                            </tr>
+                            <?php
+                        } // for each student ?>
                     </tbody>
                 </table>
                 <table id="header-fixed"></table>
@@ -211,8 +209,8 @@
                                         <option value="0" disabled selected>Selectionner...</option>
                                         <?php
                                         foreach($data['absenceTypes'] as $option) {
-                                            echo '<option value="' . $option->idTypeAbsence . '">'
-                                                . $option->nomTypeAbsence
+                                            echo '<option value="' . $option->idAbsenceType . '">'
+                                                . $option->absenceTypeName
                                                 . '</option>';
                                         }
                                         ?>
@@ -232,17 +230,17 @@
                             </div>
                             <div class="col l10 offset-l1">
                                 <div id="pm-time" class="center-block">
-                                    <p>14:00 - 18:00</p>
-                                    <p>14:00 - 16:00</p>
-                                    <p>16:00 - 18:00</p>
+                                    <p></p>
+                                    <p></p>
+                                    <p></p>
                                 </div>
                                 <div class="input-field">
                                     <select id="pm-absenceType">
                                         <option value="0" disabled selected>Selectionner...</option>
                                         <?php
                                         foreach($data['absenceTypes'] as $option) {
-                                            echo '<option value="' . $option->idTypeAbsence . '">'
-                                                . $option->nomTypeAbsence
+                                            echo '<option value="' . $option->idAbsenceType . '">'
+                                                . $option->absenceTypeName
                                                 . '</option>';
                                         }
                                         ?>
@@ -265,6 +263,6 @@
         </div>
     </main>
     <script>
-        // Needed for absence_table script
+        // Needed for script
         var FIRST_DATE = new Date('<?= $data['beginDate']->format('Y-m-d') ?>');
     </script>

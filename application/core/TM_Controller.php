@@ -35,13 +35,13 @@ abstract class TM_Controller extends CI_Controller {
     private function _fillData($userType, $page)
     {
         if (isset($_SESSION['pageNotif'])) {
-            // Keep them to be able to load with ajax
+            // Keep them to be able to load them with ajax
             $this->session->keep_flashdata('pageNotif');
         }
 
         $this->viewData['notifications'] = array_merge(
-            isset($_SESSION['sessionNotif']) ? $_SESSION['sessionNotif'] : array()
-            // $this->notifications->getAll($_SESSION['userId'])
+            isset($_SESSION['sessionNotif']) ? $_SESSION['sessionNotif'] : array(),
+            $this->Notifications->getAll($_SESSION['userId'])
         );
 
         $resourceName = ucfirst($userType) . '/' . $this->pageName . ($page !== 'index' ? '_' . $page : '');

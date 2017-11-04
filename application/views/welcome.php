@@ -21,16 +21,16 @@ defined('BASEPATH') OR exit('No direct script access allowed'); ?>
                 <form action="<?= base_url('user/connect') ?>" method="post">
                     <div class="input-field">
                         <i class="material-icons prefix">account_circle</i>
-                        <input type="text" id="form-id" name="id"
+                        <input type="text" id="login" name="login"
                                value="<?= isset($_SESSION['form']['id']) ? $_SESSION['form']['id'] : ''?>"
                                class="<?= isset($_SESSION['form_errors']['id']) ? 'invalid' : '' ?>"/>
-                        <label for="form-id">Identifiant</label>
+                        <label for="login">Identifiant</label>
                     </div>
                     <div class="input-field">
                         <i class="material-icons prefix">lock</i>
-                        <input type="password" id="form-password" name="password"
+                        <input type="password" id="password" name="password"
                                class="<?= isset($_SESSION['form_errors']['password']) ? 'invalid' : '' ?>"/>
-                        <label for="form-password">Mot de passe</label>
+                        <label for="password">Mot de passe</label>
                     </div>
                     <div>
                         <input type="checkbox" name="stayConnected" id="stayConnected" />
