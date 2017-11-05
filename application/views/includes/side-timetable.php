@@ -36,10 +36,13 @@ if ($timetable !== false) {
                 <div class="content col s10">
                     <?php
                     if ($timetable === false) {
-                        // TODO Proposer set ressource
+                        ?>
+                        <p>Votre emploi du temps n'est pas configuré.</p>
+                        <p><a href="<?= base_url('Timetable/edit') ?>">Cliquez ici pour rentrer une ressource ADE</a></p>
+                        <?php
                     }
                     else if (empty($timetable)) { ?>
-                        <div>Pas de cours</div>
+                        <p>Pas de cours</p>
                     <?php
                     } else {
                         $timeAtDate = $date->format('H:i');

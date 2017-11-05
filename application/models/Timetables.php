@@ -38,42 +38,6 @@ class Timetables extends CI_Model
     }
 
     /**
-     * Create a timetable, associated to an owner, or not
-     *
-     * @param int $resource
-     * @param string $json
-     * @param int $who The id of the owner (optionnal)
-     * @param string $type 'group', 'teacher' or 'room'
-     * @return bool;
-     */
-    public function create($resource, $json, $who = null, $type = 'group')
-    {
-        $data = array(
-            'resource' => $resource,
-            'json' => $json
-        );
-
-        if ($who !== null) {
-            switch($type) {
-                case 'group':
-                    $data['idGroup'] = $who;
-                    break;
-                case 'teacher':
-                    $data['idTeacher'] = $who;
-                    break;
-                case 'room':
-                    $data['roomName'] = $who;
-                    break;
-                default:
-                    trigger_error('Type is not valid');
-                    return false;
-            }
-        }
-
-        return $this->db->insert('Timetable', $data);
-    }
-
-    /**
      * Update the association between ressource and owner.
      *
      * @param int $resource
@@ -108,6 +72,57 @@ class Timetables extends CI_Model
             ->set($data)
             ->where('resource', $resource)
             ->update('Timetable');
+    }
+
+    /**
+     * Create a timetable, associated to an owner, or not
+     *
+     * @param int $resource
+     * @param string $json
+     * @param int $who The id of the owner (optionnal)
+     * @param string $type 'group', 'teacher' or 'room'
+     * @return int|bool The id inserted on success, FALSE if there was a problem
+     */
+    public function create($resource, $json, $who = null, $type = 'group')
+    {
+        $data = array(
+            'resource' => $resource,
+            'json' => $json
+        );
+
+        if ($who !== null) {
+            switch($type) {
+                case 'group':
+                    $data['idGroup'] = $who;
+                    break;
+                case 'teacher':
+                    $data['idTeacher'] = $who;
+                    break;
+                case 'room':
+                    $data['roomName'] = $who;
+                    break;
+                default:
+                    trigger_error('Type is not valid');
+                    return false;
+            }
+        }
+
+        if($this->db->insert('Timetable', $data)) {
+            return $this->db->insert_id();
+        } else {
+            return FALSE;
+        }
+    }
+
+    /**
+     * Deletes a timetable.
+     *
+     * @param $resourceId
+     * @return bool
+     */
+    public function delete($resourceId)
+    {
+        return $this->db->delete('Timetable', array('resource' => $resourceId));
     }
 
 }

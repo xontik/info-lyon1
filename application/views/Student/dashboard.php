@@ -3,6 +3,6 @@
             <p><h4 class="header container">Tableau de bord</h4></p>
         </div>
         <div class="col s12 m5 l4 xl3">
-            <?= $data['side-edt'] ?>
+            <?= $data['side-timetable'] ?>
         </div>
     </main>
