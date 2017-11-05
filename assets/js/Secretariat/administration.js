@@ -1,7 +1,7 @@
 $(document).ready(function() {
     var TUin = $("#TUin");
     var TUout = $("#TUout");
-    var course = $("#courseId");
+    var course = $("#futureCourseId");
 
     var checkboxId = 0;
 
@@ -131,4 +131,24 @@ $(document).ready(function() {
         return window.confirm("Êtes-vous sûr de vouloir supprimer ce parcours ?");
     });
 
+    var courseToAddSemester = $("#courseId");
+    var selectYear = $('#schoolYear');
+
+    courseToAddSemester
+        .change(function() {
+            $.ajax({
+                dataType: 'json',
+                data: {'courseId': courseToAddSemester.val()},
+                url: '/Process_Course/get_year',
+                type: 'POST',
+                success: function(data) {
+                    selectYear.empty();
+                    for (var i = 0; i < 3; i++) {
+                        selectYear.append($(
+                            '<option value="'+(data.year + i) +'">'+(data.year + i)+' - '+(data.year + i + 1 )+'</option>'));
+                    }
+                    selectYear.material_select();
+                }
+            });
+        }).change();
 });
