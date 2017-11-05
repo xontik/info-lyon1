@@ -21,6 +21,7 @@ $(document).ready(function() {
                         TUin.append(
                             $('<li></li>')
                                 .addClass('collection-item')
+                                .addClass('clickable')
                                 .data('tu-id', TU.idTeachingUnit)
                                 .append(
                                     $('<div></div>')
@@ -30,6 +31,8 @@ $(document).ready(function() {
                                                 + ' ' + TU.teachingUnitCode
                                                 + ' - ' + TU.teachingUnitName
                                             )
+                                            .addClass('clickable')
+
                                         )
                                         .append($('<div></div>')
                                             .addClass('secondary-content')
@@ -39,6 +42,8 @@ $(document).ready(function() {
                                             )
                                         )
                                 )
+                                .addClass('clickable')
+
                         )
                     });
 
@@ -62,6 +67,7 @@ $(document).ready(function() {
                                             )
                                         )
                                 )
+                                .addClass('clickable')
                         )
                     });
                 }
@@ -126,6 +132,12 @@ $(document).ready(function() {
             });
         }
     });
+
+    $(document).on('click','.clickable',function(e) {
+        var checkbox = $(this).find('input');
+        checkbox.prop("checked", !checkbox.prop('checked'));
+    });
+
 
     $('#delete').submit(function(e) {
         return window.confirm("Êtes-vous sûr de vouloir supprimer ce parcours ?");

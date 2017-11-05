@@ -28,7 +28,7 @@
                             <ul id="TUin" class="collection with-header col s12 l10 offset-l1 no-padding">
                                 <li class="collection-header"><h5>UE lié au module</h5></li>
                             </ul>
-                            <div class="col s12 m2 l12 center-align">
+                            <div class="col s12 center-align">
                                 <button type="button" class="btn" id="add">
                                     <i class="material-icons">keyboard_arrow_up</i>
                                 </button>
