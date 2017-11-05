@@ -9,7 +9,7 @@
         <?php if ($groupCount = count($data['groups'])) { ?>
             <form action="<?= base_url('Process_Group/add_student/') . $data['semester']->idSemester ?>"
                   method="post">
-                <table class="striped centered">
+                <table class="centered">
                     <thead>
                         <tr>
                             <?php
@@ -127,7 +127,7 @@
             </form>
         <?php } ?>
         </div>
-        <div class=card-action>
+        <div class="card-action">
             <a href="<?= base_url('Administration') ?>" class="btn-flat waves-effect">Retour</a>
             <a href="<?= base_url('Process_Semester/delete/'
                 . $data['semester']->idSemester) ?>" class="btn-flat waves-effect">Supprimer ce semestre</a>
