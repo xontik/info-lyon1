@@ -154,7 +154,6 @@ class Process_Administration extends CI_Controller
                         }
                     }
 
-                    //TODO DUPLICATE Réflechir à comment faire mieux car deux fois le même code
                     if ($groupId != 0) {
                         foreach ($groupStudentIds as $studentId) {
                             $this->Groups->removeStudent($studentId, $groupId);
