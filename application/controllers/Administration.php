@@ -55,10 +55,6 @@ class Administration extends TM_Controller
             }
         });
 
-
-        //TODO differencier ce qui est modifiable
-        //$UEs = $this->adminMod->getAllUEParcours();
-
         $this->data = array(
             'courses' => $course,
             'semesters' => $outSem,

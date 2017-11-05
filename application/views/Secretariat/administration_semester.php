@@ -1,17 +1,15 @@
 <main class="container">
-    <!-- TODO Ajouter un lien pour revenir en arrière (page Administration) -->
-    <h4>
-        Gestion du semestre: <?= $data['semester']->courseType
-        . ' - ' . $data['semester']->schoolYear
-        . ' ' . ($data['semester']->delayed ? ' différé' : '') ?>
-    </h4>
-    <section>
-        <a href="<?= base_url('Process_Semester/delete/' . $data['semester']->idSemester) ?>">Supprimer ce semestre</a>
 
+
+    <div class="card grey lighten-5">
+        <div class="card-content">
+            <span class="card-title">Gestion du semestre: <?= $data['semester']->courseType
+                . ' - ' . $data['semester']->schoolYear
+                . ' ' . ($data['semester']->delayed ? ' différé' : '') ?></span>
         <?php if ($groupCount = count($data['groups'])) { ?>
             <form action="<?= base_url('Process_Group/add_student/') . $data['semester']->idSemester ?>"
                   method="post">
-                <table>
+                <table class="striped centered">
                     <thead>
                         <tr>
                             <?php
@@ -29,6 +27,7 @@
                             <?php
                             for ($i = 0; $i < $groupCount; $i++) {
                                 ?>
+
                                 <th>N°Etudiant</th>
                                 <th>Nom</th>
                                 <th>Prenom</th>
@@ -80,7 +79,7 @@
                                                 <?php
                                                 foreach ($data['freeStudents'] as $student) { ?>
                                                     <option value="<?= $student->idStudent ?>"
-                                                        ><?= $student->name . ' ' . $student->surname ?>
+                                                        ><?= $student->idStudent . ' ' .$student->name . ' ' . $student->surname ?>
                                                     </option>
                                                     <?php
                                                 } ?>
@@ -95,7 +94,7 @@
                                                     <?php
                                                     foreach ($otherGroup->students as $student) { ?>
                                                         <option value="<?= $student->idStudent ?>"
-                                                            ><?= $student->name . ' ' . $student->surname?>
+                                                            ><?= $student->idStudent . ' ' . $student->name . ' ' . $student->surname?>
                                                         </option>
                                                         <?php
                                                     } ?>
@@ -115,7 +114,7 @@
                         <tr>
                             <?php foreach ($data['groups'] as $group): ?>
                                 <td colspan="3">
-                                    <a href="<?= base_url('Process_Group/delete'
+                                    <a class="btn waves-effect" href="<?= base_url('Process_Group/delete'
                                                 . '/' . $group->idGroup
                                                 . '/' . $data['semester']->idSemester) ?>">
                                         Supprimer ce groupe
@@ -127,35 +126,64 @@
                 </table>
             </form>
         <?php } ?>
-    </section>
-    <section>
-        <h2>Actions Groupe</h2>
-        <ul>
-            <li>
-                <a href="<?= base_url('Process_Administration/getSemesterCSV'
-                    . '/' . $data['semester']->idSemester) ?>">
-                    Exporter groupes de ce semestre
-                </a>
-            </li>
-            <li>
+        </div>
+        <div class=card-action>
+            <a href="<?= base_url('Administration') ?>" class="btn-flat waves-effect">Retour</a>
+            <a href="<?= base_url('Process_Semester/delete/'
+                . $data['semester']->idSemester) ?>" class="btn-flat waves-effect">Supprimer ce semestre</a>
+            <a href="<?= base_url('Process_Administration/getSemesterCSV'
+                . '/' . $data['semester']->idSemester) ?>" class="btn-flat waves-effect">
+                Exporter groupes de ce semestre
+            </a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s6">
+            <div class="card grey lighten-5">
                 <form action="<?= base_url('Process_Administration/importCSV/' . $data['semester']->idSemester) ?>"
-                      method="post" enctype="multipart/form-data">
-                    <input type="hidden" name="MAX_FILE_SIZE" value="30000"/>
-                    <input type="file" name="import" value="">
-                    <button type="submit">Importer</button>
+                    method="post" enctype="multipart/form-data">
+                    <div class="card-content">
+                        <span class="card-title" >Importer un fichier .csv de groupe </span>
+                        <div class="file-field input-field">
+                            <div class="btn waves-effects">
+                                <span>Fichier</span>
+                                <input type="file" name="import" value="">
+                            </div>
+                            <div class="file-path-wrapper">
+                                <input class="file-path validate" type="text">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-action">
+                        <button class="btn-flat waves-effect" type="submit">Importer</button>
+                    </div>
                 </form>
-            </li>
-            <li>
+            </div>
+        </div>
+        <div class="col s6">
+            <div class="card grey lighten-5">
                 <form action="<?= base_url('Process_Group/add/' . $data['semester']->idSemester) ?>"
                       method="post">
-                    <label for="groupeName">Nom du groupe : </label>
-                    <input type="text" name="groupName" id="groupName">
-                    <button type="submit">Ajouter Groupe</button>
+                      <div class="card-content">
+                          <span class="card-title" >Ajouter un groupe </span>
+                          <div class="input-field">
+                              <input type="text" name="groupName" id="groupName">
+                              <label for="groupeName">Nom du groupe : </label>
+                          </div>
+                      </div>
+                      <div class="card-action">
+                          <button class="btn-flat waves-effect" type="submit">Ajouter</button>
+                      </div>
                 </form>
-            </li>
-        </ul>
+            </div>
+        </div>
+    </div>
 
-    </section>
+
+
+
+
+
     <section>
         <h2>Attribution professeurs a un couple Groupe-Matiere</h2>
         <p>Ici ajout manuel</p>

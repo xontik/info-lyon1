@@ -14,16 +14,18 @@ class Process_Group extends CI_Controller
         if (isset($_POST['groupName'])) {
             $groupName = htmlspecialchars($_POST['groupName']);
 
-            //TODO add preg_match
-            if ($this->Semesters->isEditable($semesterId))
-            {
-                if ($this->Groups->create($semesterId, $groupName)) {
-                    addPageNotification('Groupe ' . $groupName . ' ajouté avec succès', 'success');
+            if(preg_match('/G[0-9]/',$groupName) === 1) {
+                if ($this->Semesters->isEditable($semesterId)) {
+                    if ($this->Groups->create($semesterId, $groupName)) {
+                        addPageNotification('Groupe ' . $groupName . ' ajouté avec succès', 'success');
+                    } else {
+                        addPageNotification('Erreur lors de la création du groupe', 'danger');
+                    }
                 } else {
-                    addPageNotification('Erreur lors de la création du groupe', 'danger');
+                    addPageNotification('Ce semestre ne peut pas être modifié', 'danger');
                 }
             } else {
-                addPageNotification('Ce semestre ne peut pas être modifié', 'danger');
+                addPageNotification('Format du nom de groupe incorrect', 'danger');
             }
         } else {
             addPageNotification('Données manquantes', 'danger');

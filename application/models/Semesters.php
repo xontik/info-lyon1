@@ -398,7 +398,6 @@ class Semesters extends CI_Model
     {
         $concurrentSemesters = $this->getConcurrent($semestreId, $strict);
 
-        //TODO a retravailler
         $sql =
             'SELECT *
             FROM Student
