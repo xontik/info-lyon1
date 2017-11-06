@@ -70,10 +70,10 @@
                     </select>
                     <label for="teacherId">Professeur</label>
                 </div>
-                <div class="btn-footer">
-                    <button type="submit" class="waves-effect waves-light btn">Envoyer</button>
-                </div>
             </form>
+        </div>
+        <div class="card-action">
+            <button type="submit" class="btn-flat waves-effect waves-light">Envoyer</button>
         </div>
     </div>
 </main>
