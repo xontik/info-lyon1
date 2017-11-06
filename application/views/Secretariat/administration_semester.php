@@ -140,7 +140,7 @@
     <div class="row">
         <div class="col s6">
             <div class="card grey lighten-5">
-                <form action="<?= base_url('Process_Administration/importCSV/' . $data['semester']->idSemester) ?>"
+                <form action="<?= base_url('Process_Administration/importCSVSemester/' . $data['semester']->idSemester) ?>"
                     method="post" enctype="multipart/form-data">
                     <div class="card-content">
                         <span class="card-title" >Importer un fichier .csv de groupe </span>

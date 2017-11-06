@@ -357,7 +357,7 @@ class Semesters extends CI_Model
             ->join('Semester', 'idSemester')
             ->join('Course', 'idCourse')
             ->where('idStudent', $studentId)
-            ->where('idSemester IN', $semesterIds)
+            ->where_in('idSemester', $semesterIds)
             ->get()
             ->row();
 

@@ -27,6 +27,8 @@ class Process_Administration extends CI_Controller
 
         $this->load->model('Semesters');
 
+        $this->load->helper('csv_helper');
+
         $semester = $this->Semesters->get($semesterId);
         $students = $this->Semesters->getStudents($semesterId);
 
@@ -35,53 +37,51 @@ class Process_Administration extends CI_Controller
         header('Content-disposition: attachment; filename=' . $semester->schoolYear . '-' . $semester->courseType . '.csv');
 
 
-        echo 'SEMESTRE;' . $semester->idSemester . ';<--Donnees non modifiable;;;' . PHP_EOL;
-        echo 'Type du semestre;' . $semester->courseType
-            . ';Annee scolaire;' . $semester->schoolYear . '-' . ($semester->schoolYear + 1)
-            . ';<--Donnees non modifiable;' . PHP_EOL;
 
+        $csv = array();
+        $csv[] = array( 'IUT' => true,
+                        'SEMESTRE' => $semester->idSemester,
+                        'editable' => false);
+        $csv[] = array( 'Type du semestre' => $semester->courseType,
+                        'Annee scolaire' => $semester->schoolYear . '-' . ($semester->schoolYear + 1),
+                        'editable' => false);
         $lastGroup = 0;
         foreach ($students as $student) {
 
             if ($lastGroup != $student->idGroup) {
                 $lastGroup = $student->idGroup;
-                echo PHP_EOL . PHP_EOL . PHP_EOL . PHP_EOL;
-                echo 'GROUPE;' . $student->idGroup
-                    . ';Nom du groupe;' . $student->groupName
-                    . ';<--Donnees non modifiable;' . PHP_EOL;
+                $csv[] = array('newline' => 4);
+                $csv[] = array('GROUPE' => $student->idGroup,
+                                'Nom du groupe' => $student->groupName,
+                                'editable' => false);
+
             }
-            echo $student->idStudent
-                . ';' . $student->surname
-                . ';' . $student->name
-                . ';;;' . PHP_EOL;
+            $csv[] = array( $student->idStudent,
+                            $student->surname,
+                            $student->name);
+
         }
+
+        echo arrayToCsv($csv);
+
+
     }
 
-    public function importCSV($idRedirect)
+    public function importCSVSemester($idRedirect)
     {
         $this->load->model('Semesters');
         $this->load->model('Groups');
+        $this->load->helper('csv_helper');
 
         if (isset($_FILES['import']) && $_FILES['import']['size'] > 0) {
-            $format = strtolower(array_slice(
-                explode('.', $_FILES['import']['name']), -1)[0]);
-            if ($format === 'csv') {
-                $csv = array();
 
-                ini_set('auto_detect_line_endings', TRUE);
-                $file = fopen($_FILES['import']['tmp_name'], 'r');
+            if (isCSVFile($_FILES['import']['name'])) {
 
-                while ($line = fgetcsv($file, 0, ';')) {
-                    if ($line[0]) {
-                        $csv[] = $line;
-                    }
-                }
-
-                fclose($file);
-                ini_set('auto_detect_line_endings', FALSE);
-
-
-                $idSemester = $csv[0][1];
+                $csv = csvToArray($_FILES['import']['tmp_name']);
+                // echo '<pre>';
+                // print_r($csv);
+                // echo '</pre>';
+                $idSemester = $csv[0][3];
                 $alreadyAddedIds = array();
                 $groupStudentIds = array();
 
@@ -180,7 +180,7 @@ class Process_Administration extends CI_Controller
                             . 'Total : ' . ($preserved + $deleted + $added));
                     }
 
-                    redirect('Administrations/Semester/' . $idSemester);
+                    redirect('Administration/Semester/' . $idSemester);
                 } else {
                     addPageNotification('Semester non éditable', 'danger');
                 }
