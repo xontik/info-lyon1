@@ -2,17 +2,19 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 
-function csvToArray($filepath, $_s = ';') {
+function csvToArray($filepath, $separator = ';')
+{
     $csv = array();
     try {
         ini_set('auto_detect_line_endings', TRUE);
         $file = fopen($filepath, 'r');
 
-        $line = fgetcsv($file, 0, $_s);
-        if (substr($line[0],0,3) !== 'sep' ) {
+        $line = fgetcsv($file, 0, $separator);
+        if (substr($line[0], 0, 3) !== 'sep' ) {
             $csv[] = $line;
         }
-        while ($line = fgetcsv($file, 0, $_s)) {
+
+        while ($line = fgetcsv($file, 0, $separator)) {
             if ($line[0]) {
                 $csv[] = $line;
             }
@@ -20,8 +22,8 @@ function csvToArray($filepath, $_s = ';') {
 
         fclose($file);
         ini_set('auto_detect_line_endings', FALSE);
-        if($_s == ';' && $csv[0][0] != 'IUT' ) {
-            return csvToArray($filepath,',');
+        if ($separator == ';' && $csv[0][0] != 'IUT' ) {
+            return csvToArray($filepath, ',');
         }
         return $csv;
     } catch (Exception $e) {
@@ -30,7 +32,8 @@ function csvToArray($filepath, $_s = ';') {
 
 }
 
-function isCSVFile($name) {
+function isCSVFile($name)
+{
     try {
         $format = strtolower(array_slice(
             explode('.', $name), -1)[0]);
@@ -40,8 +43,10 @@ function isCSVFile($name) {
     }
 }
 
-function arrayToCsv($array, $_s = ','){
-    $out = "sep=".$_s.PHP_EOL;
+function arrayToCsv($array, $separator = ',')
+{
+    $out = "sep=" . $separator . PHP_EOL;
+
     foreach ($array as $line) {
         foreach ($line as $key => $value) {
             if ($key === 'newline') {
@@ -50,17 +55,16 @@ function arrayToCsv($array, $_s = ','){
                 }
             }
             else if (!is_numeric($key)) {
-                if ($key == 'editable' && $value == false) {
+                if ($key === 'editable' && $value === false) {
                     $out .= '<--Donnees non modifiables';
                 } else {
-                    $out .= $key . $_s . $value . $_s;
+                    $out .= $key . $separator . $value . $separator;
                 }
             } else {
-                $out .= $value . $_s;
+                $out .= $value . $separator;
             }
         }
         $out .= PHP_EOL;
     }
     return $out;
-
 }

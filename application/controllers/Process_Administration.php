@@ -27,7 +27,7 @@ class Process_Administration extends CI_Controller
 
         $this->load->model('Semesters');
 
-        $this->load->helper('csv_helper');
+        $this->load->helper('csv');
 
         $semester = $this->Semesters->get($semesterId);
         $students = $this->Semesters->getStudents($semesterId);
@@ -63,8 +63,6 @@ class Process_Administration extends CI_Controller
         }
 
         echo arrayToCsv($csv);
-
-
     }
 
     public function importCSVSemester($idRedirect)
