@@ -35,22 +35,24 @@ if ($timetable !== false) {
                 </div>
                 <div class="content col s10">
                     <?php
-                    if ($timetable === false) {
+                    if (empty($timetable)) {
                         ?>
-                        <p>Votre emploi du temps n'est pas configuré.</p>
-                        <p><a href="<?= base_url('Timetable/edit') ?>">Cliquez ici pour rentrer une ressource ADE</a></p>
+                        <section class="section">
+                            <?php
+                            if ($timetable === false) {
+                                ?>
+                                <p>Votre emploi du temps n'est pas configuré.</p>
+                                <p><a href="<?= base_url('Timetable/edit') ?>">Cliquez ici pour rentrer une ressource ADE</a></p>
+                                <?php
+                            } else {
+                                ?>
+                                <p>Pas de cours</p>
+                                <?php
+                            } ?>
+                        </section>
                         <?php
-                    }
-                    else if (empty($timetable)) { ?>
-                        <p>Pas de cours</p>
-                    <?php
                     } else {
                         $timeAtDate = $date->format('H:i');
-
-                        function fill_time($from, $to) {
-                            ?><div class="fill" style="height: <?= computeTimeToHeight($from, $to) ?>"></div>
-                            <?php
-                        }
 
                         $lastTimeEnd = null;
                         $linksPointer = 0;
@@ -60,10 +62,10 @@ if ($timetable !== false) {
                             if (is_null($lastTimeEnd)) {
                                 // Fill if day doesn't begin at 08:00
                                 if ($event['time_start'] !== '08:00') {
-                                    fill_time('08:00', $event['time_start']);
+                                    fillTime('08:00', $event['time_start']);
                                 }
                             } else if ($lastTimeEnd !== $event['time_start']) {
-                                fill_time($lastTimeEnd, $event['time_start']);
+                                fillTime($lastTimeEnd, $event['time_start']);
                             }
                             $lastTimeEnd = $event['time_end'];
 
@@ -101,24 +103,35 @@ if ($timetable !== false) {
 
                         // Add a fill if day doesn't end at 18:00
                         if (!is_null($lastTimeEnd) && $lastTimeEnd !== '18:00') {
-                            fill_time($lastTimeEnd, '18:00');
+                            fillTime($lastTimeEnd, '18:00');
                         }
 
                     } ?>
                 </div>
             </div>
-            <!-- TODO Proposer changer ressource-->
         </div>
     </div>
     <div id="side-edt-small" class="hide-on-med-and-up center-align">
         <?php
-        if ($timetable === false) {
-            // TODO Proposer set ressource
-        }
-        else if (empty($timetable)) { ?>
+        if (empty($timetable)) { ?>
             <div class="card">
-                <div class="card-content">
-                    <a href="<?= base_url('Timetable') ?>" class="card-title">Pas de cours</a>
+                <?php
+                if ($timetable === false) {
+                    ?>
+                    <div class="card-content">
+                        <span class="card-title">Votre emploi du temps n'est pas configuré</span>
+                    </div>
+                    <div class="card-action">
+                        <a class="btn-flat" href="<?= base_url('Timetable/edit') ?>">Configurer</a>
+                    </div>
+                    <?php
+                } else {
+                    ?>
+                    <div class="card-content">
+                        <a href="<?= base_url('Timetable') ?>" class="card-title">Pas de cours</a>
+                    </div>
+                    <?php
+                } ?>
                 </div>
             </div>
         <?php

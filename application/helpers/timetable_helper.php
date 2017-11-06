@@ -30,7 +30,7 @@ function getNextTimetable($resources, $period, &$datetime = NULL) {
     }
 
     $timetable = getTimetable($resources, $period, $datetime);
-	
+
     // Look at next not empty timetable within 3 days
     while ($limit < 3 && empty($timetable)) {
         $datetime->modify('+1 day');
@@ -80,7 +80,7 @@ function getTimetable($resources, $period, $datetime = NULL)
 	    $firstDate->modify('-' . ($datetimeDay - 1) . ' days');
 
 	    $lastDate = clone $datetime;
-	    $lastDate->modify('+' . abs(5 - $datetimeDay). ' days');
+	    $lastDate->modify('+' . abs(6 - $datetimeDay). ' days');
     }
     else {
 	    trigger_error('Period isn\'t "day" nor "week"');
@@ -107,18 +107,18 @@ function getTimetable($resources, $period, $datetime = NULL)
             // If one day isn't up-to-date, update entire period
             if (!(array_key_exists($year, $timetable)
                 && array_key_exists($week, $timetable[$year])
-                && array_key_exists($dayOfWeek, $timetable[$year][$week])
-                && $validTimeLimit < $timetable[$year][$week][$dayOfWeek]['updated'])
+                && ($period === 'week'
+                    || (array_key_exists($dayOfWeek, $timetable[$year][$week])
+                        && $validTimeLimit < $timetable[$year][$week][$dayOfWeek]['updated'])))
             ) {
-                $timetable = merge_arrays(_icsToTimetable(_getAdeRequest($resources, $firstDate, $lastDate)), $timetable);
+                $timetable = mergeArrays(_icsToTimetable(_getAdeRequest($resources, $firstDate, $lastDate)), $timetable);
                 $updated = true;
                 break;
             }
 
-            $temp->modify('+1 day');
+            $temp->modify('+1 ' . $period);
             $diff = $temp->diff($lastDate);
         } while ($diff->days !== 0 && $diff->invert !== 1);
-
     }
 	// If no preexisting data was found
 	else {
@@ -159,10 +159,10 @@ function _narrow($timetable, $begin, $end, $period)
         $week = $temp->format('W');
         $dayOfWeek = $temp->format('N');
 
-        if (array_key_exists($year, $timetable) &&
-            array_key_exists($week, $timetable[$year]) &&
-            array_key_exists($dayOfWeek, $timetable[$year][$week]))
-        {
+        if (array_key_exists($year, $timetable)
+            && array_key_exists($week, $timetable[$year])
+            &&  array_key_exists($dayOfWeek, $timetable[$year][$week])
+        ) {
             if (!array_key_exists($year, $final))
                 $final[$year] = array();
             if (!array_key_exists($week, $final[$year]))
@@ -254,7 +254,7 @@ function _icsToTimetable($ics_filepath)
                 $description = explode('\n', $event['DESCRIPTION']);
 
 				$groupLimit = 1;
-				while (preg_match('/^(G[1-9])?S[1-9]$/i', $description[$groupLimit])) {
+				while (preg_match('/^(G[1-9]+)?S[1-9]+$/i', $description[$groupLimit])) {
 				    $groupLimit++;
 				}
 				
@@ -381,45 +381,54 @@ function sortTimetable($item1, $item2)
     return $item1['time_start'] > $item2['time_start'] ? 1 : -1;
 }
 
-if(!function_exists('translateAndFormat'))
+/**
+ * @param DateTime $date The date to be formatted
+ * @return string A readabble date, in french
+ */
+function translateAndFormat($date)
 {
-    /**
-     * @param DateTime $date The date to be formatted
-     * @return string A readabble date, in french
-     */
-    function translateAndFormat($date)
-    {
-        static $days = array(
-            'Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'
-        );
-        static $months = array(
-            'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet',
-            'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
-        );
+    static $days = array(
+        'Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'
+    );
+    static $months = array(
+        'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet',
+        'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
+    );
 
-        return $days[$date->format('w')] . ' '
-            . $date->format('j') . ' '
-            . $months[$date->format('n') - 1];
-    }
+    return $days[$date->format('w')] . ' '
+        . $date->format('j') . ' '
+        . $months[$date->format('n') - 1];
 }
 
-if (!function_exists('computeTimeToHeight'))
+/**
+ * Compute the height (in percentage) a DOM element should take
+ * comparing the hours it reprents to a day of 10h.
+ * To be used in views.
+ *
+ * @param string $begin The beginning of time
+ * @param string $end The end of time
+ * @return string Percentage the DOM element should take
+ */
+function computeTimeToHeight($begin, $end)
 {
-    /**
-     * Compute the height (in percentage) a DOM element should take
-     * comparing the hours it reprents to a day of 10h.
-     * @param string $begin The beginning of time
-     * @param string $end The end of time
-     * @return string Percentage the DOM element should take
-     */
-    function computeTimeToHeight($begin, $end)
-    {
-        $interval = abs(strtotime($begin) - strtotime($end));
-        return ($interval / 360) . '%';
-    }
+    $interval = abs(strtotime($begin) - strtotime($end));
+    return ($interval / 360) . '%';
 }
 
-if (!function_exists('merge_arrays'))
+/**
+ * Fills time in timetables.
+ * To be used in views.
+ *
+ * @param $from
+ * @param $to
+ */
+function fillTime($from, $to) {
+    ?>
+    <div class="fill" style="height: <?= computeTimeToHeight($from, $to) ?>"></div>
+    <?php
+}
+
+if (!function_exists('mergeArrays'))
 {
     /**
      * Merges two arrays.
@@ -428,7 +437,7 @@ if (!function_exists('merge_arrays'))
      * @param array $added The timetable with more priority
      * @return array The fusion of both timetables
      */
-    function merge_arrays($original, $added)
+    function mergeArrays($original, $added)
     {
         foreach ($added as $key => $value) {
             if (is_array($value)) {
@@ -437,7 +446,7 @@ if (!function_exists('merge_arrays'))
                     $original[$key] = array();
 
                 // Merge the sub array
-                $original[$key] = merge_arrays($original[$key], $added[$key]);
+                $original[$key] = mergeArrays($original[$key], $added[$key]);
             } else {
                 if (!array_key_exists($key, $original))
                     $original[$key] = $added[$key];

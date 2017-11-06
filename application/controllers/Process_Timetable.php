@@ -17,6 +17,7 @@ class Process_Timetable extends CI_Controller
             if (is_numeric($url)) {
                 $resource = (int) $url;
             } else {
+                // TODO Make it work
                 // Remove useless parts
                 $url = substr($url, strpos($url, '?'));
                 $url = explode('/', $url);
