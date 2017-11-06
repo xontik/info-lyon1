@@ -78,16 +78,15 @@ class Timetables extends CI_Model
      * Create a timetable, associated to an owner, or not
      *
      * @param int $resource
-     * @param string $json
      * @param int $who The id of the owner (optionnal)
      * @param string $type 'group', 'teacher' or 'room'
      * @return int|bool The id inserted on success, FALSE if there was a problem
      */
-    public function create($resource, $json, $who = null, $type = 'group')
+    public function create($resource, $who = null, $type = 'group')
     {
         $data = array(
             'resource' => $resource,
-            'json' => $json
+            'json' => ''
         );
 
         if ($who !== null) {
@@ -107,7 +106,7 @@ class Timetables extends CI_Model
             }
         }
 
-        if($this->db->insert('Timetable', $data)) {
+        if ($this->db->insert('Timetable', $data)) {
             return $this->db->insert_id();
         } else {
             return FALSE;

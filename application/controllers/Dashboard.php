@@ -19,7 +19,7 @@ class Dashboard extends TM_Controller
                 TRUE
             );
         } else {
-            $timetable = getNextTimetable($adeResource, 'day', $date);
+            $timetable = getNextTimetable($adeResource, 'day', $now);
             $sideTimetable = $this->load->view(
                 'includes/side-timetable',
                 array('date' => $now, 'timetable' => $timetable),

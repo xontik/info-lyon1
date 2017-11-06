@@ -34,15 +34,27 @@ class Process_Timetable extends CI_Controller
                 }
             }
 
-            $group = $this->Students->getGroup($_SESSION['id']);
-            if ($group === FALSE) {
-                addPageNotification('Il semblerait que vous n\'ayez pas de groupe.<br>'
-                    . 'L\'opération est impossible pour le moment', 'warning');
-                redirect('Timetable/edit');
+            switch ($_SESSION['userType']) {
+                case 'student':
+                    $group = $this->Students->getGroup($_SESSION['id']);
+                    if ($group === FALSE) {
+                        addPageNotification('Il semblerait que vous n\'ayez pas de groupe.<br>'
+                            . 'L\'opération est impossible pour le moment', 'warning');
+                        redirect('Timetable/edit');
+                    }
+
+                    $who = $group->idGroup;
+                    $type = 'group';
+                    break;
+                case 'teacher':
+                    $who = $_SESSION['id'];
+                    $type = 'teacher';
+                    break;
+                default:
+                    redirect('/');
             }
 
-            $this->Timetables->delete($resource);
-            if ($this->Timetables->create($resource, '', $group->idGroup, $_SESSION['userType'] === 'student' ? 'group' : 'teacher')) {
+            if ($this->Timetables->create($resource, $who, $type)) {
                 addPageNotification('Emploi du temps modifié avec succès', 'success');
                 redirect('Timetable');
             } else {

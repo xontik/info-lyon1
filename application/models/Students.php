@@ -58,7 +58,9 @@ class Students extends CI_Model
         $res = $this->db->select('idGroup, groupName')
             ->from('StudentGroup')
             ->join('Group', 'idGroup')
+            ->join('Semester', 'idSemester')
             ->where('idStudent', $studentId)
+            ->where('active', '1')
             ->get()
             ->row();
 
