@@ -5,6 +5,7 @@ class Process_Control extends CI_Controller
 {
     private $formatIn = 'd/m/Y';
     private $formatOut = 'Y-m-d';
+
     public function add($promo = '')
     {
         if ($promo === '') {
@@ -16,13 +17,10 @@ class Process_Control extends CI_Controller
         }
     }
 
-
     private function _addSimple()
     {
         $this->load->model('Teachers');
         $this->load->model('Controls');
-
-        //TODO ca avait l'air en chantier ici  :/
 
         if (isset($_POST['name'])
             && isset($_POST['typeId'])
@@ -36,14 +34,14 @@ class Process_Control extends CI_Controller
             $coefficient = (float) htmlspecialchars($_POST['coefficient']);
             $divisor = (float) htmlspecialchars($_POST['divisor']);
             $educationId = (int) htmlspecialchars($_POST['educationId']);
-            $date = DateTime::createFromFormat($this->formatIn,htmlspecialchars($_POST['date']));
+            $date = DateTime::createFromFormat($this->formatIn, htmlspecialchars($_POST['date']));
 
             if (!empty($name)
                 && $typeId !== 0
                 && $coefficient !== 0
                 && $divisor !== 0
                 && $educationId !== 0
-                && !empty($date)
+                && $date === FALSE
             ) {
                 if (!$this->Teachers->hasEducation($educationId, $_SESSION['id'])) {
                     addPageNotification('Vous n\'avez pas les droit sur cet enseignement', 'danger');
@@ -76,13 +74,13 @@ class Process_Control extends CI_Controller
             $coefficient = (float) htmlspecialchars($_POST['coefficient']);
             $divisor = (float) htmlspecialchars($_POST['divisor']);
             $subjectId = (int) htmlspecialchars($_POST['subjectId']);
-            $date = DateTime::createFromFormat($this->formatIn,htmlspecialchars($_POST['date']));
+            $date = DateTime::createFromFormat($this->formatIn, htmlspecialchars($_POST['date']));
 
             if (!empty($name)
                 && $coefficient !== 0
                 && $divisor !== 0
                 && $subjectId !== 0
-                && !empty($date)
+                && $date === FALSE
             ) {
                 if ($this->Controls->createPromo($name, $coefficient, $divisor, $date->format($this->formatOut), $subjectId)) {
                     addPageNotification('Contrôle de promo ajouté avec succès', 'success');
@@ -118,13 +116,12 @@ class Process_Control extends CI_Controller
             $name = htmlspecialchars($_POST['name']);
             $coefficient = (float) htmlspecialchars($_POST['coefficient']);
             $divisor = (float) htmlspecialchars($_POST['divisor']);
-            $date = DateTime::createFromFormat($this->formatIn,htmlspecialchars($_POST['date']));
-
+            $date = DateTime::createFromFormat($this->formatIn, htmlspecialchars($_POST['date']));
 
             if (!empty($name)
                 && $coefficient !== 0
                 && $divisor !== 0
-                && !empty($date)
+                && $date !== FALSE
             ) {
                 if ($this->Controls->update($controlId, $name, $coefficient, $divisor, $date->format($this->formatOut))) {
                     addPageNotification('Contrôle modifié avec succès');

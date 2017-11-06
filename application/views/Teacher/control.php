@@ -1,7 +1,7 @@
     <main class="container">
+        <h4>Contrôles</h4>
         <div class="card grey lighten-5">
             <div class="card-content">
-                <span class="card-title">Contrôles</span>
                 <div class="section col s12 m12 l10 offset-l1 no-pad-bot">
                     <form method="post" action="<?= base_url('Control')?>">
                         <div class="row valign-wrapper">
