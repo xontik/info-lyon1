@@ -48,15 +48,20 @@
                 $subjectCount += floatval($mark->coefficient);
                 ?>
                                 <div class="col s12 m6 l4 xl3">
-                                    <div class="card card-content grey lighten-4">
-                                        <span class="card-title"><?= $mark->controlName; ?></span>
-                                        <p>Note : <?= floatval($mark->value) . ' / ' . floatval($mark->divisor) ?></p>
-                                        <p>Date : <?= (new DateTime($mark->controlDate))->format('d/m/Y') ?></p>
-                                        <p>Coefficient : <?= floatval($mark->coefficient) ?></p>
-                                        <p>Moyenne
-                                            : <?= isset($mark->average) ? $mark->average : 'Non calculée' ?></p>
-                                        <p>Médiane
-                                            : <?= isset($mark->median) ? $mark->median : 'Non calculée' ?></p>
+                                    <div class="card grey lighten-4">
+                                        <div class="card-content">
+                                            <span class="card-title activator"><?= $mark->controlName ?></span>
+                                            <div class="section">
+                                                <p><b>Note : <?= floatval($mark->value) . ' / ' . floatval($mark->divisor) ?></b></p>
+                                                <p>Coefficient : <?= floatval($mark->coefficient) ?></p>
+                                            </div>
+                                        </div>
+                                        <div class="card-reveal">
+                                            <span class="card-title truncate">Détails</span>
+                                            <p>Date : <?= (new DateTime($mark->controlDate))->format('d/m/Y') ?></p>
+                                            <p>Moyenne : <?= isset($mark->average) ? $mark->average : 'Non calculée' ?></p>
+                                            <p>Médiane : <?= isset($mark->median) ? $mark->median : 'Non calculée' ?></p>
+                                        </div>
                                     </div>
                                 </div>
                                 <?php
