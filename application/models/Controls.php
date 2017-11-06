@@ -184,13 +184,12 @@ class Controls extends CI_Model
      * @param $date
      * @return bool
      */
-    public function update($controlId, $name, $coeff, $div, $typeId, $date)
+    public function update($controlId, $name, $coeff, $div, $date)
     {
         $data = array(
             'controlName' => $name,
             'coefficient' => $coeff,
             'divisor' => $div,
-            'idControlType' => $typeId,
             'controlDate' => $date,
         );
 

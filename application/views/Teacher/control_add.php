@@ -41,7 +41,7 @@
                             foreach ($data['select'] as $education)
                             { ?>
                                 <option value="<?= $education->idEducation ?>"
-                                    ><?= $education->groupName . ' en ' . $education->subjectName ?>
+                                    ><?= $education->groupName . $education->courseType . ' en ' . $education->subjectName ?>
                                 </option>
                                 <?php
                             } ?>

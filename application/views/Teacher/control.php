@@ -1,11 +1,7 @@
     <main class="container">
-        <h4 class="header">Contrôles</h4>
-        <div id="control-add" class="section">
-            <a href="<?= base_url('Control/add') ?>" class="btn waves-effect">Ajouter un controle</a>
-            <a href="<?= base_url('Control/add/promo') ?>" class="btn waves-effect">Ajouter un DS de promo</a>
-        </div>
         <div class="card grey lighten-5">
             <div class="card-content">
+                <span class="card-title">Contrôles</span>
                 <div class="section col s12 m12 l10 offset-l1 no-pad-bot">
                     <form method="post" action="<?= base_url('Control')?>">
                         <div class="row valign-wrapper">
@@ -130,6 +126,10 @@
                         <?php } ?>
                     </tbody>
                 </table>
+            </div>
+            <div class="card-action">
+                <a href="<?= base_url('Control/add') ?>" class="btn-flat waves-effect">Ajouter un controle</a>
+                <a href="<?= base_url('Control/add/promo') ?>" class="btn-flat waves-effect">Ajouter un DS de promo</a>
             </div>
         </div>
     </main>
