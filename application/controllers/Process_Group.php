@@ -14,7 +14,7 @@ class Process_Group extends CI_Controller
         if (isset($_POST['groupName'])) {
             $groupName = htmlspecialchars($_POST['groupName']);
 
-            if(preg_match('/G[0-9]/',$groupName) === 1) {
+            if(preg_match('/^G[0-9]$/',$groupName) === 1) {
                 if ($this->Semesters->isEditable($semesterId)) {
                     if ($this->Groups->create($semesterId, $groupName)) {
                         addPageNotification('Groupe ' . $groupName . ' ajouté avec succès', 'success');
