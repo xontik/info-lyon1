@@ -8,6 +8,8 @@
     <div id="timetable" class="section center-align">
         <?php
         $empty = empty($data['timetable']);
+        $datetime = $data['date'];
+        $activeTime = null;
 
         for ($dayNum = 1; $dayNum <= 5; $dayNum++) {
             ?>
@@ -17,6 +19,15 @@
                 if (!$empty && !empty($data['timetable'][$dayNum])) {
                     usort($data['timetable'][$dayNum], 'sortTimetable');
                     $day = $data['timetable'][$dayNum];
+
+                    if (is_null($datetime)) {
+                        if (!is_null($activeTime)) {
+                            $activeTime = '01:00';
+                        }
+                    } else if ($dayNum >= $datetime->format('N')) {
+                        $activeTime = $datetime->format('H:i');
+                        $datetime = null;
+                    }
 
                     $lastTimeEnd = null;
 
@@ -32,8 +43,14 @@
                         }
                         $lastTimeEnd = $event['time_end'];
 
+                        $active = '';
+
+                        if (!is_null($activeTime) && $activeTime <= $event['time_end']) {
+                            $active = 'class="active"';
+                            $activeTime = null;
+                        }
                         ?>
-                        <div
+                        <div <?= $active ?>
                             style="height: <?= computeTimeToHeight($event['time_start'], $event['time_end']) ?>; ">
                             <h5 title="<?= $event['name'] ?>" class="truncate"><?= $event['name'] ?></h5>
                             <div class="truncate"><?= $event['teachers'] ?></div>

@@ -50,6 +50,12 @@
       h5 + .fill {
         border-top: none;
       }
+
+      .active {
+        border-width: 2px 3px 3px 2px;
+        border-style: outset;
+        border-color: $primary-color-dark;
+      }
     }
   }
 }

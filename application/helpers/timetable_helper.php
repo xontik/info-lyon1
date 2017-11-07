@@ -20,27 +20,27 @@ function getNextTimetable($resources, $period, &$datetime = NULL) {
         $datetime->setTimezone($timezone);
     }
 
-    $originalDate = clone $datetime;
+    $tempDate = clone $datetime;
     $limit = 0;
 
     // If hour >= 18h, take next day timetable
-    if ($datetime->format('H') >= 18) {
-        $datetime->modify('+1 day');
+    if ($tempDate->format('H') >= 18) {
+        $tempDate->modify('+1 day');
         $limit = 1;
     }
 
-    $timetable = getTimetable($resources, $period, $datetime);
+    $timetable = getTimetable($resources, $period, $tempDate);
 
     // Look at next not empty timetable within 3 days
     while ($limit < 3 && empty($timetable)) {
-        $datetime->modify('+1 day');
-        $timetable = getTimetable($resources, $period, $datetime);
+        $tempDate->modify('+1 day');
+        $timetable = getTimetable($resources, $period, $tempDate);
         $limit++;
     }
 
     // If timetable still empty, reset date
-    if (empty($timetable)) {
-        $datetime = $originalDate;
+    if (!empty($timetable) && strcasecmp($period, 'day') === 0) {
+        $datetime = $tempDate;
     }
 
     return $timetable;

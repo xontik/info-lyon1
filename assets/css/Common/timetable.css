@@ -5449,6 +5449,7 @@ body > header > nav h2 { text-align: center; font-size: 2.46rem; }
   #timetable > .events > div { overflow: auto; padding: 5px 8px; }
   #timetable > .events > div h5 { margin: 0; white-space: nowrap; overflow: hidden; font-size: 1.2em; font-weight: 500; }
   #timetable > .events .fill { border-top: 2px solid #d0d0d0; border-bottom: 2px solid #d0d0d0; }
-  #timetable > .events h5 + .fill { border-top: none; } }
+  #timetable > .events h5 + .fill { border-top: none; }
+  #timetable > .events .active { border-width: 2px 3px 3px 2px; border-style: outset; border-color: #b39600; } }
 
 /*# sourceMappingURL=timetable.css.map */
