@@ -2,11 +2,13 @@
 
 .table-scrollable {
     display:block;
-    overflow-x: auto;
     white-space: nowrap;
-
-
+    overflow-x: auto;
+    /* hack to let the dropdown overflow the table */
+    padding-bottom: 350px;
+    margin-bottom: -350px;
 }
+
 table i {
    vertical-align: middle;
 }

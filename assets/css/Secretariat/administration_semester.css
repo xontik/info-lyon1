@@ -5441,7 +5441,7 @@ body > header > nav h2 { text-align: center; font-size: 2.46rem; }
 
 .small-caps { font-variant: small-caps; }
 
-.table-scrollable { display: block; overflow-x: auto; white-space: nowrap; }
+.table-scrollable { display: block; white-space: nowrap; overflow-x: auto; /* hack to let the dropdown overflow the table */ padding-bottom: 350px; margin-bottom: -350px; }
 
 table i { vertical-align: middle; }
 
