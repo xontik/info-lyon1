@@ -1,5 +1,9 @@
 <main class="container">
-    <h4 class="header">Modifier votre emploi du temps</h4>
+    <div class="row valign-wrapper">
+        <h4 class="header col">Modifier votre emploi du temps</h4>
+        <a class="btn-flat waves-effect col" href="<?= base_url('Timetable') ?>">Retour</a>
+    </div>
+
     <div class="row">
         <div class="col s12 m10 l8 card grey lighten-5">
             <div class="card-content">
@@ -15,9 +19,7 @@
                         <input type="text" name="url" id="url">
                         <label for="url">Collez ici l'url ou le numéro de ressource</label>
                     </div>
-                    <div class="btn-footer">
-                        <button type="submit" class="btn waves-effects">Envoyer l'url</button>
-                    </div>
+                    <button type="submit" class="btn-flat waves-effects">Envoyer l'url</button>
                 </form>
             </div>
         </div>

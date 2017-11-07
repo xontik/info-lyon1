@@ -1,6 +1,8 @@
 <?php
     $days = array('Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi');
+
     $empty = empty($data['timetable']);
+    $weekNum = $data['date']->format('W');
     $datetime = $data['date'];
     $activeTime = null;
 ?>
@@ -9,6 +11,7 @@
         <h4 class="header">Emploi du temps</h4>
     </div>
     <div id="timetable" class="section center-align <?= $empty ? 'empty' : '' ?>">
+        <a href="<?= base_url('Timetable/' . ($weekNum - 1)) ?>"><i class="material-icons medium">keyboard_arrow_left</i></a>
         <?php
         for ($dayNum = 1; $dayNum <= 5; $dayNum++) {
             ?>
@@ -68,6 +71,7 @@
             </div>
             <?php
         } ?>
+        <a href="<?= base_url('Timetable/' . ($weekNum+1)) ?>"><i class="material-icons medium">keyboard_arrow_right</i></a>
     </div>
     <div class="section center-align">
         <?php
@@ -80,7 +84,7 @@
             }
             else {
                 ?>
-                <p>Pas de cours cette semaine</p>
+                <span class="flow-text">Pas de cours cette semaine</span>
                 <?php
             }
         } ?>
