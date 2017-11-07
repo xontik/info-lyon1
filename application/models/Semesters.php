@@ -486,6 +486,25 @@ class Semesters extends CI_Model
     }
 
     /**
+     * Returns all subjects.
+     *
+     * @param int $semestreId
+     * @return array
+     */
+    public function getSubjects($semesterId) {
+        return $this->db
+            ->from('subject')
+            ->select('subjectName, subjectCode, idSubject, moduleName')
+            ->join('subjectofmodule', 'idSubject')
+            ->join('module', 'idModule')
+            ->join('moduleofteachingunit', 'idModule')
+            ->join('teachingunitofcourse', 'idTeachingUnit')
+            ->join('semester', 'idCourse')
+            ->where('idSemester', $semesterId)
+            ->get()
+            ->result();
+    }
+    /**
      * Get all groups in a semester.
      *
      * @param int $semesterId

@@ -82,16 +82,16 @@ class Administration extends TM_Controller
         // false pour récuperer ceux qui non pas du tout de groupe sachant qu'on a déjà ceux du semestre
         $freeStudents = $this->Semesters->getStudentsWithoutGroup($semesterId, false);
 
-        $groups = array();
         $maxStudents = 0;
 
+        $groupsWithStudent = array();
         foreach ($unsortedGroups as $group) {
             $group->students = array();
-            $groups[$group->idGroup] = $group;
+            $groupsWithStudent[$group->idGroup] = $group;
         }
 
         foreach ($unsortedStudent as $student) {
-            $groups[$student->idGroup]->students[] = $student;
+            $groupsWithStudent[$student->idGroup]->students[] = $student;
         }
 
         foreach ($groups as $group) {
@@ -100,11 +100,14 @@ class Administration extends TM_Controller
             }
         }
 
+        $subjects = $this->Semesters->getSubjects($semesterId);
+
         $this->data = array(
             'semester' => $semester,
-            'groups' => $groups,
             'freeStudents' => $freeStudents,
             'maxStudents' => $maxStudents
+            'groups' => $unsortedGroups,
+            'groupsWithStudent' => $groupsWithStudent,
         );
 
         $this->show('Gestion de semestre');
