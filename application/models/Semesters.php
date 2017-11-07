@@ -486,7 +486,7 @@ class Semesters extends CI_Model
     }
 
     /**
-     * Returns all subjects.
+     * Returns all subjects in the semester
      *
      * @param int $semestreId
      * @return array
@@ -503,6 +503,28 @@ class Semesters extends CI_Model
             ->where('idSemester', $semesterId)
             ->get()
             ->result();
+    }
+    /**
+     * Returns all education related to the semester with the educationId as key in array
+     *
+     * @param int $semestreId
+     * @return array
+     */
+    public function getEducations($semesterId) {
+        $educations = $this->db
+            ->from('education')
+            ->join('group', 'idGroup')
+            ->join('teacher','idTeacher')
+            ->join('user','idUser')
+            ->where('idSemester', $semesterId)
+            ->get()
+            ->result();
+        $out = array();
+        foreach ($educations as $education) {
+            $out[$education->idEducation] = $education;
+        }
+
+        return $out;
     }
     /**
      * Get all groups in a semester.

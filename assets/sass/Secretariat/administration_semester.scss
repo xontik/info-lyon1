@@ -1,16 +1,51 @@
 @import '../style';
 
-form tr {
-  height: 60px;
+.table-scrollable {
+    display:block;
+    overflow-x: auto;
+    white-space: nowrap;
+
+
+}
+table i {
+   vertical-align: middle;
 }
 
-.wrapper {
-  display: flex;
-  overflow-x: scroll;
 
-  > div {
-    min-width: 250px;
-    margin-left: 8px;
-    margin-right: 8px;
-  }
+.tooltip {
+
+    position: relative;
+    display: inline-block;
+
+    .tooltiptext {
+        visibility: hidden;
+        width: 120px;
+        background-color: $secondary-color;
+        color: #fff;
+        text-align: center;
+        padding: 5px 0;
+        border-radius: 6px;
+
+        /* Position the tooltip text - see examples below! */
+        position: absolute;
+        z-index: 1;
+        top: 80%;
+        left: 50%;
+        margin-left: -60px;
+
+        &::after {
+            content: " ";
+            position: absolute;
+            bottom: 100%;  /* At the top of the tooltip */
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: transparent transparent $secondary-color transparent;
+        }
+    }
+
+    &:hover .tooltiptext{
+        visibility: visible;
+    }
 }

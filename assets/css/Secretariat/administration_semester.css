@@ -5441,9 +5441,13 @@ body > header > nav h2 { text-align: center; font-size: 2.46rem; }
 
 .small-caps { font-variant: small-caps; }
 
-form tr { height: 60px; }
+.table-scrollable { display: block; overflow-x: auto; white-space: nowrap; }
 
-.wrapper { display: flex; overflow-x: scroll; }
-.wrapper > div { min-width: 250px; margin-left: 8px; margin-right: 8px; }
+table i { vertical-align: middle; }
+
+.tooltip { position: relative; display: inline-block; }
+.tooltip .tooltiptext { visibility: hidden; width: 120px; background-color: #757575; color: #fff; text-align: center; padding: 5px 0; border-radius: 6px; /* Position the tooltip text - see examples below! */ position: absolute; z-index: 1; top: 80%; left: 50%; margin-left: -60px; }
+.tooltip .tooltiptext::after { content: " "; position: absolute; bottom: 100%; /* At the top of the tooltip */ left: 50%; margin-left: -5px; border-width: 5px; border-style: solid; border-color: transparent transparent #757575 transparent; }
+.tooltip:hover .tooltiptext { visibility: visible; }
 
 /*# sourceMappingURL=administration_semester.css.map */

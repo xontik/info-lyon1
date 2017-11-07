@@ -1,194 +1,119 @@
 <main class="container">
-    <div class="header row valign-wrapper">
-        <h4 class="header col">Gestion du semestre <?= $data['semester']->courseType
-            . ' - ' . $data['semester']->schoolYear
-            . ' ' . ($data['semester']->delayed ? ' différé' : '') ?></h4>
-        <a href="<?= base_url('Administration') ?>" class="btn-flat waves-effect col">Retour</a>
-    </div>
+
 
     <div class="card grey lighten-5">
         <div class="card-content">
-<<<<<<< HEAD
-            <span class="card-title">Groupes</span>
-            <?php if ($groupCount = count($data['groups'])) {
-                ?>
-                <form action="<?= base_url('Process_Group/add_student/') . $data['semester']->idSemester ?>"
-                      method="post">
-                    <div class="wrapper">
-                        <?php
-                        foreach ($data['groups'] as $group) {
-                            ?>
-                            <div>
-                                <h5><?= $group->groupName ?></h5>
-                                <table class="centered striped">
-                                    <thead>
-                                        <tr>
-                                            <th colspan="2">N°Etudiant</th>
-                                            <th>Nom</th>
-                                            <th>Prenom</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php
-                                        foreach ($group->students as $student) {
-                                            ?>
-                                            <tr>
-                                                <td>
-                                                    <a class="deleter"
-                                                       href="<?= base_url('Process_Group/delete_student'
-                                                           . '/' . $group->idGroup
-                                                           . '/' . $student->idStudent
-                                                           . '/' . $data['semester']->idSemester) ?>">
-                                                        <i class="material-icons">delete</i>
-                                                    </a>
-                                                </td>
-                                                <td><?= $student->idStudent ?></td>
-                                                <td><?= $student->surname ?></td>
-                                                <td><?= $student->name ?></td>
-                                            </tr>
-                                            <?php
-                                        }
-
-                                        for ($i = count($group->students); $i < $data['maxStudents']; $i++) {
-                                            ?>
-                                            <tr><td colspan="4"></td></tr>
-                                            <?php
-                                        } ?>
-                                    </tbody>
-                                </table>
-                                <div class="input-field">
-                                    <!-- TODO id -> data-group-id -->
-                                    <select id="group<?= $group->idGroup ?>" name="group<?= $group->idGroup ?>">
-                                        <optgroup label="Sans groupe">
-                                            <?php
-                                            foreach ($data['freeStudents'] as $student) { ?>
-                                                <option value="<?= $student->idStudent ?>"
-                                                ><?= $student->idStudent . ' ' .$student->name . ' ' . $student->surname ?>
-                                                </option>
-                                                <?php
-                                            } ?>
-                                        </optgroup>
-                                        <?php
-                                        foreach ($data['groups'] as $otherGroup):
-                                            if ($otherGroup->idGroup === $group->idGroup) {
-                                                continue;
-                                            }
-                                            ?>
-                                            <optgroup label="<?= $otherGroup->groupName ?>">
-=======
             <span class="card-title">Gestion du semestre: <?= $data['semester']->courseType
                 . ' - ' . $data['semester']->schoolYear
                 . ' ' . ($data['semester']->delayed ? ' différé' : '') ?></span>
         <?php if ($groupCount = count($data['groups'])) { ?>
             <form action="<?= base_url('Process_Group/add_student/') . $data['semester']->idSemester ?>"
                   method="post">
-                <table class="centered responsive-table">
+                <table class="table-scrollable">
                     <thead>
-                        <tr>
-                            <?php
-                            $maxStudents = 0;
-                            foreach ($data['groupsWithStudent'] as $group) {
-                                ?>
-                                <th colspan="3"><?= $group->groupName ?></th>
-                                <?php
-                                if (($studentCount = count($group->students)) > $maxStudents) {
-                                    $maxStudents = $studentCount;
-                                }
-                            } ?>
-                        </tr>
-                        <tr>
-                            <?php
-                            for ($i = 0; $i < $groupCount; $i++) {
-                                ?>
-
-                                <th>N°Etudiant</th>
-                                <th>Nom</th>
-                                <th>Prenom</th>
-                                <?php
-                            }
-                            ?>
-                        </tr>
+                      <tr>
+                          <?php
+                          $maxStudents = 0;
+                          foreach ($data['groupsWithStudent'] as $group) {
+                              ?>
+                              <th class="center-align"><?= $group->groupName ?></th>
+                              <?php
+                              if (($studentCount = count($group->students)) > $maxStudents) {
+                                  $maxStudents = $studentCount;
+                              }
+                          } ?>
+                      </tr>
                     </thead>
                     <tbody>
                     <?php
                     for ($i = 0; $i < $maxStudents; $i++): ?>
-                        <tr>
-                            <?php foreach ($data['groupsWithStudent'] as $group) {
-                                if (isset($group->students[$i])) {
-                                    ?>
-                                    <td>
-                                        <a class="deleter"
-                                           href="<?= base_url('Process_Group/delete_student'
-                                               . '/' . $group->idGroup
-                                               . '/' . $group->students[$i]->idStudent
-                                               . '/' . $data['semester']->idSemester) ?>">
-                                            <i class="material-icons">delete</i>
-                                        </a>
-                                        <?= $group->students[$i]->idStudent ?>
-                                    </td>
-                                    <td>
-                                        <?= $group->students[$i]->surname ?>
-                                    </td>
-                                    <td>
-                                        <?= $group->students[$i]->name ?>
-                                    </td>
-                                    <?php
-                                } else {
-                                    ?>
-                                    <td colspan="3"></td>
-                                    <?php
-                                }
+                      <tr>
+                          <?php foreach ($data['groupsWithStudent'] as $group) {
+                              if (isset($group->students[$i])) {
+                                  ?>
+                                  <td>
+                                      <a class="deleter"
+                                         href="<?= base_url('Process_Group/delete_student'
+                                             . '/' . $group->idGroup
+                                             . '/' . $group->students[$i]->idStudent
+                                             . '/' . $data['semester']->idSemester) ?>">
+                                          <i class="material-icons">delete</i>
+                                      </a>
+                                      <?= $group->students[$i]->idStudent ?>
+                                      <?= $group->students[$i]->surname ?>
+                                      <?= $group->students[$i]->name ?>
+                                  </td>
+                                  <?php
+                              } else {
+                                  ?>
+                                  <td></td>
+                                  <?php
+                              }
 
-                            } ?>
-                        </tr>
-                        <?php endfor; ?>
-                        <tr>
-                            <?php foreach ($data['groupsWithStudent'] as $group) { ?>
-                                <td colspan="2">
-                                    <div class="input-field">
-                                        <!-- TODO id -> data-group-id -->
-                                        <select id="group<?= $group->idGroup ?>" name="group<?= $group->idGroup ?>">
-                                            <optgroup label="Sans groupe">
->>>>>>> 6a1cafc... WIP new feature on semesters
-                                                <?php
-                                                foreach ($otherGroup->students as $student) { ?>
-                                                    <option value="<?= $student->idStudent ?>"
-                                                    ><?= $student->idStudent . ' ' . $student->name . ' ' . $student->surname?>
-                                                    </option>
-                                                    <?php
-                                                } ?>
-                                            </optgroup>
-                                        <?php endforeach; ?>
-                                    </select>
-                                    <label for="group<?= $group->idGroup ?>">Ajout étudiant</label>
-                                </div>
-                                <button type="submit" name="submit" class="btn-flat"
-                                        value="<?= $group->idGroup ?>">
-                                    Ajouter l'élève
-                                </button>
-                                <a class="btn waves-effect waves-red col s12"
-                                   href="<?= base_url('Process_Group/delete'
-                                    . '/' . $group->idGroup
-                                    . '/' . $data['semester']->idSemester) ?>">
-                                    Supprimer le groupe
-                                </a>
-                            </div>
-                            <?php
-                        }
-                        ?>
-                    </div>
-                </form>
-            <?php } ?>
+                          } ?>
+                      </tr>
+                      <?php endfor; ?>
+                      <tr>
+                          <?php foreach ($data['groupsWithStudent'] as $group) { ?>
+                              <td class="center-align">
+                                  <div class="input-field">
+                                      <!-- TODO id -> data-group-id -->
+                                      <select id="group<?= $group->idGroup ?>" name="group<?= $group->idGroup ?>">
+                                          <optgroup label="Sans groupe">
+                                              <?php
+                                              foreach ($data['freeStudents'] as $student) { ?>
+                                                  <option value="<?= $student->idStudent ?>"
+                                                      ><?= $student->idStudent . ' ' .$student->name . ' ' . $student->surname ?>
+                                                  </option>
+                                                  <?php
+                                              } ?>
+                                          </optgroup>
+                                          <?php
+                                          foreach ($data['groups'] as $otherGroup):
+                                              if ($otherGroup->idGroup === $group->idGroup) {
+                                                  continue;
+                                              }
+                                              ?>
+                                              <optgroup label="<?= $otherGroup->groupName ?>">
+                                                  <?php
+                                                  foreach ($otherGroup->students as $student) { ?>
+                                                      <option value="<?= $student->idStudent ?>"
+                                                          ><?= $student->idStudent . ' ' . $student->name . ' ' . $student->surname?>
+                                                      </option>
+                                                      <?php
+                                                  } ?>
+                                              </optgroup>
+                                          <?php endforeach; ?>
+                                      </select>
+                                      <label for="group<?= $group->idGroup ?>">Ajout étudiant :</label>
+                                  </div>
+                                  <div class="input-field">
+                                      <button type="submit" name="submit" class="btn-flat" value="<?= $group->idGroup ?>">
+                                          Ajouter
+                                      </button>
+                                  </div>
+
+                              </td>
+                          <?php } ?>
+                      </tr>
+                      <tr>
+                          <?php foreach ($data['groups'] as $group): ?>
+                              <td>
+                                  <a class="btn waves-effect" href="<?= base_url('Process_Group/delete'
+                                              . '/' . $group->idGroup
+                                              . '/' . $data['semester']->idSemester) ?>">
+                                      Supprimer ce groupe
+                                  </a>
+                              </td>
+                          <?php endforeach; ?>
+                      </tr>
+                    </tbody>
+                </table>
+            </form>
+        <?php } ?>
         </div>
         <div class="card-action">
-<<<<<<< HEAD
-            <a href="<?= base_url('Process_Administration/getSemesterCSV'
-                . '/' . $data['semester']->idSemester) ?>" class="btn-flat waves-effect">
-                Exporter les groupes de ce semestre
-            </a>
-=======
             <a href="<?= base_url('Administration') ?>" class="btn-flat waves-effect">Retour</a>
->>>>>>> 6a1cafc... WIP new feature on semesters
             <a href="<?= base_url('Process_Semester/delete/'
                 . $data['semester']->idSemester) ?>" class="btn-flat waves-effect">Supprimer ce semestre</a>
         </div>
@@ -199,11 +124,11 @@
                 <form action="<?= base_url('Process_Administration/importCSVSemester/' . $data['semester']->idSemester) ?>"
                     method="post" enctype="multipart/form-data">
                     <div class="card-content">
-                        <span class="card-title" >Importer un groupe</span>
+                        <span class="card-title" >Importer un fichier .csv de groupe </span>
                         <div class="file-field input-field">
                             <div class="btn waves-effects">
                                 <span>Fichier</span>
-                                <input type="file" name="import">
+                                <input type="file" name="import" value="">
                             </div>
                             <div class="file-path-wrapper">
                                 <input class="file-path validate" type="text">
@@ -228,7 +153,7 @@
                           <span class="card-title" >Ajouter un groupe </span>
                           <div class="input-field">
                               <input type="text" name="groupName" id="groupName">
-                              <label for="groupName">Nom du groupe</label>
+                              <label for="groupeName">Nom du groupe : </label>
                           </div>
                       </div>
                       <div class="card-action">
@@ -243,7 +168,7 @@
             <div class="card-content row no-margin">
                 <span class="card-title">Attribuer un professeur</span>
                 <div class="input-field col s12">
-                    <select  id="futureCourseId" name="courseId">
+                    <select  id="subjectId" name="subjectId">
                         <option value="" disabled selected
                             >Selectionner...
                         </option>
@@ -258,14 +183,14 @@
                         }
                         ?>
                     </select>
-                    <label for="futureCourseId">Matière</label>
+                    <label for="subjectId">Matière</label>
                 </div>
                 <div class="input-field col s6">
-                    <select id="futureCourseId" name="courseId">
+                    <select id="groupId" name="groupId">
                         <option value="" disabled selected
                             >Selectionner...
                         </option>
-                        <?php                                                   //LES ID LABEL ET FOR BORDEL
+                        <?php
                         foreach ($data['groups'] as $group) {
                             ?>
                             <option value="<?= $group->idGroup ?>"
@@ -275,11 +200,11 @@
                         }
                         ?>
                     </select>
-                    <label for="futureCourseId">Groupe</label>
+                    <label for="groupId">Groupe</label>
                 </div>
 
                 <div class="input-field col s6">
-                    <select  id="futureCourseId" name="courseId">
+                    <select  id="teacherId" name="teacherId">
                         <option value="" disabled selected
                             >Selectionner...
                         </option>
@@ -293,7 +218,7 @@
                         }
                         ?>
                     </select>
-                    <label for="futureCourseId">Professeur</label>
+                    <label for="teacherId">Professeur</label>
                 </div>
             </div>
             <div class="card-action">
@@ -322,9 +247,27 @@
                         ?>
                         <tr>
                             <td><?= $subjectDescription ?></td>
-                            <td><button class="btn" ></button></td>
-                            <td></td>
-                            <td></td>
+                            <?php foreach ($data['groupsWithStudent'] as $group) :
+                                if(isset($data['educations'][$group->idGroup][$subject->idSubject])) {
+                                ?>
+                                    <td>
+                                        <div class="tooltip">
+                                            <i class="small material-icons" >person</i>
+                                            <span class="tooltiptext">
+                                                <?php $education = $data['educations'][$group->idGroup][$subject->idSubject];
+                                                echo $education->name . ' ' . $education->surname; ?>
+                                            </span>
+                                        </div>
+                                    </td>
+                                <?php
+                            } else { ?>
+                                    <td>
+                                        <i class="small material-icons" data-group-id="<?= $group->idGroup ?>"
+                                            data-subject-id="<?= $subject->idSubject ?>">error_outline</i>
+                                    </td>
+                            <?php }
+                            endforeach; ?>
+
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
