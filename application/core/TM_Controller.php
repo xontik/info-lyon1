@@ -92,35 +92,44 @@ abstract class TM_Controller extends CI_Controller {
      * It the data is an array and the content is empty, delete the data,
      * if it's not, add it to the array.
      *
-     * @param string $data The data to modify
+     * @param string|array $data The data to modify
      * @param string $content The content of the data
      * @return bool If the data doesn't exist or is unmodifiable, return false, else true
      */
     protected function setData($data, $content = '') {
         $dataViewKeys = $this->config->item('dataViewKeys');
 
-        if (!array_key_exists($data, $dataViewKeys)
-            || $dataViewKeys[$data] === 'unmodifiable'
-        ) {
-            trigger_error('Inexistant or unmodifiable key : ' . $data);
-            return false;
+        if (is_array($data)) {
+            $ret = true;
+            foreach($data as $key => $value) {
+                $ret = $ret && $this->setData($key, $value);
+            }
+            return $ret;
         }
+        else {
+            if (!array_key_exists($data, $dataViewKeys)
+                || $dataViewKeys[$data] === 'unmodifiable'
+            ) {
+                trigger_error('Inexistant or unmodifiable key : ' . $data);
+                return false;
+            }
 
-        switch ($dataViewKeys[$data]) {
-            case 'array':
-                if (empty($content)) {
-                    unset($this->viewData[$data]);
-                } else {
-                    $this->viewData[$data][] = $content;
-                }
-                break;
-            case 'string':
-                $this->viewData[$data] = $content;
-                break;
-            default:
-                trigger_error('Unknown data type : ' . $dataViewKeys[$data]);
+            switch ($dataViewKeys[$data]) {
+                case 'array':
+                    if (empty($content)) {
+                        unset($this->viewData[$data]);
+                    } else {
+                        $this->viewData[$data][] = $content;
+                    }
+                    break;
+                case 'string':
+                    $this->viewData[$data] = $content;
+                    break;
+                default:
+                    trigger_error('Unknown data type : ' . $dataViewKeys[$data]);
+            }
+            return true;
         }
-        return true;
     }
 
     protected function getPageName() {

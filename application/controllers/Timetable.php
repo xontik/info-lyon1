@@ -16,8 +16,11 @@ class Timetable extends TM_Controller
         }
         $this->data['date'] = $now;
 
-        $this->setData('view', 'Common/timetable.php');
-        $this->setData('css', 'Common/timetable');
+        $this->setData(array(
+            'view' => 'Common/timetable.php',
+            'css' => 'Common/timetable',
+            'js' => 'Common/timetable'
+        ));
         $this->show('Emploi du temps');
     }
 

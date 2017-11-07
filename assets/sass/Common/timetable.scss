@@ -17,8 +17,6 @@
 
     height: 100%;
 
-    margin-top: 15px;
-
     $hourCount: 10;
     > .events {
       height: 100%;
@@ -27,14 +25,12 @@
 
       > h5 {
         padding-bottom: 5px;
-        border-bottom: 1px solid $table-border-color;
+        border-bottom: 2px solid $table-border-color;
       }
 
       > div {
         overflow: auto;
         padding: 5px 8px;
-
-        border: 1px solid $table-border-color;
 
         h5 {
           margin: 0;
@@ -46,6 +42,14 @@
         }
       }
 
+      .fill {
+        border-top: 2px solid $table-border-color;
+        border-bottom: 2px solid $table-border-color;
+      }
+
+      h5 + .fill {
+        border-top: none;
+      }
     }
   }
 }
