@@ -1,16 +1,15 @@
 <?php
     $days = array('Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi');
+    $empty = empty($data['timetable']);
+    $datetime = $data['date'];
+    $activeTime = null;
 ?>
 <main>
     <div class="container">
         <h4 class="header">Emploi du temps</h4>
     </div>
-    <div id="timetable" class="section center-align">
+    <div id="timetable" class="section center-align <?= $empty ? 'empty' : '' ?>">
         <?php
-        $empty = empty($data['timetable']);
-        $datetime = $data['date'];
-        $activeTime = null;
-
         for ($dayNum = 1; $dayNum <= 5; $dayNum++) {
             ?>
             <div class="events">
@@ -68,18 +67,25 @@
                 ?>
             </div>
             <?php
-        }
-
-        if ($data['timetable'] === FALSE) {
-            ?>
-            <p>Votre emploi du temps n'est pas configuré.</p>
-            <p><a href="<?= base_url('Timetable/edit') ?>">Cliquez ici pour rentrer une ressource ADE</a></p>
-            <?php
-        } else if ($empty) {
-            ?>
-            <p>Pas de cours cette semaine</p>
-            <?php
-        }
-        ?>
+        } ?>
+    </div>
+    <div class="section center-align">
+        <?php
+        if ($empty) {
+            if ($data['timetable'] === FALSE) {
+                ?>
+                <p>Votre emploi du temps n'est pas configuré.</p>
+                <p><a href="<?= base_url('Timetable/edit') ?>">Cliquez ici pour rentrer une ressource ADE</a></p>
+                <?php
+            }
+            else {
+                ?>
+                <p>Pas de cours cette semaine</p>
+                <?php
+            }
+        } ?>
+    </div>
+    <div class="section container">
+        <p><a href="<?= base_url('Timetable/edit') ?>" class="btn-flat">Modifier</a></p>
     </div>
 </main>

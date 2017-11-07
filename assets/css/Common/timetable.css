@@ -5443,7 +5443,8 @@ body > header > nav h2 { text-align: center; font-size: 2.46rem; }
 
 @media only screen and (min-width: 601px) { html, body { height: 100%; }
   main { height: 90%; }
-  #timetable { display: flex; flex-flow: row nowrap; justify-content: center; height: 100%; }
+  #timetable { display: flex; flex-flow: row nowrap; justify-content: center; }
+  #timetable:not(.empty) { height: 100%; }
   #timetable > .events { height: 100%; min-width: 200px; width: 200px; }
   #timetable > .events > h5 { padding-bottom: 5px; border-bottom: 2px solid #d0d0d0; }
   #timetable > .events > div { overflow: auto; padding: 5px 8px; }

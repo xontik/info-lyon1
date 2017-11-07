@@ -15,7 +15,9 @@
     flex-flow: row nowrap;
     justify-content: center;
 
-    height: 100%;
+    &:not(.empty) {
+      height: 100%;
+    }
 
     $hourCount: 10;
     > .events {
