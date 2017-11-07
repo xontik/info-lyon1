@@ -30,7 +30,7 @@ class Projects extends CI_Model
      */
     public function getMembers($projectId)
     {
-        return $this->db->select('CONCAT(name, " ", surname) as name')
+        return $this->db->select('idUser, CONCAT(name, " ", surname) as name')
             ->from('Project')
             ->join('ProjectMember', 'idProject')
             ->join('Student', 'idStudent')
@@ -41,7 +41,7 @@ class Projects extends CI_Model
     }
 
     /**
-     * Computes the last appointement the project had.
+     * Computes the last appointment the project had.
      *
      * @param int $projectId
      * @return object
@@ -58,7 +58,7 @@ class Projects extends CI_Model
     }
 
     /**
-     * Computes the next appointement the project will have.
+     * Computes the next appointment the project will have.
      *
      * @param int $projectId
      * @return object
@@ -85,18 +85,32 @@ class Projects extends CI_Model
      */
     public function isUserInProject($userId, $projectId)
     {
-        $userInProject = $this->db->select('userId')
+        $isUserInStudent = $this->db
+            ->select('idUser')
             ->from('Project')
             ->join('ProjectMember', 'idProject')
-            ->join('Teacher', 'idTeacher')
             ->join('Student', 'idStudent')
             ->join('User', 'idUser')
             ->where('idProject', $projectId)
-            ->where('userId', $userId)
+            ->where('idUser', $userId)
             ->get()
             ->row();
 
-        return !empty($userInProject);
+        if (!is_null($isUserInStudent)) {
+            return true;
+        }
+
+        $isTeacher = $this->db
+            ->select('idUser')
+            ->from('Project')
+            ->join('Teacher', 'idTeacher')
+            ->join('User', 'idUser')
+            ->where('idProject', $projectId)
+            ->where('idUser', $userId)
+            ->get()
+            ->row();
+
+        return !is_null($isTeacher);
     }
 
     /**
@@ -120,8 +134,8 @@ class Projects extends CI_Model
             ->join('User', 'idUser')
             ->where('idProject', $projectId);
 
-        if (isset($_SESSION['idUser'])) {
-            $this->db->where('idUser !=', $_SESSION['idUser']);
+        if (isset($_SESSION['userId'])) {
+            $this->db->where('idUser !=', $_SESSION['userId']);
         }
 
         $students = $this->db->get()
@@ -138,22 +152,22 @@ class Projects extends CI_Model
             ->join('User', 'idUser')
             ->where('idProject', $projectId);
 
-        if (isset($_SESSION['idUser'])) {
-            $this->db->where('idUser !=', $_SESSION['idUser']);
+        if (isset($_SESSION['userId'])) {
+            $this->db->where('idUser !=', $_SESSION['userId']);
         }
 
         $teacher = $this->db->get()
             ->row();
 
         if (!is_null($teacher)) {
-            $this->Notifications->create($message, '/Project/detail/' . $projectId, $teacher, $type, $icon);
+            $this->Notifications->create($message, '/Project/detail/' . $projectId, $teacher->idUser, $type, $icon);
         }
     }
 
     /**
      * Get project id from another table, related to projects
      *
-     * @param string $table The related table ('DateAccept', 'DateProposal', 'Appointement')
+     * @param string $table The related table ('DateAccept', 'DateProposal', 'Appointment')
      * @param mixed $idInTable The primary key content
      * @return int|bool FALSE if the table doesn't exist or if id doesn't exist in the table
      */
@@ -164,18 +178,22 @@ class Projects extends CI_Model
 
         switch ($table) {
             case 'DateAccept':
-                $this->db->join('DateAccept', 'idProposal')
-                    ->where('idProposal', $idInTable);
+                $this->db
+                    ->join('Appointment', 'idProject')
+                    ->join('DateProposal', 'idAppointment')
+                    ->join('DateAccept', 'idProposal')
+                    ->where('idDateProposal', $idInTable);
+                break;
             case 'DateProposal':
-                $this->db->join('DateProposal', 'idAppointement');
-                if ($table === 'DateProposal') {
-                    $this->db->where('idProposal', $idInTable);
-                }
-            case 'Appointement':
-                $this->db->join('Appointement', 'idProject');
-                if ($table === 'Appointement') {
-                    $this->db->where('idAppointement', $idInTable);
-                }
+                $this->db
+                    ->join('Appointment', 'idProject')
+                    ->join('DateProposal', 'idAppointment')
+                    ->where('idDateProposal', $idInTable);
+                break;
+            case 'Appointment':
+                $this->db
+                    ->join('Appointment', 'idProject')
+                    ->where('idAppointment', $idInTable);
                 break;
             default:
                 return FALSE;

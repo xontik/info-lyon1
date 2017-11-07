@@ -24,15 +24,17 @@ class DateProposals extends CI_Model
     }
 
     /**
-     * Get all date proposals referenced to the appointement.
+     * Get all date proposals referenced to the appointment.
      *
-     * @param int $appointementId The appointement id
+     * @param int $appointmentId The appointment id
      * @return mixed
      */
-    public function getAll($appointementId)
+    public function getAll($appointmentId)
     {
-        return $this->db->where('idAppointment', $appointementId)
-            ->get('DateProposal')
+        return $this->db
+            ->from('DateProposal')
+            ->where('idAppointment', $appointmentId)
+            ->get()
             ->result();
     }
 
@@ -54,39 +56,52 @@ class DateProposals extends CI_Model
     }
 
     /**
-     * Creates a date proposal refering to an appointement.
+     * Creates a date proposal refering to an appointment.
      *
-     * @param int $appointementId The appointement
+     * @param int $appointmentId The appointment
      * @param DateTime $datetime The time of the proposal
      * @param int $userId The user who makes the proposal
      * @return bool
      */
-    public function create($appointementId, $datetime, $userId)
+    public function create($appointmentId, $datetime, $userId)
     {
-        // Check is user belongs to the project
-        $projectId = $this->getGroupId('Appointement', $appointementId);
+        $this->load->model('Projects');
 
-        if (!$this->isUserInProject($userId, $projectId)) {
+        // Check is user belongs to the project
+        $projectId = $this->Projects->getProjectId('Appointment', $appointmentId);
+        $members = $this->Projects->getMembers($projectId);
+
+        if (!$this->Projects->isUserInProject($userId, $projectId)) {
             redirect('/Project/' . $projectId);
         }
 
-        $proposalId = $this->db->trans_start()
-            ->insert('DateProposal',
-                array(
-                    'date' => $datetime->format('Y-m-d H:i:s'),
-                    'idAppointement' => $appointementId
-                )
-            )
-            ->insert_id();
+        $this->db->trans_start();
 
-        $this->db->insert('DateAccept',
-            array(
-                'idProposal' => $proposalId,
-                'idUser' => $userId,
-                'accepted' => '1'
-            )
-        )
-            ->trans_end();
+        $data = array(
+            'date' => $datetime->format('Y-m-d H:i:s'),
+            'idAppointment' => $appointmentId
+        );
+
+        if (!$this->db->insert('DateProposal', $data)) {
+            return false;
+        }
+        $dateProposalId = $this->db->insert_id();
+
+
+        $data = array();
+        foreach ($members as $member) {
+            $data[] = array(
+                'idDateProposal' => $dateProposalId,
+                'idUser' => $member->idUser,
+                'accepted' => $member->idUser === $_SESSION['userId'] ? '1' : 'null'
+            );
+        }
+
+        if (!$this->db->insert_batch('DateAccept', $data)) {
+            return false;
+        }
+
+        $this->db->trans_complete();
 
         return true;
     }
@@ -101,7 +116,7 @@ class DateProposals extends CI_Model
     public function setAccept($proposalId, $userId, $accept)
     {
         $this->db->set('accepted', $accept)
-            ->where('idProposal', $proposalId)
+            ->where('idDateProposal', $proposalId)
             ->where('idUser', $userId)
             ->update('DateAccept');
     }

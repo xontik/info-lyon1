@@ -82,7 +82,7 @@
                                 <?php
                             } else {
                                 foreach ($notifications as $notif) { ?>
-                                    <li data-notif-id="<?= $notif['id'] ?>"
+                                    <li data-notif-id="<?= $notif['idNotification'] ?>"
                                         <?php
                                         if (!empty($notif['link'])) { ?>
                                         data-notif-link="<?= base_url($notif['link']) ?>"
@@ -157,7 +157,7 @@
                                 <?php
                             } else {
                                 foreach ($notifications as $notif) { ?>
-                                    <div data-notif-id="<?= $notif['id'] ?>" data-notif-link="<?= base_url($notif['link']) ?>"
+                                    <div data-notif-id="<?= $notif['idNotification'] ?>" data-notif-link="<?= base_url($notif['link']) ?>"
                                         class="collection-item notif notif-<?= $notif['type'] ?> notif-<?= $notif['storage'] ?>">
                                         <div class="valign-wrapper">
                                             <i class="material-icons left"><?= $notif['icon'] ?></i>

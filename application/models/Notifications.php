@@ -14,8 +14,9 @@ class Notifications extends CI_Model {
             ->get('Notification')
             ->result_array();
 
-        foreach ($res as $notif) {
-            $notif['storage'] = 'seen';
+        $count = count($res);
+        for ($i = 0; $i < $count; $i++) {
+            $res[$i]['storage'] = 'seen';
         }
 
         return $res;

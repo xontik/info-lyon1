@@ -8,6 +8,7 @@ class Project extends TM_Controller
         $this->load->model('Students');
         $this->load->model('Projects');
         $this->load->model('DateProposals');
+        $this->load->model('DateAccepts');
 
         $this->load->helper('time');
 
@@ -20,7 +21,18 @@ class Project extends TM_Controller
         $members = $this->Projects->getMembers($project->idProject);
         $lastAppointment = $this->Projects->getLastAppointment($project->idProject);
         $nextAppointment = $this->Projects->getNextAppointment($project->idProject);
-        $proposals = $this->DateProposals->getAll($nextAppointment->idAppointment);
+
+        $unsortedProposals = $this->DateProposals->getAll($nextAppointment->idAppointment);
+        $unsortedDateAccepts = $this->DateAccepts->getAll($nextAppointment->idAppointment);
+
+        $proposals = array();
+        foreach ($unsortedProposals as $proposal) {
+            $proposals[$proposal->idDateProposal] = $proposal;
+        }
+
+        foreach ($unsortedDateAccepts as $dateAccept) {
+            $proposals[$dateAccept->idDateProposal]->dateAccepts[$dateAccept->idUser] = $dateAccept;
+        }
 
         $this->data = array(
             'project' => $project,
@@ -30,6 +42,7 @@ class Project extends TM_Controller
             'proposals' => $proposals
         );
 
+        $this->setData('js', 'Common/project');
         $this->show('Projets tuteurés');
     }
 
@@ -83,6 +96,7 @@ class Project extends TM_Controller
             'proposals' => $proposals
         );
 
+        $this->setData('js', 'Common/project');
         $this->show('Projets tuteurés');
     }
 }
