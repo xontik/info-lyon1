@@ -69,6 +69,7 @@ class Administration extends TM_Controller
         $semesterId = (int) htmlspecialchars($semesterId);
 
         $this->load->model('Semesters');
+        $this->load->model('Teachers');
 
         if (!$this->Semesters->isEditable($semesterId)) {
             addPageNotification('Impossible d\'éditer ce semestre', 'danger');
@@ -104,6 +105,7 @@ class Administration extends TM_Controller
 
         $subjects = $this->Semesters->getSubjects($semesterId);
         $AllEducations = $this->Semesters->getEducations($semesterId);
+        $teachers = $this->Teachers->getAll();
 
         $educations = array();
         foreach ($unsortedGroups as $group) {
@@ -120,7 +122,8 @@ class Administration extends TM_Controller
             'subjects' => $subjects,
             'educations' => $educations,
             'freeStudents' => $freeStudents,
-            'maxStudents' => $maxStudents
+            'maxStudents' => $maxStudents,
+            'teachers' => $teachers
         );
 
         $this->show('Gestion de semestre');

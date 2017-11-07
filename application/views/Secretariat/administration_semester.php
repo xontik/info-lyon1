@@ -163,7 +163,7 @@
             </div>
         </div>
     </div>
-    <div class="card grey lighten-5">
+    <div id="assoctiationCard" class="card grey lighten-5">
         <form class="" action="#" method="post">
             <div class="card-content row no-margin">
                 <span class="card-title">Attribuer un professeur</span>
@@ -209,10 +209,10 @@
                             >Selectionner...
                         </option>
                         <?php
-                        foreach ($teachers as $key => $teacher) {
+                        foreach ($data['teachers'] as $teacher) {
                             ?>
-                            <option value="<?= $key ?>"
-                                ><?= $teacher ?>
+                            <option value="<?= $teacher->idTeacher ?>"
+                                ><?= $teacher->name . ' ' . $teacher->surname ?>
                             </option>
                             <?php
                         }
@@ -262,8 +262,14 @@
                                 <?php
                             } else { ?>
                                     <td>
-                                        <i class="small material-icons" data-group-id="<?= $group->idGroup ?>"
-                                            data-subject-id="<?= $subject->idSubject ?>">error_outline</i>
+                                        <div class="tooltip">
+                                            <i class="small material-icons" data-group-id="<?= $group->idGroup ?>"
+                                                data-subject-id="<?= $subject->idSubject ?>">error_outline</i>
+                                                <span class="tooltiptext">
+                                                    Cliquer pour ajouter
+                                                </span>
+                                        </div>
+
                                     </td>
                             <?php }
                             endforeach; ?>
