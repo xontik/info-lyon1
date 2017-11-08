@@ -6,11 +6,6 @@ class Project extends TM_Controller
     public function student_index()
     {
         $this->load->model('Students');
-        $this->load->model('Projects');
-        $this->load->model('DateProposals');
-        $this->load->model('DateAccepts');
-
-        $this->load->helper('time');
 
         $project = $this->Students->getProject($_SESSION['id']);
         if ($project === FALSE) {
@@ -18,32 +13,7 @@ class Project extends TM_Controller
             redirect('/');
         }
 
-        $members = $this->Projects->getMembers($project->idProject);
-        $lastAppointment = $this->Projects->getLastAppointment($project->idProject);
-        $nextAppointment = $this->Projects->getNextAppointment($project->idProject);
-
-        $unsortedProposals = $this->DateProposals->getAll($nextAppointment->idAppointment);
-        $unsortedDateAccepts = $this->DateAccepts->getAll($nextAppointment->idAppointment);
-
-        $proposals = array();
-        foreach ($unsortedProposals as $proposal) {
-            $proposals[$proposal->idDateProposal] = $proposal;
-        }
-
-        foreach ($unsortedDateAccepts as $dateAccept) {
-            $proposals[$dateAccept->idDateProposal]->dateAccepts[$dateAccept->idUser] = $dateAccept;
-        }
-
-        $this->data = array(
-            'project' => $project,
-            'members' => $members,
-            'lastAppointment' => $lastAppointment,
-            'nextAppointment' => $nextAppointment,
-            'proposals' => $proposals
-        );
-
-        $this->setData('js', 'Common/project');
-        $this->show('Projets tuteurés');
+        $this->_details($project);
     }
 
     public function teacher_index()
@@ -67,11 +37,8 @@ class Project extends TM_Controller
             show_404();
         }
 
-        $this->load->model('Teachers');
         $this->load->model('Projects');
-        $this->load->model('DateProposals');
-
-        $this->load->helper('time');
+        $this->load->model('Teachers');
 
         $project = $this->Projects->get($projectId);
         if ($project === FALSE) {
@@ -83,20 +50,45 @@ class Project extends TM_Controller
             redirect('Project');
         }
 
-        $members = $this->Projects->getMembers($projectId);
-        $lastAppointment = $this->Projects->getLastAppointment($projectId);
-        $nextAppointment = $this->Projects->getNextAppointment($projectId);
-        $proposals = $this->DateProposals->getAll($nextAppointment->idAppointment);
+        $this->_details($project);
+    }
+
+    private function _details($project)
+    {
+        $this->load->model('Projects');
+        $this->load->model('DateProposals');
+        $this->load->model('DateAccepts');
+
+        $this->load->helper('time');
+
+        $members = $this->Projects->getMembers($project->idProject);
+        $tutor = $this->Projects->getTutor($project->idProject);
+        $lastAppointment = $this->Projects->getLastAppointment($project->idProject);
+        $nextAppointment = $this->Projects->getNextAppointment($project->idProject);
+
+        $unsortedProposals = $this->DateProposals->getAll($nextAppointment->idAppointment);
+        $unsortedDateAccepts = $this->DateAccepts->getAll($nextAppointment->idAppointment);
+
+        $proposals = array();
+        foreach ($unsortedProposals as $proposal) {
+            $proposals[$proposal->idDateProposal] = $proposal;
+        }
+
+        foreach ($unsortedDateAccepts as $dateAccept) {
+            $proposals[$dateAccept->idDateProposal]->dateAccepts[$dateAccept->idUser] = $dateAccept;
+        }
 
         $this->data = array(
             'project' => $project,
             'members' => $members,
+            'tutor' => $tutor,
             'lastAppointment' => $lastAppointment,
             'nextAppointment' => $nextAppointment,
             'proposals' => $proposals
         );
 
-        $this->setData('js', 'Common/project');
+        $this->setData('view', 'Common/project_detail.php');
+        $this->setData('js', 'Common/project_detail');
         $this->show('Projets tuteurés');
     }
 }

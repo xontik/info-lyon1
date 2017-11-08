@@ -3,19 +3,23 @@
 ?>
 <main class="container">
     <h4 class="header">Projets tuteurés</h4>
-    <h5><?= $data['project']->projectName ?></h5>
 
-    <div class="row">
-        <div class="col s12 m6 card grey lighten-5">
-            <div class="card-content">
-                <span class="card-title">Membres</span>
+    <div class="card grey lighten-5">
+        <div class="card-content">
+            <span class="card-title"><?= $data['project']->projectName ?></span>
+            <p>Tuteur : <?= $data['tutor']->name ?></p>
+            <p>
+                <span>Membres : </span>
                 <?php
-                foreach($data['members'] as $member)
+                $count = count($data['members']);
+                for ($i = 0; $i < $count; $i++)
                 { ?>
-                    <p><?= $member->name ?></p>
+                    <span>
+                        <?= $data['members'][$i]->name . ($i === $count-1 ? '' : ',') ?>
+                    </span>
                     <?php
                 } ?>
-            </div>
+            </p>
         </div>
     </div>
     <div class="card grey lighten-5">
@@ -36,7 +40,7 @@
                     </div>
                     <?php
                 } ?>
-                <div class="col s12 m6 offset-l1 card grey lighten-4">
+                <div class="col s12 m5 offset-m1 card grey lighten-4">
                     <div class="card-content">
                         <?php
                         if (!is_null($data['nextAppointment'])

@@ -41,6 +41,29 @@ class Projects extends CI_Model
     }
 
     /**
+     * Get the tutor of the project.
+     *
+     * @param int $projectId
+     * @return object|bool FALSE if project doesn't exists
+     */
+    public function getTutor($projectId)
+    {
+        $res = $this->db
+            ->select('idUser, idTeacher, CONCAT(name, \' \', surname) as name')
+            ->from('Project')
+            ->join('Teacher', 'idTeacher')
+            ->join('User', 'idUser')
+            ->where('idProject', $projectId)
+            ->get()
+            ->row();
+
+        if (is_null($res)) {
+            return FALSE;
+        }
+        return $res;
+    }
+
+    /**
      * Computes the last appointment the project had.
      *
      * @param int $projectId

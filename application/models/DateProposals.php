@@ -49,8 +49,8 @@ class DateProposals extends CI_Model
             ->from('DateProposal')
             ->join('DateAccept', 'idDateProposal')
             ->where('idDateProposal', $dateProposalId)
-            ->where('accept IS NULL')
-            ->or_where('accept', '0')
+            ->where('accepted IS NULL')
+            ->or_where('accepted', '0')
             ->get()
             ->num_rows() === 0;
     }
@@ -70,6 +70,7 @@ class DateProposals extends CI_Model
         // Check is user belongs to the project
         $projectId = $this->Projects->getProjectId('Appointment', $appointmentId);
         $members = $this->Projects->getMembers($projectId);
+        $members[] = $this->Projects->getTutor($projectId);
 
         if (!$this->Projects->isUserInProject($userId, $projectId)) {
             redirect('/Project/' . $projectId);
@@ -87,13 +88,12 @@ class DateProposals extends CI_Model
         }
         $dateProposalId = $this->db->insert_id();
 
-
         $data = array();
         foreach ($members as $member) {
             $data[] = array(
                 'idDateProposal' => $dateProposalId,
                 'idUser' => $member->idUser,
-                'accepted' => $member->idUser === $_SESSION['userId'] ? '1' : 'null'
+                'accepted' => $member->idUser === $_SESSION['userId'] ? '1' : null
             );
         }
 
