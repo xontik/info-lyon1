@@ -1,7 +1,7 @@
 <main class="container">
 
 
-    <div class="card grey lighten-5">
+    <div id="group-table-card" class="card grey lighten-5">
         <div class="card-content">
             <span class="card-title">Gestion du semestre: <?= $data['semester']->courseType
                 . ' - ' . $data['semester']->schoolYear
@@ -249,13 +249,14 @@
                             <td><?= $subjectDescription ?></td>
                             <?php foreach ($data['groupsWithStudent'] as $group) :
                                 if(isset($data['educations'][$group->idGroup][$subject->idSubject])) {
+                                    $education = $data['educations'][$group->idGroup][$subject->idSubject];
                                 ?>
                                     <td>
                                         <div class="tooltip">
-                                            <i class="small material-icons" >person</i>
+                                            <i class="small material-icons" data-group-id="<?= $group->idGroup ?>"
+                                                data-subject-id="<?= $subject->idSubject ?>" data-teacher-id="<?= $education->idTeacher ?>" >person</i>
                                             <span class="tooltiptext">
-                                                <?php $education = $data['educations'][$group->idGroup][$subject->idSubject];
-                                                echo $education->name . ' ' . $education->surname; ?>
+                                                <?php echo $education->name . ' ' . $education->surname; ?>
                                             </span>
                                         </div>
                                     </td>
