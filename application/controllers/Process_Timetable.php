@@ -65,6 +65,25 @@ class Process_Timetable extends CI_Controller
         }
 
         addPageNotification('Données corrompues', 'danger');
-        redirect('/Timetable/edit');
+        redirect('Timetable/edit');
+    }
+
+    public function update($resource)
+    {
+        $resource = (int) htmlspecialchars($resource);
+        $this->load->model('Timetables');
+
+        if ($resource === 0) {
+            addPageNotification('Données corrompues', 'danger');
+            redirect('Timetable');
+        }
+
+        if ($this->Timetables->setJSON($resource, '')) {
+            addPageNotification('Emploi du temps mis à jour', 'success');
+        } else {
+            addPageNotification('Erreur lors de la mise à jour de l\'emploi du temps', 'danger');
+        }
+
+        redirect('Timetable');
     }
 }

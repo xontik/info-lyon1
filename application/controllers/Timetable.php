@@ -20,6 +20,7 @@ class Timetable extends TM_Controller
             $this->data['timetable'] = getNextTimetable($adeResource, 'week', $date);
         }
         $this->data['date'] = $date;
+        $this->data['resource'] = $adeResource;
 
         $this->setData(array(
             'view' => 'Common/timetable.php',

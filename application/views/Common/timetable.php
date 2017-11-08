@@ -89,7 +89,12 @@
             }
         } ?>
     </div>
-    <div class="section container">
-        <p><a href="<?= base_url('Timetable/edit') ?>" class="btn-flat">Modifier</a></p>
+    <div class="section container row">
+        <p class="col">
+            <a class="btn-flat"
+                href="<?= base_url('Process_Timetable/update/' . $data['resource']) ?>">Mettre à jour
+            </a>
+        </p>
+        <p class="col"><a class="btn-flat" href="<?= base_url('Timetable/edit') ?>">Modifier</a></p>
     </div>
 </main>
