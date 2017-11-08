@@ -5,6 +5,54 @@ class Timetables extends CI_Model
 {
 
     /**
+     * Checks if a resource exists.
+     *
+     * @param int $resource
+     * @return bool
+     */
+    public function exists($resource)
+    {
+        return !is_null($this->db
+            ->where('resource', $resource)
+            ->get('Timetable')
+            ->row()
+        );
+    }
+
+    /**
+     * Checks if someone has a timetable.
+     *
+     * @param mixed $who
+     * @param string $type 'group', 'teacher' or 'room'
+     * @return bool
+     */
+    public function hasTimetable($who, $type)
+    {
+        $data = array();
+
+        switch($type) {
+            case 'group':
+                $data['idGroup'] = $who;
+                break;
+            case 'teacher':
+                $data['idTeacher'] = $who;
+                break;
+            case 'room':
+                $data['roomName'] = $who;
+                break;
+            default:
+                trigger_error('Type is not valid');
+                return false;
+        }
+
+        return !is_null($this->db
+            ->where($data)
+            ->get('Timetable')
+            ->row()
+        );
+    }
+
+    /**
      * Get the JSON of a timetable.
      *
      * @param int $resource
@@ -38,47 +86,10 @@ class Timetables extends CI_Model
     }
 
     /**
-     * Update the association between ressource and owner.
-     *
-     * @param int $resource
-     * @param int $who The id of the owner
-     * @param string $type 'group', 'teacher' or 'room'
-     * @return bool
-     */
-    public function setOwner($resource, $who, $type)
-    {
-        $data = array(
-            'idGroup' => null,
-            'idTeacher' => null,
-            'roomName' => null
-        );
-
-        switch($type) {
-            case 'group':
-                $data['idGroup'] = $who;
-                break;
-            case 'teacher':
-                $data['idTeacher'] = $who;
-                break;
-            case 'room':
-                $data['roomName'] = $who;
-                break;
-            default:
-                trigger_error('Type is not valid');
-                return false;
-        }
-
-        return $this->db
-            ->set($data)
-            ->where('resource', $resource)
-            ->update('Timetable');
-    }
-
-    /**
      * Create a timetable, associated to an owner, or not
      *
      * @param int $resource
-     * @param int $who The id of the owner (optionnal)
+     * @param mixed $who
      * @param string $type 'group', 'teacher' or 'room'
      * @return int|bool The id inserted on success, FALSE if there was a problem
      */
@@ -111,6 +122,45 @@ class Timetables extends CI_Model
         } else {
             return FALSE;
         }
+    }
+
+    /**
+     * Update the resource of the owner.
+     *
+     * @param int $resource
+     * @param mixed $who
+     * @param string $type 'group', 'teacher' or 'room'
+     * @return bool
+     */
+    public function update($resource, $who, $type)
+    {
+        $json = $this->getJSON($resource);
+        if (is_null($json)) {
+            $json = '';
+        }
+
+        switch($type) {
+            case 'group':
+                $typeField = 'idGroup';
+                $who = (int) $who;
+                break;
+            case 'teacher':
+                $typeField = 'idTeacher';
+                $who = (int) $who;
+                break;
+            case 'room':
+                $typeField = 'roomName';
+                break;
+            default:
+                trigger_error('Type is not valid');
+                return false;
+        }
+
+        return $this->db
+            ->set('resource', $resource)
+            ->set('json', $json)
+            ->where($typeField, $who)
+            ->update('Timetable');
     }
 
     /**

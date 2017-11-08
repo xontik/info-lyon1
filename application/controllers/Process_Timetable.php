@@ -55,13 +55,16 @@ class Process_Timetable extends CI_Controller
                     redirect('/');
             }
 
-            if ($this->Timetables->create($resource, $who, $type)) {
+            if ($this->Timetables->hasTimetable($who, $type)
+                && $this->Timetables->update($resource, $who, $type)
+                || $this->Timetables->create($resource, $who, $type)
+            ) {
                 addPageNotification('Emploi du temps modifié avec succès', 'success');
                 redirect('Timetable');
-            } else {
-                addPageNotification('Erreur lors de la création de l\'emploi du temps', 'danger');
-                redirect('Timetable/edit');
             }
+
+            addPageNotification('Erreur lors de la modification de l\'emploi du temps', 'danger');
+            redirect('Timetable/edit');
         }
 
         addPageNotification('Données corrompues', 'danger');
