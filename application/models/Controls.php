@@ -13,7 +13,8 @@ class Controls extends CI_Model
      */
     public function get($controlId)
     {
-        $res = $this->db->where('idControl', $controlId)
+        $res = $this->db
+            ->where('idControl', $controlId)
             ->get('Control')
             ->row();
 

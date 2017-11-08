@@ -76,7 +76,7 @@ class Control extends TM_Controller
 
     public function teacher_edit($controlId)
     {
-        $controlId = (int) htmlspecialchars($controlId[0]);
+        $controlId = (int) htmlspecialchars($controlId);
         if ($controlId === 0) {
             show_404();
         }
@@ -85,7 +85,7 @@ class Control extends TM_Controller
         $this->load->model('Controls');
 
         $control = $this->Controls->get($controlId);
-        if (empty($control)) {
+        if ($control === FALSE) {
             addPageNotification('Controle introuvable', 'danger');
             redirect('Controle');
         }

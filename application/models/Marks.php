@@ -33,11 +33,11 @@ class Marks extends CI_Model {
         $noerror = true;
 
         $this->db->trans_start();
-        foreach ($studentsMarks as $student => $mark) {
+        foreach ($studentsMarks as $studentId => $mark) {
             if (empty($mark)) {
-                $noerror = $noerror && $this->delete($controlId, $student);
+                $noerror = $noerror && $this->delete($controlId, $studentId);
             } else {
-                $noerror = $noerror && $this->create($controlId, $student, (float) $mark);
+                $noerror = $noerror && $this->create($controlId, $studentId, (float) $mark);
             }
         }
         $this->db->trans_complete();
