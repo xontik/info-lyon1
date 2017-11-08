@@ -13,6 +13,11 @@
 
     $hourCount: 10;
     > .hours {
+      
+      &.empty {
+        display: none;
+      }
+
       display: flex;
       height: 100%;
       flex-flow: column nowrap;
