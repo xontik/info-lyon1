@@ -19,9 +19,8 @@
                     <label for="divisor">Diviseur</label>
                 </div>
                 <div class="input-field col s12 m6 l5">
-                    <input type="text" id="date" name="date"
-                           class="datepicker" value="<?= (new DateTime($data['control']->controlDate))->format('d/m/Y') ?>"/>
-                           <!-- TODO datepicker peut etre un sscript a part ? -->
+                    <input type="text" id="date" name="date" class="datepicker"
+                           value="<?= (new DateTime($data['control']->controlDate))->format('d/m/Y') ?>"/>
                     <label for="date">Date du controle</label>
                 </div>
             </div>

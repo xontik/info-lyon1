@@ -124,7 +124,7 @@ class Process_Control extends CI_Controller
                 && $date !== FALSE
             ) {
                 if ($this->Controls->update($controlId, $name, $coefficient, $divisor, $date->format($this->formatOut))) {
-                    addPageNotification('Contrôle modifié avec succès');
+                    addPageNotification('Contrôle modifié avec succès', 'success');
                     redirect('Control');
                 }
             }
