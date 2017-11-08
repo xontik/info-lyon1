@@ -36,7 +36,7 @@
                                     <h5><?= $mark->subjectCode . ' - ' . $mark->subjectName ?></h5>
                                 </div>
                                 <div class="col s12 m6 right-align">
-                                    <span>Coefficient : <?= floatval($mark->subjectCoefficient) ?></span>
+                                    <span>Coefficient : <?= (float) $mark->subjectCoefficient ?></span>
                                 </div>
                             </div>
                             <div class="divider row"></div>
@@ -44,16 +44,17 @@
                                 <?php
                 endif; // if change subject
 
-                $subjectSum += floatval($mark->value) / floatval($mark->divisor) * 20 * floatval($mark->coefficient);
-                $subjectCount += floatval($mark->coefficient);
+                $subjectSum += $mark->value / $mark->divisor * 20 * $mark->coefficient;
+                $subjectCount += $mark->coefficient;
                 ?>
                                 <div class="col s12 m6 l4 xl3">
                                     <div class="card grey lighten-4">
                                         <div class="card-content">
-                                            <span class="card-title activator"><?= $mark->controlName ?></span>
+                                            <span class="card-title truncate activator"
+                                                  title="<?= $mark->controlName ?>"><?= $mark->controlName ?></span>
                                             <div class="section">
-                                                <p><b>Note : <?= floatval($mark->value) . ' / ' . floatval($mark->divisor) ?></b></p>
-                                                <p>Coefficient : <?= floatval($mark->coefficient) ?></p>
+                                                <p><b>Note : <?= (float) $mark->value . ' / ' . (float) $mark->divisor ?></b></p>
+                                                <p>Coefficient : <?= (float) $mark->coefficient ?></p>
                                             </div>
                                         </div>
                                         <div class="card-reveal">
@@ -70,7 +71,7 @@
                                 <div class="divider clearfix"></div>
                                 <div class="footer left-align">
                                     <span class="flow-text">
-                                        Moyenne : <?= $subjectSum / $subjectCount ?>
+                                        Moyenne : <?= round($subjectSum / $subjectCount * 100) / 100?>
                                         <small>/20</small>
                                     </span>
                                 </div>

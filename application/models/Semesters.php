@@ -460,9 +460,11 @@ class Semesters extends CI_Model
     public function getStudentMarks($studentId, $semestreId)
     {
         $sql =
-            'SELECT subjectCode, subjectName, controlName,
+            'SELECT *
+            FROM (
+                SELECT subjectCode, subjectName, controlName,
                 coefficient, divisor, controlTypeName, median, average,
-                controlDate, subjectCoefficient, value, idPromo
+                controlDate, idSubject, subjectCoefficient, value, idPromo
                 FROM Mark
                 JOIN Control USING (idControl)
                 JOIN ControlType USING (idControlType)
@@ -473,14 +475,16 @@ class Semesters extends CI_Model
             UNION
                 SELECT DISTINCT subjectCode, subjectName, controlName,
                 coefficient, divisor, controlTypeName, median, average,
-                controlDate, subjectCoefficient, value, idPromo
+                controlDate, idSubject, subjectCoefficient, value, idPromo
                 FROM Mark
                 JOIN Control USING (idControl)
                 JOIN ControlType USING (idControlType)
                 JOIN Promo USING (idPromo)
                 JOIN Subject USING (idSubject)
                 JOIN Education USING (idSubject)
-                WHERE idStudent = ? AND idSemester = ?';
+                WHERE idStudent = ? AND idSemester = ?
+            ) AS foo
+            ORDER BY idSubject';
 
         return $this->db->query($sql, array($studentId, $semestreId, $studentId, $semestreId))
             ->result();
