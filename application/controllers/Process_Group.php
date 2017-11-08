@@ -51,16 +51,13 @@ class Process_Group extends CI_Controller
         redirect('Administration/Semester/' . $semesterId);
     }
 
-    public function add_student($semesterId)
+    public function add_student($semesterId, $groupId)
     {
         $this->load->model('Groups');
         $this->load->model('Semesters');
 
-        if (isset($_POST['submit'])
-            && isset($_POST['group' . $_POST['submit']])
-        ) {
-            $studentId = htmlspecialchars($_POST['group' . $_POST['submit']]);
-            $groupId = (int) htmlspecialchars($_POST['submit']);
+        if (isset($_POST['studentId'])) {
+            $studentId = htmlspecialchars($_POST['studentId']);
 
             $concurrentSemesters = $this->Semesters->getConcurrent($semesterId);
 

@@ -112,7 +112,7 @@
                                     <?php
                                     if ($semester['state'] !== 'after') {
                                         ?>
-                                        <a href="<?= base_url('Administration/Semester/' . $semesterData->idSemester) ?>">
+                                        <a href="<?= base_url('Administration/semester/' . $semesterData->idSemester) ?>">
                                             <i class="material-icons">edit</i>
                                         </a>
                                         <?php

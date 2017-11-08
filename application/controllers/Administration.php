@@ -126,6 +126,16 @@ class Administration extends TM_Controller
             'teachers' => $teachers
         );
 
+        $this->setData('js');
+
+        $this->setData('js', 'jquery-ui/jquery-ui.min');
+        $this->setData('js', 'Secretariat/administration_semester');
+
+        $this->setData('css', 'jquery-ui/jquery-ui.structure.min');
+        $this->setData('css', 'jquery-ui/jquery-ui.min');
+        
+
+
         $this->show('Gestion de semestre');
     }
 }

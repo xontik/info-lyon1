@@ -40,6 +40,33 @@ $(document).ready(function() {
             $("#assoctiationCard").removeClass('z-depth-5');
         },1000);
 
+
+
     })
 
 });
+
+$( function() {
+    $( ".collection" ).sortable({
+        connectWith: ".connectedSortable",
+        opacity: 0.7,
+        tolerance: "pointer",
+        items: ".collection-item",
+        cursor: "move",
+        placeholder: {
+            element: function(currentItem) {
+                return $('<li class="collection-item placeholder"></li>')[0];
+            },
+            update: function(container, p) {
+                return;
+            }
+        },
+        receive: function(event, ui ) {
+            console.log('received : ' + ui.item.data('student-id') + ' from '+ ui.item.data('group-id'));
+            //TODO ajax call here
+            ui.item.data('group-id',ui.item.parent().data('group-id'));
+        }
+    });
+
+
+  } );
