@@ -36,35 +36,38 @@ class Process_Control extends CI_Controller
             $educationId = (int) htmlspecialchars($_POST['educationId']);
             $date = DateTime::createFromFormat($this->formatIn, htmlspecialchars($_POST['date']));
 
-            if (!empty($name)
-                && $typeId !== 0
-                && $coefficient !== 0
-                && $divisor !== 0
-                && $educationId !== 0
-                && $date === FALSE
+            if (empty($name)
+                || $typeId == 0
+                || $coefficient == 0
+                || $divisor == 0
+                || $educationId == 0
+                || $date === FALSE
             ) {
-                if (!$this->Teachers->hasEducation($educationId, $_SESSION['id'])) {
-                    addPageNotification('Vous n\'avez pas les droit sur cet enseignement', 'danger');
-                    redirect('Control');
-                }
-
-                if ($this->Controls->create($name, $coefficient, $divisor, $typeId, $date->format($this->formatOut), $educationId)) {
-                    addPageNotification('Contrôle ajoutée avec succès', 'success');
-                    redirect('Control');
-                }
+                addPageNotification('Données corrompues', 'danger');
+                redirect('Control/add');
             }
+
+            if (!$this->Teachers->hasEducation($educationId, $_SESSION['id'])) {
+                addPageNotification('Vous n\'avez pas les droit sur cet enseignement', 'danger');
+                redirect('Control');
+            }
+
+            if ($this->Controls->create($name, $coefficient, $divisor, $typeId, $date->format($this->formatOut), $educationId)) {
+                addPageNotification('Contrôle ajoutée avec succès', 'success');
+                redirect('Control');
+            }
+
         }
 
         addPageNotification('Erreur lors de l\'ajout du contrôle, données corrompues', 'danger');
-        redirect('Control');
+        redirect('Control/add');
     }
 
     private function _addPromo()
     {
         $this->load->model('Controls');
 
-        if (
-            isset($_POST['name'])
+        if (isset($_POST['name'])
             && isset($_POST['coefficient'])
             && isset($_POST['divisor'])
             && isset($_POST['subjectId'])
@@ -76,16 +79,19 @@ class Process_Control extends CI_Controller
             $subjectId = (int) htmlspecialchars($_POST['subjectId']);
             $date = DateTime::createFromFormat($this->formatIn, htmlspecialchars($_POST['date']));
 
-            if (!empty($name)
-                && $coefficient !== 0
-                && $divisor !== 0
-                && $subjectId !== 0
-                && $date === FALSE
+            if (empty($name)
+                && $coefficient == 0
+                && $divisor == 0
+                && $subjectId == 0
+                && $date == FALSE
             ) {
-                if ($this->Controls->createPromo($name, $coefficient, $divisor, $date->format($this->formatOut), $subjectId)) {
-                    addPageNotification('Contrôle de promo ajouté avec succès', 'success');
-                    redirect('Control');
-                }
+                addPageNotification('Données corrompues', 'danger');
+                redirect('Control/add');
+            }
+
+            if ($this->Controls->createPromo($name, $coefficient, $divisor, $date->format($this->formatOut), $subjectId)) {
+                addPageNotification('Contrôle de promo ajouté avec succès', 'success');
+                redirect('Control');
             }
         }
 
