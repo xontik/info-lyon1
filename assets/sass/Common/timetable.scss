@@ -1,14 +1,6 @@
 @import '../style';
 
-@media #{$medium-and-up} {
-
-  html, body {
-    height: 100%;
-  }
-
-  main {
-    height: 90%;
-  }
+@media #{$large-and-up} {
 
   #timetable {
     display: flex;
@@ -16,7 +8,30 @@
     justify-content: center;
 
     &:not(.empty) {
+      height: 530px;
+    }
+
+    $hourCount: 10;
+    > .hours {
+      display: flex;
       height: 100%;
+      flex-flow: column nowrap;
+      margin-top: 32px;
+
+      > div {
+        height: 100% / $hourCount;
+
+        padding-right: 5px;
+        border-right: 2px solid $table-border-color;
+
+        &:nth-of-type(odd) {
+          font-weight: 500;
+        }
+
+        &:nth-of-type(even) {
+          font-size: 11px;
+        }
+      }
     }
 
     $hourCount: 10;

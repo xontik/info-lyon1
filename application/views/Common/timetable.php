@@ -12,6 +12,14 @@
     </div>
     <div id="timetable" class="section center-align <?= $empty ? 'empty' : '' ?>">
         <a href="<?= base_url('Timetable/' . ($weekNum - 1)) ?>"><i class="material-icons medium">keyboard_arrow_left</i></a>
+        <div class="hours">
+            <?php for($i = 8; $i <= 17; $i++) { ?>
+                <div><?= $i ?>h</div>
+                <div>30</div>
+                <?php
+            } ?>
+            <div>18h</div>
+        </div>
         <?php
         for ($dayNum = 1; $dayNum <= 5; $dayNum++) {
             ?>
