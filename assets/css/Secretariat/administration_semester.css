@@ -1367,7 +1367,7 @@ td, th { padding: 15px 5px; display: table-cell; text-align: left; vertical-alig
 
 .left-align { text-align: left; }
 
-.right-align, .btn-footer { text-align: right; }
+.right-align { text-align: right; }
 
 .center, .center-align, .hide-on-med-and-down ul.dropdown-content li { text-align: center; }
 
@@ -1399,7 +1399,7 @@ nav ul a span.badge { display: inline-block; float: none; margin-left: 4px; line
 .side-nav span.badge { margin-top: calc(24px - 11px); }
 
 /* This is needed for some mobile phones to display the Google Icon font properly */
-.material-icons { text-rendering: optimizeLegibility; font-feature-settings: 'liga'; }
+.material-icons { text-rendering: optimizeLegibility; font-feature-settings: 'liga'; vertical-align: middle; }
 
 .container { margin: 0 auto; max-width: 1280px; width: 90%; }
 
@@ -4080,7 +4080,7 @@ td, th { padding: 15px 5px; display: table-cell; text-align: left; vertical-alig
 
 .left-align { text-align: left; }
 
-.right-align, .btn-footer { text-align: right; }
+.right-align { text-align: right; }
 
 .center, .center-align, .hide-on-med-and-down ul.dropdown-content li { text-align: center; }
 
@@ -4112,7 +4112,7 @@ nav ul a span.badge { display: inline-block; float: none; margin-left: 4px; line
 .side-nav span.badge { margin-top: calc(24px - 11px); }
 
 /* This is needed for some mobile phones to display the Google Icon font properly */
-.material-icons { text-rendering: optimizeLegibility; font-feature-settings: 'liga'; }
+.material-icons { text-rendering: optimizeLegibility; font-feature-settings: 'liga'; vertical-align: middle; }
 
 .container { margin: 0 auto; max-width: 1280px; width: 90%; }
 
@@ -5441,13 +5441,6 @@ body > header > nav h2 { text-align: center; font-size: 2.46rem; }
 
 .small-caps { font-variant: small-caps; }
 
-.table-scrollable { display: block; white-space: nowrap; overflow-x: auto; /* hack to let the dropdown overflow the table */ padding-bottom: 350px; margin-bottom: -350px; }
-
-table i { vertical-align: middle; }
-
-.tooltip { position: relative; display: inline-block; }
-.tooltip .tooltiptext { visibility: hidden; width: 120px; background-color: #757575; color: #fff; text-align: center; padding: 5px 0; border-radius: 6px; /* Position the tooltip text - see examples below! */ position: absolute; z-index: 1; top: 100%; left: 50%; margin-left: -60px; }
-.tooltip .tooltiptext::after { content: " "; position: absolute; bottom: 100%; /* At the top of the tooltip */ left: 50%; margin-left: -5px; border-width: 5px; border-style: solid; border-color: transparent transparent #757575 transparent; }
-.tooltip:hover .tooltiptext { visibility: visible; }
+#association-group-teacher-subject i { cursor: pointer; }
 
 /*# sourceMappingURL=administration_semester.css.map */

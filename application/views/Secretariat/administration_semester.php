@@ -232,7 +232,7 @@
             <span class="card-title">Tableau des affectations</span>
         </div>
         <div class="card-action row no-margin">
-            <table id="associationGroupTeacherSubject" class="bordered col s12">
+            <table id="association-group-teacher-subject" class="bordered col s12">
                 <thead>
                     <tr>
                         <th></th>
@@ -252,25 +252,16 @@
                                     $education = $data['educations'][$group->idGroup][$subject->idSubject];
                                 ?>
                                     <td>
-                                        <div class="tooltip">
-                                            <i class="small material-icons" data-group-id="<?= $group->idGroup ?>"
-                                                data-subject-id="<?= $subject->idSubject ?>" data-teacher-id="<?= $education->idTeacher ?>" >person</i>
-                                            <span class="tooltiptext">
-                                                <?php echo $education->name . ' ' . $education->surname; ?>
-                                            </span>
-                                        </div>
+                                        <i class="small material-icons tooltipped" data-group-id="<?= $group->idGroup ?>"
+                                            data-subject-id="<?= $subject->idSubject ?>" data-teacher-id="<?= $education->idTeacher ?>"
+                                            data-tooltip="<?php echo $education->name . ' ' . $education->surname; ?>" data-delay="0">person</i>
+
                                     </td>
                                 <?php
                             } else { ?>
                                     <td>
-                                        <div class="tooltip">
-                                            <i class="small material-icons" data-group-id="<?= $group->idGroup ?>"
-                                                data-subject-id="<?= $subject->idSubject ?>">error_outline</i>
-                                                <span class="tooltiptext">
-                                                    Cliquer pour ajouter
-                                                </span>
-                                        </div>
-
+                                        <i class="small material-icons tooltipped" data-group-id="<?= $group->idGroup ?>"
+                                            data-subject-id="<?= $subject->idSubject ?>" data-tooltip="Cliquer pour ajouter" data-delay="0">error_outline</i>
                                     </td>
                             <?php }
                             endforeach; ?>
