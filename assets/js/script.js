@@ -17,6 +17,14 @@ $(document).ready(function() {
         outDuration: 115
     });
 
+    // Confirm modal
+    $('form[data-confirm]').submit(confirm);
+    $('a[data-confirm]').click(confirm);
+
+    function confirm() {
+        return window.confirm(this.getAttribute('data-confirm'));
+    }
+
     // Notifications
     var notificationCount = $('.notif').length / 2;
 
