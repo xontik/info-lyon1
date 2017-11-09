@@ -1367,7 +1367,7 @@ td, th { padding: 15px 5px; display: table-cell; text-align: left; vertical-alig
 
 .left-align, #edition section div:not(.header) { text-align: left; }
 
-.right-align, .btn-footer { text-align: right; }
+.right-align { text-align: right; }
 
 .center, .center-align, .hide-on-med-and-down ul.dropdown-content li, table td, #edition { text-align: center; }
 
@@ -4080,7 +4080,7 @@ td, th { padding: 15px 5px; display: table-cell; text-align: left; vertical-alig
 
 .left-align, #edition section div:not(.header) { text-align: left; }
 
-.right-align, .btn-footer { text-align: right; }
+.right-align { text-align: right; }
 
 .center, .center-align, .hide-on-med-and-down ul.dropdown-content li, table td, #edition { text-align: center; }
 
@@ -5440,6 +5440,8 @@ body > header > nav h2 { text-align: center; font-size: 2.46rem; }
 .no-margin { margin: 0 !important; }
 
 .small-caps { font-variant: small-caps; }
+
+.horizontal-table-wrapper { overflow-x: auto; }
 
 .big-border, #table-stud-list > div.group-change, #table-stud-list > div:first-child, table tbody tr.group-change { border-width: 2px; }
 

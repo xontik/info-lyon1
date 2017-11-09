@@ -1367,7 +1367,7 @@ td, th { padding: 15px 5px; display: table-cell; text-align: left; vertical-alig
 
 .left-align { text-align: left; }
 
-.right-align, .btn-footer { text-align: right; }
+.right-align { text-align: right; }
 
 .center, .center-align, .hide-on-med-and-down ul.dropdown-content li { text-align: center; }
 
@@ -4080,7 +4080,7 @@ td, th { padding: 15px 5px; display: table-cell; text-align: left; vertical-alig
 
 .left-align { text-align: left; }
 
-.right-align, .btn-footer { text-align: right; }
+.right-align { text-align: right; }
 
 .center, .center-align, .hide-on-med-and-down ul.dropdown-content li { text-align: center; }
 
@@ -5440,5 +5440,7 @@ body > header > nav h2 { text-align: center; font-size: 2.46rem; }
 .no-margin { margin: 0 !important; }
 
 .small-caps { font-variant: small-caps; }
+
+.horizontal-table-wrapper { overflow-x: auto; }
 
 /*# sourceMappingURL=style.css.map */

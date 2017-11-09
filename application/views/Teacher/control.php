@@ -72,61 +72,56 @@
                         </div>
                     </form>
                 </div>
-                <table id="controls-table" class="highlight centered">
-                    <thead class="small-caps">
-                        <tr>
-                            <th>matière</th>
-                            <th>libellé</th>
-                            <th>groupe</th>
-                            <th>type</th>
-                            <th>coefficient</th>
-                            <th>diviseur</th>
-                            <th>médiane</th>
-                            <th>moyenne</th>
-                            <th>date</th>
-                            <th>suppr.</th>
-                            <th>edit.</th>
-                            <th>notes</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php
-                        if (count($data['controls'])) {
-                            foreach ($data['controls'] as $control) {
-                                $date = DateTime::createFromFormat('Y-m-d', $control->controlDate); ?>
-                                <tr>
-                                    <td><?= $control->subjectCode . '-' . $control->subjectName ?></td>
-                                    <td><?= $control->controlName ?></td>
-                                    <td><?= $control->groupName ?></td>
-                                    <td><?= $control->controlTypeName ?> </td>
-                                    <td><?= (float) $control->coefficient ?></td>
-                                    <td><?= (float) $control->divisor ?></td>
-                                    <td><?= is_null($control->median) ? 'Non calculée' : $control->median ?></td>
-                                    <td><?= is_null($control->average) ? 'Non calculée' : $control->average ?></td>
-                                    <td><?= $date->format('d/m/Y') ?></td>
-                                    <td>
-                                        <a href="<?= base_url('Process_Control/delete/' . $control->idControl) ?>"
-                                            data-confirm="Êtes-vous certain de vouloir supprimer le contrôle <?= $control->subjectName ?>">
-                                            <i class="material-icons">delete</i>
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <a href="<?= base_url('Control/edit/' . $control->idControl) ?>">
-                                            <i class="material-icons">edit</i>
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <a href="<?= base_url('Mark/add/' . $control->idControl) ?>">
-                                            <i class="material-icons">note_add</i>
-                                        </a>
-                                    </td>
-                                </tr>
-                            <?php }
-                        } else { ?>
-                            <td colspan="99">Pas de contrôles</td>
-                        <?php } ?>
-                    </tbody>
-                </table>
+                <div class="horizontal-table-wrapper">
+                    <table id="controls-table" class="highlight centered responsive-table">
+                        <thead class="small-caps">
+                            <tr>
+                                <th>matière</th>
+                                <th>libellé</th>
+                                <th>groupe</th>
+                                <th>type</th>
+                                <th>coefficient</th>
+                                <th>diviseur</th>
+                                <th>médiane</th>
+                                <th>moyenne</th>
+                                <th>date</th>
+                                <th>edit.</th>
+                                <th>notes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            if (count($data['controls'])) {
+                                foreach ($data['controls'] as $control) {
+                                    $date = DateTime::createFromFormat('Y-m-d', $control->controlDate); ?>
+                                    <tr>
+                                        <td><?= $control->subjectCode . '-' . $control->subjectName ?></td>
+                                        <td><?= $control->controlName ?></td>
+                                        <td><?= $control->groupName ?></td>
+                                        <td><?= $control->controlTypeName ?> </td>
+                                        <td><?= (float) $control->coefficient ?></td>
+                                        <td><?= (float) $control->divisor ?></td>
+                                        <td><?= is_null($control->median) ? 'Non calculée' : $control->median ?></td>
+                                        <td><?= is_null($control->average) ? 'Non calculée' : $control->average ?></td>
+                                        <td><?= $date->format('d/m/Y') ?></td>
+                                        <td>
+                                            <a href="<?= base_url('Control/edit/' . $control->idControl) ?>">
+                                                <i class="material-icons">edit</i>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a href="<?= base_url('Mark/add/' . $control->idControl) ?>">
+                                                <i class="material-icons">note_add</i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                <?php }
+                            } else { ?>
+                                <td colspan="99">Pas de contrôles</td>
+                            <?php } ?>
+                        </tbody>
+                    </table>
+                </div>
             </div>
             <div class="card-action">
                 <a href="<?= base_url('Control/add') ?>" class="btn-flat waves-effect">Ajouter un controle</a>

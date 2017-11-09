@@ -8,6 +8,6 @@
   font-variant: small-caps;
 }
 
-.btn-footer {
-  @extend .right-align;
+.horizontal-table-wrapper {
+  overflow-x: auto;
 }
