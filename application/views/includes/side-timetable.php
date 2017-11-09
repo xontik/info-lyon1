@@ -65,16 +65,16 @@ $now = new DateTime();
                             // Fill time
                             if (is_null($lastTimeEnd)) {
                                 // Fill if day doesn't begin at 08:00
-                                if ($event['time_start'] !== '08:00') {
-                                    fillTime('08:00', $event['time_start']);
+                                if ($event['timeStart'] !== '08:00') {
+                                    fillTime('08:00', $event['timeStart']);
                                 }
-                            } else if ($lastTimeEnd !== $event['time_start']) {
-                                fillTime($lastTimeEnd, $event['time_start']);
+                            } else if ($lastTimeEnd !== $event['timeStart']) {
+                                fillTime($lastTimeEnd, $event['timeStart']);
                             }
-                            $lastTimeEnd = $event['time_end'];
+                            $lastTimeEnd = $event['timeEnd'];
 
                             $classes = array();
-                            if (isset($timeAtDate) && $timeAtDate < $event['time_end']) {
+                            if (isset($timeAtDate) && $timeAtDate < $event['timeEnd']) {
                                 $classes[] = 'z-depth-2';
                                 unset($timeAtDate);
                             }
@@ -85,7 +85,7 @@ $now = new DateTime();
 
                             ?>
                                 <div class="valign-wrapper <?= join(' ', $classes) ?>"
-                                    style="height: <?= computeTimeToHeight($event['time_start'], $event['time_end']) ?>; ">
+                                    style="height: <?= computeTimeToHeight($event['timeStart'], $event['timeEnd']) ?>; ">
                                     <?php
                                         if (isset($links[$linksPointer])) {
                                             $endtag = '</a>';
@@ -150,9 +150,9 @@ $now = new DateTime();
                 $timeAtDate = $date->format('H:i');
 
                 foreach ($timetable as $event) {
-                    if (isset($timeAtDate) && $event['time_start'] <= $timeAtDate && $timeAtDate < $event['time_end']) {
+                    if (isset($timeAtDate) && $event['timeStart'] <= $timeAtDate && $timeAtDate < $event['timeEnd']) {
                         $currentEvent = $event;
-                    } else if ($event['time_start'] > $timeAtDate) {
+                    } else if ($event['timeStart'] > $timeAtDate) {
                         $nextEvent = $event;
                         break;
                     }

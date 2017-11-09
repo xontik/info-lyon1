@@ -57,25 +57,25 @@
                             // Fill time
                             if (is_null($lastTimeEnd)) {
                                 // Fill if day doesn't begin at 08:00
-                                if ($event['time_start'] !== '08:00') {
-                                    fillTime('08:00', $event['time_start']);
+                                if ($event['timeStart'] !== '08:00') {
+                                    fillTime('08:00', $event['timeStart']);
                                 }
-                            } else if ($lastTimeEnd !== $event['time_start']) {
-                                fillTime($lastTimeEnd, $event['time_start']);
+                            } else if ($lastTimeEnd !== $event['timeStart']) {
+                                fillTime($lastTimeEnd, $event['timeStart']);
                             }
-                            $lastTimeEnd = $event['time_end'];
+                            $lastTimeEnd = $event['timeEnd'];
 
                             $active = '';
-                            if (!is_null($activeTime) && $activeTime <= $event['time_end']) {
+                            if (!is_null($activeTime) && $activeTime <= $event['timeEnd']) {
                                 $active = 'class="active"';
                                 $activeTime = null;
                             }
                             ?>
                             <div <?= $active ?>
-                                style="height: <?= computeTimeToHeight($event['time_start'], $event['time_end']) ?>; ">
+                                style="height: <?= computeTimeToHeight($event['timeStart'], $event['timeEnd']) ?>; ">
                                 <div class="hide-on-large-only">
-                                    <div><?= $event['time_start'] ?></div>
-                                    <div><?= $event['time_end'] ?></div>
+                                    <div><?= $event['timeStart'] ?></div>
+                                    <div><?= $event['timeEnd'] ?></div>
                                 </div>
                                 <div>
                                     <h5 title="<?= $event['name'] ?>" class="truncate"><?= $event['name'] ?></h5>
