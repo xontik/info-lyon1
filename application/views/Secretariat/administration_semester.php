@@ -10,16 +10,18 @@
                 <div class="horizontal-wrapper">
                     <?php foreach ($data['groupsWithStudent'] as $group) { ?>
 
-                        <?php if (count($group->students)) { ?>
-                            <ul class="collection with-header connectedSortable" data-group-id="<?= $group->idGroup ?>">
+                            <ul class="collection with-header connectedSortable"  data-group-id="<?= $group->idGroup ?>">
                                 <li class="collection-header" >
                                     <div>
                                         <h5><?= $group->groupName ?>
-                                            <a class="secondary-content" href="#!" ><i class="material-icons small">delete</i></a>
+                                            <a class="secondary-content" href="<?= base_url('Process_Group/delete'
+                                            . '/' . $group->idGroup
+                                            . '/' . $data['semester']->idSemester) ?>" ><i class="material-icons small deleter">delete</i></a>
                                         </h5>
                                     </div>
                                 </li>
-                                <?php foreach ($group->students as $student) { ?>
+                                <?php if (count($group->students)) { ?>
+                                    <?php foreach ($group->students as $student) { ?>
 
                                     <li class="collection-item" data-group-id="<?= $group->idGroup ?>" data-student-id="<?= $student->idStudent ?>" >
                                         <div>
@@ -31,23 +33,22 @@
                                         </div>
                                     </li>
                                 <?php } ?>
+                            <?php } else { ?>
+                                <li class="collection-item no-student">Aucun élève</li>
+                            <?php } ?>
                             </ul>
-                        <?php } else { ?>
-                            <ul class="collection with-header">
-                                <li class="collection-header"><?= $group->groupName ?></li>
-                                <li class="collection-item">
-                                    Ce groupe ne contient aucun élève
-                                </li>
-                            </ul>
-                        <?php } ?>
                     <?php } ?>
+
                 </div>
             <?php } ?>
             </div>
             <div class="card-action">
                 <a href="<?= base_url('Administration') ?>" class="btn-flat waves-effect">Retour</a>
                 <a href="<?= base_url('Process_Semester/delete/'
-                . $data['semester']->idSemester) ?>" class="btn-flat waves-effect">Supprimer ce semestre</a>
+                . $data['semester']->idSemester) ?>" class="btn-flat waves-effect deleter">Supprimer ce semestre</a>
+                <div class="right">
+                    <a href="<?= base_url('Process_Group/add/' . $data['semester']->idSemester) ?>" class="btn-floating btn-large waves-effect waves-light"><i class="material-icons">add</i></a>
+                </div>
             </div>
         </div>
         <div class="row">
@@ -77,12 +78,13 @@
                 </form>
             </div>
         </div>
+        <!--
         <div class="col s12 l6">
             <div class="card grey lighten-5">
                 <form action="<?= base_url('Process_Group/add/' . $data['semester']->idSemester) ?>"
                     method="post">
                     <div class="card-content">
-                        <span class="card-title" >Ajouter un groupe </span>
+                        <span class="card-title" >Ajouter un e </span>
                         <div class="input-field">
                             <input type="text" name="groupName" id="groupName">
                             <label for="groupeName">Nom du groupe : </label>
@@ -94,6 +96,7 @@
                 </form>
             </div>
         </div>
+        -->
     </div>
     <div id="assoctiationCard" class="card grey lighten-5">
         <form class="" action="#" method="post">

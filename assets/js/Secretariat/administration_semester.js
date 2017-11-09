@@ -47,7 +47,8 @@ $(document).ready(function() {
 });
 
 $( function() {
-    $( ".collection" ).sortable({
+    var semesterId = $('#group-semester').data('semester-id');
+    var params = {
         connectWith: ".connectedSortable",
         opacity: 0.7,
         tolerance: "pointer",
@@ -63,10 +64,31 @@ $( function() {
         },
         receive: function(event, ui ) {
             console.log('received : ' + ui.item.data('student-id') + ' from '+ ui.item.data('group-id'));
-            //TODO ajax call here
-            ui.item.data('group-id',ui.item.parent().data('group-id'));
-        }
-    });
+            //from
+            if(ui.sender.find('li').length == 1){ // 1 -> header only
+                ui.sender.append($('<li>Aucun élève</li>')
+                                    .addClass('collection-item')
+                                    .addClass('no-student'));
+            }
 
+            //to
+            if(ui.item.parent().find('li').length == 3){ // 3 -> header | li no student | new item
+                ui.item.parent().find('.no-student').remove();
+            }
+            ui.item.data('group-id',ui.item.parent().data('group-id'));
+
+            $.ajax({
+                dataType: 'json',
+                data: {'groupIdFrom': ui.item.data('group-id'), 'studentId':  ui.item.data('studentId')},
+                url: '/Process_Group/move_student/'+semesterId,
+                type: 'POST',
+                success: function(data) {
+                    console.log(data.text);
+                    Materialize.toast(data.text, 4000,'notif '+ data.type);
+                }
+            });
+        }
+    }
+    $( ".collection" ).sortable(params);
 
   } );
