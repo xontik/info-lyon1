@@ -38,7 +38,7 @@ $(document).ready(function() {
             var $toastContent = '<i class="material-icons">' + notif.icon + '</i>'
                 + '<span>' + notif.content + '</span>';
 
-            Materialize.toast($toastContent, Infinity, 'notif notif-' + notif.type);
+            Materialize.toast($toastContent, notif.duration, 'notif notif-' + notif.type);
         });
     }
 

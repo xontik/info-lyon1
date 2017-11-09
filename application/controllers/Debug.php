@@ -26,8 +26,8 @@ class Debug extends CI_Controller
         addPageNotification('Succès', 'success');
         addPageNotification('Avertissement', 'warning');
         addPageNotification('Echec', 'danger');
-        addPageNotification('Icône personnalisé', '', 'schedule');
         addPageNotification('Un message<br>sur plusieurs lignes');
+        addPageNotification('Icône personnalisé', '', 'schedule', 'Infinity');
         addSessionNotification('Un lien qui dure toute la session !', '', '', '#!');
         addSessionNotification('Un message de succès qui dure toute la session !', 'success');
 

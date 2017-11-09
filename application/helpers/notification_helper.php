@@ -1,7 +1,8 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-function _createNotification($id, $content, $type, $icon, $storage, $link = '') {
+function _createNotification($id, $content, $type, $icon, $storage, $link = '', $duration = 'Infinity')
+{
     $instance =& get_instance();
     $instance->load->config('notification');
 
@@ -20,23 +21,22 @@ function _createNotification($id, $content, $type, $icon, $storage, $link = '') 
         'type' => $type,
         'icon' => $icon,
         'storage' => $storage,
-        'link' => $link
+        'link' => $link,
+        'duration' => $duration
     );
 }
 
 /**
  * Add a notification to the current user.
- * The notification will only last for one page at max.
  *
- * @param string $content The content of the notification (can be html)
- * @param string $type The type of the notification (optional)
- * @param string $icon The icon to be displayed (optional)
+ * @param string    $content    Can be HTML
+ * @param string    $type       (default: info)
+ * @param string    $icon       (optional)
+ * @param int       $duration   (default: 4000)
  */
-function addPageNotification($content, $type = '', $icon = '') {
-    $lastId = isset($_SESSION['pageNotif']) && count($_SESSION['pageNotif'])
-        ? max(array_keys($_SESSION['pageNotif'])) : 0;
-
-    $_SESSION['pageNotif'][++$lastId] = _createNotification($lastId, $content, $type, $icon, 'page');
+function addPageNotification($content, $type = '', $icon = '', $duration = 4000)
+{
+    $_SESSION['pageNotif'][] = _createNotification(-1, $content, $type, $icon, 'page', '', $duration);
     get_instance()->session->mark_as_flash('pageNotif');
 }
 
@@ -44,10 +44,10 @@ function addPageNotification($content, $type = '', $icon = '') {
  * Add a notification to the current user.
  * The notification will last for the session if the user doesn't click it.
  *
- * @param string $content The content of the notification (can be html)
- * @param string $type The type of the notification (optional)
- * @param string $icon The icon to be displayed (optional)
- * @param string $link The link to redirect to on click
+ * @param string    $content    Can be HTML
+ * @param string    $type       (default: info)
+ * @param string    $icon       (optional)
+ * @param string    $link       (optional)
  */
 function addSessionNotification($content, $type = '', $icon = '', $link = '')
 {
@@ -60,13 +60,13 @@ function addSessionNotification($content, $type = '', $icon = '', $link = '')
 /**
  * Add a notification to the current user.
  * The notification will last until the user click it.
- * This is the only way to send
+ * This is the only way to send notification accross session.
  *
- * @param string $content The content of the notification (can be html)
- * @param string $link The link to redirect to on click (optionnal)
- * @param int $userId The user who will receive it (optionnal)
- * @param string $type The type of the notification (optional)
- * @param string $icon The icon to be displayed (optional)
+ * @param string    $content    Can be HTML
+ * @param string    $link       (optional)
+ * @param int       $userId     (default: current)
+ * @param string    $type       (default: info)
+ * @param string    $icon       (optional)
  */
 function addSeenNotification($content, $link = '', $userId = -1, $type = '', $icon = '')
 {
