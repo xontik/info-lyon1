@@ -9,20 +9,20 @@ class Dashboard extends TM_Controller
 
         $this->load->helper('timetable');
 
-        $now = new DateTime();
+        $date = new DateTime();
         $adeResource = $this->Students->getADEResource($_SESSION['id']);
 
         if ($adeResource === FALSE) {
             $sideTimetable = $this->load->view(
                 'includes/side-timetable',
-                array('date' => $now, 'timetable' => false),
+                array('date' => $date, 'timetable' => false),
                 TRUE
             );
         } else {
-            $timetable = getNextTimetable($adeResource, 'day', $now);
+            $timetable = getNextTimetable($adeResource, 'day', $date);
             $sideTimetable = $this->load->view(
                 'includes/side-timetable',
-                array('date' => $now, 'timetable' => $timetable),
+                array('date' => $date, 'timetable' => $timetable),
                 TRUE
             );
         }

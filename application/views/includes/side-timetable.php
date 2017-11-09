@@ -17,9 +17,7 @@
  * <?= $data['side-edt'] ?>
  */
 
-if ($timetable !== false) {
-    usort($timetable, 'sortTimetable');
-}
+$now = new DateTime();
 ?>
     <div id="side-edt-large" class="hide-on-small-and-down card center-align">
         <div class="card-content">
@@ -52,7 +50,13 @@ if ($timetable !== false) {
                         </section>
                         <?php
                     } else {
-                        $timeAtDate = $date->format('H:i');
+                        usort($timetable, 'sortTimetable');
+
+                        if ($now->diff($date)->days === 0) {
+                            $timeAtDate = $date->format('H:i');
+                        } else {
+                            $timeAtDate = '01:00';
+                        }
 
                         $lastTimeEnd = null;
                         $linksPointer = 0;
@@ -71,11 +75,11 @@ if ($timetable !== false) {
 
                             $classes = array();
                             if (isset($timeAtDate) && $timeAtDate < $event['time_end']) {
-                                $classes[] = ' z-depth-2';
+                                $classes[] = 'z-depth-2';
                                 unset($timeAtDate);
                             }
 
-                            if (isset($links[$linksPointer]) && $links[$linksPointer] !== null) {
+                            if (isset($links[$linksPointer])) {
                                 $classes[] = 'hoverable';
                             }
 
@@ -83,7 +87,7 @@ if ($timetable !== false) {
                                 <div class="valign-wrapper <?= join(' ', $classes) ?>"
                                     style="height: <?= computeTimeToHeight($event['time_start'], $event['time_end']) ?>; ">
                                     <?php
-                                        if (isset($links[$linksPointer]) && $links[$linksPointer] !== null) {
+                                        if (isset($links[$linksPointer])) {
                                             $endtag = '</a>';
                                             echo '<a href="' . base_url($links[$linksPointer]) . '" class="black-text">';
                                         } else {
@@ -136,8 +140,8 @@ if ($timetable !== false) {
             </div>
         <?php
         } else {
-            $currentEvent = NULL;
-            $nextEvent = NULL;
+            $currentEvent = null;
+            $nextEvent = null;
 
             $now = new DateTime();
             if ($date->diff($now)->d > 0) {

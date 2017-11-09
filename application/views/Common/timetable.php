@@ -34,6 +34,15 @@
             <?php
             for ($dayNum = 1; $dayNum <= 5; $dayNum++) {
                 $emptyDay = $empty || empty($data['timetable'][$dayNum]);
+
+                if (is_null($datetime)) {
+                    if (!is_null($activeTime)) {
+                        $activeTime = '01:00';
+                    }
+                } else if ($dayNum >= $datetime->format('N')) {
+                    $activeTime = $datetime->format('H:i');
+                    $datetime = null;
+                }
                 ?>
                 <div class="events <?= $emptyDay ? 'hide-on-med-and-down' : '' ?>">
                     <h5><?= $days[$dayNum-1] ?></h5>
@@ -41,15 +50,6 @@
                     if (!$emptyDay) {
                         usort($data['timetable'][$dayNum], 'sortTimetable');
                         $day = $data['timetable'][$dayNum];
-
-                        if (is_null($datetime)) {
-                            if (!is_null($activeTime)) {
-                                $activeTime = '01:00';
-                            }
-                        } else if ($dayNum >= $datetime->format('N')) {
-                            $activeTime = $datetime->format('H:i');
-                            $datetime = null;
-                        }
 
                         $lastTimeEnd = null;
 
@@ -66,9 +66,8 @@
                             $lastTimeEnd = $event['time_end'];
 
                             $active = '';
-
                             if (!is_null($activeTime) && $activeTime <= $event['time_end']) {
-                                $active = ' class="active"';
+                                $active = 'class="active"';
                                 $activeTime = null;
                             }
                             ?>
@@ -115,7 +114,7 @@
             <?php
         } else {
             ?>
-            <a class="hide-on-med-and-down  " href="<?= base_url('Timetable/' . ($weekNum + 1)) ?>">
+            <a class="hide-on-med-and-down" href="<?= base_url('Timetable/' . ($weekNum + 1)) ?>">
                 <i class="material-icons medium">keyboard_arrow_right</i>
             </a>
             <?php
@@ -138,14 +137,17 @@
         } ?>
     </div>
     <div class="section container row">
-        <p class="col hide-on-med-and-down">
-            <a href="<?= base_url('Timetable') ?>" class="btn-flat">Revenir à aujourd'hui</a>
-        </p>
-        <p class="col">
-            <a class="btn-flat"
-                href="<?= base_url('Process_Timetable/update/' . $data['resource']) ?>">Mettre à jour
-            </a>
-        </p>
+        <?php
+        if ($data['timetable'] !== false) { ?>
+            <p class="col hide-on-med-and-down">
+                <a href="<?= base_url('Timetable') ?>" class="btn-flat">Revenir à aujourd'hui</a>
+            </p>
+            <p class="col">
+                <a class="btn-flat"
+                    href="<?= base_url('Process_Timetable/update/' . $data['resource']) ?>">Mettre à jour
+                </a>
+            </p>
+        <?php } ?>
         <p class="col"><a class="btn-flat" href="<?= base_url('Timetable/edit') ?>">Modifier</a></p>
     </div>
 </main>
