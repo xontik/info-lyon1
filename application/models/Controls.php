@@ -25,6 +25,21 @@ class Controls extends CI_Model
     }
 
     /**
+     * Checks if at least one student was noted.
+     *
+     * @param $controlId
+     * @return bool
+     */
+    public function hasMark($controlId) {
+        return $this->db
+            ->from('Control')
+            ->join('Mark', 'idControl')
+            ->where('idControl', $controlId)
+            ->get()
+            ->num_rows() > 0;
+    }
+
+    /**
      * Returns the marks of the students.
      *
      * @param $control
@@ -192,19 +207,24 @@ class Controls extends CI_Model
      * @param $controlId
      * @param $name
      * @param $coeff
-     * @param $div
-     * @param $typeId
-     * @param $date
+     * @param $div  (optionnal)
+     * @param $date (optionnal)
      * @return bool
      */
-    public function update($controlId, $name, $coeff, $div, $date)
+    public function update($controlId, $name, $coeff, $div = null, $date = null)
     {
         $data = array(
             'controlName' => $name,
             'coefficient' => $coeff,
-            'divisor' => $div,
-            'controlDate' => $date,
         );
+
+        if ($div !== null) {
+            $data['divisor'] = $div;
+        }
+
+        if ($date !== null) {
+            $data['controlDate'] = $date;
+        }
 
         return $this->db->set($data)
             ->where('idControl', $controlId)

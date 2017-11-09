@@ -84,6 +84,8 @@ class Control extends TM_Controller
         $this->load->model('Teachers');
         $this->load->model('Controls');
 
+        $this->load->config('date_format');
+
         $control = $this->Controls->get($controlId);
         if ($control === FALSE) {
             addPageNotification('Controle introuvable', 'danger');
@@ -95,11 +97,22 @@ class Control extends TM_Controller
             redirect('Controle');
         }
 
-        $controlTypes = $this->Controls->getTypes();
+        $hasMark = $this->Controls->hasMark($controlId);
+        if (!$hasMark) {
+            $now = new DateTime();
+            $controlDate = DateTime::createFromFormat(
+                $this->config->item('dateSystemFormat'),
+                $control->controlDate);
+
+            $isPast = $now->diff($controlDate)->invert;
+        } else {
+            $isPast = true;
+        }
 
         $this->data = array(
             'control' => $control,
-            'controlTypes' => $controlTypes
+            'hasMark' => $hasMark,
+            'isPast' => $isPast
         );
 
         $this->show('Edition de contrôle');
