@@ -48,6 +48,7 @@ $(document).ready(function() {
 
 $( function() {
     var semesterId = $('#group-semester').data('semester-id');
+
     var params = {
         connectWith: ".connectedSortable",
         opacity: 0.7,
@@ -75,18 +76,58 @@ $( function() {
             if(ui.item.parent().find('li').length == 3){ // 3 -> header | li no student | new item
                 ui.item.parent().find('.no-student').remove();
             }
-            ui.item.data('group-id',ui.item.parent().data('group-id'));
+            var oldGrp = ui.item.data('group-id');
+            ui.item.data('group-id', ui.item.parent().data('group-id'));
 
-            $.ajax({
-                dataType: 'json',
-                data: {'groupIdFrom': ui.item.data('group-id'), 'studentId':  ui.item.data('studentId')},
-                url: '/Process_Group/move_student/'+semesterId,
-                type: 'POST',
-                success: function(data) {
-                    console.log(data.text);
-                    Materialize.toast(data.text, 4000,'notif '+ data.type);
-                }
-            });
+            if(ui.item.data('group-id') == 0){
+                ui.item.find('a').remove();
+                $.ajax({
+                    dataType: 'json',
+                    url: '/Process_Group/delete_student/'+oldGrp+"/"+ui.item.data('studentId')+"/"+semesterId,
+                    data: {'ajax' : true},
+                    type: 'POST',
+                    success: function(data) {
+                        if(data.type == 'danger'){
+                            window.location.reload();
+                        } else {
+                            Materialize.toast(data.text,4000,data.type);
+                            ui.item
+                        }
+                    },
+                    error: function(data){
+                        window.location.reload();
+                    }
+
+                });
+            } else {
+                console.log(ui.item.find('div').prepend($('<a>')
+                                                .attr('href','http://teckmeb.dev/Process_Group/delete_student/'+ui.item.data('group-id')+'/'+ui.item.data('student-id')+'/'+semesterId)
+                                                .append($('<i>')
+                                                            .addClass('material-icons')
+                                                            .html('delete')
+                                                        )
+                                                )
+                                            );
+                $.ajax({
+                    dataType: 'json',
+                    data: {'groupId': ui.item.data('group-id'), 'studentId':  ui.item.data('studentId')},
+                    url: '/Process_Group/add_student/'+semesterId,
+                    type: 'POST',
+                    success: function(data) {
+
+                        if(data.type == 'danger'){
+                            window.location.reload();
+                        }else{
+                            Materialize.toast(data.text,4000,data.type);
+                        }
+                    },
+                    error: function(data){
+                        window.location.reload();
+                    }
+
+                });
+            }
+
         }
     }
     $( ".collection" ).sortable(params);

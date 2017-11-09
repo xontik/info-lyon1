@@ -1,13 +1,32 @@
 <main class="container">
 
 
-    <div id="group-table-card" class="card grey lighten-5">
+    <div id="group-semester" class="card grey lighten-5" data-semester-id="<?= $data['semester']->idSemester  ?>">
         <div class="card-content">
             <span class="card-title">Gestion du semestre: <?= $data['semester']->courseType
             . ' - ' . $data['semester']->schoolYear
-            . ' ' . ($data['semester']->delayed ? ' différé' : '') ?></span>
+            . ' ' . ($data['semester']->delayed ? ' différé' : '') ?> <a href="<?= base_url('Process_Semester/delete/'
+            . $data['semester']->idSemester) ?>" class="right" data-confirm="Etês-vous sur de vouloir supprimer ce semestre ?" ><i class="material-icons small">delete</i></a></span>
             <?php if ($groupCount = count($data['groups'])) { ?>
                 <div class="horizontal-wrapper">
+                    <ul class="collection with-header connectedSortable" data-group-id="0" >
+                        <li class="collection-header" >
+                            <div>
+                                <h5>Elèves sans groupe</h5>
+                            </div>
+                        </li>
+                        <?php if (count($data['freeStudents'])) { ?>
+                            <?php foreach ($data['freeStudents'] as $student) { ?>
+                            <li class="collection-item" data-group-id="0" data-student-id="<?= $student->idStudent ?>" >
+                                <div>
+                                    <?= $student->idStudent . ' ' . $student->surname . ' ' . $student->name ?>
+                                </div>
+                            </li>
+                        <?php } ?>
+                    <?php } else { ?>
+                        <li class="collection-item no-student">Aucun élève</li>
+                    <?php } ?>
+                    </ul>
                     <?php foreach ($data['groupsWithStudent'] as $group) { ?>
 
                             <ul class="collection with-header connectedSortable"  data-group-id="<?= $group->idGroup ?>">
@@ -16,7 +35,7 @@
                                         <h5><?= $group->groupName ?>
                                             <a class="secondary-content" href="<?= base_url('Process_Group/delete'
                                             . '/' . $group->idGroup
-                                            . '/' . $data['semester']->idSemester) ?>" ><i class="material-icons small deleter">delete</i></a>
+                                            . '/' . $data['semester']->idSemester) ?>" data-confirm="Etês-vous sur de vouloir supprimer ce groupe ?" ><i class="material-icons small">delete</i></a>
                                         </h5>
                                     </div>
                                 </li>
@@ -28,7 +47,7 @@
                                             <a href="<?= base_url('Process_Group/delete_student'
                                             . '/' . $group->idGroup
                                             . '/' . $student->idStudent
-                                            . '/' . $data['semester']->idSemester) ?>" ><i class="material-icons">delete</i></a>
+                                            . '/' . $data['semester']->idSemester) ?>"  ><i class="material-icons">delete</i></a>
                                             <?= $student->idStudent . ' ' . $student->surname . ' ' . $student->name ?>
                                         </div>
                                     </li>
@@ -46,9 +65,7 @@
                 <a href="<?= base_url('Administration') ?>" class="btn-flat waves-effect">Retour</a>
                 <a href="<?= base_url('Process_Semester/delete/'
                 . $data['semester']->idSemester) ?>" class="btn-flat waves-effect deleter">Supprimer ce semestre</a>
-                <div class="right">
-                    <a href="<?= base_url('Process_Group/add/' . $data['semester']->idSemester) ?>" class="btn-floating btn-large waves-effect waves-light"><i class="material-icons">add</i></a>
-                </div>
+
             </div>
         </div>
         <div class="row">

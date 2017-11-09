@@ -399,7 +399,7 @@ class Semesters extends CI_Model
         $concurrentSemesters = $this->getConcurrent($semestreId, $strict);
 
         $sql =
-            'SELECT *
+            'SELECT distinct name, surname, idStudent
             FROM Student
             JOIN User USING (idUser)
             JOIN StudentGroup USING (idStudent)
