@@ -10,9 +10,19 @@
     <div class="container">
         <h4 class="header">Emploi du temps</h4>
     </div>
-    <div id="timetable" class="section center-align <?= $empty ? 'empty' : '' ?>">
-        <a href="<?= base_url('Timetable/' . ($weekNum - 1)) ?>"><i class="material-icons medium">keyboard_arrow_left</i></a>
-        <div class="hours <?= $empty ? 'empty' : '' ?>">
+    <div id="timetable-wrapper" class="section center-align <?= $empty ? 'empty' : '' ?>">
+        <a href="<?= base_url('Timetable/' . ($weekNum - 1)) ?>">
+            <i class="material-icons medium">keyboard_arrow_left</i>
+        </a>
+        <a class="hide-on-large-only"
+           href="<?= base_url('Timetable') ?>">
+            <i class="material-icons small">today</i>
+        </a>
+        <a class="hide-on-large-only"
+           href="<?= base_url('Timetable/' . ($weekNum + 1)) ?>">
+            <i class="material-icons medium">keyboard_arrow_right</i>
+        </a>
+        <div class="hours <?= $empty ? 'empty' : '' ?> hide-on-med-and-down">
             <?php for($i = 8; $i <= 17; $i++) { ?>
                 <div><?= $i ?>h</div>
                 <div>30</div>
@@ -20,66 +30,96 @@
             } ?>
             <div>18h</div>
         </div>
-        <?php
-        for ($dayNum = 1; $dayNum <= 5; $dayNum++) {
-            ?>
-            <div class="events">
-                <h5 class="no-margin"><?= $days[$dayNum-1] ?></h5>
-                <?php
-                if (!$empty && !empty($data['timetable'][$dayNum])) {
-                    usort($data['timetable'][$dayNum], 'sortTimetable');
-                    $day = $data['timetable'][$dayNum];
-
-                    if (is_null($datetime)) {
-                        if (!is_null($activeTime)) {
-                            $activeTime = '01:00';
-                        }
-                    } else if ($dayNum >= $datetime->format('N')) {
-                        $activeTime = $datetime->format('H:i');
-                        $datetime = null;
-                    }
-
-                    $lastTimeEnd = null;
-
-                    foreach ($day as $event) {
-                        // Fill time
-                        if (is_null($lastTimeEnd)) {
-                            // Fill if day doesn't begin at 08:00
-                            if ($event['time_start'] !== '08:00') {
-                                fillTime('08:00', $event['time_start']);
-                            }
-                        } else if ($lastTimeEnd !== $event['time_start']) {
-                            fillTime($lastTimeEnd, $event['time_start']);
-                        }
-                        $lastTimeEnd = $event['time_end'];
-
-                        $active = '';
-
-                        if (!is_null($activeTime) && $activeTime <= $event['time_end']) {
-                            $active = 'class="active"';
-                            $activeTime = null;
-                        }
-                        ?>
-                        <div <?= $active ?>
-                            style="height: <?= computeTimeToHeight($event['time_start'], $event['time_end']) ?>; ">
-                            <h5 title="<?= $event['name'] ?>" class="truncate"><?= $event['name'] ?></h5>
-                            <div class="truncate"><?= $event['teachers'] ?></div>
-                            <div><?= $event['groups'] ?></div>
-                            <div><i class="tiny material-icons">location_on</i><?= $event['location'] ?></div>
-                        </div>
-                        <?php
-                    }
-
-                    // Add a fill if day doesn't end at 18:00
-                    if (!is_null($lastTimeEnd) && $lastTimeEnd !== '18:00') {
-                        fillTime($lastTimeEnd, '18:00');
-                    }
-                }
+        <div id="timetable">
+            <?php
+            for ($dayNum = 1; $dayNum <= 5; $dayNum++) {
+                $emptyDay = $empty || empty($data['timetable'][$dayNum]);
                 ?>
-            </div>
+                <div class="events <?= $emptyDay ? 'hide-on-med-and-down' : '' ?>">
+                    <h5><?= $days[$dayNum-1] ?></h5>
+                    <?php
+                    if (!$emptyDay) {
+                        usort($data['timetable'][$dayNum], 'sortTimetable');
+                        $day = $data['timetable'][$dayNum];
+
+                        if (is_null($datetime)) {
+                            if (!is_null($activeTime)) {
+                                $activeTime = '01:00';
+                            }
+                        } else if ($dayNum >= $datetime->format('N')) {
+                            $activeTime = $datetime->format('H:i');
+                            $datetime = null;
+                        }
+
+                        $lastTimeEnd = null;
+
+                        foreach ($day as $event) {
+                            // Fill time
+                            if (is_null($lastTimeEnd)) {
+                                // Fill if day doesn't begin at 08:00
+                                if ($event['time_start'] !== '08:00') {
+                                    fillTime('08:00', $event['time_start']);
+                                }
+                            } else if ($lastTimeEnd !== $event['time_start']) {
+                                fillTime($lastTimeEnd, $event['time_start']);
+                            }
+                            $lastTimeEnd = $event['time_end'];
+
+                            $active = '';
+
+                            if (!is_null($activeTime) && $activeTime <= $event['time_end']) {
+                                $active = ' class="active"';
+                                $activeTime = null;
+                            }
+                            ?>
+                            <div <?= $active ?>
+                                style="height: <?= computeTimeToHeight($event['time_start'], $event['time_end']) ?>; ">
+                                <div class="hide-on-large-only">
+                                    <div><?= $event['time_start'] ?></div>
+                                    <div><?= $event['time_end'] ?></div>
+                                </div>
+                                <div>
+                                    <h5 title="<?= $event['name'] ?>" class="truncate"><?= $event['name'] ?></h5>
+                                    <div class="truncate"><?= $event['teachers'] ?></div>
+                                </div>
+                                <div class="hide-on-med-and-down"><?= $event['groups'] ?></div>
+                                <div><i class="tiny material-icons hide-on-med-and-down">location_on</i><?= $event['location'] ?></div>
+                            </div>
+                            <?php
+                        }
+
+                        // Add a fill if day doesn't end at 18:00
+                        if (!is_null($lastTimeEnd) && $lastTimeEnd !== '18:00') {
+                            fillTime($lastTimeEnd, '18:00');
+                        }
+                    }
+                    ?>
+                </div>
+                <?php
+            } ?>
+        </div>
+        <?php
+        if (!$empty) {
+            ?>
+            <a class="hide-on-large-only"
+               href="<?= base_url('Timetable/' . ($weekNum - 1)) ?>">
+                <i class="material-icons medium">keyboard_arrow_left</i>
+            </a>
+            <a class="hide-on-large-only"
+               href="<?= base_url('Timetable') ?>">
+                <i class="material-icons small">today</i>
+            </a>
+            <a href="<?= base_url('Timetable/' . ($weekNum + 1)) ?>">
+                <i class="material-icons medium">keyboard_arrow_right</i>
+            </a>
+            <?php
+        } else {
+            ?>
+            <a class="hide-on-med-and-down  " href="<?= base_url('Timetable/' . ($weekNum + 1)) ?>">
+                <i class="material-icons medium">keyboard_arrow_right</i>
+            </a>
             <?php
         } ?>
-        <a href="<?= base_url('Timetable/' . ($weekNum+1)) ?>"><i class="material-icons medium">keyboard_arrow_right</i></a>
     </div>
     <div class="section center-align">
         <?php
@@ -98,6 +138,9 @@
         } ?>
     </div>
     <div class="section container row">
+        <p class="col hide-on-med-and-down">
+            <a href="<?= base_url('Timetable') ?>" class="btn-flat">Revenir à aujourd'hui</a>
+        </p>
         <p class="col">
             <a class="btn-flat"
                 href="<?= base_url('Process_Timetable/update/' . $data['resource']) ?>">Mettre à jour

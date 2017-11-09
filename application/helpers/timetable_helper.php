@@ -424,7 +424,7 @@ function computeTimeToHeight($begin, $end)
  */
 function fillTime($from, $to) {
     ?>
-    <div class="fill" style="height: <?= computeTimeToHeight($from, $to) ?>"></div>
+    <div class="fill hide-on-med-and-down" style="height: <?= computeTimeToHeight($from, $to) ?>"></div>
     <?php
 }
 
