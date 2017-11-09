@@ -150,8 +150,26 @@ class Process_Control extends CI_Controller
         $this->load->model('Teachers');
         $this->load->model('Controls');
 
+        $control = $this->Controls->get($controlId);
+        if ($control === FALSE) {
+            addPageNotification('Contrôle introuvable', 'danger');
+            redirect('Control');
+        }
+
         if (!$this->Teachers->hasRightOn($controlId, $_SESSION['id'])) {
             addPageNotification('Vous n\'avez pas les droit sur ce contrôle', 'danger');
+            redirect('Control');
+        }
+
+        $marks = array_filter(
+            $this->Controls->getMarks($control, $_SESSION['id']),
+            function($item) {
+                return $item->value;
+            }
+        );
+
+        if (!empty($marks)) {
+            addPageNotification('Impossible de supprimer un contrôle où des élèves ont été notés !', 'danger');
             redirect('Control');
         }
 

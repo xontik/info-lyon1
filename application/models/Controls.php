@@ -24,6 +24,13 @@ class Controls extends CI_Model
         return $res;
     }
 
+    /**
+     * Returns the marks of the students.
+     *
+     * @param $control
+     * @param $teacherId
+     * @return array
+     */
     public function getMarks($control, $teacherId)
     {
         if (is_null($control->idPromo)) {
