@@ -105,7 +105,8 @@
                                     <td><?= is_null($control->average) ? 'Non calculée' : $control->average ?></td>
                                     <td><?= $date->format('d/m/Y') ?></td>
                                     <td>
-                                        <a href="<?= base_url('Process_Control/delete/' . $control->idControl) ?>">
+                                        <a href="<?= base_url('Process_Control/delete/' . $control->idControl) ?>"
+                                            data-confirm="Êtes-vous certain de vouloir supprimer le contrôle <?= $control->subjectName ?>">
                                             <i class="material-icons">delete</i>
                                         </a>
                                     </td>
