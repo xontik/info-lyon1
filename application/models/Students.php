@@ -6,22 +6,25 @@ class Students extends CI_Model
 
     /**
      * Gets a student.
-     * 
+     *
      * @param string $studentId
      * @return array
      */
     public function get($studentId)
     {
-        return $this->db->select('idStudent, surname, name, email')
+        return $this->db
+            ->from('Student')
+            ->select('idStudent, surname, name, email')
+            ->join('User','idUser')
             ->where('idStudent', $studentId)
-            ->get('Student')
+            ->get()
             ->row();
     }
-    
+
     /**
      * Get all students in active semester,
      * ordered by course, group and name.
-     * 
+     *
      * @return array
      */
     public function getAllOrganized()
@@ -46,7 +49,7 @@ class Students extends CI_Model
             ->get()
             ->result();
     }
-    
+
     /**
      * Return the project to which the student currently or most lastly belongs.
      *
