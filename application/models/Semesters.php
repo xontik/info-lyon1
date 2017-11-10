@@ -390,13 +390,13 @@ class Semesters extends CI_Model
     /**
      * Gets students that don't have group in the semester.
      *
-     * @param int $semestreId
+     * @param int $semesterId
      * @param bool $strict <i>true</i> if $semesterId must be excluded
      * @return array
      */
-    public function getStudentsWithoutGroup($semestreId, $strict = true)
+    public function getStudentsWithoutGroup($semesterId, $strict = true)
     {
-        $concurrentSemesters = $this->getConcurrent($semestreId, $strict);
+        $concurrentSemesters = $this->getConcurrent($semesterId, $strict);
 
         //TODO a retravailler
         $sql =
@@ -454,10 +454,10 @@ class Semesters extends CI_Model
      * Returns all the marks of a student in a semester.
      *
      * @param string $studentId
-     * @param int $semestreId
+     * @param int $semesterId
      * @return array
      */
-    public function getStudentMarks($studentId, $semestreId)
+    public function getStudentMarks($studentId, $semesterId)
     {
         $sql =
             'SELECT *
@@ -486,7 +486,7 @@ class Semesters extends CI_Model
             ) AS foo
             ORDER BY idSubject';
 
-        return $this->db->query($sql, array($studentId, $semestreId, $studentId, $semestreId))
+        return $this->db->query($sql, array($studentId, $semesterId, $studentId, $semesterId))
             ->result();
     }
 
