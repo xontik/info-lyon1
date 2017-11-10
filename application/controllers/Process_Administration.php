@@ -69,6 +69,8 @@ class Process_Administration extends CI_Controller
     {
         $this->load->model('Semesters');
         $this->load->model('Groups');
+        $this->load->model('Students');
+
         $this->load->helper('csv_helper');
 
         if (isset($_FILES['import']) && $_FILES['import']['size'] > 0) {
@@ -84,6 +86,7 @@ class Process_Administration extends CI_Controller
                 $groupStudentIds = array();
 
                 $refusals = array();
+                $unknows = array();
 
                 $preserved = 0;
                 $deleted = 0;
@@ -121,31 +124,35 @@ class Process_Administration extends CI_Controller
                                 'name' => $line[2]
                             );
 
-                            if ($group = $this->Semesters->anyHasStudent($student['idStudent'], $concurrentSemesters)) {
-
-                                $refusals[] = array(
-                                    'student' => $student,
-                                    'fromGroup' => $group,
-                                    'toGroup' => $this->Groups->get($groupId)
-                                );
+                            if(!$this->Students->get($line[0])){
+                                $unknows[] = $student;
                             } else {
+                                if ($group = $this->Semesters->anyHasStudent($student['idStudent'], $concurrentSemesters)) {
 
-                                if (($key = array_search($student['idStudent'], $groupStudentIds)) !== FALSE) {
-                                    $preserved++;
-
-                                    unset($groupStudentIds[$key]);
-                                    $alreadyAddedIds[$student['idStudent']] = $groupId;
-
+                                    $refusals[] = array(
+                                        'student' => $student,
+                                        'fromGroup' => $group,
+                                        'toGroup' => $this->Groups->get($groupId)
+                                    );
                                 } else {
-                                    if (isset($alreadyAddedIds[$student['idStudent']])) {
-                                        $refusals[] = array(
-                                            'student' => $student,
-                                            'fromGroup' => $this->Groups->get($alreadyAddedIds[$student['idStudent']]),
-                                            'toGroup' => $this->Groups->get($groupId));
-                                    } else {
-                                        $added++;
+
+                                    if (($key = array_search($student['idStudent'], $groupStudentIds)) !== FALSE) {
+                                        $preserved++;
+
+                                        unset($groupStudentIds[$key]);
                                         $alreadyAddedIds[$student['idStudent']] = $groupId;
-                                        $this->Groups->addStudent($student['idStudent'], $groupId);
+
+                                    } else {
+                                        if (isset($alreadyAddedIds[$student['idStudent']])) {
+                                            $refusals[] = array(
+                                                'student' => $student,
+                                                'fromGroup' => $this->Groups->get($alreadyAddedIds[$student['idStudent']]),
+                                                'toGroup' => $this->Groups->get($groupId));
+                                        } else {
+                                            $added++;
+                                            $alreadyAddedIds[$student['idStudent']] = $groupId;
+                                            $this->Groups->addStudent($student['idStudent'], $groupId);
+                                        }
                                     }
                                 }
                             }
@@ -170,13 +177,25 @@ class Process_Administration extends CI_Controller
                         }
                         addPageNotification($msg, 'danger');
 
-                    } else {
-                        addPageNotification(
+                    }
+                    if (!empty($unknows)) {
+                        $msg = 'Erreur d\'import pour les etudiants incconus suivants :<br>';
+                        foreach ($unknows as $student) {
+
+                            $msg .= $student['surname']
+                                . ' ' . $student['name']
+                                . ' N° ' . $student['idStudent'] . '<br>';
+                        }
+                        addPageNotification($msg, 'danger');
+
+                    }
+
+                    addPageNotification(
                             'Conservé : ' . $preserved . '<br>'
                             . 'Supprimé : ' . $deleted . '<br>'
                             . 'Ajouté : ' . $added . '<br>'
                             . 'Total : ' . ($preserved + $deleted + $added));
-                    }
+
 
                     redirect('Administration/Semester/' . $idSemester);
                 } else {
