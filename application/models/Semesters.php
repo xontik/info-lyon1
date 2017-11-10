@@ -383,6 +383,7 @@ class Semesters extends CI_Model
             ->join('User', 'idUser')
             ->where('idSemester', $semesterId)
             ->order_by('groupName', 'ASC')
+            ->order_by('name', 'ASC')
             ->get()
             ->result();
     }
