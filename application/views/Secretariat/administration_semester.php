@@ -62,9 +62,8 @@
             <?php } ?>
             </div>
             <div class="card-action">
-                <a href="<?= base_url('Administration') ?>" class="btn-flat waves-effect">Retour</a>
-                <a href="<?= base_url('Process_Semester/delete/'
-                . $data['semester']->idSemester) ?>" class="btn-flat waves-effect deleter">Supprimer ce semestre</a>
+                <a href="<?= base_url('Process_Group/add/'
+                . $data['semester']->idSemester) ?>" class="btn-flat waves-effect">Ajouter groupe</a>
 
             </div>
         </div>

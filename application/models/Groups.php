@@ -144,9 +144,19 @@ class Groups extends CI_Model
                     ->where('idSemester',$semesterId)
                     ->get()
                     ->result_array(),'groupName');
-        $i = 1;
-        //TODO si differe start G6
-        while(in_array('G'.$i,$groups)){
+        $delayed = $this->db
+                        ->select('delayed')
+                        ->from('semester')
+                        ->where('idSemester',$semesterId)
+                        ->get()
+                        ->row()->delayed;
+        if($delayed) {
+            $i = 6;
+        } else {
+            $i = 1;
+        }
+
+        while(in_array('G'.$i,$groups)) {
             $i++;
         }
         $newName = 'G'.$i;
@@ -155,7 +165,7 @@ class Groups extends CI_Model
             'idSemester' => $semesterId,
             'groupName' => $newName
         );
-        return $this->db->insert('Group', $data);
+        return $this->db->insert('Group', $data) ? $newName : false;
 
     }
 

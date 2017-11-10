@@ -100,14 +100,16 @@ $( function() {
 
                 });
             } else {
-                console.log(ui.item.find('div').prepend($('<a>')
-                                                .attr('href','http://teckmeb.dev/Process_Group/delete_student/'+ui.item.data('group-id')+'/'+ui.item.data('student-id')+'/'+semesterId)
-                                                .append($('<i>')
-                                                            .addClass('material-icons')
-                                                            .html('delete')
-                                                        )
-                                                )
-                                            );
+                if(oldGrp == 0){
+                    ui.item.find('div').prepend($('<a>')
+                                                    .attr('href','http://teckmeb.dev/Process_Group/delete_student/'+ui.item.data('group-id')+'/'+ui.item.data('student-id')+'/'+semesterId)
+                                                    .append($('<i>')
+                                                                .addClass('material-icons')
+                                                                .html('delete')
+                                                            )
+                                                );
+                }
+
                 $.ajax({
                     dataType: 'json',
                     data: {'groupId': ui.item.data('group-id'), 'studentId':  ui.item.data('studentId')},
