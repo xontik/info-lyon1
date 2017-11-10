@@ -94,25 +94,6 @@
                 </form>
             </div>
         </div>
-        <!--
-        <div class="col s12 l6">
-            <div class="card grey lighten-5">
-                <form action="<?= base_url('Process_Group/add/' . $data['semester']->idSemester) ?>"
-                    method="post">
-                    <div class="card-content">
-                        <span class="card-title" >Ajouter un e </span>
-                        <div class="input-field">
-                            <input type="text" name="groupName" id="groupName">
-                            <label for="groupeName">Nom du groupe : </label>
-                        </div>
-                    </div>
-                    <div class="card-action">
-                        <button class="btn-flat waves-effect" type="submit">Ajouter</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-        -->
     </div>
     <div id="assoctiationCard" class="card grey lighten-5">
         <form class="" action="#" method="post">
@@ -194,7 +175,7 @@
             </thead>
             <tbody>
                 <?php foreach ($data['subjects'] as $subject) :
-                    $subjectDescription = $subject->subjectCode . ' ' . ($subject->subjectName == "" ? $subject->moduleName : $subject->subjectName);
+                    $subjectDescription = $subject->subjectCode . ' ' . ($subject->subjectName == "" ? $subject->moduleName : $subject->moduleName . ' : ' . $subject->subjectName);
                     ?>
                     <tr>
                         <td><?= $subjectDescription ?></td>
