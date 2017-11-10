@@ -45,7 +45,8 @@ function isCSVFile($name)
 
 function arrayToCsv($array, $separator = ',')
 {
-    $out = "sep=" . $separator . PHP_EOL;
+    $out = chr(255) . chr(254);
+    $out .= "sep=" . $separator . PHP_EOL;
 
     foreach ($array as $line) {
         foreach ($line as $key => $value) {
@@ -66,5 +67,7 @@ function arrayToCsv($array, $separator = ',')
         }
         $out .= PHP_EOL;
     }
+    $out  = mb_convert_encoding($out, 'UTF-16LE', 'UTF-8');
+
     return $out;
 }
