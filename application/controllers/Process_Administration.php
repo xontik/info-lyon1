@@ -21,7 +21,7 @@ class Process_Administration extends CI_Controller
         echo json_encode($output);
     }
 
-    public function getSemesterCSV($semesterId)
+    public function exportGroups($semesterId)
     {
         $semesterId = (int) htmlspecialchars($semesterId);
 
@@ -65,7 +65,7 @@ class Process_Administration extends CI_Controller
         echo arrayToCsv($csv);
     }
 
-    public function importCSVSemester($idRedirect)
+    public function importGroups($idRedirect)
     {
         $this->load->model('Semesters');
         $this->load->model('Groups');

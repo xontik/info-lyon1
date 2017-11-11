@@ -24,12 +24,11 @@ $(document).ready(function() {
         groupe.find('option[value='+groupId+']').prop('selected', true);
         groupe.material_select();
 
-        if(teacherId){
-            teacher.find(':selected').prop('selected',false);
-            teacher.find('option[value='+teacherId+']').prop('selected', true);
-            teacher.material_select();
-        }
+        teacher.find(':selected').prop('selected',false);
+        teacher.find('option[value='+teacherId+']').prop('selected', true);
+        teacher.material_select();
 
+        
         $('html, body').animate({
             scrollTop: $("#assoctiationCard").offset().top - 100
         }, 200);

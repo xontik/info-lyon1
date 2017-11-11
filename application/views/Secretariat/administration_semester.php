@@ -83,149 +83,174 @@
 <?php } ?>
 </div>
 
-<?php if($data['deletable']){?>
-
-    <div class="row">
-        <div class="col s12 l6">
-            <div class="card grey lighten-5">
-                <form action="<?= base_url('Process_Administration/importCSVSemester/' . $data['semester']->idSemester) ?>"
-                    method="post" enctype="multipart/form-data">
-                    <div class="card-content">
-                        <span class="card-title" >Importer un fichier .csv de groupe </span>
-                        <div class="file-field input-field">
-                            <div class="btn waves-effects">
-                                <span>Fichier</span>
-                                <input type="file" name="import" value="">
-                            </div>
-                            <div class="file-path-wrapper">
-                                <input class="file-path validate" type="text">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-action">
-                        <button class="btn-flat waves-effect" type="submit">Importer</button>
-                        <a href="<?= base_url('Process_Administration/getSemesterCSV'
-                        . '/' . $data['semester']->idSemester) ?>" class="btn-flat waves-effect">
-                        Exporter
-                    </a>
-                </div>
-            </form>
+<?php if (count($data['subjects'])) { ?>
+    <div class="card grey lighten-5">
+        <div class="card-content">
+            <span class="card-title">Tableau des affectations</span>
         </div>
-    </div>
-</div>
-<div id="assoctiationCard" class="card grey lighten-5">
-    <form class="" action="#" method="post">
-        <div class="card-content row no-margin">
-            <span class="card-title">Attribuer un professeur</span>
-            <div class="input-field col s12">
-                <select  id="subjectId" name="subjectId">
-                    <option value="" disabled selected> Selectionner...</option>
-                    <?php
-                    foreach ($data['subjects'] as $subject) {
-                        $subjectDescription = $subject->subjectCode . ' - ' . ($subject->subjectName == "" ? $subject->moduleName : $subject->subjectName);
-                        ?>
-                        <option value="<?= $subject->idSubject ?>"
-                            ><?= $subjectDescription ?>
-                        </option>
-                        <?php
-                    }
-                    ?>
-                </select>
-                <label for="subjectId">Matière</label>
-            </div>
-            <div class="input-field col s6">
-                <select id="groupId" name="groupId">
-                    <option value="" disabled selected
-                    >Selectionner...
-                </option>
-                <?php
-                foreach ($data['groups'] as $group) {
-                    ?>
-                    <option value="<?= $group->idGroup ?>"
-                        ><?= $group->groupName ?>
-                    </option>
-                    <?php
-                }
-                ?>
-            </select>
-            <label for="groupId">Groupe</label>
-        </div>
-
-        <div class="input-field col s6">
-            <select  id="teacherId" name="teacherId">
-                <option value="" disabled selected
-                >Selectionner...
-            </option>
-            <?php
-            foreach ($data['teachers'] as $teacher) {
-                ?>
-                <option value="<?= $teacher->idTeacher ?>"
-                    ><?= $teacher->name . ' ' . $teacher->surname ?>
-                </option>
-                <?php
-            }
-            ?>
-        </select>
-        <label for="teacherId">Professeur</label>
-        </div>
-    </div>
-    <div class="card-action">
-        <button class="btn-flat waves-effect" type="submit">Ajouter</button>
-    </div>
-
-    </form>
-</div>
-<?php } ?>
-
-<div class="card grey lighten-5">
-    <div class="card-content">
-        <span class="card-title">Tableau des affectations</span>
-    </div>
-    <div class="card-action row no-margin">
-        <table id="association-group-teacher-subject" class="bordered col s12">
-            <thead>
-                <tr>
-                    <th></th>
-                    <?php foreach ($data['groupsWithStudent'] as $group) : ?>
-                        <th><?= $group->groupName ?></th>
-                    <?php endforeach; ?>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($data['subjects'] as $subject) :
-                    $subjectDescription = $subject->subjectCode . ' ' . ($subject->subjectName == "" ? $subject->moduleName : $subject->moduleName . ' : ' . $subject->subjectName);
-                    ?>
+        <div class="card-action row no-margin">
+            <table id="association-group-teacher-subject" class="bordered col s12">
+                <thead>
                     <tr>
-                        <td><?= $subjectDescription ?></td>
-                        <?php foreach ($data['groupsWithStudent'] as $group) :
-                            if(isset($data['educations'][$group->idGroup][$subject->idSubject])) {
-                                $education = $data['educations'][$group->idGroup][$subject->idSubject];
-                                ?>
-                                <td>
-                                    <i class="small material-icons tooltipped" data-group-id="<?= $group->idGroup ?>"
-                                        data-subject-id="<?= $subject->idSubject ?>" data-teacher-id="<?= $education->idTeacher ?>"
-                                        data-tooltip="<?php echo $education->name . ' ' . $education->surname; ?>" data-delay="0">person</i>
-                                    </td>
-                                    <?php
-                                } else { ?>
+                        <th></th>
+                        <?php foreach ($data['groupsWithStudent'] as $group) : ?>
+                            <th><?= $group->groupName ?></th>
+                        <?php endforeach; ?>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($data['subjects'] as $subject) :
+                        $subjectDescription = $subject->subjectCode . ' ' . ($subject->subjectName == "" ? $subject->moduleName : $subject->moduleName . ' : ' . $subject->subjectName);
+                        ?>
+                        <tr>
+                            <td><?= $subjectDescription ?></td>
+                            <?php foreach ($data['groupsWithStudent'] as $group) :
+                                if(isset($data['educations'][$group->idGroup][$subject->idSubject])) {
+                                    $education = $data['educations'][$group->idGroup][$subject->idSubject];
+                                    ?>
                                     <td>
                                         <i class="small material-icons tooltipped" data-group-id="<?= $group->idGroup ?>"
-                                            data-subject-id="<?= $subject->idSubject ?>" data-tooltip="Cliquer pour ajouter" data-delay="0">error_outline</i>
+                                            data-subject-id="<?= $subject->idSubject ?>" data-teacher-id="<?= $education->idTeacher ?>"
+                                            data-tooltip="<?php echo $education->name . ' ' . $education->surname; ?>" data-delay="0">person</i>
                                         </td>
-                                    <?php }
-                                endforeach; ?>
+                                        <?php
+                                    } else { ?>
+                                        <td>
+                                            <i class="small material-icons tooltipped" data-group-id="<?= $group->idGroup ?>"
+                                                data-subject-id="<?= $subject->idSubject ?>" data-teacher-id="0"
+                                                data-tooltip="Cliquer pour ajouter" data-delay="0">error_outline</i>
+                                            </td>
+                                        <?php }
+                                    endforeach; ?>
 
-                            </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        <?php } ?>
+        <?php if ($data['editable']) { ?>
+
+            <div id="assoctiationCard" class="card grey lighten-5">
+                <form class="" action="<?= base_url('Process_Education/add_teacher/'.$data['semester']->idSemester) ?>" method="post">
+                    <div class="card-content row no-margin">
+                        <span class="card-title">Attribuer un professeur</span>
+                        <div class="input-field col s12">
+                            <select  id="subjectId" name="subjectId">
+                                <option value="-1" disabled selected> Selectionner...</option>
+                                <?php
+                                foreach ($data['subjects'] as $subject) {
+                                    $subjectDescription = $subject->subjectCode . ' - ' . ($subject->subjectName == "" ? $subject->moduleName : $subject->subjectName);
+                                    ?>
+                                    <option value="<?= $subject->idSubject ?>"
+                                        ><?= $subjectDescription ?>
+                                    </option>
+                                    <?php
+                                }
+                                ?>
+                            </select>
+                            <label for="subjectId">Matière</label>
+                        </div>
+                        <div class="input-field col s6">
+                            <select id="groupId" name="groupId">
+                                <option value="-1" disabled selected
+                                >Selectionner...
+                            </option>
+                            <?php
+                            foreach ($data['groups'] as $group) {
+                                ?>
+                                <option value="<?= $group->idGroup ?>"
+                                    ><?= $group->groupName ?>
+                                </option>
+                                <?php
+                            }
+                            ?>
+                        </select>
+                        <label for="groupId">Groupe</label>
+                    </div>
+
+                    <div class="input-field col s6">
+                        <select  id="teacherId" name="teacherId">
+                            <option value="-1" disabled selected >Selectionner...</option>
+                            <option value="0">Aucun</option>
+
+                            <?php
+                            foreach ($data['teachers'] as $teacher) {
+                                ?>
+                                <option value="<?= $teacher->idTeacher ?>"
+                                    ><?= $teacher->name . ' ' . $teacher->surname ?>
+                                </option>
+                                <?php
+                            }
+                            ?>
+                        </select>
+                        <label for="teacherId">Professeur</label>
+                    </div>
+                </div>
+                <div class="card-action">
+                    <button id=''class="btn-flat waves-effect" type="submit">Editer</button>
+                </div>
+
+            </form>
+        </div>
+    <?php } ?>
+    <?php if($data['editable']){?>
+
+        <div class="row">
+            <div class="col s12 l6">
+                <div class="card grey lighten-5">
+                    <form action="<?= base_url('Process_Administration/importGroups/' . $data['semester']->idSemester) ?>"
+                        method="post" enctype="multipart/form-data">
+                        <div class="card-content">
+                            <span class="card-title" >Importer un fichier .csv de groupe </span>
+                            <div class="file-field input-field">
+                                <div class="btn waves-effects">
+                                    <span>Fichier</span>
+                                    <input type="file" name="import" value="">
+                                </div>
+                                <div class="file-path-wrapper">
+                                    <input class="file-path validate" type="text">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-action">
+                            <button class="btn-flat waves-effect" type="submit">Importer</button>
+                            <a href="<?= base_url('Process_Administration/exportGroups'
+                            . '/' . $data['semester']->idSemester) ?>" class="btn-flat waves-effect">
+                            Exporter</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="col s12 l6">
+                <div class="card grey lighten-5">
+                    <form action="<?= base_url('Process_Administration/importCSVSemester/' . $data['semester']->idSemester) ?>"
+                        method="post" enctype="multipart/form-data">
+                        <div class="card-content">
+                            <span class="card-title" >Importer un fichier .csv de matieres </span>
+                            <div class="file-field input-field">
+                                <div class="btn waves-effects">
+                                    <span>Fichier</span>
+                                    <input type="file" name="import" value="">
+                                </div>
+                                <div class="file-path-wrapper">
+                                    <input class="file-path validate" type="text">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-action">
+                            <button class="btn-flat waves-effect" type="submit">Importer</button>
+                            <a href="<?= base_url('Process_Administration/getSemesterCSV'
+                            . '/' . $data['semester']->idSemester) ?>" class="btn-flat waves-effect">
+                            Exporter</a>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
-        <section>
-            <h2>Attribution professeurs a un couple Groupe-Matiere</h2>
-            <p>Ici ajout manuel</p>
-            <p>Ici export csv pour un smestre</p>
-            <p>Ici import d'un csv</p>
-        </section>
 
-    </main>
+    <?php } ?>
+
+</main>
