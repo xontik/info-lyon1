@@ -2,9 +2,14 @@
     $days = array('Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi');
 
     $empty = empty($data['timetable']);
-    $weekNum = $data['date']->format('W');
     $datetime = $data['date'];
+    $weekNum = $datetime->format('W');
+
     $activeTime = null;
+    $now = new DateTime();
+
+    $loopDay = clone $datetime;
+    $loopDay->modify('-' . ($datetime->format('N') - 1) . ' day');
 ?>
 <main>
     <div class="container">
@@ -39,13 +44,13 @@
                     if (!is_null($activeTime)) {
                         $activeTime = '01:00';
                     }
-                } else if ($dayNum >= $datetime->format('N')) {
+                } else if (!$now->diff($datetime)->invert && $dayNum >= $datetime->format('N')) {
                     $activeTime = $datetime->format('H:i');
                     $datetime = null;
                 }
                 ?>
                 <div class="events <?= $emptyDay ? 'hide-on-med-and-down' : '' ?>">
-                    <h5><?= $days[$dayNum-1] ?></h5>
+                    <h5><?= $days[$dayNum-1] . ' ' . $loopDay->format('d/m') ?></h5>
                     <?php
                     if (!$emptyDay) {
                         usort($data['timetable'][$dayNum], 'sortTimetable');
@@ -95,6 +100,7 @@
                     ?>
                 </div>
                 <?php
+                $loopDay->modify('+1 day');
             } ?>
         </div>
         <?php
@@ -144,7 +150,9 @@
             </p>
             <p class="col">
                 <a class="btn-flat"
-                    href="<?= base_url('Process_Timetable/update/' . $data['resource']) ?>">Mettre à jour
+                    href="<?= base_url('Process_Timetable/update'
+                        . '/' . $data['resource'])
+                        . '/' . $weekNum ?>">Mettre à jour
                 </a>
             </p>
         <?php } ?>

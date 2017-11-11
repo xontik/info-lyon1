@@ -71,9 +71,11 @@ class Process_Timetable extends CI_Controller
         redirect('Timetable/edit');
     }
 
-    public function update($resource)
+    public function update($resource, $weekNum = 0)
     {
         $resource = (int) htmlspecialchars($resource);
+        $weekNum = (int) htmlspecialchars($weekNum);
+
         $this->load->model('Timetables');
 
         if ($resource === 0) {
@@ -87,6 +89,6 @@ class Process_Timetable extends CI_Controller
             addPageNotification('Erreur lors de la mise à jour de l\'emploi du temps', 'danger');
         }
 
-        redirect('Timetable');
+        redirect('Timetable' . ($weekNum !== 0 ? '/' . $weekNum : ''));
     }
 }

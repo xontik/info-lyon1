@@ -7,19 +7,13 @@ class Timetable extends TM_Controller
     {
         $this->load->helper('timetable');
 
-        $date = new DateTime();
-
-        if (is_numeric($weekNum)) {
-            $weekDiff = $weekNum - $date->format('W');
-            $date->modify($weekDiff . ' week');
-        }
-
         if ($adeResource === FALSE) {
-            $this->data['timetable'] = false;
+            $this->data = array('date' => new DateTime(), 'timetable' => false);
         } else {
-            $this->data['timetable'] = getNextTimetable($adeResource, 'week', $date);
+            $timetableDate = is_numeric($weekNum) ? $weekNum : new DateTime();
+            $this->data = getNextTimetable($adeResource, 'week', $timetableDate);
         }
-        $this->data['date'] = $date;
+
         $this->data['resource'] = $adeResource;
 
         $this->setData(array(

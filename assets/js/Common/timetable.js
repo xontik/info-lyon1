@@ -33,7 +33,7 @@ $(document).ready(function() {
     var subject = {};
     var i = 0;
 
-    $('.events > div:not(.fill)').each(function(index, element) {
+    $('.events > div:not(.fill)').each(function() {
         var subjectName = $(this).find('h5').text().split(" ", 2).splice(0, 1);
 
         if (!subject[subjectName]) {

@@ -16,8 +16,6 @@
  * In view
  * <?= $data['side-edt'] ?>
  */
-
-$now = new DateTime();
 ?>
     <div id="side-edt-large" class="hide-on-small-and-down card center-align">
         <div class="card-content">
@@ -51,12 +49,7 @@ $now = new DateTime();
                         <?php
                     } else {
                         usort($timetable, 'sortTimetable');
-
-                        if ($now->diff($date)->days === 0) {
-                            $timeAtDate = $date->format('H:i');
-                        } else {
-                            $timeAtDate = '01:00';
-                        }
+                        $timeAtDate = $date->format('H:i');
 
                         $lastTimeEnd = null;
                         $linksPointer = 0;

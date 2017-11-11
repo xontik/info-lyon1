@@ -6,14 +6,14 @@ define('DATE_FORMAT', 'Y-m-d');
 /**
  * Look for the next non-empty timetable in the 3 next days.
  *
- * @param int       $resources
- * @param string    $period     'day' or 'week'
- * @param DateTime  $datetime   (default: today)
+ * @param int           $resources
+ * @param string        $period     'day' or 'week'
+ * @param DateTime|int  $datetime   Date or week number (default: today)
  * @return array Formatted timetable
  *
  * @see getTimetable()
  */
-function getNextTimetable($resources, $period, &$datetime = NULL) {
+function getNextTimetable($resources, $period, $datetime = NULL) {
     global $timezone;
     $timezone = new DateTimeZone('Europe/Paris');
 
@@ -21,33 +21,71 @@ function getNextTimetable($resources, $period, &$datetime = NULL) {
         $datetime = new DateTime();
         $datetime->setTimezone($timezone);
     }
+    else if (is_numeric($datetime)) {
+        $weekNum = (int) $datetime;
+        $datetime = new DateTime();
+        $datetime->setTimezone($timezone);
+    }
 
-    $tempDate = clone $datetime;
     $limit = 0;
 
-    // If hour >= 18h, take next day timetable
-    if ($tempDate->format('H') >= 18) {
-        $tempDate->modify('+1 day');
+    // If hour >= 18:00, take next day timetable
+    if ($datetime->format('H') >= 18) {
+        $datetime->modify('+1 day');
+        $datetime->setTime(0, 0);
         $limit = 1;
     }
 
-    $timetable = getTimetable($resources, $period, $tempDate);
+    $dayNum = $datetime->format('N');
+
+    // If strict week
+    if (isset($weekNum)) {
+        if (strcasecmp($period, 'week') !== 0) {
+            trigger_error('Can\'t get the timetable of a day from a week number');
+            return array();
+        }
+
+        $weekDiff = $weekNum - $datetime->format('W');
+        $datetime->modify($weekDiff. ' week');
+
+        $dayDiff = $weekDiff === ($dayNum >= 6 ? 1 : 0)
+            ? -($datetime->format('N') - 1) // Difference to monday
+            : 7 - $datetime->format('N');   // Difference to sunday
+
+        $datetime->modify($dayDiff . ' day');
+        $datetime->setTime(0, 0);
+
+    } else {
+
+        // If week-end and not strict week
+        if ($dayNum >= 6) {
+            // Goto monday
+            $nextMondayDiff = 8 - $dayNum;
+            $datetime->modify('+' . $nextMondayDiff . ' day');
+            $datetime->setTime(0, 0);
+            $limit += $nextMondayDiff;
+        }
+    }
+
+    $timetable = getTimetable($resources, $period, $datetime);
 
     if (strcasecmp($period, 'day') === 0) {
         // Look at next not empty timetable within 3 days
         while ($limit < 3 && empty($timetable)) {
-            $tempDate->modify('+1 day');
-            $timetable = getTimetable($resources, $period, $tempDate);
+            $datetime->modify('+1 day');
+            $timetable = getTimetable($resources, $period, $datetime);
             $limit++;
+        }
+
+        if ($limit !== 0) {
+            $datetime->setTime(0, 0);
         }
     }
 
-    // If timetable still empty, reset date
-    if (!empty($timetable) && strcasecmp($period, 'day') === 0) {
-        $datetime = $tempDate;
-    }
-
-    return $timetable;
+    return array(
+        'timetable' => $timetable,
+        'date' => $datetime
+    );
 }
 
 /**
