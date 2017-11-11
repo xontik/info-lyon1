@@ -1199,7 +1199,7 @@ html { box-sizing: border-box; }
 ul:not(.browser-default) { padding-left: 0; list-style-type: none; }
 ul:not(.browser-default) > li { list-style-type: none; }
 
-a { color: #ffca28; text-decoration: none; -webkit-tap-highlight-color: transparent; }
+a { color: #ffab40; text-decoration: none; -webkit-tap-highlight-color: transparent; }
 
 .valign-wrapper { display: flex; align-items: center; }
 

@@ -391,13 +391,13 @@ class Semesters extends CI_Model
     /**
      * Gets students that don't have group in the semester.
      *
-     * @param int $semestreId
+     * @param int $semesterId
      * @param bool $strict <i>true</i> if $semesterId must be excluded
      * @return array
      */
-    public function getStudentsWithoutGroup($semestreId, $strict = true)
+    public function getStudentsWithoutGroup($semesterId, $strict = true)
     {
-        $concurrentSemesters = $this->getConcurrent($semestreId, $strict);
+        $concurrentSemesters = $this->getConcurrent($semesterId, $strict);
 
         $sql =
             'SELECT distinct name, surname, idStudent
@@ -454,15 +454,17 @@ class Semesters extends CI_Model
      * Returns all the marks of a student in a semester.
      *
      * @param string $studentId
-     * @param int $semestreId
+     * @param int $semesterId
      * @return array
      */
-    public function getStudentMarks($studentId, $semestreId)
+    public function getStudentMarks($studentId, $semesterId)
     {
         $sql =
-            'SELECT subjectCode, subjectName, controlName,
+            'SELECT *
+            FROM (
+                SELECT subjectCode, subjectName, controlName,
                 coefficient, divisor, controlTypeName, median, average,
-                controlDate, subjectCoefficient, value, idPromo
+                controlDate, idSubject, subjectCoefficient, value, idPromo
                 FROM Mark
                 JOIN Control USING (idControl)
                 JOIN ControlType USING (idControlType)
@@ -473,16 +475,18 @@ class Semesters extends CI_Model
             UNION
                 SELECT DISTINCT subjectCode, subjectName, controlName,
                 coefficient, divisor, controlTypeName, median, average,
-                controlDate, subjectCoefficient, value, idPromo
+                controlDate, idSubject, subjectCoefficient, value, idPromo
                 FROM Mark
                 JOIN Control USING (idControl)
                 JOIN ControlType USING (idControlType)
                 JOIN Promo USING (idPromo)
                 JOIN Subject USING (idSubject)
                 JOIN Education USING (idSubject)
-                WHERE idStudent = ? AND idSemester = ?';
+                WHERE idStudent = ? AND idSemester = ?
+            ) AS foo
+            ORDER BY idSubject';
 
-        return $this->db->query($sql, array($studentId, $semestreId, $studentId, $semestreId))
+        return $this->db->query($sql, array($studentId, $semesterId, $studentId, $semesterId))
             ->result();
     }
 
@@ -613,7 +617,9 @@ class Semesters extends CI_Model
      */
     public function delete($semesterId)
     {
-        return $this->db->delete('Semester', array('idSemester' => $semesterId));
+        $this->db->delete('Semester', array('idSemester' => $semesterId));
+        return $this->db->affected_rows();
+        
     }
 
 }

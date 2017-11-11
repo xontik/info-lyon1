@@ -930,6 +930,7 @@ $(document).ready(function() {
 
     // Absence table events
     $absenceTable
+        .find('tbody')
         .on('click', 'td', function(event) {
             if (event.which === 1) {
                 activate('cell', this);

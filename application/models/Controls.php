@@ -194,9 +194,11 @@ class Controls extends CI_Model
             'controlDate' => $date,
         );
 
-        return $this->db->set($data)
+        $this->db->set($data)
             ->where('idControl', $controlId)
             ->update('Control');
+        return $this->db->affected_rows();
+
     }
 
     /**
@@ -207,7 +209,9 @@ class Controls extends CI_Model
      */
     public function delete($controlId)
     {
-        return $this->db->delete('Control', array('idControl' => $controlId));
+        $this->db->delete('Control', array('idControl' => $controlId));
+        return $this->db->affected_rows();
+        
     }
 
 }

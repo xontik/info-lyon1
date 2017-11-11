@@ -1,27 +1,9 @@
-@import 'materialize';
-
-.material-icons {
-  @extend .no-select;
-}
-
-main {
-  min-height: 100vh
-}
+@import 'style';
 
 section {
-  @extend .col, .s12, .m12, .l6
+  min-height: 100vh !important;
 }
 
 #connect_block img {
   width: 50%
-}
-
-form {
-  @extend .center-align;
-
-  button {
-    @extend .yellow, .accent-4;
-    margin-top: 1.5rem;
-    margin-bottom: 1rem;
-  }
 }

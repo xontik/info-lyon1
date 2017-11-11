@@ -1199,7 +1199,7 @@ html { box-sizing: border-box; }
 ul:not(.browser-default) { padding-left: 0; list-style-type: none; }
 ul:not(.browser-default) > li { list-style-type: none; }
 
-a { color: #ffca28; text-decoration: none; -webkit-tap-highlight-color: transparent; }
+a { color: #ffab40; text-decoration: none; -webkit-tap-highlight-color: transparent; }
 
 .valign-wrapper { display: flex; align-items: center; }
 
@@ -3912,7 +3912,7 @@ html { box-sizing: border-box; }
 ul:not(.browser-default) { padding-left: 0; list-style-type: none; }
 ul:not(.browser-default) > li { list-style-type: none; }
 
-a { color: #ffca28; text-decoration: none; -webkit-tap-highlight-color: transparent; }
+a { color: #ffab40; text-decoration: none; -webkit-tap-highlight-color: transparent; }
 
 .valign-wrapper { display: flex; align-items: center; }
 
@@ -5440,5 +5440,7 @@ body > header > nav h2 { text-align: center; font-size: 2.46rem; }
 .no-margin { margin: 0 !important; }
 
 .small-caps { font-variant: small-caps; }
+
+.card-action button.btn-flat { color: #ffab40; }
 
 /*# sourceMappingURL=timetable.css.map */

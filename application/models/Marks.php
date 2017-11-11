@@ -5,7 +5,7 @@ class Marks extends CI_Model {
 
     /**
      * Creates a mark.
-     * 
+     *
      * @param $controlId
      * @param $studentId
      * @param $value
@@ -22,7 +22,7 @@ class Marks extends CI_Model {
 
     /**
      * Creates all marks
-     * 
+     *
      * @param $studentsMarks
      * @param $controlId
      */
@@ -38,7 +38,7 @@ class Marks extends CI_Model {
 
     /**
      * Updates a mark.
-     * 
+     *
      * @param $controlId
      * @param $studentId
      * @param $newValue
@@ -53,15 +53,17 @@ class Marks extends CI_Model {
 
     /**
      * Deletes a mark.
-     * 
+     *
      * @param $controlId
      * @param $studentId
      * @return bool
      */
     public function delete($controlId, $studentId) {
-        return $this->db->where('idControl', $controlId)
+        $this->db->where('idControl', $controlId)
             ->where('idStudent', $studentId)
             ->delete('Mark');
+        return $this->db->affected_rows();
+
     }
 
 }

@@ -106,7 +106,9 @@ class Courses extends CI_Model
      */
     public function delete($courseId)
     {
-        return $this->db->delete('Course', array('idCourse' => $courseId));
+        $this->db->delete('Course', array('idCourse' => $courseId));
+        return $this->db->affected_rows();
+
     }
 
     /**
@@ -134,9 +136,11 @@ class Courses extends CI_Model
      */
     public function unlinkTeachingUnit($teachingUnitId, $courseId)
     {
-        return $this->db->where('idTeachingUnit', $teachingUnitId)
+        $this->db->where('idTeachingUnit', $teachingUnitId)
             ->where('idCourse', $courseId)
             ->delete('TeachingUnitOfCourse');
+        return $this->db->affected_rows();
+
     }
 
     /**
