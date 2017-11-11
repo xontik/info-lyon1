@@ -17,6 +17,14 @@ $(document).ready(function() {
         outDuration: 115
     });
 
+    // Confirm modal
+    $('form[data-confirm]').submit(confirm);
+    $('a[data-confirm]').click(confirm);
+
+    function confirm() {
+        return window.confirm(this.getAttribute('data-confirm'));
+    }
+
     // Notifications
     var notificationCount = $('.notif').length / 2;
 
@@ -30,7 +38,7 @@ $(document).ready(function() {
             var $toastContent = '<i class="material-icons">' + notif.icon + '</i>'
                 + '<span>' + notif.content + '</span>';
 
-            Materialize.toast($toastContent, Infinity, 'notif notif-' + notif.type);
+            Materialize.toast($toastContent, notif.duration, 'notif notif-' + notif.type);
         });
     }
 

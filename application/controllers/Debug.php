@@ -1,4 +1,5 @@
 <?php
+defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Debug extends CI_Controller
 {
@@ -14,6 +15,7 @@ class Debug extends CI_Controller
     {
         $data = array(
             'title' => '$_SESSION',
+            'pageName' => 'session',
             'data' => array(
                 'session' => $_SESSION
             )
@@ -26,8 +28,8 @@ class Debug extends CI_Controller
         addPageNotification('Succès', 'success');
         addPageNotification('Avertissement', 'warning');
         addPageNotification('Echec', 'danger');
-        addPageNotification('Icône personnalisé', '', 'schedule');
         addPageNotification('Un message<br>sur plusieurs lignes');
+        addPageNotification('Icône personnalisé', '', 'schedule', 'Infinity');
         addSessionNotification('Un lien qui dure toute la session !', '', '', '#!');
         addSessionNotification('Un message de succès qui dure toute la session !', 'success');
 
