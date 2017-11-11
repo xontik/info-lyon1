@@ -2,8 +2,8 @@
     <div class="section">
         <h4 class="header">Questions</h4>
         <ul class="collapsible" data-collapsible="accordion">
-            <?php foreach ($data['questions'] as $question)
-            { ?>
+            <?php foreach ($data['questions'] as $question) {
+                ?>
                 <li>
                     <div class="collapsible-header">
                         <div><?= $question->title ?></div>
@@ -62,11 +62,11 @@
                     <select name="teacherId" id="teacherId" class="col s12 m8 l5">
                         <option value="" disabled selected>Choisir un professeur</option>
                         <?php
-                        foreach ($data['teachers'] as $teacher)
-                        { ?>
-                            <option value="<?= $teacher->idTeacher?>"><?= $teacher->name ?></option>
-                            <?php
-                        } ?>
+                        foreach ($data['teachers'] as $teacher) {
+                            ?>
+                            <option value="<?= $teacher->idTeacher ?>"><?= $teacher->name ?></option>
+                        <?php }
+                        ?>
                     </select>
                     <label for="teacherId">Professeur</label>
                 </div>
@@ -76,4 +76,47 @@
             </form>
         </div>
     </div>
+    <?php if ($data['nbPages'] > 1) { ?>
+        <center>
+            <?php
+            $nbPages = $data['nbPages'];
+            $currentPage = $data['currentPage'];
+            $leftIsDisabled = ($currentPage == 1);
+            $rightIsDisabled = ($currentPage == $nbPages);
+            ?>
+            <ul class="pagination">
+                <li class="<?= $leftIsDisabled ? 'disabled' : 'waves-effect' ?>">
+                    <a <?= $leftIsDisabled ? '' : 'href="' . base_url("Question/") . ($currentPage - 1) . '"' ?>>
+                        <i class="material-icons">chevron_left</i>
+                    </a>
+                </li>
+                <?php
+                $indexPagination = 1;
+                $limitPagination = 9;
+                $changePaginationNumber = 5;
+                if ($currentPage > $changePaginationNumber) {
+                    if ($currentPage <= $nbPages - $changePaginationNumber) {
+                        $indexPagination = 1 + ($currentPage - $changePaginationNumber);
+                    } else {
+                        if ($currentPage > $limitPagination) {
+                            $indexPagination = 1 + ($nbPages - $limitPagination);
+                        }
+                    }
+                }
+                for ($i = $indexPagination; $i <= $indexPagination + $limitPagination - 1; $i++) {
+                    if ($i == $nbPages + 1) {
+                        break;
+                    }
+                    $isActive = ($i == $currentPage) ? 'active' : '';
+                    echo '<li class="waves-effect ' . $isActive . '"><a href="' . base_url("Question/$i") . '">' . $i . '</a></li>';
+                }
+                ?>
+                <li class="<?= $rightIsDisabled ? 'disabled' : 'waves-effect' ?>">
+                    <a <?= $rightIsDisabled ? '' : 'href="' . base_url("Question/") . ($currentPage + 1) . '"' ?>>
+                        <i class="material-icons">chevron_right</i>
+                    </a>
+                </li>
+            </ul>
+        </center>
+    <?php } ?>
 </main>

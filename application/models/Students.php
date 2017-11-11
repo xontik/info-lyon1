@@ -76,7 +76,15 @@ class Students extends CI_Model
      * @param string $studentId
      * @return array
      */
-    public function getQuestions($studentId)
+    
+    public function countQuestions($studentId)
+    {
+        return $this->db
+            ->where('idStudent', $studentId)
+            ->count_all('Question');
+    }
+    
+    public function getQuestionsPerPage($studentId, $currentPage, $nbQuestionsPerPage)
     {
         return $this->db
             ->select(
@@ -88,6 +96,7 @@ class Students extends CI_Model
             ->join('User', 'idUser')
             ->where('idStudent', $studentId)
             ->order_by('questionDate', 'DESC')
+            ->limit($nbQuestionsPerPage, (($currentPage - 1) * $nbQuestionsPerPage))
             ->get()
             ->result();
     }
