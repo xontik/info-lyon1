@@ -1199,7 +1199,7 @@ html { box-sizing: border-box; }
 ul:not(.browser-default) { padding-left: 0; list-style-type: none; }
 ul:not(.browser-default) > li { list-style-type: none; }
 
-a { color: #ffca28; text-decoration: none; -webkit-tap-highlight-color: transparent; }
+a { color: #ffab40; text-decoration: none; -webkit-tap-highlight-color: transparent; }
 
 .valign-wrapper { display: flex; align-items: center; }
 
@@ -3912,7 +3912,7 @@ html { box-sizing: border-box; }
 ul:not(.browser-default) { padding-left: 0; list-style-type: none; }
 ul:not(.browser-default) > li { list-style-type: none; }
 
-a { color: #ffca28; text-decoration: none; -webkit-tap-highlight-color: transparent; }
+a { color: #ffab40; text-decoration: none; -webkit-tap-highlight-color: transparent; }
 
 .valign-wrapper { display: flex; align-items: center; }
 
@@ -5441,13 +5441,15 @@ body > header > nav h2 { text-align: center; font-size: 2.46rem; }
 
 .small-caps { font-variant: small-caps; }
 
+.card-action button.btn-flat { color: #ffab40; }
+
 #association-group-teacher-subject i { cursor: pointer; }
 
 .horizontal-wrapper { display: flex; flex-direction: row; align-items: flex-start; flex-wrap: nowrap; overflow-x: auto; padding-left: 5px; padding-right: 5px; }
 .horizontal-wrapper .collection-item { white-space: nowrap; min-width: 200px; }
 .horizontal-wrapper > * { flex-shrink: 0; margin: 5px; margin-bottom: auto; overflow: visible; }
 .horizontal-wrapper > * li.collection-item { padding-left: 15px !important; }
-.horizontal-wrapper > * li.collection-item:hover { cursor: pointer; }
+.horizontal-wrapper > * .connectedSortable:hover { cursor: pointer; }
 .horizontal-wrapper .add-group { align-self: flex-end; margin: auto; padding: 10px; }
 .horizontal-wrapper .collection-header { min-width: 200px; }
 

@@ -71,17 +71,15 @@ class Administration extends TM_Controller
         $this->load->model('Semesters');
         $this->load->model('Teachers');
 
-        if (!$this->Semesters->isEditable($semesterId)) {
-            addPageNotification('Impossible d\'éditer ce semestre', 'danger');
-            redirect('Administration');
-        }
+        $deletable = $this->Semesters->isDeletable($semesterId);
+        $editable = $this->Semesters->isEditable($semesterId);
 
         $semester = $this->Semesters->get($semesterId);
         $unsortedGroups = $this->Semesters->getGroups($semesterId);
         $unsortedStudent = $this->Semesters->getStudents($semesterId);
 
         // false pour récuperer ceux qui non pas du tout de groupe sachant qu'on a déjà ceux du semestre
-        $freeStudents = $this->Semesters->getStudentsWithoutGroup($semesterId, false);
+        $freeStudents = $deletable ? null : $this->Semesters->getStudentsWithoutGroup($semesterId, false);
 
         $groups = array();
         $maxStudents = 0;
@@ -96,13 +94,6 @@ class Administration extends TM_Controller
             $groupsWithStudent[$student->idGroup]->students[] = $student;
         }
 
-        foreach ($groupsWithStudent as $group) {
-            if (($groupCount = count($group->students)) > $maxStudents) {
-                $maxStudents = $groupCount;
-            }
-        }
-
-
         $subjects = $this->Semesters->getSubjects($semesterId);
         $AllEducations = $this->Semesters->getEducations($semesterId);
         $teachers = $this->Teachers->getAll();
@@ -115,6 +106,8 @@ class Administration extends TM_Controller
             $educations[$education->idGroup][$education->idSubject] = $education;
         }
 
+
+
         $this->data = array(
             'semester' => $semester,
             'groupsWithStudent' => $groupsWithStudent,
@@ -123,17 +116,19 @@ class Administration extends TM_Controller
             'educations' => $educations,
             'freeStudents' => $freeStudents,
             'maxStudents' => $maxStudents,
-            'teachers' => $teachers
+            'teachers' => $teachers,
+            'deletable' => $deletable,
+            'editable' => $editable
+
         );
 
         $this->setData('js');
 
         $this->setData('js', 'jquery-ui/jquery-ui.min');
         $this->setData('js', 'Secretariat/administration_semester');
-
         $this->setData('css', 'jquery-ui/jquery-ui.structure.min');
         $this->setData('css', 'jquery-ui/jquery-ui.min');
-        
+
 
 
         $this->show('Gestion de semestre');

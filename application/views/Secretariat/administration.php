@@ -95,7 +95,7 @@
                         foreach ($data['semesters'] as $semester) {
                             $semesterData = $semester['data'];
                             ?>
-                            <tr class="<?= $semester['state'] ?>">
+                            <tr>
                                 <td><?= $semesterData->schoolYear ?></td>
                                 <td><?= $semesterData->courseType . ' - '
                                     . ($semesterData->delayed ? 'Différé' : 'Normal') ?></td>
@@ -109,15 +109,9 @@
                                     ?>
                                 </td>
                                 <td>
-                                    <?php
-                                    if ($semester['state'] !== 'after') {
-                                        ?>
-                                        <a href="<?= base_url('Administration/semester/' . $semesterData->idSemester) ?>">
-                                            <i class="material-icons">edit</i>
-                                        </a>
-                                        <?php
-                                    }
-                                    ?>
+                                    <a href="<?= base_url('Administration/semester/' . $semesterData->idSemester) ?>">
+                                        <i class="material-icons"><?= $semester['state'] != 'after' ? 'edit' : 'add_to_queue' ?></i>
+                                    </a>
                                 </td>
                             </tr>
                             <?php

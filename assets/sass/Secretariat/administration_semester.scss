@@ -29,9 +29,10 @@
         li.collection-item{
             padding-left: 15px !important;
 
-            &:hover {
-                cursor: pointer;
-            }
+
+        }
+        .connectedSortable:hover {
+            cursor: pointer;
         }
 
     }
@@ -43,7 +44,7 @@
     }
     .collection-header {
         min-width:200px;
-        
+
     }
 }
 .placeholder {

@@ -139,6 +139,6 @@ $( function() {
 
         }
     }
-    $( ".collection" ).sortable(params);
+    $( ".connectedSortable" ).sortable(params);
 
   } );

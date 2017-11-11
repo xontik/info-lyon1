@@ -11,7 +11,7 @@ class Process_Group extends CI_Controller
         $this->load->model('Groups');
         $this->load->model('Semesters');
 
-        if ($this->Semesters->isEditable($semesterId)) {
+        if ($this->Semesters->isDeletable($semesterId)) {
             if ($groupName = $this->Groups->create($semesterId)) {
                 addPageNotification('Groupe ' . $groupName . ' ajouté avec succès', 'success');
             } else {
@@ -27,15 +27,16 @@ class Process_Group extends CI_Controller
     public function delete($groupId, $semesterId)
     {
         $this->load->model('Groups');
+        $this->load->model('Semesters');
 
-        if ($this->Groups->isEditable($groupId)) {
+        if ($this->Semesters->isDeletable($semesterId)) {
             if ($this->Groups->delete($groupId)) {
                 addPageNotification('Groupe supprimé', 'success');
             } else {
                 addPageNotification('Erreur lors de la suppression du groupe', 'danger');
             }
         } else {
-            addPageNotification('Ce semestre ne peut etre modifié', 'warning');
+            addPageNotification('Ce semestre ne peut etre modifié', 'danger');
         }
 
         redirect('Administration/Semester/' . $semesterId);
