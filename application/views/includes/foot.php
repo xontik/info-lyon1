@@ -7,9 +7,10 @@
         <?php
     }
 
-    if ( isset($js) ) {
-        foreach ($js as $j) {
-            echo '<script type="text/javascript" src="' . js_url($j) . '"></script>' . PHP_EOL;
+    if (isset($js)) {
+        foreach ($js as $file) { ?>
+            <script type="text/javascript" src="<?= js_url($file) ?>"></script>
+            <?php
         }
     }
     ?>
