@@ -81,27 +81,17 @@
             <?php
             $nbPages = $data['nbPages'];
             $currentPage = $data['currentPage'];
-            $leftIsDisabled = ($currentPage == 1);
-            $rightIsDisabled = ($currentPage == $nbPages);
+            $indexPagination = $data['indexPagination'];
+            $limitPagination = $data['limitPagination'];
             ?>
             <ul class="pagination">
-                <li class="<?= $leftIsDisabled ? 'disabled' : 'waves-effect' ?>">
-                    <a <?= $leftIsDisabled ? '' : 'href="' . base_url("Question/") . ($currentPage - 1) . '"' ?>>
-                        <i class="material-icons">chevron_left</i>
-                    </a>
-                </li>
-                <?php
-                $indexPagination = 1;
-                $limitPagination = 9;
-                $changePaginationNumber = 5;
-                if ($currentPage > $changePaginationNumber) {
-                    if ($currentPage <= $nbPages - $changePaginationNumber) {
-                        $indexPagination = 1 + ($currentPage - $changePaginationNumber);
-                    } else {
-                        if ($currentPage > $limitPagination) {
-                            $indexPagination = 1 + ($nbPages - $limitPagination);
-                        }
-                    }
+                <?php if ($currentPage != 1) { ?>
+                    <li>
+                        <a href="<?= base_url("Question/") . ($currentPage - 1) ?>">
+                            <i class="material-icons">chevron_left</i>
+                        </a>
+                    </li>
+                    <?php
                 }
                 for ($i = $indexPagination; $i <= $indexPagination + $limitPagination - 1; $i++) {
                     if ($i == $nbPages + 1) {
@@ -110,12 +100,14 @@
                     $isActive = ($i == $currentPage) ? 'active' : '';
                     echo '<li class="waves-effect ' . $isActive . '"><a href="' . base_url("Question/$i") . '">' . $i . '</a></li>';
                 }
-                ?>
-                <li class="<?= $rightIsDisabled ? 'disabled' : 'waves-effect' ?>">
-                    <a <?= $rightIsDisabled ? '' : 'href="' . base_url("Question/") . ($currentPage + 1) . '"' ?>>
-                        <i class="material-icons">chevron_right</i>
-                    </a>
-                </li>
+                if ($currentPage != $nbPages) {
+                    ?>
+                    <li>
+                        <a href="<?= base_url("Question/") . ($currentPage + 1) ?>">
+                            <i class="material-icons">chevron_right</i>
+                        </a>
+                    </li>
+                <?php } ?>
             </ul>
         </center>
     <?php } ?>

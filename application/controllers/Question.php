@@ -8,6 +8,23 @@ class Question extends TM_Controller {
         $this->load->model('Students');
 
         $nbQuestionsPerPage = 15;
+        $limitPagination = 9;
+        $changePaginationNumber = 5;
+
+        $nbQuestions = $this->Students->countQuestions($_SESSION['id']);
+        $nbPages = ceil($nbQuestions / $nbQuestionsPerPage);
+
+        $indexPagination = 1;
+        if ($page > $changePaginationNumber) {
+            if ($page <= $nbPages - $changePaginationNumber) {
+                $indexPagination = 1 + ($page - $changePaginationNumber);
+            } else {
+                if ($page > $limitPagination) {
+                    $indexPagination = 1 + ($nbPages - $limitPagination);
+                }
+            }
+        }
+
         // Get questions and answers
         $unsortedQuestions = $this->Students->getQuestionsPerPage($_SESSION['id'], $page, $nbQuestionsPerPage);
         $unsortedAnswers = $this->Students->getAnswers($_SESSION['id']);
@@ -15,9 +32,6 @@ class Question extends TM_Controller {
         if (!$unsortedQuestions) {
             redirect('Question');
         }
-
-        $nbQuestions = $this->Students->countQuestions($_SESSION['id']);
-        $nbPages = ceil($nbQuestions / $nbQuestionsPerPage);
 
         $questions = array();
         foreach ($unsortedQuestions as $question) {
@@ -35,7 +49,9 @@ class Question extends TM_Controller {
             'questions' => $questions,
             'teachers' => $teachers,
             'nbPages' => $nbPages,
-            'currentPage' => $page
+            'currentPage' => $page,
+            'indexPagination' => $indexPagination,
+            'limitPagination' => $limitPagination
         );
         $this->show('Questions / Réponses');
     }
