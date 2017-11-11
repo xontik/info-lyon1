@@ -98,7 +98,7 @@ class Process_Control extends CI_Controller
             }
 
             if ($this->Controls->createPromo($name, $coefficient, $divisor,
-                    $date->format($this->config->item('datetimeSystemFormat'), $subjectId))
+                    $date->format($this->config->item('datetimeSystemFormat')), $subjectId)
             ) {
                 addPageNotification('Contrôle de promo ajouté avec succès', 'success');
                 redirect('Control');
@@ -184,7 +184,7 @@ class Process_Control extends CI_Controller
 
         if (!$this->Teachers->hasRightOn($controlId, $_SESSION['id'])) {
             addPageNotification('Vous n\'avez pas les droit sur ce contrôle', 'danger');
-            redirect('Control/edit/' . $controlId);
+            redirect('Control');
         }
 
         if ($this->Controls->hasMark($controlId)) {
@@ -194,7 +194,7 @@ class Process_Control extends CI_Controller
 
         if ($this->Controls->delete($controlId)) {
             addPageNotification('Contrôle supprimé avec succès', 'success');
-            redirect('Control' . $controlId);
+            redirect('Control');
         }
 
         addPageNotification('Erreur lors de la suppression du contrôle', 'danger');
