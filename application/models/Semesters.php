@@ -576,7 +576,9 @@ class Semesters extends CI_Model
      */
     public function delete($semesterId)
     {
-        return $this->db->delete('Semester', array('idSemester' => $semesterId));
+        $this->db->delete('Semester', array('idSemester' => $semesterId));
+        return $this->db->affected_rows();
+        
     }
 
 }

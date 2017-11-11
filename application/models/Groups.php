@@ -113,9 +113,13 @@ class Groups extends CI_Model
      */
     public function removeStudent($studentId, $groupId)
     {
-        return $this->db->where('idGroup', $groupId)
+
+
+        $this->db->where('idGroup', $groupId)
             ->where('idStudent', $studentId)
             ->delete('StudentGroup');
+
+        return $this->db->affected_rows();
     }
 
     /**
@@ -126,7 +130,9 @@ class Groups extends CI_Model
      */
     public function removeAllStudents($groupId)
     {
-        return $this->db->delete('StudentGroup', array('idGroup' => $groupId));
+        $this->db->delete('StudentGroup', array('idGroup' => $groupId));
+        return $this->db->affected_rows();
+
     }
 
     /**
@@ -157,6 +163,8 @@ class Groups extends CI_Model
      */
     public function delete($groupId)
     {
-        return $this->db->delete('Group', array('idGroup' => $groupId));
+        $this->db->delete('Group', array('idGroup' => $groupId));
+        return $this->db->affected_rows();
+        
     }
 }

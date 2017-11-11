@@ -50,7 +50,9 @@ class Notifications extends CI_Model {
      * @return bool Whether the operation was successful or not
      */
     public function delete($notificationId) {
-        return $this->db->delete('Notification', array('idNotification', $notificationId));
+        $this->db->delete('Notification', array('idNotification', $notificationId));
+        return $this->db->affected_rows();
+        
     }
 
 }

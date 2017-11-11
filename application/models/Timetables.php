@@ -32,9 +32,11 @@ class Timetables extends CI_Model
      */
     public function setJSON($resource, $json)
     {
-        return $this->db->set('json', $json)
+        $this->db->set('json', $json)
             ->where('resource', $resource)
             ->update('Timetable');
+        return $this->db->affected_rows();
+
     }
 
     /**
@@ -104,10 +106,12 @@ class Timetables extends CI_Model
                 return false;
         }
 
-        return $this->db
+        $this->db
             ->set($data)
             ->where('resource', $resource)
             ->update('Timetable');
+        return $this->db->affected_rows();
+
     }
 
 }

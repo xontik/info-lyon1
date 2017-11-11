@@ -100,7 +100,9 @@ class Absences extends CI_Model
      */
     public function delete($absenceId)
     {
-        return $this->db->delete('Absence', array('idAbsence' => $absenceId));
+        $this->db->delete('Absence', array('idAbsence' => $absenceId));
+        return $this->db->affected_rows();
+        
     }
 
 }
