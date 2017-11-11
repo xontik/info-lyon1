@@ -228,13 +228,14 @@ function _narrow($timetable, $begin, $end, $period)
             }
 
             unset($timetable[$year][$week][$dayOfWeek]['updated']);
-            $final[$year][$week][$dayOfWeek] = $timetable[$year][$week][$dayOfWeek];
+            if (!empty($timetable[$year][$week][$dayOfWeek])) {
+                $final[$year][$week][$dayOfWeek] = $timetable[$year][$week][$dayOfWeek];
+            }
         }
 
         $temp->modify('+1 day');
         $diff = $temp->diff($end);
     } while ($diff->days != 0 && $diff->invert != 1);
-
 
     $year = $begin->format('Y');
     $week = $begin->format('W');
@@ -242,6 +243,7 @@ function _narrow($timetable, $begin, $end, $period)
 
     // Reduce period to week
     if (!isset($final[$year]) || !isset($final[$year][$week])) {
+        trigger_error('Error : this shouldn\'t happen');
         return array();
     }
 
