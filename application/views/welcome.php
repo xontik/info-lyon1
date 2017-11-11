@@ -12,33 +12,41 @@ defined('BASEPATH') OR exit('No direct script access allowed'); ?>
         <link href="<?= css_url('welcome_page')?>" rel="stylesheet" type="text/css">
     </head>
     <body>
-        <main class="container row valign-wrapper">
-            <section id="projects_block" class="hide-on-med-and-down">
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Distinctio hic, illo ipsa iste itaque neque numquam quia quibusdam, quidem quod sed tempore. Aut illo necessitatibus praesentium, quasi rem velit veritatis! Accusantium aliquam amet at aut commodi, dolore doloremque eligendi, ex exercitationem ipsam magnam maxime nobis odit quae reiciendis repudiandae saepe tempore unde vero voluptate. Animi architecto, assumenda cupiditate debitis deserunt ducimus eius exercitationem incidunt, ipsum laudantium magnam minima minus necessitatibus numquam perferendis perspiciatis possimus quam qui quia quis ratione repellendus reprehenderit sapiente similique soluta velit voluptatem voluptatibus. Consequuntur exercitationem explicabo illo mollitia voluptatem! Accusantium adipisci aliquid
-            </section>
-            <section id="connect_block">
-                <img class="responsive-img center-block" src="<?= img_url('logo/logo_800.png') ?>" alt="TECKMEB">
-                <form action="<?= base_url('user/connect') ?>" method="post">
-                    <div class="input-field">
-                        <i class="material-icons prefix">account_circle</i>
-                        <input type="text" id="login" name="login"
-                               value="<?= isset($_SESSION['form']['id']) ? $_SESSION['form']['id'] : ''?>"
-                               class="<?= isset($_SESSION['form_errors']['id']) ? 'invalid' : '' ?>"/>
-                        <label for="login">Identifiant</label>
-                    </div>
-                    <div class="input-field">
-                        <i class="material-icons prefix">lock</i>
-                        <input type="password" id="password" name="password"
-                               class="<?= isset($_SESSION['form_errors']['password']) ? 'invalid' : '' ?>"/>
-                        <label for="password">Mot de passe</label>
-                    </div>
+        <main class="container">
+            <div class="row">
+                <section class="col s12 l6 push-l6 valign-wrapper center-align" id="connect_block">
                     <div>
-                        <input type="checkbox" name="stayConnected" id="stayConnected" />
-                        <label for="stayConnected">Rester connecté</label>
+                        <img class="responsive-img center-block" src="<?= img_url('logo/logo_800.png') ?>" alt="TECKMEB">
+                        <form action="<?= base_url('user/connect') ?>" method="post">
+                            <div class="input-field">
+                                <i class="material-icons prefix">account_circle</i>
+                                <input type="text" id="login" name="login"
+                                       value="<?= isset($_SESSION['form']['id']) ? $_SESSION['form']['id'] : ''?>"
+                                       class="<?= isset($_SESSION['form_errors']['id']) ? 'invalid' : '' ?>"/>
+                                <label for="login">Identifiant</label>
+                            </div>
+                            <div class="input-field">
+                                <i class="material-icons prefix">lock</i>
+                                <input type="password" id="password" name="password"
+                                       class="<?= isset($_SESSION['form_errors']['password']) ? 'invalid' : '' ?>"/>
+                                <label for="password">Mot de passe</label>
+                            </div>
+                            <div>
+                                <input type="checkbox" name="stayConnected" id="stayConnected" />
+                                <label for="stayConnected">Rester connecté</label>
+                            </div>
+                            <p class="center-align">
+                                <button class="btn yellow accent-4 waves-effect waves-light" type="submit">Se connecter</button>
+                            </p>
+                        </form>
                     </div>
-                    <button class="btn waves-effect waves-light" type="submit">Se connecter</button>
-                </form>
-            </section>
+                </section>
+                <section class="col s12 l6 pull-l6 valign-wrapper" id="projects_block">
+                    <div>
+                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Distinctio hic, illo ipsa iste itaque neque numquam quia quibusdam, quidem quod sed tempore. Aut illo necessitatibus praesentium, quasi rem velit veritatis! Accusantium aliquam amet at aut commodi, dolore doloremque eligendi, ex exercitationem ipsam magnam maxime nobis odit quae reiciendis repudiandae saepe tempore unde vero voluptate. Animi architecto, assumenda cupiditate debitis deserunt ducimus eius exercitationem incidunt, ipsum laudantium magnam minima minus necessitatibus numquam perferendis perspiciatis possimus quam qui quia quis ratione repellendus reprehenderit sapiente similique soluta velit voluptatem voluptatibus. Consequuntur exercitationem explicabo illo mollitia voluptatem! Accusantium adipisci aliquid
+                    </div>
+                </section>
+            </div>
         </main>
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
