@@ -1,4 +1,5 @@
 <?php
+defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Debug extends CI_Controller
 {
@@ -14,6 +15,7 @@ class Debug extends CI_Controller
     {
         $data = array(
             'title' => '$_SESSION',
+            'pageName' => 'session',
             'data' => array(
                 'session' => $_SESSION
             )
