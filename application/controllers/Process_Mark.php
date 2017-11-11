@@ -13,7 +13,7 @@ class Process_Mark extends CI_Controller
 
         $this->load->model('Marks');
         $this->load->model('Controls');
-        $this->load->model('Teacher');
+        $this->load->model('Teachers');
 
         if (!$this->Teachers->hasRightOn($controlId, $_SESSION['id'])) {
             addPageNotification('Vous n\'avez pas les droit sur ce contrôle', 'danger');
@@ -25,8 +25,9 @@ class Process_Mark extends CI_Controller
 
         $i = 0;
         $correctData = true;
+
         foreach ($_POST as $key => $value) {
-            if ($key !== $marks[$i]->numEtudiant) {
+            if ($key !== $marks[$i]->idStudent) {
                 $correctData = false;
                 break;
             }
@@ -35,11 +36,14 @@ class Process_Mark extends CI_Controller
 
         if (!$correctData) {
             addPageNotification('Données corrompues', 'danger');
-            redirect('Control');
+            redirect('Mark/add/' . $controlId);
         }
 
         //TODO Ajouter verification sur value
-        $this->Marks->createAll($_POST, $controlId);
+        if (!$this->Marks->createAll($_POST, $controlId)) {
+            addPageNotification('Erreur lors de la modification des notes', 'danger');
+            redirect('Mark/add/' . $controlId);
+        }
 
         addPageNotification('Note modifiées avec succès', 'success');
         redirect('Control');

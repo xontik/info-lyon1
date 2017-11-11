@@ -43,7 +43,7 @@ class Mark extends TM_Controller
 
     public function teacher_add($controlId)
     {
-        $controlId = intval(htmlspecialchars($controlId[0]));
+        $controlId = intval(htmlspecialchars($controlId));
         if ($controlId === 0) {
             show_404();
         }

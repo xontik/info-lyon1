@@ -5443,6 +5443,8 @@ body > header > nav h2 { text-align: center; font-size: 2.46rem; }
 
 .card-action button.btn-flat { color: #ffab40; }
 
+.horizontal-table-wrapper { overflow-x: auto; }
+
 .big-border, #table-stud-list > div.group-change, #table-stud-list > div:first-child, table tbody tr.group-change { border-width: 2px; }
 
 #color-code { overflow: auto; }

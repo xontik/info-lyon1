@@ -13,7 +13,8 @@ class Controls extends CI_Model
      */
     public function get($controlId)
     {
-        $res = $this->db->where('idControl', $controlId)
+        $res = $this->db
+            ->where('idControl', $controlId)
             ->get('Control')
             ->row();
 
@@ -23,6 +24,28 @@ class Controls extends CI_Model
         return $res;
     }
 
+    /**
+     * Checks if at least one student was noted.
+     *
+     * @param $controlId
+     * @return bool
+     */
+    public function hasMark($controlId) {
+        return $this->db
+            ->from('Control')
+            ->join('Mark', 'idControl')
+            ->where('idControl', $controlId)
+            ->get()
+            ->num_rows() > 0;
+    }
+
+    /**
+     * Returns the marks of the students.
+     *
+     * @param $control
+     * @param $teacherId
+     * @return array
+     */
     public function getMarks($control, $teacherId)
     {
         if (is_null($control->idPromo)) {
@@ -35,47 +58,52 @@ class Controls extends CI_Model
 
     private function _getControlMarks($controlId)
     {
-        return $this->db->select('surname, name, idStudent, value')
+        return $this->db
+            ->select('Student.idStudent, name, surname, value')
             ->from('Control')
             ->join('Education', 'idEducation')
             ->join('StudentGroup', 'idGroup')
             ->join('Student', 'idStudent')
             ->join('User', 'idUser')
-            ->join('Group', 'idGroup')
-            ->join('Semester', 'idSemester')
-            ->join('Mark', 'idStudent, idControl', 'left')
-            ->where('idControl', $controlId)
-            ->where('active', '1')
+            ->join('Mark', 'Mark.idStudent = Student.idStudent AND Mark.idControl = Control.idControl', 'left')
+            ->where('Control.idControl', $controlId)
             ->get()
             ->result();
     }
 
     private function _getPromoMarks($teacherId, $controlId)
     {
-        $CI = &get_instance();
-        $CI->load->model('Teachers');
+        $this->load->model('Teachers');
 
-        $this->db
-            ->select('surname, name, idStudent, value')
-            ->from('Control')
-            ->join('Promo', 'idPromo')
-            ->join('Semester', 'idSemester')
-            ->join('Group', 'idSemester')
-            ->join('StudentGroup', 'idGroup')
-            ->join('Student', 'idStudent')
-            ->join('User', 'idUser')
-            ->join('Mark', 'idStudent, idControl', 'left')
-            ->where('idControl', $controlId)
-            ->where('active', '1');
+        $data = array();
 
-        if (!$CI->Teachers->isReferent($teacherId, $controlId))
+        $sql =
+            'SELECT Student.idStudent, surname, name, value
+            FROM Control
+            JOIN Promo USING (idPromo)
+            JOIN Subject USING (idSubject)
+            JOIN `Group` USING (idSemester)
+            JOIN StudentGroup USING (idGroup)
+            JOIN Student USING (idStudent)
+            JOIN `User` USING (idUser)
+            LEFT JOIN Mark ON Mark.idStudent = Student.idStudent
+                AND Mark.idControl = Control.idControl ';
+
+        if (!$this->Teachers->isReferent($teacherId, $controlId))
         {
-            $this->db
-                ->join('Education', 'idGroup, idSubject')
-                ->where('idTeacher', $teacherId);
+            $sql .= 'JOIN Education ON Education.idGroup = Group.idGroup
+                AND Education.idSubject = Subject.idSubject
+                WHERE idTeacher = ? AND ';
+            $data[] = $teacherId;
+        }
+        else {
+            $sql .= 'WHERE ';
         }
 
-        return $this->db->get()
+        $sql .= 'Control.idControl = ?';
+        $data[] = $controlId;
+
+        return $this->db->query($sql, $data)
             ->result();
     }
 
@@ -179,20 +207,24 @@ class Controls extends CI_Model
      * @param $controlId
      * @param $name
      * @param $coeff
-     * @param $div
-     * @param $typeId
-     * @param $date
+     * @param $div  (optionnal)
+     * @param $date (optionnal)
      * @return bool
      */
-    public function update($controlId, $name, $coeff, $div, $typeId, $date)
+    public function update($controlId, $name, $coeff, $div = null, $date = null)
     {
         $data = array(
             'controlName' => $name,
             'coefficient' => $coeff,
-            'divisor' => $div,
-            'idControlType' => $typeId,
-            'controlDate' => $date,
         );
+
+        if ($div !== null) {
+            $data['divisor'] = $div;
+        }
+
+        if ($date !== null) {
+            $data['controlDate'] = $date;
+        }
 
         $this->db->set($data)
             ->where('idControl', $controlId)

@@ -271,19 +271,21 @@ class Teachers extends CI_Model
     {
         $sql =
             'SELECT DISTINCT * FROM (
-                    SELECT groupName, subjectName, idEducation
+                    SELECT groupName, courseType, subjectName, idEducation
                     FROM Education
                     JOIN `Group` USING (idGroup)
                     JOIN Subject USING (idSubject)
                     JOIN Semester USING (idSemester)
+                    JOIN Course USING (idCourse)
                     WHERE idTeacher = ? AND active = 1
                 UNION
-                    SELECT groupName, subjectName, idEducation
+                    SELECT groupName, courseType, subjectName, idEducation
                     FROM Referent
                     JOIN SubjectOfModule USING (idModule)
                     JOIN Subject USING (idSubject)
                     JOIN Education USING (idSubject)
                     JOIN Semester USING (idSemester)
+                    JOIN Course USING (idCourse)
                     JOIN `Group` USING (idGroup, idSemester)
                     WHERE Referent.idTeacher = ?
                     AND active = 1

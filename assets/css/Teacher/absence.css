@@ -5443,4 +5443,6 @@ body > header > nav h2 { text-align: center; font-size: 2.46rem; }
 
 .card-action button.btn-flat { color: #ffab40; }
 
+.horizontal-table-wrapper { overflow-x: auto; }
+
 /*# sourceMappingURL=absence.css.map */
