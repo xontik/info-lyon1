@@ -4,14 +4,16 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 define('DATE_FORMAT', 'Y-m-d');
 
 /**
- * Look for the next not-empty timetable in the 3 next days.
- * @param int $resources The resources number in ADE
- * @param string $period The period you want ('day' or 'week')
- * @param DateTime $datetime The date you want to starting searching timetable (optionnal)
+ * Look for the next non-empty timetable in the 3 next days.
+ *
+ * @param int           $resources
+ * @param string        $period     'day' or 'week'
+ * @param DateTime|int  $datetime   Date or week number (default: today)
  * @return array Formatted timetable
+ *
  * @see getTimetable()
  */
-function getNextTimetable($resources, $period, &$datetime = NULL) {
+function getNextTimetable($resources, $period, $datetime = NULL) {
     global $timezone;
     $timezone = new DateTimeZone('Europe/Paris');
 
@@ -19,38 +21,79 @@ function getNextTimetable($resources, $period, &$datetime = NULL) {
         $datetime = new DateTime();
         $datetime->setTimezone($timezone);
     }
+    else if (is_numeric($datetime)) {
+        $weekNum = (int) $datetime;
+        $datetime = new DateTime();
+        $datetime->setTimezone($timezone);
+    }
 
-    $originalDate = clone $datetime;
     $limit = 0;
 
-    // If hour >= 18h, take next day timetable
+    // If hour >= 18:00, take next day timetable
     if ($datetime->format('H') >= 18) {
         $datetime->modify('+1 day');
+        $datetime->setTime(0, 0);
         $limit = 1;
     }
 
+    $dayNum = $datetime->format('N');
+
+    // If strict week
+    if (isset($weekNum)) {
+        if (strcasecmp($period, 'week') !== 0) {
+            trigger_error('Can\'t get the timetable of a day from a week number');
+            return array();
+        }
+
+        $weekDiff = $weekNum - $datetime->format('W');
+        $datetime->modify($weekDiff. ' week');
+
+        $dayDiff = $weekDiff === ($dayNum >= 6 ? 1 : 0)
+            ? -($datetime->format('N') - 1) // Difference to monday
+            : 7 - $datetime->format('N');   // Difference to sunday
+
+        $datetime->modify($dayDiff . ' day');
+        $datetime->setTime(0, 0);
+
+    } else {
+
+        // If week-end and not strict week
+        if ($dayNum >= 6) {
+            // Goto monday
+            $nextMondayDiff = 8 - $dayNum;
+            $datetime->modify('+' . $nextMondayDiff . ' day');
+            $datetime->setTime(0, 0);
+            $limit += $nextMondayDiff;
+        }
+    }
+
     $timetable = getTimetable($resources, $period, $datetime);
-	
-    // Look at next not empty timetable within 3 days
-    while ($limit < 3 && empty($timetable)) {
-        $datetime->modify('+1 day');
-        $timetable = getTimetable($resources, $period, $datetime);
-        $limit++;
+
+    if (strcasecmp($period, 'day') === 0) {
+        // Look at next not empty timetable within 3 days
+        while ($limit < 3 && empty($timetable)) {
+            $datetime->modify('+1 day');
+            $timetable = getTimetable($resources, $period, $datetime);
+            $limit++;
+        }
+
+        if ($limit !== 0) {
+            $datetime->setTime(0, 0);
+        }
     }
 
-    // If timetable still empty, reset date
-    if (empty($timetable)) {
-        $datetime = $originalDate;
-    }
-
-    return $timetable;
+    return array(
+        'timetable' => $timetable,
+        'date' => $datetime
+    );
 }
 
 /**
  * Get the timetable of a period.
- * @param int $resources The resources number in ADE
- * @param string $period The period of the timetable ('day' or 'week')
- * @param DateTime $datetime The date of the timetable (optionnal)
+ *
+ * @param int       $resources
+ * @param string    $period     'day' or 'week'
+ * @param DateTime  $datetime   (default: today)
  * @return array Formatted timetable
  */
 function getTimetable($resources, $period, $datetime = NULL)
@@ -69,18 +112,18 @@ function getTimetable($resources, $period, $datetime = NULL)
     // Generalize time period
 	if (strcasecmp($period, 'day') === 0)
 	{
-        $firstDate = clone $datetime;
-        $lastDate = clone $datetime;
+        $beginDate = clone $datetime;
+        $endDate = clone $datetime;
     }
     else if (strcasecmp($period, 'week') === 0) {
 
 	    $datetimeDay = $datetime->format('N');
 
-	    $firstDate = clone $datetime;
-	    $firstDate->modify('-' . ($datetimeDay - 1) . ' days');
+	    $beginDate = clone $datetime;
+	    $beginDate->modify('-' . ($datetimeDay - 1) . ' days');
 
-	    $lastDate = clone $datetime;
-	    $lastDate->modify('+' . abs(5 - $datetimeDay). ' days');
+	    $endDate = clone $datetime;
+	    $endDate->modify('+' . abs(6 - $datetimeDay). ' days');
     }
     else {
 	    trigger_error('Period isn\'t "day" nor "week"');
@@ -94,10 +137,11 @@ function getTimetable($resources, $period, $datetime = NULL)
     if (!empty($timetable)) {
 	    $timetable = json_decode($timetable, true);
 
-        $temp = clone $firstDate;
-        $validTimeLimit = new DateTime();
-        $validTimeLimit->setTimezone($timezone);
-        $validTimeLimit = $validTimeLimit->modify('-1 day')->getTimeStamp();
+        $temp = clone $beginDate;
+        $validTimeLimit = (new DateTime())
+            ->setTimezone($timezone)
+            ->modify('-1 day')
+            ->getTimeStamp();
 
         do {
             $year = $temp->format('Y');
@@ -107,23 +151,35 @@ function getTimetable($resources, $period, $datetime = NULL)
             // If one day isn't up-to-date, update entire period
             if (!(array_key_exists($year, $timetable)
                 && array_key_exists($week, $timetable[$year])
-                && array_key_exists($dayOfWeek, $timetable[$year][$week])
-                && $validTimeLimit < $timetable[$year][$week][$dayOfWeek]['updated'])
+                && (($period === 'week'
+                        && $validTimeLimit < $timetable[$year][$week]['updated'])
+                    || (array_key_exists($dayOfWeek, $timetable[$year][$week])
+                        && $validTimeLimit < $timetable[$year][$week][$dayOfWeek]['updated'])))
             ) {
-                $timetable = merge_arrays(_icsToTimetable(_getAdeRequest($resources, $firstDate, $lastDate)), $timetable);
+                $timetable = mergeArrays(
+                    _icsToTimetable(
+                        _getAdeRequest($resources, $beginDate, $endDate),
+                        $beginDate,
+                        $endDate
+                    ),
+                    $timetable
+                );
                 $updated = true;
                 break;
             }
 
-            $temp->modify('+1 day');
-            $diff = $temp->diff($lastDate);
+            $temp->modify('+1 ' . $period);
+            $diff = $temp->diff($endDate);
         } while ($diff->days !== 0 && $diff->invert !== 1);
-
     }
 	// If no preexisting data was found
 	else {
 	    // Create from scratch
-		$timetable = _icsToTimetable(_getAdeRequest($resources, $firstDate, $lastDate));
+		$timetable = _icsToTimetable(
+            _getAdeRequest($resources, $beginDate, $endDate),
+            $beginDate,
+            $endDate
+        );
 		$existedInDB = $timetable !== FALSE;
 		$updated = true;
 	}
@@ -135,19 +191,20 @@ function getTimetable($resources, $period, $datetime = NULL)
             $CI->Timetables->create($resources, json_encode($timetable, JSON_PRETTY_PRINT));
         }
     }
-
-	return _narrow($timetable, $firstDate, $lastDate, $period);
+    
+	return _narrow($timetable, $beginDate, $endDate, $period);
 }
 
 /**
- * Reduce the array from the beginning date to the end date.
- * @param array $timetable The timetable to be restrained
- * @param DateTime $begin The first limit date
- * @param DateTime $end The second limit date
- * @param string $period The period you want ('day', 'week')
- * @return array Only the array element that are in the time limit.
+ * Reduce the array to the time between begin date and end date.
  * If $begin and $end don't correspond to $period, $period has priority and
- * $period applied to $begin
+ * $period is applied to $begin
+ *
+ * @param array     $timetable
+ * @param DateTime  $begin
+ * @param DateTime  $end
+ * @param string    $period     'day' or 'week'
+ * @return array
  */
 function _narrow($timetable, $begin, $end, $period)
 {
@@ -159,39 +216,43 @@ function _narrow($timetable, $begin, $end, $period)
         $week = $temp->format('W');
         $dayOfWeek = $temp->format('N');
 
-        if (array_key_exists($year, $timetable) &&
-            array_key_exists($week, $timetable[$year]) &&
-            array_key_exists($dayOfWeek, $timetable[$year][$week]))
-        {
-            if (!array_key_exists($year, $final))
+        if (array_key_exists($year, $timetable)
+            && array_key_exists($week, $timetable[$year])
+            &&  array_key_exists($dayOfWeek, $timetable[$year][$week])
+        ) {
+            if (!array_key_exists($year, $final)) {
                 $final[$year] = array();
-            if (!array_key_exists($week, $final[$year]))
+            }
+            if (!array_key_exists($week, $final[$year])) {
                 $final[$year][$week] = array();
+            }
 
             unset($timetable[$year][$week][$dayOfWeek]['updated']);
-            $final[$year][$week][$dayOfWeek] = $timetable[$year][$week][$dayOfWeek];
+            if (!empty($timetable[$year][$week][$dayOfWeek])) {
+                $final[$year][$week][$dayOfWeek] = $timetable[$year][$week][$dayOfWeek];
+            }
         }
 
         $temp->modify('+1 day');
         $diff = $temp->diff($end);
     } while ($diff->days != 0 && $diff->invert != 1);
 
-
     $year = $begin->format('Y');
     $week = $begin->format('W');
     $dayOfWeek = $begin->format('N');
 
-    // If necessary, reduce period to week
-    if (in_array(strtolower($period), array('day', 'week'))) {
-        if (!isset($final[$year]) || !isset($final[$year][$week])) {
-            return array();
-        }
-        $final = $final[$year][$week];
+    // Reduce period to week
+    if (!isset($final[$year]) || !isset($final[$year][$week])) {
+        trigger_error('Error : this shouldn\'t happen');
+        return array();
     }
 
-    // Then, if necessary, reduce week to day
+    $final = $final[$year][$week];
+
+    // If necessary, reduce week to day
     if (strcasecmp($period, 'day') === 0) {
         if (!isset($final[$dayOfWeek])) {
+            trigger_error('Undefined day');
             return array();
         }
         $final = $final[$dayOfWeek];
@@ -201,22 +262,25 @@ function _narrow($timetable, $begin, $end, $period)
 }
 
 /**
- * Converts a ICS Timetable file to an array that represents the file in PHP
- * @param string $ics_filepath path to the ICS file
- * @return array The timetable in an array
+ * Converts a ICS Timetable file to an array that represents the file in PHP.
+ *
+ * @param string $icsFilepath
+ * @param DateTime $beginDate
+ * @param DateTime $endDate
+ * @return array
  */
-function _icsToTimetable($ics_filepath)
+function _icsToTimetable($icsFilepath, $beginDate, $endDate)
 {
     global $timezone;
 
 	// Remove beginning and ending whitespace characters
-	$content = trim(file_get_contents($ics_filepath));
+	$content = trim(file_get_contents($icsFilepath));
 
 	// Check if file is valid
 	if (startsWith('BEGIN:VCALENDAR', $content)
 		&& endsWith('END:VCALENDAR', $content))
 	{
-		$VERSION_SUPPORTED = array('2.0');
+		$VERSION_SUPPORTED = array(2.0);
 		
 		$ics = _strToIcs($content);
 
@@ -229,24 +293,28 @@ function _icsToTimetable($ics_filepath)
 		}
 
         $timetable = array();
+        $now = time();
 
-		if (array_key_exists('VEVENT', $ics)) {
+        if (array_key_exists('VEVENT', $ics)) {
 			// Sort each event at it's place, week then day
-			foreach ($ics['VEVENT'] as $event) {
-				$start_time = new DateTime($event['DTSTART']);
-				$start_time->setTimezone($timezone);
 
-				$year = $start_time->format('Y');
+            foreach ($ics['VEVENT'] as $event) {
+				$startTime = new DateTime($event['DTSTART']);
+				$startTime->setTimezone($timezone);
+
+				$year = $startTime->format('Y');
 				if (!array_key_exists($year, $timetable)) {
                     $timetable[$year] = array();
                 }
 				
-				$week = $start_time->format('W');
+				$week = $startTime->format('W');
 				if (!array_key_exists($week, $timetable[$year])) {
-                    $timetable[$year][$week] = array();
+                    $timetable[$year][$week] = array(
+                        'updated' => $now
+                    );
                 }
 				
-				$day = $start_time->format('N');
+				$day = $startTime->format('N');
 				if (!array_key_exists($day, $timetable[$year][$week])) {
 					$timetable[$year][$week][$day] = array();
 				}
@@ -254,39 +322,65 @@ function _icsToTimetable($ics_filepath)
                 $description = explode('\n', $event['DESCRIPTION']);
 
 				$groupLimit = 1;
-				while (preg_match('/^(G[1-9])?S[1-9]$/i', $description[$groupLimit])) {
+				while (preg_match('/^(G[1-9]+)?S[1-9]+$/i', $description[$groupLimit])) {
 				    $groupLimit++;
 				}
 				
 				$groups = implode(', ', array_slice($description, 1, $groupLimit - 1));
 				$teachers = implode(', ', array_slice($description, $groupLimit, -1));
 
-                $timetable[$year][$week][$day]['updated'] = time();
+                $timetable[$year][$week][$day]['updated'] = $now;
                 $timetable[$year][$week][$day][] = array(
                     'name' => $event['SUMMARY'],
-                    'time_start' => $start_time->format('H:i'),
-                    'time_end' => (new DateTime($event['DTEND']))->setTimezone($timezone)->format('H:i'),
-                    'location' => $event['LOCATION'],
+                    'timeStart' => $startTime->format('H:i'),
+                    'timeEnd' => (new DateTime($event['DTEND']))->setTimezone($timezone)->format('H:i'),
+                    'location' => str_replace('\\', '', $event['LOCATION']),
                     'groups' => $groups,
                     'teachers' => $teachers
                 );
 			}
 		}
 
+		$tempDate = clone $beginDate;
+		do {
+            $year = $tempDate->format('Y');
+            if (!array_key_exists($year, $timetable)) {
+                $timetable[$year] = array();
+            }
+
+            $week = $tempDate->format('W');
+            if (!array_key_exists($week, $timetable[$year])) {
+                $timetable[$year][$week] = array(
+                    'updated' => $now
+                );
+            }
+
+            $day = $tempDate->format('N');
+            if (!array_key_exists($day, $timetable[$year][$week])) {
+                $timetable[$year][$week][$day] = array(
+                    'updated' => $now
+                );
+            }
+
+            $tempDate->modify('+1 day');
+		    $diff = $tempDate->diff($endDate);
+        } while ($diff->days !== 0 || $diff->invert);
+
 		return $timetable;
 	}
 	else {
-		trigger_error('ICS File: Not a valid ICS file "' . $ics_filepath . '"');
+		trigger_error('ICS File: Not a valid ICS file "' . $icsFilepath . '"');
 		return array();
 	}
 }
 
 
 /**
- * Converts a string to an array that represents an ICS element.
+ * Converts a string to an array that represents the ICS element.
  * The string must contain the "BEGIN:" and "END:" lines of the element
- * @param string $str The string to analyze
- * @return array The representation of the ISC element
+ *
+ * @param string $str
+ * @return array
  */
 function _strToIcs($str)
 {
@@ -305,42 +399,42 @@ function _strToIcs($str)
 	// Skip first and last lines, they're BEGIN and END of ics element
 	for ($i = 1; $i < $len; $i++) {
 
-		$curr_line = explode(':', $str[$i], 2);
+		$currLine = explode(':', $str[$i], 2);
 
 		// Line is 'correct'
-		if (count($curr_line) == 2) {
-			if ($curr_line[0] == 'BEGIN') {
+		if (count($currLine) == 2) {
+			if ($currLine[0] == 'BEGIN') {
 				// Create new ics element
-				$element_type = $curr_line[1];
-				$element_lines = '';
+				$elementType = $currLine[1];
+				$elementLines = '';
 				
 				// Read the whole element
 				do {
-                    $element_curr_line = $str[$i];
+                    $elementCurrLine = $str[$i];
 
 					// ADE only uses 73-74 characters per line,
                     // So add a new line only if last line isn't 73*n characters long
-                    $lenLastLine = strlen(getLastLines($element_lines));
-                    if ($lenLastLine % 73 != 0 && $lenLastLine % 74 != 0)
-                    {
-                        $element_lines .= PHP_EOL;
+                    $lenLastLine = strlen(getLastLines($elementLines));
+                    if ($lenLastLine % 73 !== 0 && $lenLastLine % 74 !== 0) {
+                        $elementLines .= PHP_EOL;
                     }
 
-					$element_lines .=  $element_curr_line;
-				} while ($element_curr_line !== 'END:'.$element_type && $i++);
+					$elementLines .=  $elementCurrLine;
+				} while ($elementCurrLine !== 'END:'.$elementType && $i++);
 
-				// Make sure there's no white character
-				$element_type = trim($element_type);
-				if (!array_key_exists($element_type, $ics))
-					$ics[$element_type] = array();
+				// Make sure there's no whitespace character
+				$elementType = trim($elementType);
+				if (!array_key_exists($elementType, $ics)) {
+                    $ics[$elementType] = array();
+                }
 				// Compute it
-				$ics[$element_type][] = _strToIcs($element_lines);
+				$ics[$elementType][] = _strToIcs($elementLines);
 				
 			} else {
 				// Add attribute value
-				if (array_key_exists($curr_line[0], $ics))
-					trigger_error('ICS File: Content "' . $curr_line[0] . '" overriden');
-				$ics[$curr_line[0]] = $curr_line[1];
+				if (array_key_exists($currLine[0], $ics))
+					trigger_error('ICS File: Content "' . $currLine[0] . '" overriden');
+				$ics[$currLine[0]] = $currLine[1];
 			}
 		
 		}
@@ -354,81 +448,92 @@ function _strToIcs($str)
 
 /**
  * Return the URL of the request to ADE.
- * @param int $resources resource number
- * @param DateTime $firstDate begin date
- * @param DateTime $lastDate end date
- * @return string The request to be used to contact ADE
+ *
+ * @param int       $resources
+ * @param DateTime  $beginDate
+ * @param DateTime  $endDate
+ * @return string
  */
-function _getAdeRequest($resources, $firstDate, $lastDate)
+function _getAdeRequest($resources, $beginDate, $endDate)
 {
 	return 'http://adelb.univ-lyon1.fr/jsp/custom/modules/plannings/anonymous_cal.jsp?'
         . 'resources=' . $resources
         . '&projectId=1&calType=ical'
-        . '&firstDate=' . $firstDate->format(DATE_FORMAT)
-        . '&lastDate=' . $lastDate->format(DATE_FORMAT);
+        . '&firstDate=' . $beginDate->format(DATE_FORMAT)
+        . '&lastDate=' . $endDate->format(DATE_FORMAT);
 }
 
 /**
  * Compare two timetable items.
- * Should be use with function usort().
+ * Should be used with function usort().
  *
- * @param $item1
- * @param $item2
- * @return int 1 if $item1 is greater, -1 otherwise
+ * @param array $item1
+ * @param array $item2
+ * @return int As specified by function 'usort'
  */
 function sortTimetable($item1, $item2)
 {
-    return $item1['time_start'] > $item2['time_start'] ? 1 : -1;
+    return $item1['timeStart'] > $item2['timeStart'] ? 1 : -1;
 }
 
-if(!function_exists('translateAndFormat'))
+/**
+ * @param DateTime  $date   The date to be formatted
+ * @return string A readabble date, in french
+ */
+function translateAndFormat($date)
 {
-    /**
-     * @param DateTime $date The date to be formatted
-     * @return string A readabble date, in french
-     */
-    function translateAndFormat($date)
-    {
-        static $days = array(
-            'Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'
-        );
-        static $months = array(
-            'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet',
-            'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
-        );
+    static $days = array(
+        'Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'
+    );
+    static $months = array(
+        'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet',
+        'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
+    );
 
-        return $days[$date->format('w')] . ' '
-            . $date->format('j') . ' '
-            . $months[$date->format('n') - 1];
-    }
+    return $days[$date->format('w')] . ' '
+        . $date->format('j') . ' '
+        . $months[$date->format('n') - 1];
 }
 
-if (!function_exists('computeTimeToHeight'))
+/**
+ * Compute the height (in percent) a DOM element should take
+ * comparing the hours it represents in a day of 10h.
+ * To be used in views.
+ *
+ * @param string    $begin  The beginning of time
+ * @param string    $end    The end of time
+ * @return string
+ */
+function computeTimeToHeight($begin, $end)
 {
-    /**
-     * Compute the height (in percentage) a DOM element should take
-     * comparing the hours it reprents to a day of 10h.
-     * @param string $begin The beginning of time
-     * @param string $end The end of time
-     * @return string Percentage the DOM element should take
-     */
-    function computeTimeToHeight($begin, $end)
-    {
-        $interval = abs(strtotime($begin) - strtotime($end));
-        return ($interval / 360) . '%';
-    }
+    $interval = abs(strtotime($begin) - strtotime($end));
+    return ($interval / 360) . '%';
 }
 
-if (!function_exists('merge_arrays'))
+/**
+ * Fills time in timetables.
+ * To be used in views.
+ *
+ * @param string    $from
+ * @param string    $to
+ */
+function fillTime($from, $to) {
+    ?>
+    <div class="fill hide-on-med-and-down" style="height: <?= computeTimeToHeight($from, $to) ?>"></div>
+    <?php
+}
+
+if (!function_exists('mergeArrays'))
 {
     /**
      * Merges two arrays.
      * In case of keys matching, takes the values of $original.
-     * @param array $original The timetable with more priority
-     * @param array $added The timetable with more priority
-     * @return array The fusion of both timetables
+     *
+     * @param array $original
+     * @param array $added
+     * @return array
      */
-    function merge_arrays($original, $added)
+    function mergeArrays($original, $added)
     {
         foreach ($added as $key => $value) {
             if (is_array($value)) {
@@ -437,7 +542,7 @@ if (!function_exists('merge_arrays'))
                     $original[$key] = array();
 
                 // Merge the sub array
-                $original[$key] = merge_arrays($original[$key], $added[$key]);
+                $original[$key] = mergeArrays($original[$key], $added[$key]);
             } else {
                 if (!array_key_exists($key, $original))
                     $original[$key] = $added[$key];
@@ -450,8 +555,10 @@ if (!function_exists('merge_arrays'))
 if (!function_exists('getLastLine'))
 {
     /**
-     * @param string $string A string with multiple lines
-     * @param int $n The number of lines
+     * Returns the last lines of a string.
+     *
+     * @param string    $string
+     * @param int       $n      The number of lines
      * @return string The last $n lines
      */
     function getLastLines($string, $n = 1)
@@ -466,8 +573,9 @@ if (!function_exists('swap'))
 {
     /**
      * Swap the values of the two variables.
-     * @param $x mixed
-     * @param $y mixed
+     *
+     * @param mixed $x
+     * @param mixed $y
      */
     function swap(&$x, &$y)
     {
@@ -480,25 +588,29 @@ if (!function_exists('swap'))
 if (!function_exists('startsWith'))
 {
     /**
-     * @param $str string The complete string
-     * @param $sub string The potential start of $str
-     * @return bool Whether $sub is the start of $str
+     * Checks if a string begins with another string.
+     *
+     * @param string    $subject    The subject string
+     * @param string    $sub        The substring
+     * @return bool
      */
-    function startsWith($sub, $str)
+    function startsWith($sub, $subject)
     {
-		return substr($str, 0, strlen($sub)) === $sub;
+		return substr($subject, 0, strlen($sub)) === $sub;
 	}
 }
 
 if (!function_exists('endsWith'))
 {
     /**
-     * @param $str string The complete string
-     * @param $sub string The potential end the $str
-     * @return bool Whether $sub is the end of $str or not
+     * Checks if a string ends with another string.
+     *
+     * @param string    $subject    The subject string
+     * @param string    $sub        The substring
+     * @return bool
      */
-    function endsWith($sub, $str)
+    function endsWith($sub, $subject)
     {
-		return substr($str, strlen($str) - strlen($sub)) === $sub;
+		return substr($subject, strlen($subject) - strlen($sub)) === $sub;
 	}
 }

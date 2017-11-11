@@ -46,7 +46,30 @@ class Students extends CI_Model
             ->get()
             ->result();
     }
-    
+
+    /**
+     * Get the group of the student.
+     *
+     * @param $studentId
+     * @return object|bool FALSE if student has currently no group.
+     */
+    public function getGroup($studentId)
+    {
+        $res = $this->db->select('idGroup, groupName')
+            ->from('StudentGroup')
+            ->join('Group', 'idGroup')
+            ->join('Semester', 'idSemester')
+            ->where('idStudent', $studentId)
+            ->where('active', '1')
+            ->get()
+            ->row();
+
+        if (is_null($res)) {
+            return FALSE;
+        }
+        return $res;
+    }
+
     /**
      * Return the project to which the student currently or most lastly belongs.
      *

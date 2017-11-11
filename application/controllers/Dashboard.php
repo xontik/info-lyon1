@@ -9,26 +9,25 @@ class Dashboard extends TM_Controller
 
         $this->load->helper('timetable');
 
-        $now = new DateTime();
-
         $adeResource = $this->Students->getADEResource($_SESSION['id']);
+
         if ($adeResource === FALSE) {
-            $sideEDT = $this->load->view(
-                'includes/side-edt',
-                array('date' => $now, 'timetable' => false),
+            $sideTimetable = $this->load->view(
+                'includes/side-timetable',
+                array('date' => new DateTime(), 'timetable' => false),
                 TRUE
             );
         } else {
-            $timetable = getNextTimetable($adeResource, 'day', $date);
-            $sideEDT = $this->load->view(
-                'includes/side-edt',
-                array('date' => $now, 'timetable' => $timetable),
+            $result = getNextTimetable($adeResource, 'day');
+            $sideTimetable = $this->load->view(
+                'includes/side-timetable',
+                array('date' => $result['date'], 'timetable' => $result['timetable']),
                 TRUE
             );
         }
 
         $this->data = array(
-            'side-edt' => $sideEDT
+            'side-timetable' => $sideTimetable
         );
 
         $this->show('Tableau de bord');

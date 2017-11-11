@@ -1399,7 +1399,7 @@ nav ul a span.badge { display: inline-block; float: none; margin-left: 4px; line
 .side-nav span.badge { margin-top: calc(24px - 11px); }
 
 /* This is needed for some mobile phones to display the Google Icon font properly */
-.material-icons { text-rendering: optimizeLegibility; font-feature-settings: 'liga'; }
+.material-icons { text-rendering: optimizeLegibility; font-feature-settings: 'liga'; vertical-align: middle; }
 
 .container { margin: 0 auto; max-width: 1280px; width: 90%; }
 
@@ -4112,7 +4112,7 @@ nav ul a span.badge { display: inline-block; float: none; margin-left: 4px; line
 .side-nav span.badge { margin-top: calc(24px - 11px); }
 
 /* This is needed for some mobile phones to display the Google Icon font properly */
-.material-icons { text-rendering: optimizeLegibility; font-feature-settings: 'liga'; }
+.material-icons { text-rendering: optimizeLegibility; font-feature-settings: 'liga'; vertical-align: middle; }
 
 .container { margin: 0 auto; max-width: 1280px; width: 90%; }
 
@@ -6846,7 +6846,7 @@ nav ul a span.badge { display: inline-block; float: none; margin-left: 4px; line
 .side-nav span.badge { margin-top: calc(24px - 11px); }
 
 /* This is needed for some mobile phones to display the Google Icon font properly */
-.material-icons { text-rendering: optimizeLegibility; font-feature-settings: 'liga'; }
+.material-icons { text-rendering: optimizeLegibility; font-feature-settings: 'liga'; vertical-align: middle; }
 
 .container { margin: 0 auto; max-width: 1280px; width: 90%; }
 

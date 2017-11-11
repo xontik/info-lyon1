@@ -16,10 +16,6 @@
  * In view
  * <?= $data['side-edt'] ?>
  */
-
-if ($timetable !== false) {
-    usort($timetable, 'sortTimetable');
-}
 ?>
     <div id="side-edt-large" class="hide-on-small-and-down card center-align">
         <div class="card-content">
@@ -35,19 +31,25 @@ if ($timetable !== false) {
                 </div>
                 <div class="content col s10">
                     <?php
-                    if ($timetable === false) {
-                        // TODO Proposer set ressource
-                    }
-                    else if (empty($timetable)) { ?>
-                        <div>Pas de cours</div>
-                    <?php
-                    } else {
-                        $timeAtDate = $date->format('H:i');
-
-                        function fill_time($from, $to) {
-                            ?><div class="fill" style="height: <?= computeTimeToHeight($from, $to) ?>"></div>
+                    if (empty($timetable)) {
+                        ?>
+                        <section class="section">
                             <?php
-                        }
+                            if ($timetable === false) {
+                                ?>
+                                <p>Votre emploi du temps n'est pas configuré.</p>
+                                <p><a href="<?= base_url('Timetable/edit') ?>">Cliquez ici pour rentrer une ressource ADE</a></p>
+                                <?php
+                            } else {
+                                ?>
+                                <p>Pas de cours</p>
+                                <?php
+                            } ?>
+                        </section>
+                        <?php
+                    } else {
+                        usort($timetable, 'sortTimetable');
+                        $timeAtDate = $date->format('H:i');
 
                         $lastTimeEnd = null;
                         $linksPointer = 0;
@@ -56,29 +58,29 @@ if ($timetable !== false) {
                             // Fill time
                             if (is_null($lastTimeEnd)) {
                                 // Fill if day doesn't begin at 08:00
-                                if ($event['time_start'] !== '08:00') {
-                                    fill_time('08:00', $event['time_start']);
+                                if ($event['timeStart'] !== '08:00') {
+                                    fillTime('08:00', $event['timeStart']);
                                 }
-                            } else if ($lastTimeEnd !== $event['time_start']) {
-                                fill_time($lastTimeEnd, $event['time_start']);
+                            } else if ($lastTimeEnd !== $event['timeStart']) {
+                                fillTime($lastTimeEnd, $event['timeStart']);
                             }
-                            $lastTimeEnd = $event['time_end'];
+                            $lastTimeEnd = $event['timeEnd'];
 
                             $classes = array();
-                            if (isset($timeAtDate) && $timeAtDate < $event['time_end']) {
-                                $classes[] = ' z-depth-2';
+                            if (isset($timeAtDate) && $timeAtDate < $event['timeEnd']) {
+                                $classes[] = 'z-depth-2';
                                 unset($timeAtDate);
                             }
 
-                            if (isset($links[$linksPointer]) && $links[$linksPointer] !== null) {
+                            if (isset($links[$linksPointer])) {
                                 $classes[] = 'hoverable';
                             }
 
                             ?>
                                 <div class="valign-wrapper <?= join(' ', $classes) ?>"
-                                    style="height: <?= computeTimeToHeight($event['time_start'], $event['time_end']) ?>; ">
+                                    style="height: <?= computeTimeToHeight($event['timeStart'], $event['timeEnd']) ?>; ">
                                     <?php
-                                        if (isset($links[$linksPointer]) && $links[$linksPointer] !== null) {
+                                        if (isset($links[$linksPointer])) {
                                             $endtag = '</a>';
                                             echo '<a href="' . base_url($links[$linksPointer]) . '" class="black-text">';
                                         } else {
@@ -98,30 +100,41 @@ if ($timetable !== false) {
 
                         // Add a fill if day doesn't end at 18:00
                         if (!is_null($lastTimeEnd) && $lastTimeEnd !== '18:00') {
-                            fill_time($lastTimeEnd, '18:00');
+                            fillTime($lastTimeEnd, '18:00');
                         }
 
                     } ?>
                 </div>
             </div>
-            <!-- TODO Proposer changer ressource-->
         </div>
     </div>
     <div id="side-edt-small" class="hide-on-med-and-up center-align">
         <?php
-        if ($timetable === false) {
-            // TODO Proposer set ressource
-        }
-        else if (empty($timetable)) { ?>
+        if (empty($timetable)) { ?>
             <div class="card">
-                <div class="card-content">
-                    <a href="<?= base_url('Timetable') ?>" class="card-title">Pas de cours</a>
+                <?php
+                if ($timetable === false) {
+                    ?>
+                    <div class="card-content">
+                        <span class="card-title">Votre emploi du temps n'est pas configuré</span>
+                    </div>
+                    <div class="card-action">
+                        <a class="btn-flat" href="<?= base_url('Timetable/edit') ?>">Configurer</a>
+                    </div>
+                    <?php
+                } else {
+                    ?>
+                    <div class="card-content">
+                        <a href="<?= base_url('Timetable') ?>" class="card-title">Pas de cours</a>
+                    </div>
+                    <?php
+                } ?>
                 </div>
             </div>
         <?php
         } else {
-            $currentEvent = NULL;
-            $nextEvent = NULL;
+            $currentEvent = null;
+            $nextEvent = null;
 
             $now = new DateTime();
             if ($date->diff($now)->d > 0) {
@@ -130,9 +143,9 @@ if ($timetable !== false) {
                 $timeAtDate = $date->format('H:i');
 
                 foreach ($timetable as $event) {
-                    if (isset($timeAtDate) && $event['time_start'] <= $timeAtDate && $timeAtDate < $event['time_end']) {
+                    if (isset($timeAtDate) && $event['timeStart'] <= $timeAtDate && $timeAtDate < $event['timeEnd']) {
                         $currentEvent = $event;
-                    } else if ($event['time_start'] > $timeAtDate) {
+                    } else if ($event['timeStart'] > $timeAtDate) {
                         $nextEvent = $event;
                         break;
                     }

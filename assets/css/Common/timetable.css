@@ -1199,7 +1199,7 @@ html { box-sizing: border-box; }
 ul:not(.browser-default) { padding-left: 0; list-style-type: none; }
 ul:not(.browser-default) > li { list-style-type: none; }
 
-a { color: #ffab40; text-decoration: none; -webkit-tap-highlight-color: transparent; }
+a { color: #ffca28; text-decoration: none; -webkit-tap-highlight-color: transparent; }
 
 .valign-wrapper { display: flex; align-items: center; }
 
@@ -1367,7 +1367,7 @@ td, th { padding: 15px 5px; display: table-cell; text-align: left; vertical-alig
 
 .left-align { text-align: left; }
 
-.right-align { text-align: right; }
+.right-align, .btn-footer { text-align: right; }
 
 .center, .center-align, .hide-on-med-and-down ul.dropdown-content li { text-align: center; }
 
@@ -1399,7 +1399,7 @@ nav ul a span.badge { display: inline-block; float: none; margin-left: 4px; line
 .side-nav span.badge { margin-top: calc(24px - 11px); }
 
 /* This is needed for some mobile phones to display the Google Icon font properly */
-.material-icons { text-rendering: optimizeLegibility; font-feature-settings: 'liga'; }
+.material-icons { text-rendering: optimizeLegibility; font-feature-settings: 'liga'; vertical-align: middle; }
 
 .container { margin: 0 auto; max-width: 1280px; width: 90%; }
 
@@ -3912,7 +3912,7 @@ html { box-sizing: border-box; }
 ul:not(.browser-default) { padding-left: 0; list-style-type: none; }
 ul:not(.browser-default) > li { list-style-type: none; }
 
-a { color: #ffab40; text-decoration: none; -webkit-tap-highlight-color: transparent; }
+a { color: #ffca28; text-decoration: none; -webkit-tap-highlight-color: transparent; }
 
 .valign-wrapper { display: flex; align-items: center; }
 
@@ -4080,7 +4080,7 @@ td, th { padding: 15px 5px; display: table-cell; text-align: left; vertical-alig
 
 .left-align { text-align: left; }
 
-.right-align { text-align: right; }
+.right-align, .btn-footer { text-align: right; }
 
 .center, .center-align, .hide-on-med-and-down ul.dropdown-content li { text-align: center; }
 
@@ -4112,7 +4112,7 @@ nav ul a span.badge { display: inline-block; float: none; margin-left: 4px; line
 .side-nav span.badge { margin-top: calc(24px - 11px); }
 
 /* This is needed for some mobile phones to display the Google Icon font properly */
-.material-icons { text-rendering: optimizeLegibility; font-feature-settings: 'liga'; }
+.material-icons { text-rendering: optimizeLegibility; font-feature-settings: 'liga'; vertical-align: middle; }
 
 .container { margin: 0 auto; max-width: 1280px; width: 90%; }
 
@@ -5441,8 +5441,31 @@ body > header > nav h2 { text-align: center; font-size: 2.46rem; }
 
 .small-caps { font-variant: small-caps; }
 
-.card-action button.btn-flat { color: #ffab40; }
+#timetable .active { border-width: 2px 3px 3px 2px; border-style: outset; border-color: #b39600; }
 
-.horizontal-table-wrapper { overflow-x: auto; }
+@media only screen and (min-width: 993px) { #timetable-wrapper { display: flex; flex-flow: row nowrap; justify-content: center; }
+  #timetable-wrapper:not(.empty) { height: 540px; }
+  #timetable-wrapper:not(.empty) > #timetable { height: 510px; }
+  #timetable-wrapper > .hours { display: flex; height: 100%; flex-flow: column nowrap; margin-top: 32px; }
+  #timetable-wrapper > .hours.empty { display: none; }
+  #timetable-wrapper > .hours > div { height: 10%; padding-right: 5px; border-right: 2px solid #d0d0d0; }
+  #timetable-wrapper > .hours > div:nth-of-type(odd) { font-weight: 500; }
+  #timetable-wrapper > .hours > div:nth-of-type(even) { font-size: 11px; }
+  #timetable { display: flex; flex-flow: row nowrap; justify-content: center; }
+  #timetable > .events { min-width: 200px; width: 200px; }
+  #timetable > .events > h5 { margin: 0; padding-bottom: 5px; border-bottom: 2px solid #d0d0d0; }
+  #timetable > .events > div { overflow: auto; padding-top: 10px; }
+  #timetable > .events > div h5 { margin: 0; white-space: nowrap; overflow: hidden; font-size: 1.2rem; font-weight: 500; }
+  #timetable > .events > .fill { border-top: 2px solid #d0d0d0; border-bottom: 2px solid #d0d0d0; }
+  #timetable > .events > h5 + .fill { border-top: none; } }
+@media only screen and (max-width: 992px) { #timetable { display: flex; flex-flow: row wrap; justify-items: center; align-items: center; }
+  .events { display: flex; flex-flow: column nowrap; justify-content: center; box-sizing: border-box; width: 100vw; padding-left: 8px; padding-right: 8px; }
+  .events > h5 { margin-top: 20px; margin-bottom: 10px; }
+  .events > div { display: flex; flex-flow: row nowrap; justify-content: space-between; align-items: center; padding-top: 8px; padding-bottom: 8px; }
+  .events > div > div { font-size: 1rem; flex-grow: 1; display: inline-block; }
+  .events > div > div:first-child, .events > div > div:last-child { width: 20%; }
+  .events > div > div:nth-child(2) { box-sizing: border-box; width: 60%; }
+  .events > div > div:last-child { font-size: 1.15rem; }
+  .events > div > div > h5 { font-size: 1.3rem; margin: 0; } }
 
 /*# sourceMappingURL=timetable.css.map */

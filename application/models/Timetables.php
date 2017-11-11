@@ -5,6 +5,54 @@ class Timetables extends CI_Model
 {
 
     /**
+     * Checks if a resource exists.
+     *
+     * @param int $resource
+     * @return bool
+     */
+    public function exists($resource)
+    {
+        return !is_null($this->db
+            ->where('resource', $resource)
+            ->get('Timetable')
+            ->row()
+        );
+    }
+
+    /**
+     * Checks if someone has a timetable.
+     *
+     * @param mixed $who
+     * @param string $type 'group', 'teacher' or 'room'
+     * @return bool
+     */
+    public function hasTimetable($who, $type)
+    {
+        $data = array();
+
+        switch($type) {
+            case 'group':
+                $data['idGroup'] = $who;
+                break;
+            case 'teacher':
+                $data['idTeacher'] = $who;
+                break;
+            case 'room':
+                $data['roomName'] = $who;
+                break;
+            default:
+                trigger_error('Type is not valid');
+                return false;
+        }
+
+        return !is_null($this->db
+            ->where($data)
+            ->get('Timetable')
+            ->row()
+        );
+    }
+
+    /**
      * Get the JSON of a timetable.
      *
      * @param int $resource
@@ -43,16 +91,15 @@ class Timetables extends CI_Model
      * Create a timetable, associated to an owner, or not
      *
      * @param int $resource
-     * @param string $json
-     * @param int $who The id of the owner (optionnal)
+     * @param mixed $who
      * @param string $type 'group', 'teacher' or 'room'
-     * @return bool;
+     * @return int|bool The id inserted on success, FALSE if there was a problem
      */
-    public function create($resource, $json, $who = null, $type = 'group')
+    public function create($resource, $who = null, $type = 'group')
     {
         $data = array(
             'resource' => $resource,
-            'json' => $json
+            'json' => ''
         );
 
         if ($who !== null) {
@@ -72,34 +119,39 @@ class Timetables extends CI_Model
             }
         }
 
-        return $this->db->insert('Timetable', $data);
+        if ($this->db->insert('Timetable', $data)) {
+            return $this->db->insert_id();
+        } else {
+            return FALSE;
+        }
     }
 
     /**
-     * Update the association between ressource and owner.
+     * Update the resource of the owner.
      *
      * @param int $resource
-     * @param int $who The id of the owner
+     * @param mixed $who
      * @param string $type 'group', 'teacher' or 'room'
      * @return bool
      */
-    public function setOwner($resource, $who, $type)
+    public function update($resource, $who, $type)
     {
-        $data = array(
-            'idGroup' => null,
-            'idTeacher' => null,
-            'roomName' => null
-        );
+        $json = $this->getJSON($resource);
+        if (is_null($json)) {
+            $json = '';
+        }
 
         switch($type) {
             case 'group':
-                $data['idGroup'] = $who;
+                $typeField = 'idGroup';
+                $who = (int) $who;
                 break;
             case 'teacher':
-                $data['idTeacher'] = $who;
+                $typeField = 'idTeacher';
+                $who = (int) $who;
                 break;
             case 'room':
-                $data['roomName'] = $who;
+                $typeField = 'roomName';
                 break;
             default:
                 trigger_error('Type is not valid');
@@ -107,11 +159,23 @@ class Timetables extends CI_Model
         }
 
         $this->db
-            ->set($data)
-            ->where('resource', $resource)
+            ->set('resource', $resource)
+            ->set('json', $json)
+            ->where($typeField, $who)
             ->update('Timetable');
         return $this->db->affected_rows();
 
+    }
+
+    /**
+     * Deletes a timetable.
+     *
+     * @param $resourceId
+     * @return bool
+     */
+    public function delete($resourceId)
+    {
+        return $this->db->delete('Timetable', array('resource' => $resourceId));
     }
 
 }

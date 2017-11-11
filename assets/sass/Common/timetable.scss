@@ -1,0 +1,155 @@
+@import '../style';
+
+$hourCount: 10;
+
+#timetable .active {
+  border-width: 2px 3px 3px 2px;
+  border-style: outset;
+  border-color: $primary-color-dark;
+}
+
+@media #{$large-and-up} {
+
+  #timetable-wrapper {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+
+    &:not(.empty) {
+      height: 540px;
+
+      > #timetable {
+        height: 510px;
+      }
+    }
+
+    > .hours {
+      display: flex;
+      height: 100%;
+      flex-flow: column nowrap;
+      margin-top: 32px;
+
+      &.empty {
+        display: none;
+      }
+
+      > div {
+        height: 100% / $hourCount;
+
+        padding-right: 5px;
+        border-right: 2px solid $table-border-color;
+
+        &:nth-of-type(odd) {
+          font-weight: 500;
+        }
+
+        &:nth-of-type(even) {
+          font-size: 11px;
+        }
+      }
+    }
+
+}
+
+  #timetable {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+
+    > .events {
+      min-width: 200px;
+      width: 200px;
+
+      > h5 {
+        margin: 0;
+        padding-bottom: 5px;
+        border-bottom: 2px solid $table-border-color;
+      }
+
+      > div {
+        overflow: auto;
+        padding-top: 10px;
+
+        h5 {
+          margin: 0;
+          white-space: nowrap;
+          overflow: hidden;
+
+          font-size: 1.2rem;
+          font-weight: 500;
+        }
+      }
+
+      > .fill {
+        border-top: 2px solid $table-border-color;
+        border-bottom: 2px solid $table-border-color;
+      }
+
+      > h5 + .fill {
+        border-top: none;
+      }
+    }
+  }
+}
+
+@media #{$medium-and-down} {
+
+  #timetable {
+    display: flex;
+    flex-flow: row wrap;
+    justify-items: center;
+    align-items: center;
+  }
+
+  .events {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+
+    box-sizing: border-box;
+    width: 100vw;
+    padding-left: 8px;
+    padding-right: 8px;
+
+    > h5 {
+      margin-top: 20px;
+      margin-bottom: 10px;
+    }
+
+    > div {
+      display: flex;
+      flex-flow: row nowrap;
+      justify-content: space-between;
+      align-items: center;
+
+      padding-top: 8px;
+      padding-bottom: 8px;
+
+
+      > div {
+        font-size: 1rem;
+        flex-grow: 1;
+        display: inline-block;
+
+        &:first-child,
+        &:last-child {
+          width: 20%;
+        }
+
+        &:nth-child(2) {
+          box-sizing: border-box;
+          width: 60%;
+        }
+
+        &:last-child {
+          font-size: 1.15rem;
+        }
+
+        > h5 {
+          font-size: 1.3rem;
+          margin: 0;
+        }
+      }
+    }
+  }
+}
