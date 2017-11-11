@@ -64,21 +64,26 @@ $( function() {
             }
         },
         receive: function(event, ui ) {
-            console.log('received : ' + ui.item.data('student-id') + ' from '+ ui.item.data('group-id'));
+
             //from
             if(ui.sender.find('li').length == 1){ // 1 -> header only
                 ui.sender.append($('<li>Aucun élève</li>')
                                     .addClass('collection-item')
                                     .addClass('no-student'));
             }
+            var oldGrp = ui.item.data('group-id');
+
+            //update the group-id
+            $(ui.item).data('group-id', $(ui.item).parent().data('group-id'));
+
+
 
             //to
             if(ui.item.parent().find('li').length == 3){ // 3 -> header | li no student | new item
-                ui.item.parent().find('.no-student').remove();
+                $(ui.item).parent().find('.no-student').remove();
             }
-            var oldGrp = ui.item.data('group-id');
-            ui.item.data('group-id', ui.item.parent().data('group-id'));
 
+            //if deleting
             if(ui.item.data('group-id') == 0){
                 ui.item.find('a').remove();
                 $.ajax({
@@ -99,10 +104,12 @@ $( function() {
                     }
 
                 });
+            //if inserting into group
             } else {
+                //if comming from an other group dont add trash
                 if(oldGrp == 0){
                     ui.item.find('div').prepend($('<a>')
-                                                    .attr('href','http://teckmeb.dev/Process_Group/delete_student/'+ui.item.data('group-id')+'/'+ui.item.data('student-id')+'/'+semesterId)
+                                                    .attr('href','/Process_Group/delete_student/'+ui.item.data('group-id')+'/'+ui.item.data('student-id')+'/'+semesterId)
                                                     .append($('<i>')
                                                                 .addClass('material-icons')
                                                                 .html('delete')
