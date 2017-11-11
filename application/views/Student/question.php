@@ -7,10 +7,7 @@
                 <li>
                     <div class="collapsible-header">
                         <div><?= $question->title ?></div>
-                        <div>
-                            <?= $question->teacherName
-                            ?>
-                        </div>
+                        <div><?= $question->teacherName ?></div>
                     </div>
                     <div class="collapsible-body">
                         <p class="right-align"><?= $question->content ?></p>

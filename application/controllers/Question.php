@@ -7,12 +7,24 @@ class Question extends TM_Controller {
     public function student_index($page = 1) {
         $this->load->model('Students');
 
+        //Number of questions you want per page
         $nbQuestionsPerPage = 15;
+        //Size limit of the pagination
         $limitPagination = 9;
-        $changePaginationNumber = 5;
+        //Pagination will be shifted from this number
+        $changePaginationNumber = ceil($limitPagination / 2);
 
         $nbQuestions = $this->Students->countQuestions($_SESSION['id']);
         $nbPages = ceil($nbQuestions / $nbQuestionsPerPage);
+
+        // Get questions and answers
+        $unsortedQuestions = $this->Students->getQuestionsPerPage($_SESSION['id'], $page, $nbQuestionsPerPage);
+        $unsortedAnswers = $this->Students->getAnswers($_SESSION['id']);
+        $teachers = $this->Students->getTeachers($_SESSION['id']);
+
+        if (!$unsortedQuestions) {
+            redirect('Question');
+        }
 
         $indexPagination = 1;
         if ($page > $changePaginationNumber) {
@@ -23,14 +35,6 @@ class Question extends TM_Controller {
                     $indexPagination = 1 + ($nbPages - $limitPagination);
                 }
             }
-        }
-
-        // Get questions and answers
-        $unsortedQuestions = $this->Students->getQuestionsPerPage($_SESSION['id'], $page, $nbQuestionsPerPage);
-        $unsortedAnswers = $this->Students->getAnswers($_SESSION['id']);
-        $teachers = $this->Students->getTeachers($_SESSION['id']);
-        if (!$unsortedQuestions) {
-            redirect('Question');
         }
 
         $questions = array();
