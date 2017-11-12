@@ -82,6 +82,37 @@
     </div>
 <?php } ?>
 </div>
+<?php if($data['editable']){?>
+
+    <div class="row">
+        <div class="col s12 ">
+            <div class="card grey lighten-5">
+                <form action="<?= base_url('Process_Administration/importGroups/' . $data['semester']->idSemester) ?>"
+                    method="post" enctype="multipart/form-data">
+                    <div class="card-content">
+                        <span class="card-title" >Importer un fichier .csv de groupe </span>
+                        <div class="file-field input-field">
+                            <div class="btn waves-effects">
+                                <span>Fichier</span>
+                                <input type="file" name="import" value="">
+                            </div>
+                            <div class="file-path-wrapper">
+                                <input class="file-path validate" type="text">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-action">
+                        <button class="btn-flat waves-effect" type="submit">Importer</button>
+                        <a href="<?= base_url('Process_Administration/exportGroups'
+                        . '/' . $data['semester']->idSemester) ?>" class="btn-flat waves-effect">
+                        Exporter</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+<?php } ?>
 
 <?php if (count($data['subjects'])) { ?>
     <div class="card grey lighten-5">
@@ -195,62 +226,33 @@
             </form>
         </div>
     <?php } ?>
-    <?php if($data['editable']){?>
 
-        <div class="row">
-            <div class="col s12 l6">
-                <div class="card grey lighten-5">
-                    <form action="<?= base_url('Process_Administration/importGroups/' . $data['semester']->idSemester) ?>"
-                        method="post" enctype="multipart/form-data">
-                        <div class="card-content">
-                            <span class="card-title" >Importer un fichier .csv de groupe </span>
-                            <div class="file-field input-field">
-                                <div class="btn waves-effects">
-                                    <span>Fichier</span>
-                                    <input type="file" name="import" value="">
-                                </div>
-                                <div class="file-path-wrapper">
-                                    <input class="file-path validate" type="text">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-action">
-                            <button class="btn-flat waves-effect" type="submit">Importer</button>
-                            <a href="<?= base_url('Process_Administration/exportGroups'
-                            . '/' . $data['semester']->idSemester) ?>" class="btn-flat waves-effect">
-                            Exporter</a>
-                        </div>
-                    </form>
-                </div>
-            </div>
-
-            <div class="col s12 l6">
-                <div class="card grey lighten-5">
-                    <form action="<?= base_url('Process_Administration/importCSVSemester/' . $data['semester']->idSemester) ?>"
-                        method="post" enctype="multipart/form-data">
-                        <div class="card-content">
-                            <span class="card-title" >Importer un fichier .csv de matieres </span>
-                            <div class="file-field input-field">
-                                <div class="btn waves-effects">
-                                    <span>Fichier</span>
-                                    <input type="file" name="import" value="">
-                                </div>
-                                <div class="file-path-wrapper">
-                                    <input class="file-path validate" type="text">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-action">
-                            <button class="btn-flat waves-effect" type="submit">Importer</button>
-                            <a href="<?= base_url('Process_Administration/getSemesterCSV'
-                            . '/' . $data['semester']->idSemester) ?>" class="btn-flat waves-effect">
-                            Exporter</a>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-    <?php } ?>
 
 </main>
+<!--
+<div class="col s12 l6">
+    <div class="card grey lighten-5">
+        <form action="<?= base_url('Process_Administration/importCSVSemester/' . $data['semester']->idSemester) ?>"
+            method="post" enctype="multipart/form-data">
+            <div class="card-content">
+                <span class="card-title" >Importer un fichier .csv de matieres </span>
+                <div class="file-field input-field">
+                    <div class="btn waves-effects">
+                        <span>Fichier</span>
+                        <input type="file" name="import" value="">
+                    </div>
+                    <div class="file-path-wrapper">
+                        <input class="file-path validate" type="text">
+                    </div>
+                </div>
+            </div>
+            <div class="card-action">
+                <button class="btn-flat waves-effect" type="submit">Importer</button>
+                <a href="<?= base_url('Process_Administration/getSemesterCSV'
+                . '/' . $data['semester']->idSemester) ?>" class="btn-flat waves-effect">
+                Exporter</a>
+            </div>
+        </form>
+    </div>
+</div>
+-->
