@@ -1,6 +1,41 @@
+<?php if ($data['nbPages'] > 1) {
+        $nbPages = $data['nbPages'];
+        $currentPage = $data['currentPage'];
+        $indexPagination = $data['indexPagination'];
+        $limitPagination = $data['limitPagination'];
+} ?>
 <main class="container">
     <div class="section">
         <h4 class="header">Questions</h4>
+        <?php if ($data['nbPages'] > 1) { ?>
+            <center>
+                <ul class="pagination">
+                    <?php if ($currentPage != 1) { ?>
+                        <li>
+                            <a href="<?= base_url("Question/") . ($currentPage - 1) ?>">
+                                <i class="material-icons">chevron_left</i>
+                            </a>
+                        </li>
+                        <?php
+                    }
+                    for ($i = $indexPagination; $i <= $indexPagination + $limitPagination - 1; $i++) {
+                        if ($i == $nbPages + 1) {
+                            break;
+                        }
+                        $isActive = ($i == $currentPage) ? 'active' : '';
+                        echo '<li class="waves-effect ' . $isActive . '"><a href="' . base_url("Question/$i") . '">' . $i . '</a></li>';
+                    }
+                    if ($currentPage != $nbPages) {
+                        ?>
+                        <li>
+                            <a href="<?= base_url("Question/") . ($currentPage + 1) ?>">
+                                <i class="material-icons">chevron_right</i>
+                            </a>
+                        </li>
+                    <?php } ?>
+                </ul>
+            </center>
+        <?php } ?>
         <ul class="collapsible" data-collapsible="accordion">
             <?php foreach ($data['questions'] as $question) {
                 ?>
@@ -75,12 +110,6 @@
     </div>
     <?php if ($data['nbPages'] > 1) { ?>
         <center>
-            <?php
-            $nbPages = $data['nbPages'];
-            $currentPage = $data['currentPage'];
-            $indexPagination = $data['indexPagination'];
-            $limitPagination = $data['limitPagination'];
-            ?>
             <ul class="pagination">
                 <?php if ($currentPage != 1) { ?>
                     <li>
