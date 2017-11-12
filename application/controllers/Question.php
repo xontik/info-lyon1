@@ -4,13 +4,19 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Question extends TM_Controller {
 
-    public function student_index($page = 1) {
+    public function student_index($page = 1)
+    {
+        $page = (int) htmlspecialchars($page);
+
         $this->load->model('Students');
+        $this->load->model('Questions');
 
         //Number of questions you want per page
         $nbQuestionsPerPage = 15;
+
         //Size limit of the pagination
-        $limitPagination = 9;
+        $limitPagination = 5;
+
         //Pagination will be shifted from this number
         $changePaginationNumber = ceil($limitPagination / 2);
 
@@ -19,7 +25,7 @@ class Question extends TM_Controller {
 
         // Get questions and answers
         $unsortedQuestions = $this->Students->getQuestionsPerPage($_SESSION['id'], $page, $nbQuestionsPerPage);
-        $unsortedAnswers = $this->Students->getAnswers($_SESSION['id']);
+        $unsortedAnswers = $this->Questions->getAnswersAll($unsortedQuestions);
         $teachers = $this->Students->getTeachers($_SESSION['id']);
 
         if (!$unsortedQuestions) {
@@ -40,13 +46,10 @@ class Question extends TM_Controller {
         $questions = array();
         foreach ($unsortedQuestions as $question) {
             $questions[$question->idQuestion] = $question;
-            $questionsIds[] = $question->idQuestion;
         }
 
         foreach ($unsortedAnswers as $answer) {
-            if (in_array($answer->idQuestion, $questionsIds)) {
-                $questions[$answer->idQuestion]->answers[] = $answer;
-            }
+            $questions[$answer->idQuestion]->answers[] = $answer;
         }
 
         $this->data = array(
@@ -60,7 +63,8 @@ class Question extends TM_Controller {
         $this->show('Questions / Réponses');
     }
 
-    public function teacher_index() {
+    public function teacher_index()
+    {
         $this->load->model('Teachers');
 
         $unsortedQuestions = $this->Teachers->getQuestions($_SESSION['id']);

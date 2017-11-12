@@ -102,29 +102,6 @@ class Students extends CI_Model
     }
 
     /**
-     * Returns the answers to the questions the student asked.
-     *
-     * @param $studentId
-     * @return array
-     */
-    public function getAnswers($studentId) {
-        return $this->db
-            ->select(
-                'idQuestion, idAnswer, Answer.content, teacher,'
-                . 'CONCAT(name, \' \', surname) as studentName'
-            )
-            ->from('Answer')
-            ->join('Question', 'idQuestion')
-            ->join('Student', 'idStudent')
-            ->join('User', 'idUser')
-            ->where('idStudent', $studentId)
-            ->order_by('Question.questionDate', 'DESC')
-            ->order_by('Answer.answerDate', 'DESC')
-            ->get()
-            ->result();
-    }
-
-    /**
      * Gets the teachers of a student.
      *
      * @param string $studentId
