@@ -81,7 +81,7 @@ class Students extends CI_Model
     {
         return $this->db
             ->where('idStudent', $studentId)
-            ->count_all('Question');
+            ->count_all_results('Question');
     }
     
     public function getQuestionsPerPage($studentId, $currentPage, $nbQuestionsPerPage)

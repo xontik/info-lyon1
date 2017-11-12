@@ -73,10 +73,10 @@ if ($data['nbPages'] > 1) {
                             <ul>
                                 <?php
                                 foreach ($question->answers as $answer) {
-                                    $isTeacher = !$answer->teacher ? 'class="right-align"' : '';
+                                    $isTeacher = !$answer->teacher ? 'right-align' : '';
                                     ?>
                                     <li class="divider"></li>
-                                    <li><p <?= $isTeacher ?>><?= $answer->content ?></p></li>
+                                    <li><p class="<?= $isTeacher ?>"><?= $answer->content ?></p></li>
                                     <?php
                                 }
                                 ?>

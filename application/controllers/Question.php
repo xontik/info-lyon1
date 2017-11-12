@@ -4,15 +4,23 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Question extends TM_Controller {
 
-    public function student_index($page = 1)
-    {
+    public function student_index($page = 1) {
         $page = (int) htmlspecialchars($page);
+        if ($page <= 0) {
+            redirect('Question');
+        }
 
         $this->load->model('Students');
-        $this->load->model('Questions');
 
         //Number of questions you want per page
         $nbQuestionsPerPage = 15;
+        $nbQuestions = $this->Students->countQuestions($_SESSION['id']);
+        $nbPages = ceil($nbQuestions / $nbQuestionsPerPage);
+        if ($page > $nbPages) {
+            redirect('Question');
+        }
+
+        $this->load->model('Questions');
 
         //Size limit of the pagination
         $limitPagination = 5;
@@ -20,26 +28,16 @@ class Question extends TM_Controller {
         //Pagination will be shifted from this number
         $changePaginationNumber = ceil($limitPagination / 2);
 
-        $nbQuestions = $this->Students->countQuestions($_SESSION['id']);
-        $nbPages = ceil($nbQuestions / $nbQuestionsPerPage);
-
-        // Get questions and answers
         $unsortedQuestions = $this->Students->getQuestionsPerPage($_SESSION['id'], $page, $nbQuestionsPerPage);
         $unsortedAnswers = $this->Questions->getAnswersAll($unsortedQuestions);
         $teachers = $this->Students->getTeachers($_SESSION['id']);
 
-        if (!$unsortedQuestions) {
-            redirect('Question');
-        }
-
         $indexPagination = 1;
-        if ($page > $changePaginationNumber) {
+        if ($page > $changePaginationNumber && $nbPages > $limitPagination) {
             if ($page <= $nbPages - $changePaginationNumber) {
-                $indexPagination = 1 + ($page - $changePaginationNumber);
+                $indexPagination = 1 + $page - $changePaginationNumber;
             } else {
-                if ($page > $limitPagination) {
-                    $indexPagination = 1 + ($nbPages - $limitPagination);
-                }
+                $indexPagination = 1 + $nbPages - $limitPagination;
             }
         }
 
@@ -63,8 +61,7 @@ class Question extends TM_Controller {
         $this->show('Questions / Réponses');
     }
 
-    public function teacher_index()
-    {
+    public function teacher_index() {
         $this->load->model('Teachers');
 
         $unsortedQuestions = $this->Teachers->getQuestions($_SESSION['id']);
