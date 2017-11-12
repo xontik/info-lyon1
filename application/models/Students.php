@@ -71,6 +71,86 @@ class Students extends CI_Model
     }
 
     /**
+     * Returns the last absence of the student.
+     *
+     * @param $studentId
+     * @return object|bool FALSE if student has no absence.
+     */
+    public function getLastAbsence($studentId)
+    {
+        $this->load->model('Semesters');
+
+        $semesterId = $this->Semesters->getStudentCurrent($studentId);
+        $period = $this->Semesters->getPeriod($semesterId);
+
+        $res = $this->db
+            ->select('beginDate, endDate, absenceTypeName')
+            ->from('Absence')
+            ->join('AbsenceType', 'idAbsenceType')
+            ->where('idStudent', $studentId)
+            ->order_by('beginDate', 'DESC')
+            ->limit(1)
+            ->get()
+            ->row();
+
+        if (is_null($res)) {
+            return FALSE;
+        }
+        return $res;
+    }
+
+    /**
+     * Return the last mark the student got, with its control.
+     *
+     * @param string $studentId
+     * @return object|bool FALSE if student has no mark
+     */
+    public function getLastMark($studentId)
+    {
+        $res = $this->db
+            ->select('value, controlName, coefficient, divisor, controlDate')
+            ->from('Mark')
+            ->join('Control', 'idControl')
+            ->where('idStudent', $studentId)
+            ->order_by('controlDate', 'DESC')
+            ->limit(1)
+            ->get()
+            ->row();
+
+        if (is_null($res)) {
+            return FALSE;
+        }
+        return $res;
+    }
+
+    /**
+     * Returns the last answer, with its question.
+     *
+     * @param $studentId
+     * @return object|bool FALSE
+     */
+    public function getLastAnswer($studentId) {
+        $res = $this->db
+            ->select(
+                'idAnswer, Answer.content as answerContent, answerDate,'
+                . 'idQuestion, title, Question.content as questionContent, questionDate'
+            )
+            ->from('Answer')
+            ->join('Question', 'idQuestion')
+            ->join('Teacher', 'idTeacher')
+            ->where('idStudent', $studentId)
+            ->order_by('answerDate', 'DESC')
+            ->limit(1)
+            ->get()
+            ->row();
+
+        if (is_null($res)) {
+            return FALSE;
+        }
+        return $res;
+    }
+
+    /**
      * Return the project to which the student currently or most lastly belongs.
      *
      * @param string $studentId
