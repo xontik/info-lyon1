@@ -6,7 +6,7 @@ class Students extends CI_Model
 
     /**
      * Gets a student.
-     * 
+     *
      * @param string $studentId
      * @return array
      */
@@ -17,11 +17,11 @@ class Students extends CI_Model
             ->get('Student')
             ->row();
     }
-    
+
     /**
      * Get all students in active semester,
      * ordered by course, group and name.
-     * 
+     *
      * @return array
      */
     public function getAllOrganized()
