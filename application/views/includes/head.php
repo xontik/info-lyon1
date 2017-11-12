@@ -41,20 +41,22 @@
 
         $nav = array(
             'student' => array(
-                'absences' => '/Absence',
-                'notes' => '/Mark',
-                'ptut' => '/Project',
-                'questions' => '/Question'
+                'absences' => 'Absence',
+                'notes' => 'Mark',
+                'ptut' => 'Project',
+                'questions' => 'Question'
             ),
             'teacher' => array(
-                'absences' => '/Absence',
-                'controles' => '/Control',
-                'ptut' => '/Project',
-                'questions' => '/Question'
+                'absences' => 'Absence',
+                'controles' => 'Control',
+                'ptut' => 'Project',
+                'questions' => 'Question',
+                'étudiants' => 'Student'
             ),
             'secretariat' => array(
-                'absences' => '/Absence',
-                'Administration' => '/Administration'
+                'absences' => 'Absence',
+                'administration' => 'Administration',
+                'étudiants' => 'Student'
             )
         );
         ?><nav class="nav-extended">
@@ -63,9 +65,11 @@
                 <!-- computer nav -->
                 <ul class="right hide-on-med-and-down">
                     <?php foreach ($nav[$_SESSION['userType']] as $item => $url) {
-                        $active = '/' . ucfirst($pageName) === $url
+                        $active = strcasecmp($pageName, $url) === 0
                             ? ' active' : '';
-                        echo '<li class="small-caps ' . $active . '"><a href="' . $url . '">' . $item . '</a></li>';
+                        ?>
+                        <li class="small-caps <?= $active ?>"><a href="<?= base_url($url) ?>"><?= $item ?></a></li>
+                        <?php
                     } ?>
                     <li>
                         <a class="dropdown-button"
