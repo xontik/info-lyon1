@@ -5,14 +5,12 @@ $(document).ready(function() {
     var students;
 
     var sort = {
-        $sorter: null,
+        $sorter: $('.sorter').first(),
         field: 'idStudent',
         ascending: true,
+
         update: function(sorter) {
             var newField = $(sorter).data('sort');
-            if (!this.$sorter) {
-                this.$sorter = $(sorter);
-            }
 
             if (this.field === newField) {
                 var icon = this.$sorter.find('i');
@@ -27,13 +25,10 @@ $(document).ready(function() {
                 this.field = newField;
                 students.sort(this._compare);
 
-                if (this.$sorter) {
-                    this.$sorter.find('i').addClass('scale-out');
-                }
+                this.$sorter.find('i').addClass('scale-out');
 
                 this.$sorter = $(sorter);
                 this.$sorter.find('i').removeClass('scale-out');
-
             }
         },
         _compare: function(el1, el2) {
