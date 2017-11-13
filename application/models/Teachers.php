@@ -337,7 +337,14 @@ class Teachers extends CI_Model
             ->get()
             ->result();
     }
-
+    
+    public function countQuestions($teacherId)
+    {
+        return $this->db
+            ->where('idTeacher', $teacherId)
+            ->count_all_results('Question');
+    }
+    
     /**
      * Returns the questions addressed to the teacher,
      * and the student that asked it.
@@ -345,13 +352,15 @@ class Teachers extends CI_Model
      * @param int $teacherId
      * @return array
      */
-    public function getQuestions($teacherId) {
+    public function getQuestionsPerPage($teacherId, $currentPage, $nbQuestionsPerPage) {
         return $this->db
             ->select('idQuestion, title, content, questionDate, CONCAT(name, \' \', surname) as studentName')
             ->from('Question')
             ->join('Student', 'idStudent')
             ->join('User', 'idUser')
             ->where('idTeacher', $teacherId)
+            ->order_by('questionDate', 'DESC')
+            ->limit($nbQuestionsPerPage, (($currentPage - 1) * $nbQuestionsPerPage))
             ->get()
             ->result();
     }
