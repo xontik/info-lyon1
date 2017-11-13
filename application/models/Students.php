@@ -6,7 +6,7 @@ class Students extends CI_Model
 
     /**
      * Gets a student.
-     * 
+     *
      * @param string $studentId
      * @return array
      */
@@ -17,11 +17,11 @@ class Students extends CI_Model
             ->get('Student')
             ->row();
     }
-    
+
     /**
      * Get all students in active semester,
      * ordered by course, group and name.
-     * 
+     *
      * @return array
      */
     public function getAllOrganized()
@@ -46,7 +46,7 @@ class Students extends CI_Model
             ->get()
             ->result();
     }
-    
+
     /**
      * Return the project to which the student currently or most lastly belongs.
      *
@@ -76,20 +76,20 @@ class Students extends CI_Model
      * @param string $studentId
      * @return array
      */
-    
+
     public function countQuestions($studentId)
     {
         return $this->db
             ->where('idStudent', $studentId)
             ->count_all_results('Question');
     }
-    
+
     public function getQuestionsPerPage($studentId, $currentPage, $nbQuestionsPerPage)
     {
         return $this->db
             ->select(
                 'idQuestion, title, content, questionDate, idStudent, idTeacher,'
-                . 'CONCAT(name, \' \', surname) as teacherName'
+                . 'CONCAT(name, \' \', surname) as name'
             )
             ->from('Question')
             ->join('Teacher', 'idTeacher')
