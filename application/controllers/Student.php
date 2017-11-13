@@ -7,7 +7,8 @@ class Student extends TM_Controller
     {
         $this->setData(array(
             'view' => 'Common/student',
-            'js' => 'Common/student'
+            'js' => 'Common/student',
+            'css' => 'Common/student'
         ));
         $this->show('Liste des élèves');
     }

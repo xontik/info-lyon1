@@ -7,18 +7,22 @@
             <label for="search">Rechercher un étudiant</label>
         </div>
     </div>
-    <div class="section">
-        <table class="striped">
-            <thead>
-                <tr>
-                    <th>Numéro d'étudiant</th>
-                    <th>Nom</th>
-                    <th>Prénom</th>
-                </tr>
-            </thead>
-            <tbody id="list-content">
-            </tbody>
-        </table>
+    <div class="section" id="list-student">
+        <div class="row">
+            <div class="sorter col s4" data-sort="idStudent">
+                <b>Numéro étudiant</b>
+                <i class="material-icons right scale-transition">keyboard_arrow_down</i>
+            </div>
+            <div class="sorter col s4" data-sort="surname">
+                <b>Nom</b>
+                <i class="material-icons right scale-transition scale-out">keyboard_arrow_down</i>
+            </div>
+            <div class="sorter col s4" data-sort="name">
+                <b>Prénom</b>
+                <i class="material-icons right scale-transition scale-out">keyboard_arrow_down</i>
+            </div>
+        </div>
+        <div id="list-content"></div>
         <div id="list-progress" class="section">
             <div class="container progress">
                 <div class="indeterminate"></div>
