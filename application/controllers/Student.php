@@ -33,14 +33,34 @@ class Student extends TM_Controller
         $averageBySemester = array();
         $averageTUBySemester = array();
         $absences = array();
+        $totalAvgs = array();
         foreach ($semesters as $semester) {
             $averageBySemester[$semester->idSemester] = $this->Students->getSubjectsAverage($studentId, $semester->idSemester);
-            $absences[$semester->idSemester] = $this->Semesters->getStudentAbsence($semester->idSemester,$studentId);
+
+            $period = $this->Semesters->getPeriod($semester->idSemester);
+            $absences[$semester->idSemester] = $this->Students->getAbsencesCount($studentId, $period);
+
             $averageTUBySemester[$semester->idSemester] = array();
             $tus = $this->Students->getSubjectsTUAverage($studentId, $semester->idSemester);
+
+            $sumTU = 0;
+            $sumTUGroup = 0;
+            $sumCoeff = 0;
             foreach ($tus as $tu) {
                 $averageTUBySemester[$semester->idSemester][$tu->idTeachingUnit] = $tu;
+                $sumTU += $tu->average;
+                $sumTUGroup += $tu->groupAverage;
+                $sumCoeff += $tu->coefficient;
             }
+            if ($sumCoeff > 0) {
+                $totalAvg = $sumTU / $sumCoeff;
+                $totalAvgGroup = $sumTUGroup / $sumCoeff;
+
+            } else {
+                $totalAvg = null;
+                $totalAvgGroup = null;
+            }
+            $totalAvgs[$semester->idSemester] = array('student' => $totalAvg, 'group' => $totalAvgGroup);
 
         }
 
@@ -50,7 +70,8 @@ class Student extends TM_Controller
                                 'student' => $student,
                                 'averageBySemester' => $averageBySemester,
                                 'absences' => $absences,
-                                'averageTUBySemester' => $averageTUBySemester
+                                'averageTUBySemester' => $averageTUBySemester,
+                                'totalAvgs' => $totalAvgs
                                 );
         $this->setData(array(
             'view' => 'Common/student_profile.php',

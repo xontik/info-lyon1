@@ -237,10 +237,13 @@ class Students extends CI_Model
 
         return $this->db->query($sql, array($studentId, $semesterId, $studentId, $semesterId))->result();
     }
+
     public function getSubjectsTUAverage($studentId, $semesterId) {
         $sql = 'SELECT idTeachingUnit, teachingUnitName, teachingUnitCode,
                         ROUND(SUM((value/divisor)*20*coefficient)/SUM(coefficient), 2) AS average,
-                        ROUND(SUM(average*coefficient)/SUM(coefficient), 2) AS groupAverage
+                        ROUND(SUM(average*coefficient)/SUM(coefficient), 2) AS groupAverage,
+                        SUM(coefficient) as coefficient
+
                 FROM (
                 SELECT idSubject, idControl, idStudent, idSemester FROM mark
                     JOIN control using (idControl)
@@ -268,5 +271,28 @@ class Students extends CI_Model
 
         return $this->db->query($sql, array($studentId, $semesterId, $studentId, $semesterId))->result();
     }
+
+    public function getAbsencesCount($studentId, $bounds) {
+        $justified = $this->db
+            ->from('absence')
+            ->where('idStudent', $studentId)
+            ->where('beginDate BETWEEN "' . $bounds->getBeginDate()->format('Y-m-d')
+                . '" AND "' . $bounds->getEndDate()->format('Y-m-d') . '"')
+            ->where('justified','1')
+            ->get()
+            ->num_rows();
+        $unjustified = $this->db
+            ->from('absence')
+            ->where('idStudent', $studentId)
+            ->where('beginDate BETWEEN "' . $bounds->getBeginDate()->format('Y-m-d')
+                . '" AND "' . $bounds->getEndDate()->format('Y-m-d') . '"')
+            ->where('justified','0')
+            ->get()
+            ->num_rows();
+
+        return array('justified' => $justified, 'unjustified' => $unjustified);
+
+    }
+
 
 }
