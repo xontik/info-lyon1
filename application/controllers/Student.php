@@ -54,7 +54,8 @@ class Student extends TM_Controller
                                 );
         $this->setData(array(
             'view' => 'Common/student_profile.php',
-            'js' => 'Common/student_profile'
+            'js' => 'Common/student_profile',
+            'css' => 'Common/student_profile',
         ));
 
         $this->show('Cursus élève');
