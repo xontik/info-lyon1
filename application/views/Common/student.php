@@ -4,7 +4,7 @@
         <div class="input-field">
             <i class="material-icons prefix">account_circle</i>
             <input type="text" id="search" name="search" class="autocomplete">
-            <label for="search">Rechercher un étudiant</label>
+            <label for="search">Rechercher un étudiant, un groupe...</label>
         </div>
     </div>
     <div class="section" id="list-student">

@@ -2,7 +2,12 @@ $(document).ready(function() {
     'use strict';
 
     var list = $('#list-content');
-    var students;
+
+    var students = {};
+    var groups = {};
+
+    var acValToId = {'group' : {}};
+    var displayStudent = {};
 
     var sort = {
         $sorter: $('.sorter').first(),
@@ -18,12 +23,12 @@ $(document).ready(function() {
                 this.ascending = !this.ascending;
                 icon.text(this._getIcon());
 
-                students.sort(this._getSortFunction());
+                displayStudent.sort(this._getSortFunction());
             }
             else {
                 this.ascending = true;
                 this.field = newField;
-                students.sort(this._compare);
+                displayStudent.sort(this._compare);
 
                 this.$sorter.find('i').addClass('scale-out');
 
@@ -47,8 +52,10 @@ $(document).ready(function() {
 
     $.post(
         '/Process_Student/get_all', {},
-        function (serverStudents) {
-            students = serverStudents;
+        function (resources) {
+            students = resources.students;
+            displayStudent = students;
+            groups = resources.groups;
 
             $('#list-progress').remove();
 
@@ -69,11 +76,27 @@ $(document).ready(function() {
                     )
                 });
 
+                $.each(groups, function(index, group) {
+                    var val = group.groupName + ' ' + group.schoolYear + '-' + (parseInt(group.schoolYear)+1);
+                    acValToId.group[val] = group.idGroup;
+                    autocompleteDatas[val] = null;
+                });
+
                 $('#search').autocomplete({
                     data: autocompleteDatas,
-                    limit: 20,
+                    limit: 15,
                     onAutocomplete: function(val) {
-                        location.href = '/Student/profile/' + val.split(' ').slice(0, 1);
+                        var fword = val.split(' ')[0];
+
+                        // If student
+                        if (/^p\d{7}$/.test(fword)) {
+                            location.href = '/Student/profile/' + fword;
+                        }
+                        // If group
+                        else if (/^G\d+S[0-4]$/.test(fword)) {
+                            displayStudent = groups[acValToId.group[val]].students;
+                            updateList();
+                        }
                     }
                 });
 
@@ -89,7 +112,7 @@ $(document).ready(function() {
 
     function updateList() {
         list.empty();
-        $.each(students, function(index, student) {
+        $.each(displayStudent, function(index, student) {
             list.append(
                 $('<a href="/Student/profile/' + student.idStudent + '"></a>')
                     .addClass('black-text')

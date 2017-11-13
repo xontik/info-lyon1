@@ -21,6 +21,24 @@ class Groups extends CI_Model
     }
 
     /**
+     * Returns all groups in database, and the linked students.
+     *
+     * @return array
+     */
+    public function getAll()
+    {
+        return $this->db
+            ->from('Group')
+            ->join('StudentGroup', 'idGroup')
+            ->join('Student', 'idStudent')
+            ->join('User', 'idUser')
+            ->join('Semester', 'idSemester')
+            ->join('Course', 'idCourse')
+            ->get()
+            ->result();
+    }
+
+    /**
      * Checks if a group name already exists in a semester.
      *
      * @param int $semesterId
