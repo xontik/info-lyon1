@@ -11,23 +11,34 @@ $(document).ready(function() {
 
     var sort = {
         $sorter: $('.sorter').first(),
-        field: 'idStudent',
-        ascending: true,
+        _field: 'idStudent',
+        _ascending: true,
 
+        init: function() {
+            this._field = 'idStudent';
+            this._ascending = true;
+
+            this.$sorter.find('i').addClass('scale-out');
+
+            this.$sorter = $('.sorter').first();
+            this.$sorter.find('i')
+                .text(this._getIcon())
+                .removeClass('scale-out');
+        },
         update: function(sorter) {
             var newField = $(sorter).data('sort');
 
-            if (this.field === newField) {
+            if (this._field === newField) {
                 var icon = this.$sorter.find('i');
 
-                this.ascending = !this.ascending;
+                this._ascending = !this._ascending;
                 icon.text(this._getIcon());
 
                 displayStudent.sort(this._getSortFunction());
             }
             else {
-                this.ascending = true;
-                this.field = newField;
+                this._ascending = true;
+                this._field = newField;
                 displayStudent.sort(this._compare);
 
                 this.$sorter.find('i').addClass('scale-out');
@@ -37,16 +48,16 @@ $(document).ready(function() {
             }
         },
         _compare: function(el1, el2) {
-            return el1[sort.field] > el2[sort.field] ? 1 : -1;
+            return el1[sort._field] > el2[sort._field] ? 1 : -1;
         },
         _compareInvert: function(el1, el2) {
-            return el2[sort.field] >= el1[sort.field] ? 1 : -1;
+            return el2[sort._field] >= el1[sort._field] ? 1 : -1;
         },
         _getSortFunction: function() {
-            return this.ascending ? this._compare : this._compareInvert;
+            return this._ascending ? this._compare : this._compareInvert;
         },
         _getIcon: function() {
-            return this.ascending ? 'keyboard_arrow_down' : 'keyboard_arrow_up';
+            return this._ascending ? 'keyboard_arrow_down' : 'keyboard_arrow_up';
         }
     };
 
@@ -82,7 +93,16 @@ $(document).ready(function() {
                     autocompleteDatas[val] = null;
                 });
 
-                $('#search').autocomplete({
+                $('#search')
+                    .on('keydown', function(event) {
+                        if (event.keyCode === 8 && this.value) {
+                            this.value = '';
+                            displayStudent = students;
+                            sort.init();
+                            updateList();
+                        }
+                    })
+                    .autocomplete({
                     data: autocompleteDatas,
                     limit: 15,
                     onAutocomplete: function(val) {
