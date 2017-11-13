@@ -13,6 +13,7 @@ class Students extends CI_Model
     public function get($studentId)
     {
         return $this->db->select('idStudent, surname, name, email')
+            ->join('user','idUser')
             ->where('idStudent', $studentId)
             ->get('Student')
             ->row();
@@ -191,4 +192,81 @@ class Students extends CI_Model
         }
         return (int) $res->resource;
     }
+
+    public function getSemesters($studentId) {
+        return $this->db
+            ->from('studentGroup')
+            ->join('group', 'idGroup')
+            ->join('semester', 'idSemester')
+            ->join('course', 'idCourse')
+            ->where('idStudent', $studentId)
+            ->order_by('schoolYear', 'DESC')
+            ->order_by('idSemester', 'DESC')
+            ->get()
+            ->result();
+    }
+
+    public function getSubjectsAverage($studentId, $semesterId) {
+        $sql = 'SELECT idSubject, subjectCode, subjectName, subjectCoefficient, moduleName, idTeachingUnit, teachingUnitName, teachingUnitCode, idSemester,
+                        ROUND(SUM((value/divisor)*20*coefficient)/SUM(coefficient), 2) AS average,
+                        ROUND(SUM(average*coefficient)/SUM(coefficient), 2) AS groupAverage
+                FROM (
+                SELECT idSubject, idControl, idStudent, idSemester FROM mark
+                    JOIN control using (idControl)
+                    JOIN education USING(idEducation)
+                    JOIN `group` USING(idGroup)
+                    JOIN studentgroup USING(idStudent,idGroup)
+                    where idStudent = ? && idSemester = ?
+                UNION
+                SELECT idSubject, idControl, idStudent, idSemester  FROM mark
+                    JOIN control using (idControl)
+                    JOIN promo USING(idPromo)
+                    JOIN education USING(idSubject)
+                    JOIN `group` USING(idGroup, idSemester)
+                    JOIN studentgroup USING(idStudent)
+                    where idStudent = ? && idSemester = ?) AS c
+                JOIN subject USING(idSubject)
+                JOIN mark USING(idControl, idStudent)
+                JOIN control USING(idControl)
+                JOIN subjectofmodule USING(idSubject)
+                JOIN moduleofteachingunit USING(idModule)
+                JOIN module USING(idModule)
+                JOIN teachingunit USING (idTeachingunit)
+                GROUP BY idSubject, idSemester
+                ORDER BY idTeachingunit';
+
+        return $this->db->query($sql, array($studentId, $semesterId, $studentId, $semesterId))->result();
+    }
+    public function getSubjectsTUAverage($studentId, $semesterId) {
+        $sql = 'SELECT idTeachingUnit, teachingUnitName, teachingUnitCode,
+                        ROUND(SUM((value/divisor)*20*coefficient)/SUM(coefficient), 2) AS average,
+                        ROUND(SUM(average*coefficient)/SUM(coefficient), 2) AS groupAverage
+                FROM (
+                SELECT idSubject, idControl, idStudent, idSemester FROM mark
+                    JOIN control using (idControl)
+                    JOIN education USING(idEducation)
+                    JOIN `group` USING(idGroup)
+                    JOIN studentgroup USING(idStudent,idGroup)
+                    where idStudent = ? && idSemester = ?
+                UNION
+                SELECT idSubject, idControl, idStudent, idSemester  FROM mark
+                    JOIN control using (idControl)
+                    JOIN promo USING(idPromo)
+                    JOIN education USING(idSubject)
+                    JOIN `group` USING(idGroup, idSemester)
+                    JOIN studentgroup USING(idStudent)
+                    where idStudent = ? && idSemester = ?) AS c
+                JOIN subject USING(idSubject)
+                JOIN mark USING(idControl, idStudent)
+                JOIN control USING(idControl)
+                JOIN subjectofmodule USING(idSubject)
+                JOIN moduleofteachingunit USING(idModule)
+                JOIN module USING(idModule)
+                JOIN teachingunit USING (idTeachingunit)
+                GROUP BY idTeachingunit
+                ORDER BY idTeachingunit';
+
+        return $this->db->query($sql, array($studentId, $semesterId, $studentId, $semesterId))->result();
+    }
+
 }

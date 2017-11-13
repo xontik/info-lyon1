@@ -22,8 +22,40 @@ class Student extends TM_Controller
         if (is_null($studentId)) {
             show_404();
         }
+
+        $this->load->model('Students');
+        $this->load->model('Semesters');
+
+        $student = $this->Students->get($studentId);
+
+        $semesters = $this->Students->getSemesters($studentId);
+
+        $averageBySemester = array();
+        $averageTUBySemester = array();
+        $absences = array();
+        foreach ($semesters as $semester) {
+            $averageBySemester[$semester->idSemester] = $this->Students->getSubjectsAverage($studentId, $semester->idSemester);
+            $absences[$semester->idSemester] = $this->Semesters->getStudentAbsence($semester->idSemester,$studentId);
+            $averageTUBySemester[$semester->idSemester] = array();
+            $tus = $this->Students->getSubjectsTUAverage($studentId, $semester->idSemester);
+            foreach ($tus as $tu) {
+                $averageTUBySemester[$semester->idSemester][$tu->idTeachingUnit] = $tu;
+            }
+
+        }
+
+
+
+        $this->data = array(    'semesters' => $semesters,
+                                'student' => $student,
+                                'averageBySemester' => $averageBySemester,
+                                'absences' => $absences,
+                                'averageTUBySemester' => $averageTUBySemester
+                                );
         $this->setData(array(
             'view' => 'Common/student_profile.php',
+            'css' => 'Common/student_profile',
+            'js' => 'Common/student_profile'
         ));
 
         $this->show('Cursus élève');
