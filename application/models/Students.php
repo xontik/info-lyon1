@@ -19,6 +19,20 @@ class Students extends CI_Model
     }
 
     /**
+     * Get all students unsorted.
+     *
+     * @return array
+     */
+    public function getAll()
+    {
+        return $this->db
+            ->from('Student')
+            ->join('User', 'idUser')
+            ->get()
+            ->result();
+    }
+
+    /**
      * Get all students in active semester,
      * ordered by course, group and name.
      *
