@@ -19,7 +19,7 @@ class Question extends TM_Controller
         $nbQuestions = $this->Students->countQuestions($_SESSION['id']);
         $unsortedQuestions = $this->Students->getQuestionsPerPage($_SESSION['id'], $page, $this->config->item('questionByPage'));
 
-        $questionList = $this->_computeQuestionList($page, $unsortedQuestions, $nbQuestions);
+        $questionList = $this->_computeQuestionList($page, $unsortedQuestions, $nbQuestions, false);
 
         $teachers = $this->Students->getTeachers($_SESSION['id']);
 
@@ -44,7 +44,7 @@ class Question extends TM_Controller
         $nbQuestions = $this->Teachers->countQuestions($_SESSION['id']);
         $unsortedQuestions = $this->Teachers->getQuestionsPerPage($_SESSION['id'], $page, $this->config->item('questionByPage'));
 
-        $questionList = $this->_computeQuestionList($page, $unsortedQuestions, $nbQuestions);
+        $questionList = $this->_computeQuestionList($page, $unsortedQuestions, $nbQuestions, true);
 
         $this->data = array(
             'questionList' => $questionList
@@ -53,7 +53,7 @@ class Question extends TM_Controller
         $this->show('Questions / Réponses');
     }
 
-    private function _computeQuestionList($page, $unsortedQuestions, $nbQuestions)
+    private function _computeQuestionList($page, $unsortedQuestions, $nbQuestions, $choosePublic)
     {
         $nbQuestionsPerPage = $this->config->item('questionByPage');
         $limitPagination = $this->config->item('paginationLimit');
@@ -95,7 +95,8 @@ class Question extends TM_Controller
                 'nbPages' => $nbPages,
                 'currentPage' => $page,
                 'indexPagination' => $indexPagination,
-                'limitPagination' => $limitPagination
+                'limitPagination' => $limitPagination,
+                'choosePublic' => $choosePublic
             ),
             TRUE
         );

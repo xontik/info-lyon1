@@ -73,6 +73,18 @@
                             ?>
                         </ul>
                         <?php
+                    }
+
+                    if ($choosePublic) {
+                        ?>
+                        <div class="switch">
+                            <label>
+                                <input type="checkbox">
+                                <span class="lever"></span>
+                                Publique
+                            </label>
+                        </div>
+                        <?php
                     } ?>
                     <form action="<?= base_url('Process_Question/answer/' . $question->idQuestion) ?>" method="POST">
                         <div class="input-field">
