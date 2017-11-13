@@ -60,11 +60,7 @@
                     </div>
                 </div>
             </div>
-            <?php if ($key < count($data['semesters'])-1) { ?>
-                <div class="center">
-                    <i class="material-icons medium">expand_less</i>
-                </div>
-            <?php } ?>
+            
         <?php endforeach; ?>
 
     </div>
