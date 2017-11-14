@@ -50,11 +50,13 @@
                 'absences' => '/Absence',
                 'controles' => '/Control',
                 'ptut' => '/Project',
-                'questions' => '/Question'
+                'questions' => '/Question',
+                'suivi' => '/Student'
             ),
             'secretariat' => array(
                 'absences' => '/Absence',
-                'Administration' => '/Administration'
+                'administration' => '/Administration',
+                'suivi' => '/Student'
             )
         );
         ?><nav class="nav-extended">
