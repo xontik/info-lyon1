@@ -242,7 +242,7 @@ class Students extends CI_Model
         $sql = 'SELECT idTeachingUnit, teachingUnitName, teachingUnitCode,
                         ROUND(SUM((value/divisor)*20*coefficient)/SUM(coefficient), 2) AS average,
                         ROUND(SUM(average*coefficient)/SUM(coefficient), 2) AS groupAverage,
-                        SUM(coefficient) as coefficient
+                        SUM(subjectCoefficient) as coefficient
 
                 FROM (
                 SELECT idSubject, idControl, idStudent, idSemester FROM mark

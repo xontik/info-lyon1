@@ -48,10 +48,12 @@ class Student extends TM_Controller
             $sumCoeff = 0;
             foreach ($tus as $tu) {
                 $averageTUBySemester[$semester->idSemester][$tu->idTeachingUnit] = $tu;
-                $sumTU += $tu->average;
-                $sumTUGroup += $tu->groupAverage;
+                $sumTU += $tu->average*$tu->coefficient;
+                $sumTUGroup += $tu->groupAverage*$tu->coefficient;
                 $sumCoeff += $tu->coefficient;
             }
+
+            
             if ($sumCoeff > 0) {
                 $totalAvg = $sumTU / $sumCoeff;
                 $totalAvgGroup = $sumTUGroup / $sumCoeff;
