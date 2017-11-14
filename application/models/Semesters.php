@@ -357,7 +357,7 @@ class Semesters extends CI_Model
             ->join('Semester', 'idSemester')
             ->join('Course', 'idCourse')
             ->where('idStudent', $studentId)
-            ->where('idSemester IN', $semesterIds)
+            ->where_in('idSemester', $semesterIds)
             ->get()
             ->row();
 
@@ -383,6 +383,7 @@ class Semesters extends CI_Model
             ->join('User', 'idUser')
             ->where('idSemester', $semesterId)
             ->order_by('groupName', 'ASC')
+            ->order_by('name', 'ASC')
             ->get()
             ->result();
     }
@@ -398,9 +399,8 @@ class Semesters extends CI_Model
     {
         $concurrentSemesters = $this->getConcurrent($semesterId, $strict);
 
-        //TODO a retravailler
         $sql =
-            'SELECT *
+            'SELECT distinct name, surname, idStudent
             FROM Student
             JOIN User USING (idUser)
             JOIN StudentGroup USING (idStudent)
@@ -490,6 +490,47 @@ class Semesters extends CI_Model
             ->result();
     }
 
+    /**
+     * Returns all subjects in the semester
+     *
+     * @param int $semestreId
+     * @return array
+     */
+    public function getSubjects($semesterId) {
+        return $this->db
+            ->from('subject')
+            ->select('subjectName, subjectCode, idSubject, moduleName')
+            ->join('subjectofmodule', 'idSubject')
+            ->join('module', 'idModule')
+            ->join('moduleofteachingunit', 'idModule')
+            ->join('teachingunitofcourse', 'idTeachingUnit')
+            ->join('semester', 'idCourse')
+            ->where('idSemester', $semesterId)
+            ->get()
+            ->result();
+    }
+    /**
+     * Returns all education related to the semester with the educationId as key in array
+     *
+     * @param int $semestreId
+     * @return array
+     */
+    public function getEducations($semesterId) {
+        $educations = $this->db
+            ->from('education')
+            ->join('group', 'idGroup')
+            ->join('teacher','idTeacher')
+            ->join('user','idUser')
+            ->where('idSemester', $semesterId)
+            ->get()
+            ->result();
+        $out = array();
+        foreach ($educations as $education) {
+            $out[$education->idEducation] = $education;
+        }
+
+        return $out;
+    }
     /**
      * Get all groups in a semester.
      *

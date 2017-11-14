@@ -139,20 +139,40 @@ class Groups extends CI_Model
      * Creates a group.
      *
      * @param int $semesterId
-     * @param int $groupName
      * @return bool
      */
-    public function create($semesterId, $groupName)
+    public function create($semesterId)
     {
-        if ($this->exists($semesterId, $groupName)) {
-            return false;
+        //TODO add all aduction related to this group and semester
+        $groups = array_column($this->db
+                    ->from('group')
+                    ->select('groupName')
+                    ->where('idSemester',$semesterId)
+                    ->get()
+                    ->result_array(),'groupName');
+        $delayed = $this->db
+                        ->select('delayed')
+                        ->from('semester')
+                        ->where('idSemester',$semesterId)
+                        ->get()
+                        ->row()->delayed;
+        if($delayed) {
+            $i = 6;
         } else {
-            $data = array(
-                'idSemester' => $semesterId,
-                'groupName' => $groupName
-            );
-            return $this->db->insert('Group', $data);
+            $i = 1;
         }
+
+        while(in_array('G'.$i,$groups)) {
+            $i++;
+        }
+        $newName = 'G'.$i;
+
+        $data = array(
+            'idSemester' => $semesterId,
+            'groupName' => $newName
+        );
+        return $this->db->insert('Group', $data) ? $newName : false;
+
     }
 
     /**

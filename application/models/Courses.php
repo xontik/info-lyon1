@@ -183,4 +183,18 @@ class Courses extends CI_Model
             ->result();
     }
 
+    /**
+     * Return the course
+     *
+     * @param int $courseId
+     * @return ArrayAccess
+     */
+    public function get($courseId){
+        return $this->db
+            ->from('Course')
+            ->where('idCourse', $courseId)
+            ->get()
+            ->row();
+    }
+
 }

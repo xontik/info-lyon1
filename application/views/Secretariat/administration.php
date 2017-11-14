@@ -11,7 +11,7 @@
 
                     <form id="delete" action="<?= base_url('Process_Course/delete') ?>" method="POST">
                         <div class="input-field row">
-                            <select class="col s12 m8 l5" id="courseId" name="courseId">
+                            <select class="col s12 m8 l5" id="futureCourseId" name="courseId">
                                 <?php
                                 foreach ($data['courses'] as $course) {
                                     ?>
@@ -22,13 +22,13 @@
                                 }
                                 ?>
                             </select>
-                            <label for="courseId">Parcours à modifier</label>
+                            <label for="futureCourseId">Parcours à modifier</label>
                         </div>
                         <div class="row">
                             <ul id="TUin" class="collection with-header col s12 l10 offset-l1 no-padding">
                                 <li class="collection-header"><h5>UE lié au module</h5></li>
                             </ul>
-                            <div class="col s12 m2 l12 center-align">
+                            <div class="col s12 center-align">
                                 <button type="button" class="btn" id="add">
                                     <i class="material-icons">keyboard_arrow_up</i>
                                 </button>
@@ -95,7 +95,7 @@
                         foreach ($data['semesters'] as $semester) {
                             $semesterData = $semester['data'];
                             ?>
-                            <tr class="<?= $semester['state'] ?>">
+                            <tr>
                                 <td><?= $semesterData->schoolYear ?></td>
                                 <td><?= $semesterData->courseType . ' - '
                                     . ($semesterData->delayed ? 'Différé' : 'Normal') ?></td>
@@ -109,15 +109,9 @@
                                     ?>
                                 </td>
                                 <td>
-                                    <?php
-                                    if ($semester['state'] !== 'after') {
-                                        ?>
-                                        <a href="<?= base_url('Administration/Semester/' . $semesterData->idSemester) ?>">
-                                            <i class="material-icons">edit</i>
-                                        </a>
-                                        <?php
-                                    }
-                                    ?>
+                                    <a href="<?= base_url('Administration/semester/' . $semesterData->idSemester) ?>">
+                                        <i class="material-icons"><?= $semester['state'] != 'after' ? 'edit' : 'add_to_queue' ?></i>
+                                    </a>
                                 </td>
                             </tr>
                             <?php
@@ -143,10 +137,6 @@
                         </div>
                         <div class="input-field col s12 m6 l5 offset-l1">
                             <select id="schoolYear" name="schoolYear">
-                                <?php for ($i = 0; $i < 3; $i++) :
-                                    $year = (int) date('Y'); ?>
-                                    <option value="<?= $year + $i ?>"><?= ($year + $i) . '-' . ($year + $i + 1) ?></option>
-                                <?php endfor; ?>
                             </select>
                             <label for="schoolYear">Année scolaire</label>
                         </div>
@@ -155,7 +145,6 @@
                         <input type="checkbox" name="delayed" id="delayed">
                         <label for="delayed">Differé</label>
                     </p>
-                    <!-- TODO l'année en fonction du select #AJAX -->
                     <div class="btn-footer">
                         <button type="submit" class="btn waves-effect">Ajouter</button>
                     </div>

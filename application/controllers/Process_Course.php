@@ -51,6 +51,35 @@ class Process_Course extends CI_Controller
         echo json_encode($ids);
     }
 
+    /*
+     * AJAX
+     */
+    public function get_year() {
+
+        $courseId = (int) htmlspecialchars($_POST['courseId']);
+
+        $this->load->model('Courses');
+
+        $course = $this->Courses->get($courseId);
+
+        $thisYear = (int) date('Y');
+        if(!$course) {
+            $ouput = array( 'year' => $thisYear + 1);
+        }
+
+        $courseYear = (int) $course->creationYear;
+
+        if($courseYear < $thisYear) {
+            $ouput = array( 'year' => $thisYear + 1);
+        } else {
+            $ouput = array( 'year' => $courseYear);
+        }
+
+        header('Content-Type: application/json');
+        echo json_encode($ouput);
+
+    }
+
     public function add()
     {
         $this->load->model('Courses');
@@ -86,7 +115,7 @@ class Process_Course extends CI_Controller
             if ($this->Courses->isEditable($courseId)) {
 
                 if ($this->Courses->delete($courseId)) {
-                    addPageNotification('Courses supprimé avec succès', 'success');
+                    addPageNotification('Parcours supprimé avec succès', 'success');
                 } else {
                     addPageNotification('Erreur lors de la suppression du parcours', 'danger');
                 }
