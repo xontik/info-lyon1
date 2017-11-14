@@ -8,6 +8,7 @@ class Question extends TM_Controller
     public function student_index($page = 1, $questionId = 0)
     {
         $page = (int) htmlspecialchars($page);
+        $questionId = (int) htmlspecialchars($questionId);
 
         if ($page <= 0) {
             redirect('Question');
@@ -26,6 +27,7 @@ class Question extends TM_Controller
             'teachers' => $teachers,
             'questionList' => $questionList
         );
+
         $this->show('Questions / Réponses');
     }
 
@@ -45,12 +47,14 @@ class Question extends TM_Controller
             $this->config->item('questionByPage')
         );
 
-        $this->teacher_index($page, $questionId);
+        $this->setData('view', 'Student/question');
+        $this->student_index($page, $questionId);
     }
 
     public function teacher_index($page = 1, $questionId = 0)
     {
         $page = (int) htmlspecialchars($page);
+        $questionId = (int) htmlspecialchars($questionId);
 
         if ($page <= 0) {
             redirect('Question');
@@ -113,6 +117,7 @@ class Question extends TM_Controller
     private function _computeQuestionList($page, $questionId, $unsortedQuestions, $nbQuestions, $choosePublic, $search)
     {
         $this->load->model('Questions');
+        $this->setData('css', 'Common/question');
         
         $nbQuestionsPerPage = $this->config->item('questionByPage');
         $limitPagination = $this->config->item('paginationLimit');
