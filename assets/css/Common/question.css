@@ -5443,6 +5443,6 @@ body > header > nav h2 { text-align: center; font-size: 2.46rem; }
 
 .card-action button.btn-flat { color: #ffab40; }
 
-.collapsible-header div:nth-child(2) { margin-left: auto; }
+.collapsible-header div:last-child { margin-left: auto; }
 
 /*# sourceMappingURL=question.css.map */

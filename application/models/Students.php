@@ -121,28 +121,22 @@ class Students extends CI_Model
     public function getPage($questionId, $studentId, $nbQuestionsPerPage)
     {
         $questions = $this->db
-            ->select('idQuestion, title, content, questionDate, public, CONCAT(name, \' \', surname) as name')
+            ->select('idQuestion')
             ->from('Question')
             ->join('Student', 'idStudent')
             ->join('User', 'idUser')
             ->where('idStudent', $studentId)
             ->order_by('questionDate', 'DESC')
             ->get()
-            ->result();
+            ->result_array();
 
-        $index = 0;
-        foreach ($questions as $question) {
-            $index++;
-            if ($question->idQuestion === $questionId) {
-                break;
-            }
-        }
-
-        if ($index === 0) {
+        $questionsId = array_column($questions, 'idQuestion');
+        $index = array_search($questionId, $questionsId);
+        if ($index === FALSE) {
             return FALSE;
         }
 
-        return floor(($index - 1)/$nbQuestionsPerPage);
+        return ceil(($index+1)/$nbQuestionsPerPage);
     }
 
     /**
