@@ -47,5 +47,15 @@ class Process_Question extends CI_Controller
 
         redirect('Question');
     }
+    
+    public function set_public($questionId)
+    {
+        $this->load->model('Questions');
+        
+        $idPublicQuestion = (int) htmlspecialchars($questionId);
+        $this->Questions->setPublic($idPublicQuestion, isset($_POST['checkPublic']));
+        
+        redirect('Question/' . $questionId);
+    }
 
 }

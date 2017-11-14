@@ -355,7 +355,7 @@ class Teachers extends CI_Model
     public function getQuestionsPerPage($teacherId, $currentPage, $nbQuestionsPerPage)
     {
         return $this->db
-            ->select('idQuestion, title, content, questionDate, CONCAT(name, \' \', surname) as name')
+            ->select('idQuestion, title, content, questionDate, public, CONCAT(name, \' \', surname) as name')
             ->from('Question')
             ->join('Student', 'idStudent')
             ->join('User', 'idUser')

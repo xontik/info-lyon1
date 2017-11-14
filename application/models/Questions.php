@@ -64,6 +64,14 @@ class Questions extends CI_Model {
             ->get()
             ->result();
     }
+    
+    public function setPublic($questionId, $isPublic = true) {
+        $data = array(
+            'public' => $isPublic
+        );
+        $this->db->where('idQuestion', $questionId)
+                ->update('Question', $data);
+    }
 
     /**
      * Creates a questions.

@@ -1,3 +1,15 @@
+<div class="card grey lighten-5">
+    <div class="card-content">
+        <form>
+            <div class="input-field">
+                <i class="material-icons prefix">search</i>
+                <input class="grey lighten-5" id="search" type="search" required>
+                <label for="search">Rechercher une question</label>
+            </div>
+        </form>
+    </div>
+</div>
+
 <div class="section">
     <?php
     if ($nbPages > 1) {
@@ -41,12 +53,12 @@
                             <i class="material-icons">last_page</i>
                         </a>
                     </li>
-                    <?php
-                } ?>
+                <?php }
+                ?>
             </ul>
         </div>
-        <?php
-    } ?>
+    <?php }
+    ?>
     <ul class="collapsible" data-collapsible="accordion">
         <?php
         foreach ($questions as $question) {
@@ -74,18 +86,19 @@
                         </ul>
                         <?php
                     }
-
                     if ($choosePublic) {
                         ?>
                         <div class="switch">
-                            <label>
-                                <input type="checkbox">
-                                <span class="lever"></span>
-                                Publique
-                            </label>
-                        </div>
-                        <?php
-                    } ?>
+                            <form id="<?= $question->idQuestion ?>" action ="<?= base_url('Process_Question/set_public/' . $question->idQuestion); ?>" method="POST">
+                                <label>
+                                    <input <?= $question->public ? 'checked' : '' ?> name="checkPublic" type="checkbox" onchange="document.getElementById('<?= $question->idQuestion ?>').submit()">
+                                    <span class="lever"></span>
+                                    Publique
+                                </label>
+                            </form>
+                        </div>  
+                    <?php }
+                    ?>
                     <form action="<?= base_url('Process_Question/answer/' . $question->idQuestion) ?>" method="POST">
                         <div class="input-field">
                             <textarea class="materialize-textarea" name="text" id="text"></textarea>
@@ -95,8 +108,8 @@
                     </form>
                 </div>
             </li>
-            <?php
-        } ?>
+        <?php }
+        ?>
     </ul>
     <?php
     if ($nbPages > 1) {
@@ -141,10 +154,10 @@
                             <i class="material-icons">last_page</i>
                         </a>
                     </li>
-                    <?php
-                } ?>
+                <?php }
+                ?>
             </ul>
         </div>
-        <?php
-    } ?>
+    <?php }
+    ?>
 </div>
