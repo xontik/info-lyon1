@@ -5,11 +5,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Question extends TM_Controller
 {
 
-    public function student_index($page = 1)
+    public function student_index($page = 1, $questionId = 0)
     {
         $page = (int) htmlspecialchars($page);
 
-        if ($page === 0) {
+        if ($page <= 0) {
             redirect('Question');
         }
 
@@ -19,7 +19,7 @@ class Question extends TM_Controller
         $nbQuestions = $this->Students->countQuestions($_SESSION['id']);
         $unsortedQuestions = $this->Students->getQuestionsPerPage($_SESSION['id'], $page, $this->config->item('questionByPage'));
 
-        $questionList = $this->_computeQuestionList($page, $unsortedQuestions, $nbQuestions, false);
+        $questionList = $this->_computeQuestionList($page, $questionId, $unsortedQuestions, $nbQuestions, false);
 
         $teachers = $this->Students->getTeachers($_SESSION['id']);
 
@@ -30,21 +30,40 @@ class Question extends TM_Controller
         $this->show('Questions / Réponses');
     }
 
-    public function teacher_index($page = 1)
+    public function student_detail($questionId = 0)
+    {
+        $questionId = (int) htmlspecialchars($questionId);
+
+        if ($questionId <= 0) {
+            redirect('Question');
+        }
+
+        $this->load->model('Students');
+        $this->load->config('Question');
+
+        $page = $this->Students->getPage($questionId,
+            $_SESSION['id'],
+            $this->config->item('questionByPage')
+        );
+
+        $this->teacher_index($page, $questionId);
+    }
+
+    public function teacher_index($page = 1, $questionId = 0)
     {
         $page = (int) htmlspecialchars($page);
 
-        if ($page === 0) {
+        if ($page <= 0) {
             redirect('Question');
         }
 
         $this->load->model('Teachers');
         $this->load->config('Question');
-        
+
         $nbQuestions = $this->Teachers->countQuestions($_SESSION['id']);
         $unsortedQuestions = $this->Teachers->getQuestionsPerPage($_SESSION['id'], $page, $this->config->item('questionByPage'));
         
-        $questionList = $this->_computeQuestionList($page, $unsortedQuestions, $nbQuestions, true);
+        $questionList = $this->_computeQuestionList($page, $questionId, $unsortedQuestions, $nbQuestions, true);
 
         $this->data = array(
             'questionList' => $questionList
@@ -53,7 +72,27 @@ class Question extends TM_Controller
         $this->show('Questions / Réponses');
     }
 
-    private function _computeQuestionList($page, $unsortedQuestions, $nbQuestions, $choosePublic)
+    public function teacher_detail($questionId = 0)
+    {
+        $questionId = (int) htmlspecialchars($questionId);
+
+        if ($questionId <= 0) {
+            redirect('Question');
+        }
+
+        $this->load->model('Teachers');
+        $this->load->config('Question');
+
+        $page = $this->Teachers->getPage($questionId,
+            $_SESSION['id'],
+            $this->config->item('questionByPage')
+        );
+        
+        $this->setData('view', 'Teacher/question');
+        $this->teacher_index($page, $questionId);
+    }
+
+    private function _computeQuestionList($page, $questionId, $unsortedQuestions, $nbQuestions, $choosePublic)
     {
         $this->load->model('Questions');
         
@@ -91,6 +130,7 @@ class Question extends TM_Controller
         return $this->load->view(
             'includes/question-list',
             array(
+                'questionId' => $questionId,
                 'choosePublic' => $choosePublic,
                 'questions' => $questions,
                 'nbPages' => $nbPages,

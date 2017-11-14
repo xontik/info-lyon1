@@ -84,6 +84,15 @@ class Students extends CI_Model
             ->count_all_results('Question');
     }
 
+    /**
+     * Returns the questions asked by the student,
+     * and the teacher to who it was told.
+     *
+     * @param int $studentId
+     * @param int $currentPage
+     * @param int $nbQuestionsPerPage
+     * @return array
+     */
     public function getQuestionsPerPage($studentId, $currentPage, $nbQuestionsPerPage)
     {
         return $this->db
@@ -99,6 +108,41 @@ class Students extends CI_Model
             ->limit($nbQuestionsPerPage, (($currentPage - 1) * $nbQuestionsPerPage))
             ->get()
             ->result();
+    }
+
+    /**
+     * Get the page of a question.
+     *
+     * @param int $questionId
+     * @param string $studentId
+     * @param int $nbQuestionsPerPage
+     * @return int
+     */
+    public function getPage($questionId, $studentId, $nbQuestionsPerPage)
+    {
+        $questions = $this->db
+            ->select('idQuestion, title, content, questionDate, public, CONCAT(name, \' \', surname) as name')
+            ->from('Question')
+            ->join('Student', 'idStudent')
+            ->join('User', 'idUser')
+            ->where('idStudent', $studentId)
+            ->order_by('questionDate', 'DESC')
+            ->get()
+            ->result();
+
+        $index = 0;
+        foreach ($questions as $question) {
+            $index++;
+            if ($question->idQuestion === $questionId) {
+                break;
+            }
+        }
+
+        if ($index === 0) {
+            return FALSE;
+        }
+
+        return floor(($index - 1)/$nbQuestionsPerPage);
     }
 
     /**

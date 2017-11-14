@@ -9,7 +9,6 @@
         </form>
     </div>
 </div>
-
 <div class="section">
     <?php
     if ($nbPages > 1) {
@@ -62,9 +61,11 @@
     <ul class="collapsible" data-collapsible="accordion">
         <?php
         foreach ($questions as $question) {
+            $active = $questionId == $question->idQuestion
+                ? 'active' : '';
             ?>
             <li>
-                <div class="collapsible-header">
+                <div class="collapsible-header <?= $active ?>">
                     <div><?= $question->title ?></div>
                     <div><?= $question->name ?></div>
                 </div>

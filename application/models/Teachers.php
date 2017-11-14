@@ -350,6 +350,8 @@ class Teachers extends CI_Model
      * and the student that asked it.
      *
      * @param int $teacherId
+     * @param int $currentPage
+     * @param int $nbQuestionsPerPage
      * @return array
      */
     public function getQuestionsPerPage($teacherId, $currentPage, $nbQuestionsPerPage)
@@ -364,6 +366,35 @@ class Teachers extends CI_Model
             ->limit($nbQuestionsPerPage, (($currentPage - 1) * $nbQuestionsPerPage))
             ->get()
             ->result();
+    }
+
+    /**
+     * Get the page of a question.
+     *
+     * @param int $questionId
+     * @param string $teacherId
+     * @param int $nbQuestionsPerPage
+     * @return int
+     */
+    public function getPage($questionId, $teacherId, $nbQuestionsPerPage)
+    {
+        $questions = $this->db
+            ->select('idQuestion')
+            ->from('Question')
+            ->join('Student', 'idStudent')
+            ->join('User', 'idUser')
+            ->where('idTeacher', $teacherId)
+            ->order_by('questionDate', 'DESC')
+            ->get()
+            ->result_array();
+
+        $questionsId = array_column($questions, 'idQuestion');
+        $index = array_search($questionId, $questionsId);
+        if ($index === FALSE) {
+            return FALSE;
+        }
+
+        return ceil(($index+1)/$nbQuestionsPerPage);
     }
 
     /**
