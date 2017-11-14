@@ -72,7 +72,7 @@
                         <pre><?= print_r($data['question'], true) ?></pre>
                     </div>
                     <div class="card-action">
-                        <a href="<?= base_url('Question/' . $data['question']->idQuestion ) ?>">Répondre</a>
+                        <a href="<?= base_url('Question/detail/' . $data['question']->idQuestion ) ?>">Répondre</a>
                     </div>
                     <?php
                 } ?>
