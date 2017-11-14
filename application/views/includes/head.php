@@ -175,19 +175,20 @@
                     </div>
                 </div>
             </div>
-            <?php if (isset($data['semesterTabs'])) {
-                $active = $data['semesterTabs']['semester'];
+            <?php if (isset($data['tabs'])) {
                 ?>
                 <div class="nav-content">
                     <ul class="tabs tabs-transparent">
                     <?php
-                    for ($i = 1; $i <= $data['semesterTabs']['max']; $i++)
-                    { ?>
-                        <li class="tab"><a target="_self" href="<?= base_url($data['semesterTabs']['basePage'] . "/S$i") ?>"
-                                <?= $active === "S$i" ? 'class="active"' : '' ?>>Semestre <?= $i ?></a></li>
+                    foreach ($data['tabs'] as $tab) {
+                        ?>
+                        <li class="tab">
+                            <a target="_self" href="<?= base_url($tab->url) ?>"
+                                <?= $tab->active ? 'class="active"' : '' ?>
+                                ><?= $tab->content ?></a>
+                        </li>
                         <?php
-                    }
-                    ?>
+                    } ?>
                     </ul>
                 </div>
             <?php } ?>

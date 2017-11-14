@@ -13,28 +13,35 @@ class Mark extends TM_Controller
         $this->load->model('Marks');
         $this->load->model('Semesters');
 
-        // Loads the max semester type the student went to
-        $max_semester = (int) substr($this->Semesters->getType(
+        $this->load->helper('tabs');
+
+        // Highest semester the student was it
+        $maxSemester = (int) substr($this->Semesters->getType(
                 $this->Semesters->getStudentCurrent($_SESSION['id'])
             ), 1
         );
 
-        if ($semester !== '' && $semester > 'S' . $max_semester) {
+        // If above max semester
+        if ($semester !== '' && $semester > 'S' . $maxSemester) {
             addPageNotification('Vous essayez d\'accéder à un semestre futur !<br>Redirection vers le semestre courant');
             $semester = '';
         }
 
+        // Tabs content
+        $tabs = array();
+        for ($i = 1; $i <= $maxSemester; $i++) {
+            $tabs["S$i"] = createTab("Semester $i", "Mark/S$i");
+        }
+
         $semesterId = $this->Semesters->getSemesterId($semester, $_SESSION['id']);
-        $semester = $this->Semesters->getType($semesterId);
+
+        $semesterType = $this->Semesters->getType($semesterId);
+        $tabs[$semesterType]->active = true;
 
         $marks = $this->Semesters->getStudentMarks($_SESSION['id'], $semesterId);
 
         $this->data = array(
-            'semesterTabs' => array(
-                'max' => $max_semester,
-                'semester' => $semester,
-                'basePage' => 'Mark',
-            ),
+            'tabs' => $tabs,
             'marks' => $marks
         );
 
