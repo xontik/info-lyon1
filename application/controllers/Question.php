@@ -17,8 +17,7 @@ class Question extends TM_Controller
         $this->load->config('Question');
 
         $nbQuestions = $this->Students->countQuestions($_SESSION['id']);
-        $unsortedQuestions = $this->Students->getQuestionsPerPage($_SESSION['id'], $page, $this->config->item('questionByPage'));
-
+        
         $questionList = $this->_computeQuestionList($page, $questionId, $unsortedQuestions, $nbQuestions, false);
 
         $teachers = $this->Students->getTeachers($_SESSION['id']);
@@ -59,11 +58,30 @@ class Question extends TM_Controller
 
         $this->load->model('Teachers');
         $this->load->config('Question');
-
-        $nbQuestions = $this->Teachers->countQuestions($_SESSION['id']);
-        $unsortedQuestions = $this->Teachers->getQuestionsPerPage($_SESSION['id'], $page, $this->config->item('questionByPage'));
         
-        $questionList = $this->_computeQuestionList($page, $questionId, $unsortedQuestions, $nbQuestions, true);
+        if(isset($_POST['search']) || isset($_GET['search'])){
+            if(isset($_POST['search']))
+                $search = htmlspecialchars($_POST['search']);
+            if(isset($_POST['search']))
+                $search = htmlspecialchars($_POST['search']);
+            $questions = $this->Teachers->getQuestionsPerPage($_SESSION['id'], $page, $this->config->item('questionByPage'), $search);
+            if(!$questions){
+                $unsortedQuestions = $this->Teachers->getQuestionsPerPage($_SESSION['id'], $page, $this->config->item('questionByPage'));
+                $nbQuestions = $this->Teachers->countQuestions($_SESSION['id']);
+                addPageNotification('Aucun résultat trouvé.', 'warning');
+            }
+            else{
+                $unsortedQuestions = $questions;
+                $nbQuestions = $this->Teachers->countQuestions($_SESSION['id'], $search);
+            } 
+        }
+        else{
+            $unsortedQuestions = $this->Teachers->getQuestionsPerPage($_SESSION['id'], $page, $this->config->item('questionByPage'));
+            $nbQuestions = $this->Teachers->countQuestions($_SESSION['id']);
+    
+        }
+                
+        $questionList = $this->_computeQuestionList($page, $questionId, $unsortedQuestions, $nbQuestions, true ,$search = '');
 
         $this->data = array(
             'questionList' => $questionList
@@ -92,7 +110,7 @@ class Question extends TM_Controller
         $this->teacher_index($page, $questionId);
     }
 
-    private function _computeQuestionList($page, $questionId, $unsortedQuestions, $nbQuestions, $choosePublic)
+    private function _computeQuestionList($page, $questionId, $unsortedQuestions, $nbQuestions, $choosePublic, $search)
     {
         $this->load->model('Questions');
         
@@ -136,7 +154,8 @@ class Question extends TM_Controller
                 'nbPages' => $nbPages,
                 'currentPage' => $page,
                 'indexPagination' => $indexPagination,
-                'limitPagination' => $limitPagination
+                'limitPagination' => $limitPagination,
+                'search' => $search
             ),
             TRUE
         );

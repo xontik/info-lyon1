@@ -1,9 +1,9 @@
 <div class="card grey lighten-5">
     <div class="card-content">
-        <form>
+        <form action="<?= base_url('Question') ?>" method="POST">
             <div class="input-field">
                 <i class="material-icons prefix">search</i>
-                <input class="grey lighten-5" id="search" type="search" required>
+                <input name="search" class="grey lighten-5" id="search" type="search" required>
                 <label for="search">Rechercher une question</label>
             </div>
         </form>
@@ -138,8 +138,9 @@
                         break;
                     }
                     $isActive = ($i == $currentPage) ? 'active' : '';
+                    $searchGet = (isset($search) && $search != '')  ? "?search=$search" : '';
                     ?>
-                    <li class="waves-effect <?= $isActive ?>"><a href="<?= base_url("Question/$i") ?>"><?= $i ?></a></li>
+                    <li class="waves-effect <?= $isActive ?>"><a href="<?= base_url("Question/$i". $searchGet)?>"><?= $i ?></a></li>
                     <?php
                 }
 

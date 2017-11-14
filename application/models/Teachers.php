@@ -338,11 +338,19 @@ class Teachers extends CI_Model
             ->result();
     }
 
-    public function countQuestions($teacherId)
+    public function countQuestions($teacherId, $search = '')
     {
         return $this->db
+            ->select('idQuestion, title, content, questionDate, public, CONCAT(name, \' \', surname) as name')
+            ->from('Question')
+            ->join('Student', 'idStudent')
+            ->join('User', 'idUser')
             ->where('idTeacher', $teacherId)
-            ->count_all_results('Question');
+            ->like('title', $search, 'both')
+            ->or_like('name', $search, 'both')
+            ->or_like('content', $search, 'both')
+            ->or_like('questionDate', $search, 'both')    
+            ->count_all_results();
     }
 
     /**
@@ -354,7 +362,7 @@ class Teachers extends CI_Model
      * @param int $nbQuestionsPerPage
      * @return array
      */
-    public function getQuestionsPerPage($teacherId, $currentPage, $nbQuestionsPerPage)
+    public function getQuestionsPerPage($teacherId, $currentPage, $nbQuestionsPerPage, $search = '')
     {
         return $this->db
             ->select('idQuestion, title, content, questionDate, public, CONCAT(name, \' \', surname) as name')
@@ -362,6 +370,9 @@ class Teachers extends CI_Model
             ->join('Student', 'idStudent')
             ->join('User', 'idUser')
             ->where('idTeacher', $teacherId)
+            ->like('title', $search, 'both')
+            ->or_like('name', $search, 'both')
+            ->or_like('content', $search, 'both')  
             ->order_by('questionDate', 'DESC')
             ->limit($nbQuestionsPerPage, (($currentPage - 1) * $nbQuestionsPerPage))
             ->get()
