@@ -133,7 +133,10 @@ class Question extends TM_Controller
                                           $userQuestionCount, $choosePublic, $search)
     {
         $this->load->model('Questions');
-        $this->setData('css', 'Common/question');
+        $this->setData(array(
+            'css' => 'Common/question',
+            'js' => 'Common/question'
+        ));
 
         // Pagination
         $questionsPerPage = $this->config->item('questionByPage');
