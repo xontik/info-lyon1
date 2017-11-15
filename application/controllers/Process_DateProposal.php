@@ -46,7 +46,7 @@ class Process_DateProposal extends CI_Controller
 
             $projectId = $this->Projects->getProjectId('DateProposal', $dateProposalId);
             if ($projectId === false) {
-                redirect('/Project')
+                redirect($redirectUrl);
             }
 
             if ($_SESSION['userType'] === 'teacher') {
