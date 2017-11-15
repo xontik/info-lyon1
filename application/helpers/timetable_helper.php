@@ -252,10 +252,10 @@ function _narrow($timetable, $begin, $end, $period)
     // If necessary, reduce week to day
     if (strcasecmp($period, 'day') === 0) {
         if (!isset($final[$dayOfWeek])) {
-            trigger_error('Undefined day');
-            return array();
+            $final = array();
+        } else {
+            $final = $final[$dayOfWeek];
         }
-        $final = $final[$dayOfWeek];
     }
 
     return $final;
@@ -363,8 +363,8 @@ function _icsToTimetable($icsFilepath, $beginDate, $endDate)
             }
 
             $tempDate->modify('+1 day');
-		    $diff = $tempDate->diff($endDate);
-        } while ($diff->days !== 0 || $diff->invert);
+            $diff = $tempDate->diff($endDate);
+        } while ($diff->days !== 0 && !$diff->invert);
 
 		return $timetable;
 	}
