@@ -69,20 +69,20 @@ class Students extends CI_Model
         return $res;
     }
 
-    /**
-     * Returns the questions asked by the student,
-     * and the teacher to who they were asked.
-     *
-     * @param string $studentId
-     * @return array
-     */
-
-    public function countQuestions($studentId)
+    public function countQuestions($studentId, $search)
     {
         return $this->db
+            ->from('Question')
+            ->join('Student', 'idStudent')
+            ->join('User', 'idUser')
             ->where('idStudent', $studentId)
-            ->count_all_results('Question');
+            ->like('title', $search, 'both')
+            ->or_like('name', $search, 'both')
+            ->or_like('content', $search, 'both')
+            ->or_like('questionDate', $search, 'both')
+            ->count_all_results();
     }
+
 
     /**
      * Returns the questions asked by the student,
@@ -91,25 +91,25 @@ class Students extends CI_Model
      * @param int $studentId
      * @param int $currentPage
      * @param int $nbQuestionsPerPage
+     * @param string $search
      * @return array
      */
-    public function getQuestionsPerPage($studentId, $currentPage, $nbQuestionsPerPage)
+    public function getQuestionsPerPage($studentId, $currentPage, $nbQuestionsPerPage, $search)
     {
         return $this->db
-            ->select(
-                'idQuestion, title, content, questionDate, idStudent, idTeacher,'
-                . 'CONCAT(name, \' \', surname) as name'
-            )
+            ->select('idQuestion, title, content, questionDate, public, CONCAT(name, \' \', surname) as name')
             ->from('Question')
-            ->join('Teacher', 'idTeacher')
+            ->join('Student', 'idStudent')
             ->join('User', 'idUser')
             ->where('idStudent', $studentId)
+            ->like('title', $search, 'both')
+            ->or_like('name', $search, 'both')
+            ->or_like('content', $search, 'both')
             ->order_by('questionDate', 'DESC')
             ->limit($nbQuestionsPerPage, (($currentPage - 1) * $nbQuestionsPerPage))
             ->get()
             ->result();
     }
-
     /**
      * Get the page of a question.
      *

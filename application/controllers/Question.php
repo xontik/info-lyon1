@@ -10,6 +10,8 @@ class Question extends TM_Controller
         $page = (int) htmlspecialchars($page);
         $questionId = (int) htmlspecialchars($questionId);
 
+        $search = isset($_GET['s']) ? htmlspecialchars($_GET['s']) : '';
+
         if ($page <= 0) {
             redirect('Question');
         }
@@ -17,9 +19,19 @@ class Question extends TM_Controller
         $this->load->model('Students');
         $this->load->config('Question');
 
-        $nbQuestions = $this->Students->countQuestions($_SESSION['id']);
-        
-        $questionList = $this->_computeQuestionList($page, $questionId, $unsortedQuestions, $nbQuestions, false);
+        $unsortedQuestions = $this->Students->getQuestionsPerPage($_SESSION['id'],
+            $page, $this->config->item('questionByPage'), $search);
+        $nbQuestions = $this->Students->countQuestions($_SESSION['id'], $search);
+
+        if (!$unsortedQuestions && $search !== '') {
+            addPageNotification('Aucun résultat trouvé', 'warning');
+            redirect('Question');
+        }
+
+        $questionList = $this->_computeQuestionList(
+            $page, $unsortedQuestions, $questionId,
+            $nbQuestions, true, $search
+        );
 
         $teachers = $this->Students->getTeachers($_SESSION['id']);
 
@@ -51,37 +63,33 @@ class Question extends TM_Controller
         $this->student_index($page, $questionId);
     }
 
-    public function teacher_index($page = 1, $search = '', $questionId = 0)
+    public function teacher_index($page = 1, $questionId = 0)
     {
         $page = (int) htmlspecialchars($page);
         $questionId = (int) htmlspecialchars($questionId);
-        $search = htmlspecialchars($search);
-        
+
+        $search = isset($_GET['s']) ? htmlspecialchars($_GET['s']) : '';
+
         if ($page <= 0) {
             redirect('Question');
         }
 
         $this->load->model('Teachers');
         $this->load->config('Question');
-        
-        if (isset($_POST['search'])) {
-            $search = htmlspecialchars($_POST['search']);
+
+        $unsortedQuestions = $this->Teachers->getQuestionsPerPage($_SESSION['id'],
+            $page, $this->config->item('questionByPage'), $search);
+        $nbQuestions = $this->Teachers->countQuestions($_SESSION['id'], $search);
+
+        if (!$unsortedQuestions && $search !== '') {
+            addPageNotification('Aucun résultat trouvé', 'warning');
+            redirect('Question');
         }
 
-        $unsortedQuestions = $this->Teachers->getQuestionsPerPage($_SESSION['id'], $page, $this->config->item('questionByPage'), $search);
-        $nbQuestions = $this->Teachers->countQuestions($_SESSION['id'], $search);
-        $searched = true;
-        
-        if (!$unsortedQuestions) {
-            $searched = false;
-            addPageNotification('Aucun résultat trouvé.', 'warning');
-        }
-        
-        if($search == ''){
-            $searched = false;
-        }
-        
-        $questionList = $this->_computeQuestionList($page, $questionId, $unsortedQuestions, $nbQuestions, true , $search, $searched);
+        $questionList = $this->_computeQuestionList(
+            $page, $unsortedQuestions, $questionId,
+            $nbQuestions, true, $search
+        );
 
         $this->data = array(
             'questionList' => $questionList
@@ -110,31 +118,45 @@ class Question extends TM_Controller
         $this->teacher_index($page, $questionId);
     }
 
-    private function _computeQuestionList($page, $questionId, $unsortedQuestions, $nbQuestions, $choosePublic, $search, $searched)
+    /**
+     * Get the question-list view.
+     *
+     * @param int       $page
+     * @param array     $unsortedQuestions
+     * @param int       $activeQuestion
+     * @param int       $userQuestionCount
+     * @param boolean   $choosePublic
+     * @param string    $search
+     * @return string
+     */
+    private function _computeQuestionList($page, $unsortedQuestions, $activeQuestion,
+                                          $userQuestionCount, $choosePublic, $search)
     {
         $this->load->model('Questions');
         $this->setData('css', 'Common/question');
-        
-        $nbQuestionsPerPage = $this->config->item('questionByPage');
-        $limitPagination = $this->config->item('paginationLimit');
 
-        //Pagination will be shifted from this number
-        $changePaginationNumber = ceil($limitPagination / 2);
+        // Pagination
+        $questionsPerPage = $this->config->item('questionByPage');
+        $paginationMaxCount = $this->config->item('paginationLimit');
 
-        $nbPages = ceil($nbQuestions / $nbQuestionsPerPage);
+        // Pagination will be shifted from this number
+        $changePaginationNumber = ceil($paginationMaxCount / 2);
+
+        $nbPages = ceil($userQuestionCount / $questionsPerPage);
         if ($page > $nbPages) {
             redirect('Question');
         }
         
-        $indexPagination = 1;
-        if ($page > $changePaginationNumber && $nbPages > $limitPagination) {
+        $beginPagination = 1;
+        if ($page > $changePaginationNumber && $nbPages > $paginationMaxCount) {
             if ($page <= $nbPages - $changePaginationNumber) {
-                $indexPagination = 1 + $page - $changePaginationNumber;
+                $beginPagination = 1 + $page - $changePaginationNumber;
             } else {
-                $indexPagination = 1 + $nbPages - $limitPagination;
+                $beginPagination = 1 + $nbPages - $paginationMaxCount;
             }
         }
-        
+
+        // Answers
         $unsortedAnswers = $this->Questions->getAllAnswers($unsortedQuestions);
 
         $questions = array();
@@ -149,15 +171,14 @@ class Question extends TM_Controller
         return $this->load->view(
             'includes/question-list',
             array(
-                'questionId' => $questionId,
+                'activeQuestion' => $activeQuestion,
                 'choosePublic' => $choosePublic,
                 'questions' => $questions,
+                'search' => $search,
                 'nbPages' => $nbPages,
                 'currentPage' => $page,
-                'indexPagination' => $indexPagination,
-                'limitPagination' => $limitPagination,
-                'search' => $search,
-                'searched' => $searched
+                'indexPagination' => $beginPagination,
+                'limitPagination' => $paginationMaxCount
             ),
             TRUE
         );

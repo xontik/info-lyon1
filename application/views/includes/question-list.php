@@ -1,9 +1,9 @@
 <div class="card grey lighten-5">
     <div class="card-content">
-        <form action="<?= base_url('Question') ?>" method="POST">
+        <form action="<?= base_url('Question') ?>" method="GET">
             <div class="input-field">
                 <i class="material-icons prefix">search</i>
-                <input name="search" class="grey lighten-5" id="search" type="search" required>
+                <input name="s" class="grey lighten-5" id="search" type="search" required>
                 <label for="search">Rechercher une question</label>
             </div>
         </form>
@@ -11,7 +11,7 @@
 </div>
 <div class="section">
     <?php
-    $searchLink = $searched  ? "/$search" : '';
+    $searchLink = $search ? "?s=$search" : '';
     if ($nbPages > 1) {
         ?>
         <div class="center-align">
@@ -62,7 +62,7 @@
     <ul class="collapsible" data-collapsible="accordion">
         <?php
         foreach ($questions as $question) {
-            $active = $questionId == $question->idQuestion
+            $active = $activeQuestion == $question->idQuestion
                 ? 'active' : '';
             ?>
             <li>
@@ -98,7 +98,7 @@
                                     Publique
                                 </label>
                             </form>
-                        </div>  
+                        </div>
                     <?php }
                     ?>
                     <form action="<?= base_url('Process_Question/answer/' . $question->idQuestion) ?>" method="POST">

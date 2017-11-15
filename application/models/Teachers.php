@@ -341,7 +341,6 @@ class Teachers extends CI_Model
     public function countQuestions($teacherId, $search)
     {
         return $this->db
-            ->select('idQuestion, title, content, questionDate, public, CONCAT(name, \' \', surname) as name')
             ->from('Question')
             ->join('Student', 'idStudent')
             ->join('User', 'idUser')
@@ -360,6 +359,7 @@ class Teachers extends CI_Model
      * @param int $teacherId
      * @param int $currentPage
      * @param int $nbQuestionsPerPage
+     * @param string $search
      * @return array
      */
     public function getQuestionsPerPage($teacherId, $currentPage, $nbQuestionsPerPage, $search)
