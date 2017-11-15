@@ -34,8 +34,31 @@ class Timetable extends TM_Controller
         $this->show('Emploi du temps');
     }
 
-    private function _edit()
+    private function _edit($type, $who)
     {
+        $type = htmlspecialchars($type);
+        switch ($type) {
+            case '':
+                $type = null;
+                $who = null;
+                break;
+            case 'group':
+            case 'teacher':
+                $who = (int) htmlspecialchars($who);
+                break;
+            case 'room':
+                $who = htmlspecialchars($who);
+                break;
+            default:
+                addPageNotification('Données corrompues', 'danger');
+                redirect('Timetable');
+        }
+
+        $this->data = array(
+            'type' => $type,
+            'who' => $who
+        );
+
         $this->setData('view', 'Common/timetable_edit.php');
         $this->show('Modification de l\'emploi du temps');
     }
@@ -87,6 +110,7 @@ class Timetable extends TM_Controller
         $this->data['menu'] = array(
             'Revenir à aujourd\'hui' => $this->data['pageUrl'],
             'Mettre à jour' => "Process_Timetable/update/$adeResource/$weekNum/$roomName",
+            'Modifier' => "Timetable/edit/room/$roomName",
             'Retour' => 'Timetable/room'
         );
 
@@ -108,9 +132,9 @@ class Timetable extends TM_Controller
         $this->_index($adeResource, $weekNum);
     }
 
-    public function student_edit()
+    public function student_edit($type = '', $who = '')
     {
-       $this->_edit();
+       $this->_edit($type, $who);
     }
 
     public function student_room($roomName = '', $weekNum = 0) {
@@ -126,9 +150,9 @@ class Timetable extends TM_Controller
         $this->_index($adeResource, $weekNum);
     }
 
-    public function teacher_edit()
+    public function teacher_edit($type = '', $who = '')
     {
-        $this->_edit();
+        $this->_edit($type, $who);
     }
 
     public function teacher_room($roomName = '', $weekNum = 0) {

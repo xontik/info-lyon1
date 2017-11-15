@@ -4,12 +4,32 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Process_Timetable extends CI_Controller
 {
 
-    public function edit()
+    public function edit($type = null, $who = null)
     {
+        if (!is_null($type)) {
+            $type = htmlspecialchars($type);
+            switch ($type) {
+                case '':
+                    $who = null;
+                    break;
+                case 'group':
+                case 'teacher':
+                    $who = (int) htmlspecialchars($who);
+                    break;
+                case 'room':
+                    $who = htmlspecialchars($who);
+                    break;
+                default:
+                    addPageNotification('Données corrompues', 'danger');
+                    redirect('Timetable');
+            }
+        }
+
         $this->load->model('Timetables');
         $this->load->model('Students');
 
         if (isset($_POST['url'])) {
+            // Decode URL
             $url = htmlspecialchars($_POST['url']);
 
             // If resource number sent
@@ -35,24 +55,28 @@ class Process_Timetable extends CI_Controller
                 }
             }
 
-            switch ($_SESSION['userType']) {
-                case 'student':
-                    $group = $this->Students->getGroup($_SESSION['id']);
-                    if ($group === FALSE) {
-                        addPageNotification('Il semblerait que vous n\'ayez pas de groupe.<br>'
-                            . 'L\'opération est impossible pour le moment', 'warning');
-                        redirect('Timetable/edit');
-                    }
+            // Default values for $type and $who
 
-                    $who = $group->idGroup;
-                    $type = 'group';
-                    break;
-                case 'teacher':
-                    $who = $_SESSION['id'];
-                    $type = 'teacher';
-                    break;
-                default:
-                    redirect('/');
+            if (!isset($type) || !isset($who)) {
+                switch ($_SESSION['userType']) {
+                    case 'student':
+                        $group = $this->Students->getGroup($_SESSION['id']);
+                        if ($group === FALSE) {
+                            addPageNotification('Il semblerait que vous n\'ayez pas de groupe.<br>'
+                                . 'L\'opération est impossible pour le moment', 'warning');
+                            redirect('Timetable/edit');
+                        }
+
+                        $who = $group->idGroup;
+                        $type = 'group';
+                        break;
+                    case 'teacher':
+                        $who = $_SESSION['id'];
+                        $type = 'teacher';
+                        break;
+                    default:
+                        redirect('/');
+                }
             }
 
             if ($this->Timetables->hasTimetable($who, $type)
@@ -60,15 +84,15 @@ class Process_Timetable extends CI_Controller
                 || $this->Timetables->create($resource, $who, $type)
             ) {
                 addPageNotification('Emploi du temps modifié avec succès', 'success');
-                redirect('Timetable');
+                redirect('Timetable' . ($type === 'room' ? "/room/$who" : ''));
             }
 
             addPageNotification('Erreur lors de la modification de l\'emploi du temps', 'danger');
-            redirect('Timetable/edit');
+            redirect("Timetable/edit/$type/$who");
         }
 
         addPageNotification('Données corrompues', 'danger');
-        redirect('Timetable/edit');
+        redirect("Timetable/edit/$type/$who");
     }
 
     public function update($resource, $weekNum = 0, $room = '')
