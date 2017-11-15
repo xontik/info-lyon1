@@ -8,9 +8,7 @@ class Process_Question extends CI_Controller
     {
         $this->load->model('Questions');
 
-        if (isset($_POST['title'])
-            && isset($_POST['text'])
-            && isset($_POST['teacherId'])
+        if (isset($_POST['teacherId'])
             && is_numeric($_POST['teacherId'])
         ) {
             $title = htmlspecialchars($_POST['title']);

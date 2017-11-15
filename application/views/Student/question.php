@@ -6,11 +6,11 @@
             <div class="card-content">
                 <span class="card-title">Poser une question</span>
                 <div class="input-field">
-                    <input type="text" name="title" id="title" autocomplete="off" data-length="255"/>
+                    <input type="text" name="title" id="title" autocomplete="off" data-length="255" required/>
                     <label for="title">Titre</label>
                 </div>
                 <div class="input-field col s12">
-                    <textarea class="materialize-textarea" name="text" id="text"></textarea>
+                    <textarea class="materialize-textarea" name="text" id="text" required></textarea>
                     <label for="text">Question</label>
                 </div>
                 <div class="input-field row no-margin">
