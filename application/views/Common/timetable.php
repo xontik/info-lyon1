@@ -1,6 +1,8 @@
 <?php
     $days = array('Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi');
 
+    $pageUrl = $data['pageUrl'];
+
     $empty = empty($data['timetable']);
     $datetime = $data['date'];
     $weekNum = $datetime->format('W');
@@ -16,15 +18,15 @@
         <h4 class="header">Emploi du temps</h4>
     </div>
     <div id="timetable-wrapper" class="section center-align <?= $empty ? 'empty' : '' ?>">
-        <a href="<?= base_url('Timetable/' . ($weekNum - 1)) ?>">
+        <a href="<?= base_url($pageUrl . ($weekNum - 1)) ?>">
             <i class="material-icons medium">keyboard_arrow_left</i>
         </a>
         <a class="hide-on-large-only"
-           href="<?= base_url('Timetable') ?>">
+           href="<?= base_url($pageUrl) ?>">
             <i class="material-icons small">today</i>
         </a>
         <a class="hide-on-large-only"
-           href="<?= base_url('Timetable/' . ($weekNum + 1)) ?>">
+           href="<?= base_url($pageUrl . ($weekNum + 1)) ?>">
             <i class="material-icons medium">keyboard_arrow_right</i>
         </a>
         <div class="hours <?= $empty ? 'empty' : '' ?> hide-on-med-and-down">
@@ -107,28 +109,30 @@
         if (!$empty) {
             ?>
             <a class="hide-on-large-only"
-               href="<?= base_url('Timetable/' . ($weekNum - 1)) ?>">
+               href="<?= base_url($pageUrl . ($weekNum - 1)) ?>">
                 <i class="material-icons medium">keyboard_arrow_left</i>
             </a>
             <a class="hide-on-large-only"
-               href="<?= base_url('Timetable') ?>">
+               href="<?= base_url($pageUrl) ?>">
                 <i class="material-icons small">today</i>
             </a>
-            <a href="<?= base_url('Timetable/' . ($weekNum + 1)) ?>">
+            <a href="<?= base_url($pageUrl . ($weekNum + 1)) ?>">
                 <i class="material-icons medium">keyboard_arrow_right</i>
             </a>
             <?php
         } else {
             ?>
-            <a class="hide-on-med-and-down" href="<?= base_url('Timetable/' . ($weekNum + 1)) ?>">
+            <a class="hide-on-med-and-down" href="<?= base_url($pageUrl . ($weekNum + 1)) ?>">
                 <i class="material-icons medium">keyboard_arrow_right</i>
             </a>
             <?php
         } ?>
     </div>
-    <div class="section center-align">
-        <?php
-        if ($empty) {
+    <?php
+    if ($empty) {
+        ?>
+        <div class="section center-align">
+            <?php
             if ($data['timetable'] === FALSE) {
                 ?>
                 <p>Votre emploi du temps n'est pas configuré.</p>
@@ -139,23 +143,18 @@
                 ?>
                 <span class="flow-text">Pas de cours cette semaine</span>
                 <?php
-            }
-        } ?>
-    </div>
+            } ?>
+        </div>
+        <?php
+    } ?>
     <div class="section container row">
         <?php
-        if ($data['timetable'] !== false) { ?>
-            <p class="col hide-on-med-and-down">
-                <a href="<?= base_url('Timetable') ?>" class="btn-flat">Revenir à aujourd'hui</a>
-            </p>
+        foreach ($data['menu'] as $name => $url) {
+            ?>
             <p class="col">
-                <a class="btn-flat"
-                    href="<?= base_url('Process_Timetable/update'
-                        . '/' . $data['resource'])
-                        . '/' . $weekNum ?>">Mettre à jour
-                </a>
+                <a class="btn-flat" href="<?= base_url($url) ?>"><?= $name ?></a>
             </p>
-        <?php } ?>
-        <p class="col"><a class="btn-flat" href="<?= base_url('Timetable/edit') ?>">Modifier</a></p>
+            <?php
+        } ?>
     </div>
 </main>
