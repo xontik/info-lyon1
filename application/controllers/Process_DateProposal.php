@@ -83,6 +83,7 @@ class Process_DateProposal extends CI_Controller
                         'success'
                     );
                 }
+
             } else {
                 $this->Projects->sendProjectMessage($projectId
                     ,

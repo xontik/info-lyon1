@@ -45,12 +45,12 @@ class DateProposals extends CI_Model
      * @return bool
      */
     public function isAccepted($dateProposalId) {
+
         return $this->db
             ->from('DateProposal')
             ->join('DateAccept', 'idDateProposal')
             ->where('idDateProposal', $dateProposalId)
-            ->where('accepted IS NULL')
-            ->or_where('accepted', '0')
+            ->where('accepted IS NULL OR accepted = 0')
             ->get()
             ->num_rows() === 0;
     }

@@ -8,8 +8,8 @@
  */
 function readableTimeDifference($diff) {
     $read = $diff->invert
-        ? 'Dans '
-        : 'Il y a ';
+        ? 'Il y a '
+        : 'Dans ';
 
     if ($diff->y >= 1) {
         $read .= 'plus d\'un an';

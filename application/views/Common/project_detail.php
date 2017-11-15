@@ -30,7 +30,7 @@ $now = new DateTime();
                 if (!is_null($data['lastAppointment']))
                 {
                     $date = new DateTime($data['lastAppointment']->finalDate);
-                    $diff = $date->diff($now);
+                    $diff = $now->diff($date);
                     ?>
                     <div class="col s12 m6 l5 card grey lighten-4">
                         <div class="card-content">
@@ -50,7 +50,8 @@ $now = new DateTime();
                         <?php } else if (is_null($data['nextAppointment']->finalDate)) {
                             if (empty($data['proposals'])) {
                             ?>
-                                <span class="card-title">Aucune proposition de dates pour le prochain rendez vous</span>
+                                <span class="card-title">Un rendez vous est demandé !</span>
+                                <p>Aucune proposition de dates pour le prochain rendez vous</p>
                             <?php } else {
                                 ?>
                                 <span class="card-title">Propositions de dates</span>
@@ -82,13 +83,20 @@ $now = new DateTime();
                                     </div>
                             <?php }
                             }
+                        } else {
+                            $date = new DateTime($data['nextAppointment']->finalDate);
+                            $diff = $now->diff($date);
+                            ?>
+                            <span class="card-title">Prochain rendez-vous</span>
+                            <p><?= readableTimeDifference($diff) ?></p>
+                            <p>Le <?= $date->format('d/m/Y à h:i');
                         }?>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <?php if (is_null($data['nextAppointment']) || is_null($data['nextAppointment']->finalDate)) { ?>
+    <?php if (!is_null($data['nextAppointment']) && is_null($data['nextAppointment']->finalDate)) { ?>
         <div class="card grey lighten-5">
             <form method="post"
             action="<?= base_url('Process_DateProposal/add/' . $data['project']->idProject) ?>">
