@@ -60,6 +60,9 @@ class Timetable extends TM_Controller
     private function _roomDetails($roomName, $weekNum) {
         $this->load->model('Rooms');
 
+        $roomName = htmlspecialchars($roomName);
+        $weekNum = (int) htmlspecialchars($weekNum);
+
         $adeResource = $this->Rooms->getAdeResource($roomName);
 
         if ($adeResource === FALSE) {
@@ -73,7 +76,7 @@ class Timetable extends TM_Controller
             $this->data = array('date' => new DateTime(), 'timetable' => false);
             $this->data['loaded'] = false;
         } else {
-            $timetableDate = is_numeric($weekNum) ? $weekNum : new DateTime();
+            $timetableDate = $weekNum ? $weekNum : new DateTime();
             $this->data = getNextTimetable($adeResource, 'week', $timetableDate);
             $this->data['loaded'] = true;
         }
@@ -83,7 +86,7 @@ class Timetable extends TM_Controller
 
         $this->data['menu'] = array(
             'Revenir à aujourd\'hui' => $this->data['pageUrl'],
-            'Mettre à jour' => 'Process_Timetable/update/' . $adeResource . '/' . $weekNum,
+            'Mettre à jour' => "Process_Timetable/update/$adeResource/$weekNum/$roomName",
             'Retour' => 'Timetable/room'
         );
 
@@ -110,7 +113,7 @@ class Timetable extends TM_Controller
        $this->_edit();
     }
 
-    public function student_room($roomName = '', $weekNum = null) {
+    public function student_room($roomName = '', $weekNum = 0) {
         $this->_room($roomName, $weekNum);
     }
 
@@ -128,7 +131,7 @@ class Timetable extends TM_Controller
         $this->_edit();
     }
 
-    public function teacher_room($roomName = '', $weekNum = null) {
+    public function teacher_room($roomName = '', $weekNum = 0) {
         $this->_room($roomName, $weekNum);
     }
 }

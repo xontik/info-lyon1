@@ -85,7 +85,8 @@
                                     <div><?= $event['timeEnd'] ?></div>
                                 </div>
                                 <div>
-                                    <h5 title="<?= $event['name'] ?>" class="truncate"><?= $event['name'] ?></h5>
+                                    <h5 data-tooltip="<?= $event['name'] ?>" data-delay="750"
+                                        class="truncate tooltipped"><?= $event['name'] ?></h5>
                                     <div class="truncate"><?= $event['teachers'] ?></div>
                                 </div>
                                 <div class="hide-on-med-and-down"><?= $event['groups'] ?></div>
