@@ -34,6 +34,7 @@ class Process_Appointment extends CI_Controller
         } else {
             if ($this->Appointments->create($projectId)){
                 addPageNotification('Un rendez-vous a été créé', 'success');
+                $this->Projects->sendProjectMessage($projectId, 'Vous avez une demande de rendez-vous !');
             } else {
                 addPageNotification('Impossible de creer ce rendez-vous', 'danger');
             }

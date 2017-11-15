@@ -50,9 +50,10 @@ class DateProposals extends CI_Model
             ->from('DateProposal')
             ->join('DateAccept', 'idDateProposal')
             ->where('idDateProposal', $dateProposalId)
-            ->where('accepted IS NULL OR accepted = 0')
+            ->where('(accepted IS NULL OR accepted = 0)')
             ->get()
             ->num_rows() === 0;
+
     }
 
     /**

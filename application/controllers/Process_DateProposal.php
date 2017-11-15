@@ -25,6 +25,7 @@ class Process_DateProposal extends CI_Controller
                     $appointmentId = $this->Projects->getNextAppointment($projectId)->idAppointment;
                     if ($this->DateProposals->create($appointmentId, $datetime, $_SESSION['userId'])) {
                         addPageNotification('Proposition ajoutée avec succès', 'success');
+                        $this->Projects->sendProjectMessage($projectId, 'Nouvelle proposition de date pour un projet');
                     } else {
                         addPageNotification('Impossible de créer la proposition de rendez-vous', 'danger');
                     }
@@ -69,7 +70,7 @@ class Process_DateProposal extends CI_Controller
                 addPageNotification('Données corrompues', 'danger');
                 redirect($redirectUrl);
             }
-
+            //TODO cascade refuse
             $this->DateProposals->setAccept($dateProposalId, $_SESSION['userId'], $accept);
 
             if ($accept) {
@@ -79,9 +80,12 @@ class Process_DateProposal extends CI_Controller
 
                     $this->Projects->sendProjectMessage($projectId
                         ,
-                        'Une proposition de date à été acceptée',
+                        'Un rdv a été validé !',
                         'success'
                     );
+
+                } else {
+                    exit('fak');
                 }
 
             } else {

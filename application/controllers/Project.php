@@ -74,11 +74,13 @@ class Project extends TM_Controller
             $unsortedDateAccepts = $this->DateAccepts->getAll($nextAppointment->idAppointment);
 
             foreach ($unsortedProposals as $proposal) {
-                $proposals[$proposal->idDateProposal] = $proposal;
+
+                $proposals[$proposal->idDateProposal] = array('proposal' => $proposal, 'refused' => false);
             }
 
             foreach ($unsortedDateAccepts as $dateAccept) {
-                $proposals[$dateAccept->idDateProposal]->dateAccepts[$dateAccept->idUser] = $dateAccept;
+                $proposals[$dateAccept->idDateProposal]['proposal']->dateAccepts[$dateAccept->idUser] = $dateAccept;
+                $proposals[$dateAccept->idDateProposal]['refused'] = (!is_null($dateAccept->accepted ) && $dateAccept->accepted != 1) ? true : $proposals[$dateAccept->idDateProposal]['refused'];
             }
         }
 
