@@ -11,6 +11,7 @@
 </div>
 <div class="section">
     <?php
+    $searchLink = $searched  ? "/$search" : '';
     if ($nbPages > 1) {
         ?>
         <div class="center-align">
@@ -19,12 +20,12 @@
                 if ($currentPage != 1) {
                     ?>
                     <li>
-                        <a href="<?= base_url('Question') ?>">
+                        <a href="<?= base_url('Question/1' . $searchLink) ?>">
                             <i class="material-icons">first_page</i>
                         </a>
                     </li>
                     <li>
-                        <a href="<?= base_url('Question/' . ($currentPage - 1)) ?>">
+                        <a href="<?= base_url('Question/' . ($currentPage - 1) . $searchLink) ?>">
                             <i class="material-icons">chevron_left</i>
                         </a>
                     </li>
@@ -37,18 +38,18 @@
                     }
                     $isActive = ($i == $currentPage) ? 'active' : '';
                     ?>
-                    <li class="waves-effect <?= $isActive ?>"><a href="<?= base_url("Question/$i") ?>"><?= $i ?></a></li>
+                    <li class="waves-effect <?= $isActive ?>"><a href="<?= base_url("Question/$i". $searchLink) ?>"><?= $i ?></a></li>
                     <?php
                 }
                 if ($currentPage != $nbPages) {
                     ?>
                     <li>
-                        <a href="<?= base_url('Question/' . ($currentPage + 1)) ?>">
+                        <a href="<?= base_url('Question/' . ($currentPage + 1) . $searchLink) ?>">
                             <i class="material-icons">chevron_right</i>
                         </a>
                     </li>
                     <li>
-                        <a href="<?= base_url('Question/' . $nbPages) ?>">
+                        <a href="<?= base_url('Question/' . $nbPages . $searchLink) ?>">
                             <i class="material-icons">last_page</i>
                         </a>
                     </li>
@@ -121,12 +122,12 @@
                 if ($currentPage != 1) {
                     ?>
                     <li>
-                        <a href="<?= base_url('Question') ?>">
+                        <a href="<?= base_url('Question' . $searchLink) ?>">
                             <i class="material-icons">first_page</i>
                         </a>
                     </li>
                     <li>
-                        <a href="<?= base_url('Question/' . ($currentPage - 1)) ?>">
+                        <a href="<?= base_url('Question/' . ($currentPage - 1) . $searchLink) ?>">
                             <i class="material-icons">chevron_left</i>
                         </a>
                     </li>
@@ -138,21 +139,20 @@
                         break;
                     }
                     $isActive = ($i == $currentPage) ? 'active' : '';
-                    $searchGet = (isset($search) && $search != '')  ? "?search=$search" : '';
                     ?>
-                    <li class="waves-effect <?= $isActive ?>"><a href="<?= base_url("Question/$i". $searchGet)?>"><?= $i ?></a></li>
+                    <li class="waves-effect <?= $isActive ?>"><a href="<?= base_url("Question/$i". $searchLink)?>"><?= $i ?></a></li>
                     <?php
                 }
 
                 if ($currentPage != $nbPages) {
                     ?>
                     <li>
-                        <a href="<?= base_url('Question/' . ($currentPage + 1)) ?>">
+                        <a href="<?= base_url('Question/' . ($currentPage + 1) . $searchLink) ?>">
                             <i class="material-icons">chevron_right</i>
                         </a>
                     </li>
                     <li>
-                        <a href="<?= base_url('Question/' . $nbPages) ?>">
+                        <a href="<?= base_url('Question/' . $nbPages . $searchLink) ?>">
                             <i class="material-icons">last_page</i>
                         </a>
                     </li>

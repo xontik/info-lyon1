@@ -51,11 +51,12 @@ class Question extends TM_Controller
         $this->student_index($page, $questionId);
     }
 
-    public function teacher_index($page = 1, $questionId = 0)
+    public function teacher_index($page = 1, $search = '', $questionId = 0)
     {
         $page = (int) htmlspecialchars($page);
         $questionId = (int) htmlspecialchars($questionId);
-
+        $search = htmlspecialchars($search);
+        
         if ($page <= 0) {
             redirect('Question');
         }
@@ -63,29 +64,24 @@ class Question extends TM_Controller
         $this->load->model('Teachers');
         $this->load->config('Question');
         
-        if(isset($_POST['search']) || isset($_GET['search'])){
-            if(isset($_POST['search']))
-                $search = htmlspecialchars($_POST['search']);
-            if(isset($_POST['search']))
-                $search = htmlspecialchars($_POST['search']);
-            $questions = $this->Teachers->getQuestionsPerPage($_SESSION['id'], $page, $this->config->item('questionByPage'), $search);
-            if(!$questions){
-                $unsortedQuestions = $this->Teachers->getQuestionsPerPage($_SESSION['id'], $page, $this->config->item('questionByPage'));
-                $nbQuestions = $this->Teachers->countQuestions($_SESSION['id']);
-                addPageNotification('Aucun résultat trouvé.', 'warning');
-            }
-            else{
-                $unsortedQuestions = $questions;
-                $nbQuestions = $this->Teachers->countQuestions($_SESSION['id'], $search);
-            } 
+        if (isset($_POST['search'])) {
+            $search = htmlspecialchars($_POST['search']);
         }
-        else{
-            $unsortedQuestions = $this->Teachers->getQuestionsPerPage($_SESSION['id'], $page, $this->config->item('questionByPage'));
-            $nbQuestions = $this->Teachers->countQuestions($_SESSION['id']);
-    
+
+        $unsortedQuestions = $this->Teachers->getQuestionsPerPage($_SESSION['id'], $page, $this->config->item('questionByPage'), $search);
+        $nbQuestions = $this->Teachers->countQuestions($_SESSION['id'], $search);
+        $searched = true;
+        
+        if (!$unsortedQuestions) {
+            $searched = false;
+            addPageNotification('Aucun résultat trouvé.', 'warning');
         }
-                
-        $questionList = $this->_computeQuestionList($page, $questionId, $unsortedQuestions, $nbQuestions, true ,$search = '');
+        
+        if($search == ''){
+            $searched = false;
+        }
+        
+        $questionList = $this->_computeQuestionList($page, $questionId, $unsortedQuestions, $nbQuestions, true , $search, $searched);
 
         $this->data = array(
             'questionList' => $questionList
@@ -114,7 +110,7 @@ class Question extends TM_Controller
         $this->teacher_index($page, $questionId);
     }
 
-    private function _computeQuestionList($page, $questionId, $unsortedQuestions, $nbQuestions, $choosePublic, $search)
+    private function _computeQuestionList($page, $questionId, $unsortedQuestions, $nbQuestions, $choosePublic, $search, $searched)
     {
         $this->load->model('Questions');
         $this->setData('css', 'Common/question');
@@ -129,7 +125,7 @@ class Question extends TM_Controller
         if ($page > $nbPages) {
             redirect('Question');
         }
-
+        
         $indexPagination = 1;
         if ($page > $changePaginationNumber && $nbPages > $limitPagination) {
             if ($page <= $nbPages - $changePaginationNumber) {
@@ -138,7 +134,7 @@ class Question extends TM_Controller
                 $indexPagination = 1 + $nbPages - $limitPagination;
             }
         }
-
+        
         $unsortedAnswers = $this->Questions->getAllAnswers($unsortedQuestions);
 
         $questions = array();
@@ -160,7 +156,8 @@ class Question extends TM_Controller
                 'currentPage' => $page,
                 'indexPagination' => $indexPagination,
                 'limitPagination' => $limitPagination,
-                'search' => $search
+                'search' => $search,
+                'searched' => $searched
             ),
             TRUE
         );
