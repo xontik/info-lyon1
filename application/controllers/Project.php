@@ -66,16 +66,20 @@ class Project extends TM_Controller
         $lastAppointment = $this->Projects->getLastAppointment($project->idProject);
         $nextAppointment = $this->Projects->getNextAppointment($project->idProject);
 
-        $unsortedProposals = $this->DateProposals->getAll($nextAppointment->idAppointment);
-        $unsortedDateAccepts = $this->DateAccepts->getAll($nextAppointment->idAppointment);
 
         $proposals = array();
-        foreach ($unsortedProposals as $proposal) {
-            $proposals[$proposal->idDateProposal] = $proposal;
-        }
 
-        foreach ($unsortedDateAccepts as $dateAccept) {
-            $proposals[$dateAccept->idDateProposal]->dateAccepts[$dateAccept->idUser] = $dateAccept;
+        if (!is_null($nextAppointment)) {
+            $unsortedProposals = $this->DateProposals->getAll($nextAppointment->idAppointment);
+            $unsortedDateAccepts = $this->DateAccepts->getAll($nextAppointment->idAppointment);
+
+            foreach ($unsortedProposals as $proposal) {
+                $proposals[$proposal->idDateProposal] = $proposal;
+            }
+
+            foreach ($unsortedDateAccepts as $dateAccept) {
+                $proposals[$dateAccept->idDateProposal]->dateAccepts[$dateAccept->idUser] = $dateAccept;
+            }
         }
 
         $this->data = array(

@@ -108,6 +108,7 @@ class Projects extends CI_Model
      */
     public function isUserInProject($userId, $projectId)
     {
+
         $isUserInStudent = $this->db
             ->select('idUser')
             ->from('Project')
@@ -230,6 +231,15 @@ class Projects extends CI_Model
             return FALSE;
         }
         return (int) $res->idProject;
+    }
+
+    public function hasAppointmentSheduled($projectId) {
+        return $this->db
+            ->from('Appointment')
+            ->where('idProject', $projectId)
+            ->where('finalDate IS NULL',NULL,false)
+            ->get()
+            ->num_rows();
     }
 
 }

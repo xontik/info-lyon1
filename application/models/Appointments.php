@@ -26,4 +26,6 @@ class Appointments extends CI_Model
             ->update('Appointment');
     }
 
+
+
 }

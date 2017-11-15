@@ -4,14 +4,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Process_DateProposal extends CI_Controller
 {
 
-    public function add($groupId)
+    public function add($projectId)
     {
-        $groupId = (int) htmlspecialchars($groupId);
+        $projectId = (int) htmlspecialchars($projectId);
 
         $this->load->model('DateProposals');
         $this->load->model('Projects');
 
-        if ($groupId !== 0
+        if ($projectId !== 0
             && isset($_POST['date'])
             && isset($_POST['time'])
         ) {
@@ -19,18 +19,26 @@ class Process_DateProposal extends CI_Controller
                 htmlspecialchars($_POST['date'])
                 . ' ' . htmlspecialchars($_POST['time'])
             );
-            $appointmentId = $this->Projects->getNextAppointment($groupId)->idAppointment;
-
-            if ($this->DateProposals->create($appointmentId, $datetime, $_SESSION['userId'])) {
-                addPageNotification('Proposition ajoutée avec succès', 'success');
+            $now = new DateTime();
+            if ($datetime > $now) {
+                if ($this->Projects->hasAppointmentSheduled($projectId)) {
+                    $appointmentId = $this->Projects->getNextAppointment($projectId)->idAppointment;
+                    if ($this->DateProposals->create($appointmentId, $datetime, $_SESSION['userId'])) {
+                        addPageNotification('Proposition ajoutée avec succès', 'success');
+                    } else {
+                        addPageNotification('Impossible de créer la proposition de rendez-vous', 'danger');
+                    }
+                } else {
+                    addPageNotification('Impossible de créer la proposition de rendez-vous, car un rendez est déja prevu', 'warning');
+                }
             } else {
-                addPageNotification('Impossible de créer la proposition de rendez-vous', 'danger');
+                addPageNotification('Impossible de créer la proposition de rendez-vous : date dans le passé', 'danger');
             }
         } else {
             addPageNotification('Données reçu corrompues', 'danger');
         }
 
-        redirect('Project/detail/' . $groupId);
+        redirect('Project/detail/' . $projectId);
     }
 
     public function choose($dateProposalId)
@@ -50,7 +58,7 @@ class Process_DateProposal extends CI_Controller
             }
 
             if ($_SESSION['userType'] === 'teacher') {
-                $redirectUrl .= '/' . $projectId;
+                $redirectUrl .= '/detail/' . $projectId;
             }
 
             if (isset($_POST['accept'])) {
@@ -68,15 +76,16 @@ class Process_DateProposal extends CI_Controller
                 if ($this->DateProposals->isAccepted($dateProposalId)) {
 
                     $this->Appointments->setFinalDate($dateProposalId);
-                    $this->Projects->sendProjectMessage(
-                        $projectId,
+
+                    $this->Projects->sendProjectMessage($projectId
+                        ,
                         'Une proposition de date à été acceptée',
                         'success'
                     );
                 }
             } else {
-                $this->Projects->sendProjectMessage(
-                    $projectId,
+                $this->Projects->sendProjectMessage($projectId
+                    ,
                     'Une proposition de date à été refusée',
                     'warning'
                 );
