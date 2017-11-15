@@ -6,7 +6,7 @@ class Controls extends CI_Model
 {
 
     /**
-     * Get the details of a control.
+     * Get the appointments of a control.
      *
      * @param $controlId
      * @return object|bool FALSE if $controlId doesn't exists

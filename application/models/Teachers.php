@@ -5,7 +5,7 @@ class Teachers extends CI_Model
 {
 
     /**
-     * Get details about a teacher.
+     * Get appointments about a teacher.
      *
      * @param int $teacherId
      * @return object

@@ -30,7 +30,7 @@ class Process_Appointment extends CI_Controller
 
         if ($this->Projects->hasAppointmentSheduled($projectId)) {
             addPageNotification('Un rendez-vous existe déjà', 'warning');
-            redirect('Project/detail/'.$projectId);
+            redirect('Project/appointment/'.$projectId);
         } else {
             if ($this->Appointments->create($projectId)){
                 addPageNotification('Un rendez-vous a été créé', 'success');
@@ -40,7 +40,7 @@ class Process_Appointment extends CI_Controller
             }
 
 
-            redirect('Project/detail/'.$projectId);
+            redirect('Project/appointment/'.$projectId);
         }
 
 

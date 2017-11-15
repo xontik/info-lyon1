@@ -39,7 +39,7 @@ class Process_DateProposal extends CI_Controller
             addPageNotification('Données reçu corrompues', 'danger');
         }
 
-        redirect('Project/detail/' . $projectId);
+        redirect('Project/appointment/' . $projectId);
     }
 
     public function choose($dateProposalId)
@@ -59,7 +59,7 @@ class Process_DateProposal extends CI_Controller
             }
 
             if ($_SESSION['userType'] === 'teacher') {
-                $redirectUrl .= '/detail/' . $projectId;
+                $redirectUrl .= '/appointment/' . $projectId;
             }
 
             if (isset($_POST['accept'])) {

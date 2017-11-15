@@ -13,23 +13,32 @@ class Project extends TM_Controller
             redirect('/');
         }
 
-        $this->_details($project);
+        $this->_appointments($project);
     }
 
     public function teacher_index()
     {
         $this->load->model('Teachers');
+        $this->load->model('Projects');
 
         $projects = $this->Teachers->getProjects($_SESSION['id']);
 
+        $members = array();
+        if (!empty($projects)) {
+            foreach ($projects as $project) {
+                $members[$project->idProject] = $this->Projects->getMembers($project->idProject);
+            }
+        }
+
         $this->data = array(
-            'projects' => $projects
+            'projects' => $projects,
+            'members' => $members
         );
 
         $this->show('Projets tuteurés');
     }
 
-    public function teacher_detail($projectId)
+    public function teacher_appointment($projectId)
     {
         $projectId = (int) htmlspecialchars($projectId);
 
@@ -50,10 +59,14 @@ class Project extends TM_Controller
             redirect('Project');
         }
 
-        $this->_details($project);
+        $this->_appointments($project);
     }
 
-    private function _details($project)
+    public function teacher_manage($projectId) {
+        
+    }
+
+    private function _appointments($project)
     {
         $this->load->model('Projects');
         $this->load->model('DateProposals');
@@ -93,8 +106,8 @@ class Project extends TM_Controller
             'proposals' => $proposals
         );
 
-        $this->setData('view', 'Common/project_detail.php');
-        $this->setData('js', 'Common/project_detail');
+        $this->setData('view', 'Common/project_appointment.php');
+        $this->setData('js', 'Common/project_appointment');
         $this->show('Projets tuteurés');
     }
 }

@@ -184,7 +184,7 @@ class Projects extends CI_Model
             ->row();
 
         if (!is_null($teacher)) {
-            $this->Notifications->create($message, '/Project/detail/' . $projectId, $teacher->idUser, $type, $icon);
+            $this->Notifications->create($message, '/Project/appointment/' . $projectId, $teacher->idUser, $type, $icon);
         }
     }
 

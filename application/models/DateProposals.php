@@ -5,7 +5,7 @@ class DateProposals extends CI_Model
 {
 
     /**
-     * Get details about a date proposal.
+     * Get appointments about a date proposal.
      *
      * @param $dateProposalId
      * @return object|bool FALSE if the id doesn't exist

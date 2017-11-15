@@ -4,7 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Groups extends CI_Model
 {
     /**
-     * Get the details of a group.
+     * Get the appointments of a group.
      *
      * @param int $groupId
      * @return object

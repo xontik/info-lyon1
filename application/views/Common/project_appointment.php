@@ -26,20 +26,24 @@ $now = new DateTime();
         <div class="card-content">
             <span class="card-title">Rendez-vous</span>
             <div class="row">
-                <?php
-                if (!is_null($data['lastAppointment']))
-                {
-                    $date = new DateTime($data['lastAppointment']->finalDate);
-                    $diff = $now->diff($date);
-                    ?>
+
                     <div class="col s12 m6 l5 card grey lighten-4">
                         <div class="card-content">
-                            <span class="card-title">Dernier rendez-vous</span>
-                            <p><?= readableTimeDifference($diff) ?></p>
+                            <?php
+                            if (!is_null($data['lastAppointment']))
+                            {
+                                $date = new DateTime($data['lastAppointment']->finalDate);
+                                $diff = $now->diff($date);
+                                ?>
+                                <span class="card-title">Dernier rendez-vous</span>
+                                <p><?= readableTimeDifference($diff) ?></p>
+
+                                <?php
+                            } else {?>
+                                <span class="card-title">Aucun ancien rendez-vous</span>
+                            <?php } ?>
                         </div>
                     </div>
-                    <?php
-                } ?>
                 <div class="col s12 m5 offset-m1 card grey lighten-4">
                     <div class="card-content">
                         <?php if (is_null($data['nextAppointment'])) { ?>

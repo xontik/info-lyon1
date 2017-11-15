@@ -5,7 +5,7 @@ class Semesters extends CI_Model
 {
 
     /**
-     * Get details about a semester.
+     * Get appointments about a semester.
      *
      * @param int $semesterId
      * @return object
