@@ -9,11 +9,10 @@ class Process_Timetable extends CI_Controller
         $this->load->model('Timetables');
         $this->load->model('Students');
 
-        if (isset($_POST['url']))
-        {
+        if (isset($_POST['url'])) {
             $url = htmlspecialchars($_POST['url']);
 
-            // If only resource number sent
+            // If resource number sent
             if (is_numeric($url)) {
                 $resource = (int) $url;
             } else {
@@ -92,5 +91,53 @@ class Process_Timetable extends CI_Controller
         }
 
         redirect('Timetable' . ($room ? "/room/$room" : '') . ($weekNum ? "/$weekNum" : ''));
+    }
+
+    public function create()
+    {
+        if (isset($_POST['roomName']) && isset($_POST['url'])) {
+
+            $this->load->model('Timetables');
+
+            $roomName = htmlspecialchars($_POST['roomName']);
+            $url = htmlspecialchars($_POST['url']);
+
+            // If resource number sent
+            if (is_numeric($url)) {
+                $resource = (int) $url;
+            } else {
+
+                // Remove URL useless parts
+                $url = substr($url, strpos($url, '?') + 1);
+                $url = explode('/', $url);
+
+                foreach ($url as $parameter) {
+                    $parameter = explode('=', $parameter);
+                    if ($parameter[0] === 'resources') {
+                        $resource = (int) $parameter[1];
+                    }
+                }
+
+                if (!isset($resource)) {
+                    addPageNotification('Impossible de trouver de ressource dans l\'url.<br>'
+                        . 'Essayez de l\'indiquer manuellement', 'warning');
+                    redirect('Timetable/edit');
+                }
+            }
+
+            if ($this->Timetables->hasTimetable($roomName, 'room')
+                && $this->Timetables->update($resource, $roomName, 'room')
+                || $this->Timetables->create($resource, $roomName, 'room')
+            ) {
+                addPageNotification('Salle créée avec succès', 'success');
+                redirect('Timetable/room');
+            }
+
+            addPageNotification('Erreur lors de la modification de l\'emploi du temps', 'danger');
+            redirect('Timetable/room');
+        }
+
+        addPageNotification('Données corrompues', 'danger');
+        redirect('Timetable/room');
     }
 }

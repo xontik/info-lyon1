@@ -16,12 +16,31 @@
             <?php
         } ?>
         <div class="card grey lighten-3 col s12 m3 l2 offset-s1 offset-m1 offset-l1 center-align">
-            <a href="#"
-               class="card-title teal-text">
+            <a href="#add-room"
+               class="card-title teal-text modal-trigger">
                 <div class="card-content">
-                    <i class="material-icons small">add</i>(wip)
+                    <i class="material-icons small">add</i>
                 </div>
             </a>
         </div>
+    </div>
+    <div id="add-room" class="modal">
+        <form action="<?= base_url('Process_Timetable/create') ?>" method="post">
+            <div class="modal-content">
+                <h4>Ajouter une salle</h4>
+                <div class="input-field">
+                    <input type="text" id="roomName" name="roomName" required>
+                    <label for="roomName">Nom de la salle</label>
+                </div>
+                <div class="input-field">
+                    <input type="text" id="url" name="url" required>
+                    <label for="url">URL ou numéro de ressource</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn-flat waves-effect waves-green">Créer</button>
+                <a class="btn-flat modal-close waves-effect waves-red">Annuler</a>
+            </div>
+        </form>
     </div>
 </main>
