@@ -1,13 +1,17 @@
 <div class="card grey lighten-5">
-    <div class="card-content">
-        <form action="<?= base_url('Question') ?>" method="GET">
+    <form action="<?= base_url('Question') ?>" method="GET">
+        <div class="card-content">
             <div class="input-field">
                 <i class="material-icons prefix">search</i>
                 <input name="s" class="grey lighten-5" id="search" type="search" required>
                 <label for="search">Rechercher une question</label>
             </div>
-        </form>
-    </div>
+        </div>
+        <div class="card-action">
+            <button type="submit" class="btn-flat waves-effect waves-light">Rechercher</button>
+            <a href="<?= base_url('Question') ?>" class="btn-flat waves-effect waves-light">Réinitialiser</a>
+        </div>
+    </form>
 </div>
 <div class="section">
     <?php
