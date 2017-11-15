@@ -5,14 +5,10 @@ class Student extends TM_Controller
 {
     private function _index()
     {
-        $this->load->model('Students');
-        $students = $this->Students->getAllOrganized();
-
-
-
-        $this->data = array('students' => $students);
         $this->setData(array(
-            'view' => 'Common/student.php',
+            'view' => 'Common/student',
+            'js' => 'Common/student',
+            'css' => 'Common/student'
         ));
         $this->show('Liste des élèves');
     }
