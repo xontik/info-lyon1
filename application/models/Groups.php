@@ -28,6 +28,12 @@ class Groups extends CI_Model
     public function getAll()
     {
         return $this->db
+            ->select(
+                'idGroup,
+                CONCAT(groupName, courseType) as groupName,
+                CONCAT(schoolYear, \'-\', schoolYear+1) as schoolYear,
+                idStudent, name, surname'
+            )
             ->from('Group')
             ->join('StudentGroup', 'idGroup')
             ->join('Student', 'idStudent')

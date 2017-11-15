@@ -5,6 +5,7 @@ $(document).ready(function() {
 
     var students = {};
     var groups = {};
+    var years = {};
 
     var acValToId = {'group' : {}};
     var displayStudent = {};
@@ -66,11 +67,11 @@ $(document).ready(function() {
         }
     };
 
-    $.post(
-        '/Process_Student/get_all', {},
-        function (resources) {
+    $.post('/Process_Student/get_all')
+        .done(function (resources) {
             students = resources.students;
             groups = resources.groups;
+            years = resources.years;
 
             $('#list-progress').remove();
 
@@ -83,9 +84,13 @@ $(document).ready(function() {
                 sort.init();
 
                 $.each(groups, function(index, group) {
-                    var val = group.groupName + ' ' + group.schoolYear + '-' + (parseInt(group.schoolYear)+1);
+                    var val = group.groupName + ' ' + group.schoolYear;
                     acValToId.group[val] = group.idGroup;
                     autocompleteDatas[val] = null;
+                });
+
+                $.each(years, function (year) {
+                    autocompleteDatas[year] = null;
                 });
 
                 $('#search')
@@ -112,6 +117,11 @@ $(document).ready(function() {
                                 displayStudent = groups[acValToId.group[val]].students;
                                 updateList();
                             }
+                            // If year
+                            else if (/^\d{4}-\d{4}/) {
+                                displayStudent = years[fword];
+                                updateList();
+                            }
                         }
                     });
 
@@ -122,8 +132,10 @@ $(document).ready(function() {
             } else {
                 list.append('<p class="center-align">Pas d\'étudiant à afficher</p>')
             }
-        }
-    );
+        })
+        .fail(function(jqXHR) {
+            console.log(jqXHR.responseText);
+        });
 
     function updateList() {
         list.empty();

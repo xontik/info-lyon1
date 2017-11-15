@@ -8,32 +8,42 @@ class Process_Student extends CI_Controller
     {
         $this->load->model('Students');
         $this->load->model('Groups');
+        $this->load->model('Years');
 
         $students = $this->Students->getAll();
         $unsortedGroups = $this->Groups->getAll();
+        $unsortedYears = $this->Years->getAll();
 
         $groups = array();
         foreach ($unsortedGroups as $group) {
             if (!array_key_exists($group->idGroup, $groups)) {
-                $gr = new stdClass();
-                $gr->idGroup = $group->idGroup;
-                $gr->groupName = $group->groupName . $group->courseType;
-                $gr->schoolYear = $group->schoolYear;
-
-                $groups[$group->idGroup] = $gr;
+                $groups[$group->idGroup] = array(
+                    'idGroup' => $group->idGroup,
+                    'groupName' => $group->groupName,
+                    'schoolYear' => $group->schoolYear
+                );
             }
 
-            $student = new stdClass();
-            $student->idStudent = $group->idStudent;
-            $student->name = $group->name;
-            $student->surname = $group->surname;
+            $groups[$group->idGroup]['students'][] = array(
+                'idStudent' => $group->idStudent,
+                'name' => $group->name,
+                'surname' => $group->surname
+            );
+        }
 
-            $groups[$group->idGroup]->students[] = $student;
+        $years = array();
+        foreach ($unsortedYears as $year) {
+            $years[$year->schoolYear][] = array(
+                'idStudent' => $year->idStudent,
+                'name' => $year->name,
+                'surname' => $year->surname
+            );
         }
 
         $resources = array(
             'students' => $students,
-            'groups' => $groups
+            'groups' => $groups,
+            'years' => $years
         );
 
         header('Content-Type: application/json');
