@@ -71,15 +71,12 @@ class Students extends CI_Model
 
     public function countQuestions($studentId, $search)
     {
+        $where = "idStudent = '$studentId' AND (title LIKE '%$search%' OR content LIKE '%$search%' OR CONCAT(name, ' ', surname) LIKE '%$search%')";
         return $this->db
             ->from('Question')
             ->join('Student', 'idStudent')
             ->join('User', 'idUser')
-            ->where('idStudent', $studentId)
-            ->like('title', $search, 'both')
-            ->or_like('name', $search, 'both')
-            ->or_like('content', $search, 'both')
-            ->or_like('questionDate', $search, 'both')
+            ->where($where)
             ->count_all_results();
     }
 
@@ -96,15 +93,13 @@ class Students extends CI_Model
      */
     public function getQuestionsPerPage($studentId, $currentPage, $nbQuestionsPerPage, $search)
     {
+        $where = "idStudent = '$studentId' AND (title LIKE '%$search%' OR content LIKE '%$search%' OR CONCAT(name, ' ', surname) LIKE '%$search%')";
         return $this->db
             ->select('idQuestion, title, content, questionDate, public, CONCAT(name, \' \', surname) as name')
             ->from('Question')
             ->join('Student', 'idStudent')
             ->join('User', 'idUser')
-            ->where('idStudent', $studentId)
-            ->like('title', $search, 'both')
-            ->or_like('name', $search, 'both')
-            ->or_like('content', $search, 'both')
+            ->where($where)
             ->order_by('questionDate', 'DESC')
             ->limit($nbQuestionsPerPage, (($currentPage - 1) * $nbQuestionsPerPage))
             ->get()
