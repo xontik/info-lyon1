@@ -21,6 +21,10 @@ class Question extends TM_Controller
 
         $unsortedQuestions = $this->Students->getQuestionsPerPage($_SESSION['id'],
             $page, $this->config->item('questionByPage'), $search);
+        $noQuestions = false;
+        if(empty($unsortedQuestions)){
+            $noQuestions = true;
+        }
         $nbQuestions = $this->Students->countQuestions($_SESSION['id'], $search);
 
         if (!$unsortedQuestions && $search !== '') {
@@ -30,12 +34,13 @@ class Question extends TM_Controller
 
         $questionList = $this->_computeQuestionList(
             $page, $unsortedQuestions, $questionId,
-            $nbQuestions, true, $search
+            $nbQuestions, true, $search, $noQuestions
         );
 
         $teachers = $this->Students->getTeachers($_SESSION['id']);
 
         $this->data = array(
+            'noQuestions' => $noQuestions,
             'teachers' => $teachers,
             'questionList' => $questionList
         );
@@ -79,6 +84,11 @@ class Question extends TM_Controller
 
         $unsortedQuestions = $this->Teachers->getQuestionsPerPage($_SESSION['id'],
             $page, $this->config->item('questionByPage'), $search);
+        $noQuestions = false;
+        if(empty($unsortedQuestions)){
+            $noQuestions = true;
+        }
+        
         $nbQuestions = $this->Teachers->countQuestions($_SESSION['id'], $search);
 
         if (!$unsortedQuestions && $search !== '') {
@@ -88,7 +98,7 @@ class Question extends TM_Controller
 
         $questionList = $this->_computeQuestionList(
             $page, $unsortedQuestions, $questionId,
-            $nbQuestions, true, $search
+            $nbQuestions, true, $search, $noQuestions
         );
 
         $this->data = array(
@@ -127,10 +137,11 @@ class Question extends TM_Controller
      * @param int       $userQuestionCount
      * @param boolean   $choosePublic
      * @param string    $search
+     * @param string    $noQuestions
      * @return string
      */
     private function _computeQuestionList($page, $unsortedQuestions, $activeQuestion,
-                                          $userQuestionCount, $choosePublic, $search)
+                                          $userQuestionCount, $choosePublic, $search, $noQuestions)
     {
         $this->load->model('Questions');
         $this->setData(array(
@@ -146,9 +157,10 @@ class Question extends TM_Controller
         $changePaginationNumber = ceil($paginationMaxCount / 2);
 
         $nbPages = ceil($userQuestionCount / $questionsPerPage);
-        if ($page > $nbPages) {
+        if (!empty($unsortedQuestions) && $page > $nbPages) {
             redirect('Question');
         }
+        
         
         $beginPagination = 1;
         if ($page > $changePaginationNumber && $nbPages > $paginationMaxCount) {
@@ -160,17 +172,19 @@ class Question extends TM_Controller
         }
 
         // Answers
-        $unsortedAnswers = $this->Questions->getAllAnswers($unsortedQuestions);
-
         $questions = array();
-        foreach ($unsortedQuestions as $question) {
-            $questions[$question->idQuestion] = $question;
-        }
+        if (!empty($unsortedQuestions)) {
+            $unsortedAnswers = $this->Questions->getAllAnswers($unsortedQuestions);
 
-        foreach ($unsortedAnswers as $answer) {
-            $questions[$answer->idQuestion]->answers[] = $answer;
-        }
+            foreach ($unsortedQuestions as $question) {
+                $questions[$question->idQuestion] = $question;
+            }
 
+            foreach ($unsortedAnswers as $answer) {
+                $questions[$answer->idQuestion]->answers[] = $answer;
+            }
+        }
+        
         return $this->load->view(
             'includes/question-list',
             array(
@@ -181,7 +195,8 @@ class Question extends TM_Controller
                 'nbPages' => $nbPages,
                 'currentPage' => $page,
                 'indexPagination' => $beginPagination,
-                'limitPagination' => $paginationMaxCount
+                'limitPagination' => $paginationMaxCount,
+                'noQuestions' => $noQuestions               
             ),
             TRUE
         );
