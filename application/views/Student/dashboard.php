@@ -109,24 +109,36 @@
             <div class="col s12 l5 offset-l1">
                 <div class="card grey lighten-5">
                     <div class="card-content">
-                        <a href="<?= base_url('Mark') ?>" class="card-title">Notes</a>
-                        <?php
-                        if (!$data['mark']) {
-                            ?>
-                            <p>Vous n'avez pas encore eu de note</p>
+                        <div class="section">
+                            <a href="<?= base_url('Mark') ?>" class="card-title">Notes</a>
                             <?php
-                        } else {
-                            $date = DateTime::createFromFormat('Y-m-d', $data['mark']->controlDate);
-                            $diff = $now->diff($date);
-                            ?>
-                            <b><?= $data['mark']->controlName ?></b>
-                            <div class="section">
-                                <span><?= $data['mark']->value ?></span><small>/<?= $data['mark']->divisor?></small>
-                                <p>Coefficient: <?= $data['mark']->coefficient ?></p>
-                            </div>
-                            <p><?= ucfirst(readableTimeDifference($diff)) ?></p>
+                            if (!$data['mark']) {
+                                ?>
+                                <p>Vous n'avez pas encore eu de note</p>
+                                <?php
+                            } else {
+                                $date = DateTime::createFromFormat('Y-m-d', $data['mark']->controlDate);
+                                $diff = $now->diff($date);
+                                ?>
+                                <b><?= $data['mark']->controlName ?></b>
+                                <div class="section">
+                                    <span><?= $data['mark']->value ?></span><small>/<?= $data['mark']->divisor?></small>
+                                    <p>Coefficient: <?= $data['mark']->coefficient ?></p>
+                                </div>
+                                <p><?= ucfirst(readableTimeDifference($diff)) ?></p>
+                                <?php
+                            } ?>
+                        </div>
+                        <div class="section">
                             <?php
-                        } ?>
+                            foreach ($data['average'] as $average) {
+                                ?>
+                                <b><?= $average->teachingUnitCode . ' ' . $average->teachingUnitName ?></b>
+                                <p>Moyenne : <?= $average->average ?> /20</p>
+                                <p>Coefficient : <?= (float) $average->coefficient ?></p>
+                                <?php
+                            } ?>
+                        </div>
                     </div>
                 </div>
                 <div class="card grey lighten-5">

@@ -142,21 +142,34 @@ class Students extends CI_Model
      * Return the last mark the student got, with its control.
      *
      * @param string    $studentId
-     * @param Period    $period
+     * @param int       $semesterId
      * @return object|bool FALSE if student has no mark
      */
-    public function getLastMark($studentId, $period)
+    public function getLastMark($studentId, $semesterId)
     {
         $res = $this->db
-            ->select('value, controlName, coefficient, divisor, controlDate')
-            ->from('Mark')
-            ->join('Control', 'idControl')
-            ->where('idStudent', $studentId)
-            ->where('controlDate BETWEEN \'' . $period->getBeginDate()->format('Y-m-d')
-                . '\' AND \'' . $period->getEndDate()->format('Y-m-d') . '\'')
-            ->order_by('controlDate', 'DESC')
-            ->limit(1)
-            ->get()
+            ->query(
+                'SELECT *
+                FROM (
+                        SELECT value, controlName, coefficient, divisor, controlDate
+                        FROM Mark
+                        JOIN Control USING (idControl)
+                        JOIN Education USING (idEducation)
+                        JOIN `Group` USING (idGroup) 
+                        WHERE idStudent = \'p0000001\'
+                        AND idSemester = 2
+                    UNION
+                        SELECT value, controlName, coefficient, divisor, controlDate
+                        FROM Mark
+                        JOIN Control USING (idControl)
+                        JOIN Promo USING (idPromo)
+                        WHERE idStudent = \'p0000001\'
+                        AND idSemester = 2
+                ) AS foo
+                ORDER BY controlDate DESC
+                LIMIT 1',
+                array($studentId, $semesterId)
+            )
             ->row();
 
         if (is_null($res)) {

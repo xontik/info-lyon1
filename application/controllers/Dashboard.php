@@ -52,7 +52,8 @@ class Dashboard extends TM_Controller
         $this->data['absenceCount'] = $this->Students->getAbsencesCount($_SESSION['id'], $period);
 
         // Mark
-        $this->data['mark'] = $this->Students->getLastMark($_SESSION['id'], $period);
+        $this->data['mark'] = $this->Students->getLastMark($_SESSION['id'], $semester->idSemester);
+        $this->data['average'] = $this->Students->getSubjectsTUAverage($_SESSION['id'], $semester->idSemester);
 
         // Project
         $project = $this->Students->getProject($_SESSION['id']);
