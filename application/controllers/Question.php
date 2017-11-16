@@ -18,6 +18,11 @@ class Question extends TM_Controller
 
         $this->load->model('Students');
         $this->load->config('Question');
+        
+        $this->load->helper('tabs');
+        
+        $tabs["Questions"] = createTab("Questions", "Question");
+        $tabs["Faq"] = createTab("Faq", "Faq");
 
         $unsortedQuestions = $this->Students->getQuestionsPerPage($_SESSION['id'],
             $page, $this->config->item('questionByPage'), $search);
@@ -37,6 +42,7 @@ class Question extends TM_Controller
         $teachers = $this->Students->getTeachers($_SESSION['id']);
 
         $this->data = array(
+            'tabs' => $tabs,
             'teachers' => $teachers,
             'questionList' => $questionList
         );

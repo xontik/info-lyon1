@@ -27,7 +27,7 @@ class Absence extends TM_Controller
         // Tabs content
         $tabs = array();
         for ($i = 1; $i <= $maxSemester; $i++) {
-            $tabs["S$i"] = createTab("Semester $i", "Mark/S$i");
+            $tabs["S$i"] = createTab("Semestre $i", "Absence/S$i");
         }
 
         $semesterId = $this->Semesters->getSemesterId($semester, $_SESSION['id']);
