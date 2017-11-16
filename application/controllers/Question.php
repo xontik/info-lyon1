@@ -21,10 +21,7 @@ class Question extends TM_Controller
 
         $unsortedQuestions = $this->Students->getQuestionsPerPage($_SESSION['id'],
             $page, $this->config->item('questionByPage'), $search);
-        $noQuestions = false;
-        if(empty($unsortedQuestions)){
-            $noQuestions = true;
-        }
+
         $nbQuestions = $this->Students->countQuestions($_SESSION['id'], $search);
 
         if (!$unsortedQuestions && $search !== '') {
@@ -34,13 +31,12 @@ class Question extends TM_Controller
 
         $questionList = $this->_computeQuestionList(
             $page, $unsortedQuestions, $questionId,
-            $nbQuestions, true, $search, $noQuestions
+            $nbQuestions, true, $search
         );
 
         $teachers = $this->Students->getTeachers($_SESSION['id']);
 
         $this->data = array(
-            'noQuestions' => $noQuestions,
             'teachers' => $teachers,
             'questionList' => $questionList
         );
@@ -84,11 +80,7 @@ class Question extends TM_Controller
 
         $unsortedQuestions = $this->Teachers->getQuestionsPerPage($_SESSION['id'],
             $page, $this->config->item('questionByPage'), $search);
-        $noQuestions = false;
-        if(empty($unsortedQuestions)){
-            $noQuestions = true;
-        }
-        
+
         $nbQuestions = $this->Teachers->countQuestions($_SESSION['id'], $search);
 
         if (!$unsortedQuestions && $search !== '') {
@@ -98,7 +90,7 @@ class Question extends TM_Controller
 
         $questionList = $this->_computeQuestionList(
             $page, $unsortedQuestions, $questionId,
-            $nbQuestions, true, $search, $noQuestions
+            $nbQuestions, true, $search
         );
 
         $this->data = array(
@@ -137,11 +129,10 @@ class Question extends TM_Controller
      * @param int       $userQuestionCount
      * @param boolean   $choosePublic
      * @param string    $search
-     * @param string    $noQuestions
      * @return string
      */
     private function _computeQuestionList($page, $unsortedQuestions, $activeQuestion,
-                                          $userQuestionCount, $choosePublic, $search, $noQuestions)
+                                          $userQuestionCount, $choosePublic, $search)
     {
         $this->load->model('Questions');
         $this->setData(array(
@@ -195,8 +186,7 @@ class Question extends TM_Controller
                 'nbPages' => $nbPages,
                 'currentPage' => $page,
                 'indexPagination' => $beginPagination,
-                'limitPagination' => $paginationMaxCount,
-                'noQuestions' => $noQuestions               
+                'limitPagination' => $paginationMaxCount
             ),
             TRUE
         );

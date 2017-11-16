@@ -1,14 +1,14 @@
 <?php 
-if($noQuestions){ ?>
+if (empty($questions)) {
+    ?>
     <div id="card-alert" class="card grey lighten-4">
         <div class="card-content">
-            <p class="flow-text">Vous n'avez aucune question.</p>
+            <p class="flow-text">Vous n'avez pas de question</p>
         </div>
     <div>
-<?php
-}
-if(!empty($questions)){ 
-?>
+    <?php
+} else {
+    ?>
     <div class="card grey lighten-5">
         <form action="<?= base_url('Question') ?>" method="GET">
             <div class="card-content">
