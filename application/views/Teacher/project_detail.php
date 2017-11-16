@@ -22,7 +22,7 @@
             ?>
             <div>
                 <h5>Dernier rendez-vous</h5>
-                <p><?= readableTimeDifference($diff) ?></p>
+                <p><?= ucfirst(readableTimeDifference($diff)) ?></p>
             </div>
             <?php
         } ?>
@@ -34,7 +34,7 @@
                 $date = new DateTime($data['nextAppointment']->finalDate);
                 $diff = $date->diff($now);
                 ?>
-                <p><?= readableTimeDifference($diff) ?></p>
+                <p><?= ucfirst(readableTimeDifference($diff)) ?></p>
                 <p>Le <?= $date->format('d/m/Y') ?></p>
                 <?php
             } else if (empty($data['proposals'])) {

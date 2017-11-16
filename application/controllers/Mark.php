@@ -16,9 +16,9 @@ class Mark extends TM_Controller
         $this->load->helper('tabs');
 
         // Highest semester the student was it
-        $maxSemester = (int) substr($this->Semesters->getType(
-                $this->Semesters->getStudentCurrent($_SESSION['id'])
-            ), 1
+        $maxSemester = (int) substr(
+            $this->Students->getCurrentSemester($_SESSION['id'])->courseType,
+            1
         );
 
         // If above max semester

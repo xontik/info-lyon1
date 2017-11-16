@@ -88,23 +88,23 @@ class Students extends CI_Model
     }
 
     /**
-     * Returns the last absence of the student.
+     * Returns the last absence of the student in a period.
      *
-     * @param $studentId
+     * @param string    $studentId
+     * @param Period    $period
      * @return object|bool FALSE if student has no absence.
      */
-    public function getLastAbsence($studentId)
+    public function getLastAbsence($studentId, $period)
     {
         $this->load->model('Semesters');
-
-        $semesterId = $this->Semesters->getStudentCurrent($studentId);
-        $period = $this->Semesters->getPeriod($semesterId);
 
         $res = $this->db
             ->select('beginDate, endDate, absenceTypeName')
             ->from('Absence')
             ->join('AbsenceType', 'idAbsenceType')
             ->where('idStudent', $studentId)
+            ->where('beginDate BETWEEN \'' . $period->getBeginDate()->format('Y-m-d')
+                . '\' AND \'' . $period->getEndDate()->format('Y-m-d') . '\'')
             ->order_by('beginDate', 'DESC')
             ->limit(1)
             ->get()
@@ -116,19 +116,44 @@ class Students extends CI_Model
         return $res;
     }
 
+    public function getAbsencesCount($studentId, $period) {
+        $justified = $this->db
+            ->from('absence')
+            ->where('idStudent', $studentId)
+            ->where('beginDate BETWEEN "' . $period->getBeginDate()->format('Y-m-d')
+                . '" AND "' . $period->getEndDate()->format('Y-m-d') . '"')
+            ->where('justified','1')
+            ->get()
+            ->num_rows();
+        $unjustified = $this->db
+            ->from('absence')
+            ->where('idStudent', $studentId)
+            ->where('beginDate BETWEEN "' . $period->getBeginDate()->format('Y-m-d')
+                . '" AND "' . $period->getEndDate()->format('Y-m-d') . '"')
+            ->where('justified','0')
+            ->get()
+            ->num_rows();
+
+        return array('justified' => $justified, 'unjustified' => $unjustified);
+
+    }
+
     /**
      * Return the last mark the student got, with its control.
      *
-     * @param string $studentId
+     * @param string    $studentId
+     * @param Period    $period
      * @return object|bool FALSE if student has no mark
      */
-    public function getLastMark($studentId)
+    public function getLastMark($studentId, $period)
     {
         $res = $this->db
             ->select('value, controlName, coefficient, divisor, controlDate')
             ->from('Mark')
             ->join('Control', 'idControl')
             ->where('idStudent', $studentId)
+            ->where('controlDate BETWEEN \'' . $period->getBeginDate()->format('Y-m-d')
+                . '\' AND \'' . $period->getEndDate()->format('Y-m-d') . '\'')
             ->order_by('controlDate', 'DESC')
             ->limit(1)
             ->get()
@@ -140,13 +165,80 @@ class Students extends CI_Model
         return $res;
     }
 
+    public function getSubjectsAverage($studentId, $semesterId) {
+        $sql = 'SELECT idSubject, subjectCode, subjectName, subjectCoefficient, moduleName, idTeachingUnit, teachingUnitName, teachingUnitCode, idSemester,
+                        ROUND(SUM((value/divisor)*20*coefficient)/SUM(coefficient), 2) AS average,
+                        ROUND(SUM(average*coefficient)/SUM(coefficient), 2) AS groupAverage
+                FROM (
+                SELECT idSubject, idControl, idStudent, idSemester FROM mark
+                    JOIN control using (idControl)
+                    JOIN education USING(idEducation)
+                    JOIN `group` USING(idGroup)
+                    JOIN studentgroup USING(idStudent,idGroup)
+                    where idStudent = ? && idSemester = ?
+                UNION
+                SELECT idSubject, idControl, idStudent, idSemester  FROM mark
+                    JOIN control using (idControl)
+                    JOIN promo USING(idPromo)
+                    JOIN education USING(idSubject)
+                    JOIN `group` USING(idGroup, idSemester)
+                    JOIN studentgroup USING(idStudent)
+                    where idStudent = ? && idSemester = ?) AS c
+                JOIN subject USING(idSubject)
+                JOIN mark USING(idControl, idStudent)
+                JOIN control USING(idControl)
+                JOIN subjectofmodule USING(idSubject)
+                JOIN moduleofteachingunit USING(idModule)
+                JOIN module USING(idModule)
+                JOIN teachingunit USING (idTeachingunit)
+                GROUP BY idSubject, idSemester
+                ORDER BY idTeachingunit';
+
+        return $this->db->query($sql, array($studentId, $semesterId, $studentId, $semesterId))->result();
+    }
+
+    public function getSubjectsTUAverage($studentId, $semesterId) {
+        $sql = 'SELECT idTeachingUnit, teachingUnitName, teachingUnitCode,
+                        ROUND(SUM((value/divisor)*20*coefficient)/SUM(coefficient), 2) AS average,
+                        ROUND(SUM(average*coefficient)/SUM(coefficient), 2) AS groupAverage,
+                        SUM(subjectCoefficient) as coefficient
+
+                FROM (
+                SELECT idSubject, idControl, idStudent, idSemester FROM mark
+                    JOIN control using (idControl)
+                    JOIN education USING(idEducation)
+                    JOIN `group` USING(idGroup)
+                    JOIN studentgroup USING(idStudent,idGroup)
+                    where idStudent = ? && idSemester = ?
+                UNION
+                SELECT idSubject, idControl, idStudent, idSemester  FROM mark
+                    JOIN control using (idControl)
+                    JOIN promo USING(idPromo)
+                    JOIN education USING(idSubject)
+                    JOIN `group` USING(idGroup, idSemester)
+                    JOIN studentgroup USING(idStudent)
+                    where idStudent = ? && idSemester = ?) AS c
+                JOIN subject USING(idSubject)
+                JOIN mark USING(idControl, idStudent)
+                JOIN control USING(idControl)
+                JOIN subjectofmodule USING(idSubject)
+                JOIN moduleofteachingunit USING(idModule)
+                JOIN module USING(idModule)
+                JOIN teachingunit USING (idTeachingunit)
+                GROUP BY idTeachingunit
+                ORDER BY idTeachingunit';
+
+        return $this->db->query($sql, array($studentId, $semesterId, $studentId, $semesterId))->result();
+    }
+
     /**
      * Returns the last answer, with its question.
      *
-     * @param $studentId
+     * @param string    $studentId
+     * @param Period    $period
      * @return object|bool FALSE
      */
-    public function getLastAnswer($studentId) {
+    public function getLastAnswer($studentId, $period) {
         $res = $this->db
             ->select(
                 'idAnswer, Answer.content as answerContent, answerDate,'
@@ -156,6 +248,8 @@ class Students extends CI_Model
             ->join('Question', 'idQuestion')
             ->join('Teacher', 'idTeacher')
             ->where('idStudent', $studentId)
+            ->where('answerDate BETWEEN \'' . $period->getBeginDate()->format('Y-m-d')
+                . '\' AND \'' . $period->getEndDate()->format('Y-m-d') . '\'')
             ->order_by('answerDate', 'DESC')
             ->limit(1)
             ->get()
@@ -289,106 +383,42 @@ class Students extends CI_Model
         return (int) $res->resource;
     }
 
+    /**
+     * Computes in which semester is a student.
+     *
+     * @param string $studentId
+     * @return int
+     */
+    public function getCurrentSemester($studentId)
+    {
+        $semester = $this->db
+            ->from('StudentGroup')
+            ->join('Group', 'idGroup')
+            ->join('Semester', 'idSemester')
+            ->join('Course', 'idCourse')
+            ->where('active', '1')
+            ->where('idStudent', $studentId)
+            ->order_by('idSemester', 'DESC')
+            ->get()
+            ->row();
+
+        if (empty($semester)) {
+            return FALSE;
+        }
+        return $semester;
+    }
+
     public function getSemesters($studentId) {
         return $this->db
-            ->from('studentGroup')
-            ->join('group', 'idGroup')
-            ->join('semester', 'idSemester')
-            ->join('course', 'idCourse')
+            ->from('StudentGroup')
+            ->join('Group', 'idGroup')
+            ->join('Semester', 'idSemester')
+            ->join('Course', 'idCourse')
             ->where('idStudent', $studentId)
             ->order_by('schoolYear', 'DESC')
             ->order_by('idSemester', 'DESC')
             ->get()
             ->result();
     }
-
-    public function getSubjectsAverage($studentId, $semesterId) {
-        $sql = 'SELECT idSubject, subjectCode, subjectName, subjectCoefficient, moduleName, idTeachingUnit, teachingUnitName, teachingUnitCode, idSemester,
-                        ROUND(SUM((value/divisor)*20*coefficient)/SUM(coefficient), 2) AS average,
-                        ROUND(SUM(average*coefficient)/SUM(coefficient), 2) AS groupAverage
-                FROM (
-                SELECT idSubject, idControl, idStudent, idSemester FROM mark
-                    JOIN control using (idControl)
-                    JOIN education USING(idEducation)
-                    JOIN `group` USING(idGroup)
-                    JOIN studentgroup USING(idStudent,idGroup)
-                    where idStudent = ? && idSemester = ?
-                UNION
-                SELECT idSubject, idControl, idStudent, idSemester  FROM mark
-                    JOIN control using (idControl)
-                    JOIN promo USING(idPromo)
-                    JOIN education USING(idSubject)
-                    JOIN `group` USING(idGroup, idSemester)
-                    JOIN studentgroup USING(idStudent)
-                    where idStudent = ? && idSemester = ?) AS c
-                JOIN subject USING(idSubject)
-                JOIN mark USING(idControl, idStudent)
-                JOIN control USING(idControl)
-                JOIN subjectofmodule USING(idSubject)
-                JOIN moduleofteachingunit USING(idModule)
-                JOIN module USING(idModule)
-                JOIN teachingunit USING (idTeachingunit)
-                GROUP BY idSubject, idSemester
-                ORDER BY idTeachingunit';
-
-        return $this->db->query($sql, array($studentId, $semesterId, $studentId, $semesterId))->result();
-    }
-
-    public function getSubjectsTUAverage($studentId, $semesterId) {
-        $sql = 'SELECT idTeachingUnit, teachingUnitName, teachingUnitCode,
-                        ROUND(SUM((value/divisor)*20*coefficient)/SUM(coefficient), 2) AS average,
-                        ROUND(SUM(average*coefficient)/SUM(coefficient), 2) AS groupAverage,
-                        SUM(subjectCoefficient) as coefficient
-
-                FROM (
-                SELECT idSubject, idControl, idStudent, idSemester FROM mark
-                    JOIN control using (idControl)
-                    JOIN education USING(idEducation)
-                    JOIN `group` USING(idGroup)
-                    JOIN studentgroup USING(idStudent,idGroup)
-                    where idStudent = ? && idSemester = ?
-                UNION
-                SELECT idSubject, idControl, idStudent, idSemester  FROM mark
-                    JOIN control using (idControl)
-                    JOIN promo USING(idPromo)
-                    JOIN education USING(idSubject)
-                    JOIN `group` USING(idGroup, idSemester)
-                    JOIN studentgroup USING(idStudent)
-                    where idStudent = ? && idSemester = ?) AS c
-                JOIN subject USING(idSubject)
-                JOIN mark USING(idControl, idStudent)
-                JOIN control USING(idControl)
-                JOIN subjectofmodule USING(idSubject)
-                JOIN moduleofteachingunit USING(idModule)
-                JOIN module USING(idModule)
-                JOIN teachingunit USING (idTeachingunit)
-                GROUP BY idTeachingunit
-                ORDER BY idTeachingunit';
-
-        return $this->db->query($sql, array($studentId, $semesterId, $studentId, $semesterId))->result();
-    }
-
-    public function getAbsencesCount($studentId, $bounds) {
-        $justified = $this->db
-            ->from('absence')
-            ->where('idStudent', $studentId)
-            ->where('beginDate BETWEEN "' . $bounds->getBeginDate()->format('Y-m-d')
-                . '" AND "' . $bounds->getEndDate()->format('Y-m-d') . '"')
-            ->where('justified','1')
-            ->get()
-            ->num_rows();
-        $unjustified = $this->db
-            ->from('absence')
-            ->where('idStudent', $studentId)
-            ->where('beginDate BETWEEN "' . $bounds->getBeginDate()->format('Y-m-d')
-                . '" AND "' . $bounds->getEndDate()->format('Y-m-d') . '"')
-            ->where('justified','0')
-            ->get()
-            ->num_rows();
-
-        return array('justified' => $justified, 'unjustified' => $unjustified);
-
-    }
-
 
 }

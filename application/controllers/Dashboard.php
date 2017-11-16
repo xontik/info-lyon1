@@ -6,10 +6,12 @@ class Dashboard extends TM_Controller
     public function student_index()
     {
         $this->load->model('Students');
+        $this->load->model('Semesters');
         $this->load->model('Projects');
         $this->load->model('DateProposals');
 
         $this->load->helper('timetable');
+        $this->load->helper('time');
 
         // Timetable
         $adeResource = $this->Students->getADEResource($_SESSION['id']);
@@ -35,11 +37,22 @@ class Dashboard extends TM_Controller
         }
         $this->data['side-timetable'] = $sideTimetable;
 
+
+
+        $semester = $this->Students->getCurrentSemester($_SESSION['id']);
+        $period = $this->Semesters->getPeriodObject($semester);
+        $now = new DateTime();
+
+        if (!$now->diff($period->getEndDate())->invert) {
+            $period->setEndDate($now);
+        }
+
         // Absence
-        $this->data['absence'] = $this->Students->getLastAbsence($_SESSION['id']);
+        $this->data['absence'] = $this->Students->getLastAbsence($_SESSION['id'], $period);
+        $this->data['absenceCount'] = $this->Students->getAbsencesCount($_SESSION['id'], $period);
 
         // Mark
-        $this->data['mark'] = $this->Students->getLastMark($_SESSION['id']);
+        $this->data['mark'] = $this->Students->getLastMark($_SESSION['id'], $period);
 
         // Project
         $project = $this->Students->getProject($_SESSION['id']);
@@ -56,9 +69,10 @@ class Dashboard extends TM_Controller
             $this->data['appointment'] = $appointment;
             $this->data['nextDateProposal'] = $nextDateProposal;
         }
+        $this->data['project'] = $project;
 
         // Question
-        $this->data['question'] = $this->Students->getLastAnswer($_SESSION['id']);
+        $this->data['question'] = $this->Students->getLastAnswer($_SESSION['id'], $period);
 
         $this->show('Tableau de bord');
     }
