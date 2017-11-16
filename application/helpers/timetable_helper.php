@@ -67,13 +67,13 @@ function getNextTimetable($resources, $period, $datetime = NULL) {
         }
     }
 
-    $timetable = getTimetable($resources, $period, $datetime);
+    $resources = getTimetable($resources, $period, $datetime);
 
     if (strcasecmp($period, 'day') === 0) {
         // Look at next not empty timetable within 3 days
-        while ($limit < 3 && empty($timetable)) {
+        while ($limit < 3 && empty($resources['timetable'])) {
             $datetime->modify('+1 day');
-            $timetable = getTimetable($resources, $period, $datetime);
+            $resources = getTimetable($resources, $period, $datetime);
             $limit++;
         }
 
@@ -82,10 +82,7 @@ function getNextTimetable($resources, $period, $datetime = NULL) {
         }
     }
 
-    return array(
-        'timetable' => $timetable,
-        'date' => $datetime
-    );
+    return $resources + array('date' => $datetime);
 }
 
 /**
@@ -210,6 +207,9 @@ function _narrow($timetable, $begin, $end, $period)
 {
     $final = array();
 
+    $minTime = '24:00';
+    $maxTime = '00:00';
+
     $temp = clone $begin;
     do {
         $year = $temp->format('Y');
@@ -228,8 +228,21 @@ function _narrow($timetable, $begin, $end, $period)
             }
 
             unset($timetable[$year][$week][$dayOfWeek]['updated']);
+
             if (!empty($timetable[$year][$week][$dayOfWeek])) {
-                $final[$year][$week][$dayOfWeek] = $timetable[$year][$week][$dayOfWeek];
+                $day = $timetable[$year][$week][$dayOfWeek];
+
+                if ($day['earliestTime'] < $minTime) {
+                    $minTime = $day['earliestTime'];
+                }
+                if ($day['latestTime'] > $maxTime) {
+                    $maxTime = $day['latestTime'];
+                }
+
+                unset($day['earliestTime']);
+                unset($day['latestTime']);
+
+                $final[$year][$week][$dayOfWeek] = $day;
             }
         }
 
@@ -240,12 +253,6 @@ function _narrow($timetable, $begin, $end, $period)
     $year = $begin->format('Y');
     $week = $begin->format('W');
     $dayOfWeek = $begin->format('N');
-
-    // Reduce period to week
-    if (!isset($final[$year]) || !isset($final[$year][$week])) {
-        trigger_error('Error : this shouldn\'t happen');
-        return array();
-    }
 
     $final = $final[$year][$week];
 
@@ -258,7 +265,11 @@ function _narrow($timetable, $begin, $end, $period)
         }
     }
 
-    return $final;
+    return array(
+        'timetable' => $final,
+        'minTime' => $minTime,
+        'maxTime' => $maxTime
+    );
 }
 
 /**
@@ -301,6 +312,8 @@ function _icsToTimetable($icsFilepath, $beginDate, $endDate)
             foreach ($ics['VEVENT'] as $event) {
 				$startTime = new DateTime($event['DTSTART']);
 				$startTime->setTimezone($timezone);
+				$endTime = new DateTime($event['DTEND']);
+				$endTime->setTimezone($timezone);
 
 				$year = $startTime->format('Y');
 				if (!array_key_exists($year, $timetable)) {
@@ -316,9 +329,25 @@ function _icsToTimetable($icsFilepath, $beginDate, $endDate)
 				
 				$day = $startTime->format('N');
 				if (!array_key_exists($day, $timetable[$year][$week])) {
-					$timetable[$year][$week][$day] = array();
+					$timetable[$year][$week][$day] = array(
+                        'updated' => $now,
+                        'earliestTime' => 24,
+                        'latestTime' => 0
+                    );
 				}
 
+				// Earliest and latest time
+                $hour = $startTime->format('H:i');
+                if ($hour < $timetable[$year][$week][$day]['earliestTime']) {
+                    $timetable[$year][$week][$day]['earliestTime'] = $hour;
+                }
+
+                $hour = $endTime->format('H:i');
+                if ($hour > $timetable[$year][$week][$day]['latestTime']) {
+                    $timetable[$year][$week][$day]['latestTime'] = $hour;
+                }
+
+                // Compute description
                 $description = explode('\n', $event['DESCRIPTION']);
 
 				$groupLimit = 1;
@@ -329,16 +358,16 @@ function _icsToTimetable($icsFilepath, $beginDate, $endDate)
 				$groups = implode(', ', array_slice($description, 1, $groupLimit - 1));
 				$teachers = implode(', ', array_slice($description, $groupLimit, -1));
 
-                $timetable[$year][$week][$day]['updated'] = $now;
+				// Creates event
                 $timetable[$year][$week][$day][] = array(
                     'name' => $event['SUMMARY'],
                     'timeStart' => $startTime->format('H:i'),
-                    'timeEnd' => (new DateTime($event['DTEND']))->setTimezone($timezone)->format('H:i'),
+                    'timeEnd' => $endTime->format('H:i'),
                     'location' => str_replace('\\', '', $event['LOCATION']),
                     'groups' => $groups,
                     'teachers' => $teachers
                 );
-			}
+            }
 		}
 
 		$tempDate = clone $beginDate;
@@ -473,7 +502,21 @@ function _getAdeRequest($resources, $beginDate, $endDate)
  */
 function sortTimetable($item1, $item2)
 {
-    return $item1['timeStart'] > $item2['timeStart'] ? 1 : -1;
+    return $item1['timeStart'] > $item2['timeStart'] ? 1 : -1 ;
+}
+
+/**
+ * Converts a time string to a float.
+ *
+ * @param $time
+ * @return float
+ */
+function timeToFloat($time) {
+    $time = DateTime::createFromFormat('H:i', $time);
+
+    $float = (float) $time->format('H');
+    $float += (float) $time->format('i') / 60;
+    return $float;
 }
 
 /**
@@ -497,17 +540,17 @@ function translateAndFormat($date)
 
 /**
  * Compute the height (in percent) a DOM element should take
- * comparing the hours it represents in a day of 10h.
+ * comparing the hours it represents to the hours in the day.
  * To be used in views.
  *
- * @param string    $begin  The beginning of time
- * @param string    $end    The end of time
+ * @param string    $begin
+ * @param string    $end
+ * @param int       $hoursInDay
  * @return string
  */
-function computeTimeToHeight($begin, $end)
+function computeTimeToHeight($begin, $end, $hoursInDay)
 {
-    $interval = abs(strtotime($begin) - strtotime($end));
-    return ($interval / 360) . '%';
+    return ((timeToFloat($end) - timeToFloat($begin)) / $hoursInDay) * 100 . '%';
 }
 
 /**
@@ -516,10 +559,12 @@ function computeTimeToHeight($begin, $end)
  *
  * @param string    $from
  * @param string    $to
+ * @param int       $hoursInDay
  */
-function fillTime($from, $to) {
+function fillTime($from, $to, $hoursInDay) {
     ?>
-    <div class="fill hide-on-med-and-down" style="height: <?= computeTimeToHeight($from, $to) ?>"></div>
+    <div class="fill hide-on-med-and-down" style="height: <?= computeTimeToHeight($from, $to, $hoursInDay)
+    ?>"></div>
     <?php
 }
 

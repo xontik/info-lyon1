@@ -16,18 +16,42 @@
  * In view
  * <?= $data['side-edt'] ?>
  */
+
+$minFloat = timeToFloat($minTime);
+$maxFloat = timeToFloat($maxTime);
+$hours = $maxFloat - $minFloat;
+
+if ($hours < 10) {
+    if ($minFloat > 8) {
+        $minTime = '08:00';
+        $minFloat = 8;
+    }
+
+    if ($maxFloat < 18) {
+        $maxTime = '18:00';
+        $maxFloat = 18;
+    }
+
+    $hours = $maxFloat - $minFloat;
+}
 ?>
     <div id="side-edt-large" class="hide-on-small-and-down card center-align">
         <div class="card-content">
             <a href="<?= base_url('Timetable') ?>" class="card-title"><?= translateAndFormat($date) ?></a>
             <div class="row">
                 <div class="hours col s2">
-                    <?php for($i = 8; $i <= 17; $i++) { ?>
-                        <div><?= $i ?>h</div>
-                        <div>30</div>
-                        <?php
+                    <?php
+                    for ($i = $minFloat; $i <= $maxFloat; $i += 0.5) {
+                        if ($i - floor($i) == 0) {
+                            ?>
+                            <div><?= $i ?>h</div>
+                            <?php
+                        } else {
+                            ?>
+                            <div>30</div>
+                            <?php
+                        }
                     } ?>
-                    <div>18h</div>
                 </div>
                 <div class="content col s10">
                     <?php
@@ -58,11 +82,11 @@
                             // Fill time
                             if (is_null($lastTimeEnd)) {
                                 // Fill if day doesn't begin at 08:00
-                                if ($event['timeStart'] !== '08:00') {
-                                    fillTime('08:00', $event['timeStart']);
+                                if ($event['timeStart'] !== $minTime) {
+                                    fillTime($minTime, $event['timeStart'], $hours);
                                 }
                             } else if ($lastTimeEnd !== $event['timeStart']) {
-                                fillTime($lastTimeEnd, $event['timeStart']);
+                                fillTime($lastTimeEnd, $event['timeStart'], $hours);
                             }
                             $lastTimeEnd = $event['timeEnd'];
 
@@ -78,7 +102,7 @@
 
                             ?>
                                 <div class="valign-wrapper <?= join(' ', $classes) ?>"
-                                    style="height: <?= computeTimeToHeight($event['timeStart'], $event['timeEnd']) ?>; ">
+                                    style="height: <?= computeTimeToHeight($event['timeStart'], $event['timeEnd'], $hours) ?>; ">
                                     <?php
                                         if (isset($links[$linksPointer])) {
                                             $endtag = '</a>';
@@ -100,7 +124,7 @@
 
                         // Add a fill if day doesn't end at 18:00
                         if (!is_null($lastTimeEnd) && $lastTimeEnd !== '18:00') {
-                            fillTime($lastTimeEnd, '18:00');
+                            fillTime($lastTimeEnd, $maxTime, $hours);
                         }
 
                     } ?>
@@ -129,7 +153,6 @@
                     </div>
                     <?php
                 } ?>
-                </div>
             </div>
         <?php
         } else {
@@ -175,6 +198,5 @@
                     <?php
                 }
             }
-            // TODO Proposer changer ressource
         } ?>
     </div>

@@ -3,7 +3,7 @@
 $hourCount: 10;
 
 #timetable .active {
-  border-width: 2px 3px 3px 2px;
+  border-width: 3px 4px 4px 3px;
   border-style: outset;
   border-color: $primary-color-dark;
 }
@@ -15,23 +15,11 @@ $hourCount: 10;
     flex-flow: row nowrap;
     justify-content: center;
 
-    &:not(.empty) {
-      height: 540px;
-
-      > #timetable {
-        height: 510px;
-      }
-    }
-
     > .hours {
       display: flex;
       height: 100%;
       flex-flow: column nowrap;
       margin-top: 32px;
-
-      &.empty {
-        display: none;
-      }
 
       > div {
         height: 100% / $hourCount;
@@ -48,8 +36,7 @@ $hourCount: 10;
         }
       }
     }
-
-}
+  }
 
   #timetable {
     display: flex;
@@ -57,8 +44,8 @@ $hourCount: 10;
     justify-content: center;
 
     > .events {
-      min-width: 200px;
-      width: 200px;
+      width: 17vw;
+      max-width: 340px;
 
       > h5 {
         margin: 0;

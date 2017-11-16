@@ -8,7 +8,12 @@ class Timetable extends TM_Controller
         $this->load->helper('timetable');
 
         if ($adeResource === FALSE) {
-            $this->data = array('date' => new DateTime(), 'timetable' => false);
+            $this->data = array(
+                'date' => new DateTime(),
+                'timetable' => false,
+                'minTime' => '00:00',
+                'maxTime' => '01:00'
+            );
             $this->data['loaded'] = false;
         } else {
             $timetableDate = is_numeric($weekNum) ? $weekNum : new DateTime();
@@ -96,7 +101,12 @@ class Timetable extends TM_Controller
         $this->load->helper('timetable');
 
         if ($adeResource === FALSE) {
-            $this->data = array('date' => new DateTime(), 'timetable' => false);
+            $this->data = array(
+                'date' => new DateTime(),
+                'timetable' => false,
+                'minTime' => '00:00',
+                'maxTime' => '01:00'
+            );
             $this->data['loaded'] = false;
         } else {
             $timetableDate = $weekNum ? $weekNum : new DateTime();
