@@ -84,8 +84,6 @@ class Process_DateProposal extends CI_Controller
                         'success'
                     );
 
-                } else {
-                    exit('fak');
                 }
 
             } else {

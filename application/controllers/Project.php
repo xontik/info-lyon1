@@ -63,7 +63,7 @@ class Project extends TM_Controller
     }
 
     public function teacher_manage($projectId) {
-        
+        echo 'managation';
     }
 
     private function _appointments($project)
