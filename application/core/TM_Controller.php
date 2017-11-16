@@ -11,7 +11,7 @@ abstract class TM_Controller extends CI_Controller {
         parent::__construct();
 
         if(!isset($_SESSION['userType'])) {
-            redirect(base_url());
+            show_404();
         }
 
         $this->viewData = array();
