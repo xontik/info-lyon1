@@ -8,30 +8,37 @@ class Absence extends TM_Controller
         if (!preg_match('/^S[1-4]$/', $semester)) {
             $semester = '';
         }
+
         $this->load->model('Semesters');
 
+        $this->load->helper('tabs');
+
         // Loads the max semester type the student went to
-        $max_semester = (int) substr($this->Semesters->getType(
+        $maxSemester = (int) substr($this->Semesters->getType(
                 $this->Semesters->getStudentCurrent($_SESSION['id'])
             ), 1
         );
 
-        if ($semester !== '' && $semester > 'S' . $max_semester) {
+        if ($semester !== '' && $semester > 'S' . $maxSemester) {
             addPageNotification('Vous essayez d\'accéder à un semestre futur !<br>Redirection vers votre semestre courant');
             $semester = '';
         }
 
+        // Tabs content
+        $tabs = array();
+        for ($i = 1; $i <= $maxSemester; $i++) {
+            $tabs["S$i"] = createTab("Semester $i", "Mark/S$i");
+        }
+
         $semesterId = $this->Semesters->getSemesterId($semester, $_SESSION['id']);
+
         $semesterType = $this->Semesters->getType($semesterId);
+        $tabs[$semesterType]->active = true;
 
         $absences = $this->Semesters->getStudentAbsence($_SESSION['id'], $semesterId);
 
         $this->data = array(
-            'semesterTabs' => array(
-                'max' => $max_semester,
-                'semester' => $semesterType,
-                'basePage' => 'Absence',
-            ),
+            'tabs' => $tabs,
             'absences' => $absences
         );
 

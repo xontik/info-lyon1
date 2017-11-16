@@ -14,6 +14,7 @@ class Teachers extends CI_Model
     {
         return $this->db->select('name, surname, email')
             ->from('Teacher')
+            ->join('user', 'idUser')
             ->where('idTeacher', $teacherId)
             ->get()
             ->row();
@@ -397,5 +398,19 @@ class Teachers extends CI_Model
         }
         return (int) $res->resource;
     }
+
+    /**
+     * Gets all teachers
+     *
+     * @return array
+     */
+     public function getAll(){
+         return $this->db
+            ->from('teacher')
+            ->join('user', 'idUser')
+            ->get()
+            ->result();
+     }
+
 
 }

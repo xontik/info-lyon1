@@ -14,7 +14,9 @@
                     <li>Copier l'url générée et la coller <b>ci-dessous</b></li>
                     <li><i class="material-icons">warning</i> Cette opération est a effectuer à chaque changement d'emploi du temps</li>
                 </ol>
-                <form action="<?= base_url('Process_Timetable/edit') ?>" method="post">
+                <form action="<?= base_url('Process_Timetable/edit'
+                        . (isset($data['type']) && isset($data['who']) ? '/' . $data['type'] . '/' . $data['who'] : '')) ?>"
+                      method="post">
                     <div class="input-field">
                         <input type="text" name="url" id="url">
                         <label for="url">Collez ici l'url ou le numéro de ressource</label>

@@ -5445,28 +5445,20 @@ body > header > nav h2 { text-align: center; font-size: 2.46rem; }
 
 .horizontal-table-wrapper { overflow-x: auto; }
 
-#timetable .active { border-width: 3px 4px 4px 3px; border-style: outset; border-color: #b39600; }
+#association-group-teacher-subject i { cursor: pointer; }
 
-@media only screen and (min-width: 993px) { #timetable-wrapper { display: flex; flex-flow: row nowrap; justify-content: center; }
-  #timetable-wrapper > .hours { display: flex; height: 100%; flex-flow: column nowrap; margin-top: 32px; }
-  #timetable-wrapper > .hours > div { height: 10%; padding-right: 5px; border-right: 2px solid #d0d0d0; }
-  #timetable-wrapper > .hours > div:nth-of-type(odd) { font-weight: 500; }
-  #timetable-wrapper > .hours > div:nth-of-type(even) { font-size: 11px; }
-  #timetable { display: flex; flex-flow: row nowrap; justify-content: center; }
-  #timetable > .events { width: 17vw; max-width: 340px; }
-  #timetable > .events > h5 { margin: 0; padding-bottom: 5px; border-bottom: 2px solid #d0d0d0; }
-  #timetable > .events > div { overflow: auto; padding-top: 10px; }
-  #timetable > .events > div h5 { margin: 0; white-space: nowrap; overflow: hidden; font-size: 1.2rem; font-weight: 500; }
-  #timetable > .events > .fill { border-top: 2px solid #d0d0d0; border-bottom: 2px solid #d0d0d0; }
-  #timetable > .events > h5 + .fill { border-top: none; } }
-@media only screen and (max-width: 992px) { #timetable { display: flex; flex-flow: row wrap; justify-items: center; align-items: center; }
-  .events { display: flex; flex-flow: column nowrap; justify-content: center; box-sizing: border-box; width: 100vw; padding-left: 8px; padding-right: 8px; }
-  .events > h5 { margin-top: 20px; margin-bottom: 10px; }
-  .events > div { display: flex; flex-flow: row nowrap; justify-content: space-between; align-items: center; padding-top: 8px; padding-bottom: 8px; }
-  .events > div > div { font-size: 1rem; flex-grow: 1; display: inline-block; }
-  .events > div > div:first-child, .events > div > div:last-child { width: 20%; }
-  .events > div > div:nth-child(2) { box-sizing: border-box; width: 60%; }
-  .events > div > div:last-child { font-size: 1.15rem; }
-  .events > div > div > h5 { font-size: 1.3rem; margin: 0; } }
+.horizontal-wrapper { display: flex; flex-direction: row; align-items: flex-start; flex-wrap: nowrap; overflow-x: auto; padding-left: 5px; padding-right: 5px; }
+.horizontal-wrapper .collection-item { white-space: nowrap; min-width: 200px; }
+.horizontal-wrapper > * { flex-shrink: 0; margin: 5px; margin-bottom: auto; overflow: visible; }
+.horizontal-wrapper > * li.collection-item { padding-left: 15px !important; }
+.horizontal-wrapper > * .connectedSortable:hover { cursor: pointer; }
+.horizontal-wrapper .add-group { align-self: flex-end; margin: auto; padding: 10px; }
+.horizontal-wrapper .collection-header { min-width: 200px; }
 
-/*# sourceMappingURL=timetable.css.map */
+.placeholder { background-color: #ffd600 !important; }
+
+#sortable1, #sortable2 { border: 1px solid #eee; width: 142px; min-height: 20px; list-style-type: none; margin: 0; padding: 5px 0 0 0; float: left; margin-right: 10px; }
+
+#sortable1 li, #sortable2 li { margin: 0 5px 5px 5px; padding: 5px; font-size: 1.2em; width: 120px; }
+
+/*# sourceMappingURL=administration_semester.css.map */

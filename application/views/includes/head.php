@@ -41,20 +41,22 @@
 
         $nav = array(
             'student' => array(
-                'absences' => '/Absence',
-                'notes' => '/Mark',
-                'ptut' => '/Project',
-                'questions' => '/Question'
+                'absences' => 'Absence',
+                'notes' => 'Mark',
+                'ptut' => 'Project',
+                'questions' => 'Question'
             ),
             'teacher' => array(
                 'absences' => '/Absence',
                 'controles' => '/Control',
                 'ptut' => '/Project',
-                'questions' => '/Question'
+                'questions' => '/Question',
+                'suivi' => '/Student'
             ),
             'secretariat' => array(
                 'absences' => '/Absence',
-                'Administration' => '/Administration'
+                'administration' => '/Administration',
+                'suivi' => '/Student'
             )
         );
         ?><nav class="nav-extended">
@@ -63,9 +65,11 @@
                 <!-- computer nav -->
                 <ul class="right hide-on-med-and-down">
                     <?php foreach ($nav[$_SESSION['userType']] as $item => $url) {
-                        $active = '/' . ucfirst($pageName) === $url
+                        $active = strcasecmp($pageName, $url) === 0
                             ? ' active' : '';
-                        echo '<li class="small-caps ' . $active . '"><a href="' . $url . '">' . $item . '</a></li>';
+                        ?>
+                        <li class="small-caps <?= $active ?>"><a href="<?= base_url($url) ?>"><?= $item ?></a></li>
+                        <?php
                     } ?>
                     <li>
                         <a class="dropdown-button"
@@ -175,19 +179,20 @@
                     </div>
                 </div>
             </div>
-            <?php if (isset($data['semesterTabs'])) {
-                $active = $data['semesterTabs']['semester'];
+            <?php if (isset($data['tabs'])) {
                 ?>
                 <div class="nav-content">
                     <ul class="tabs tabs-transparent">
                     <?php
-                    for ($i = 1; $i <= $data['semesterTabs']['max']; $i++)
-                    { ?>
-                        <li class="tab"><a target="_self" href="<?= base_url($data['semesterTabs']['basePage'] . "/S$i") ?>"
-                                <?= $active === "S$i" ? 'class="active"' : '' ?>>Semestre <?= $i ?></a></li>
+                    foreach ($data['tabs'] as $tab) {
+                        ?>
+                        <li class="tab">
+                            <a target="_self" href="<?= base_url($tab->url) ?>"
+                                <?= $tab->active ? 'class="active"' : '' ?>
+                                ><?= $tab->content ?></a>
+                        </li>
                         <?php
-                    }
-                    ?>
+                    } ?>
                     </ul>
                 </div>
             <?php } ?>

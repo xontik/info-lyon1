@@ -17,14 +17,19 @@ class Dashboard extends TM_Controller
         if ($adeResource === FALSE) {
             $sideTimetable = $this->load->view(
                 'includes/side-timetable',
-                array('date' => new DateTime(), 'timetable' => false),
+                array(
+                    'date' => new DateTime(),
+                    'timetable' => false,
+                    'minTime' => '00:00',
+                    'maxTime' => '01:00'
+                ),
                 TRUE
             );
         } else {
             $result = getNextTimetable($adeResource, 'day');
             $sideTimetable = $this->load->view(
                 'includes/side-timetable',
-                array('date' => $result['date'], 'timetable' => $result['timetable']),
+                $result,
                 TRUE
             );
         }

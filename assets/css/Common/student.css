@@ -1199,7 +1199,7 @@ html { box-sizing: border-box; }
 ul:not(.browser-default) { padding-left: 0; list-style-type: none; }
 ul:not(.browser-default) > li { list-style-type: none; }
 
-a { color: #ffca28; text-decoration: none; -webkit-tap-highlight-color: transparent; }
+a { color: #ffab40; text-decoration: none; -webkit-tap-highlight-color: transparent; }
 
 .valign-wrapper { display: flex; align-items: center; }
 
@@ -1367,7 +1367,7 @@ td, th { padding: 15px 5px; display: table-cell; text-align: left; vertical-alig
 
 .left-align { text-align: left; }
 
-.right-align, .btn-footer { text-align: right; }
+.right-align { text-align: right; }
 
 .center, .center-align, .hide-on-med-and-down ul.dropdown-content li { text-align: center; }
 
@@ -1399,7 +1399,7 @@ nav ul a span.badge { display: inline-block; float: none; margin-left: 4px; line
 .side-nav span.badge { margin-top: calc(24px - 11px); }
 
 /* This is needed for some mobile phones to display the Google Icon font properly */
-.material-icons { text-rendering: optimizeLegibility; font-feature-settings: 'liga'; }
+.material-icons { text-rendering: optimizeLegibility; font-feature-settings: 'liga'; vertical-align: middle; }
 
 .container { margin: 0 auto; max-width: 1280px; width: 90%; }
 
@@ -3912,7 +3912,7 @@ html { box-sizing: border-box; }
 ul:not(.browser-default) { padding-left: 0; list-style-type: none; }
 ul:not(.browser-default) > li { list-style-type: none; }
 
-a { color: #ffca28; text-decoration: none; -webkit-tap-highlight-color: transparent; }
+a { color: #ffab40; text-decoration: none; -webkit-tap-highlight-color: transparent; }
 
 .valign-wrapper { display: flex; align-items: center; }
 
@@ -4080,7 +4080,7 @@ td, th { padding: 15px 5px; display: table-cell; text-align: left; vertical-alig
 
 .left-align { text-align: left; }
 
-.right-align, .btn-footer { text-align: right; }
+.right-align { text-align: right; }
 
 .center, .center-align, .hide-on-med-and-down ul.dropdown-content li { text-align: center; }
 
@@ -4112,7 +4112,7 @@ nav ul a span.badge { display: inline-block; float: none; margin-left: 4px; line
 .side-nav span.badge { margin-top: calc(24px - 11px); }
 
 /* This is needed for some mobile phones to display the Google Icon font properly */
-.material-icons { text-rendering: optimizeLegibility; font-feature-settings: 'liga'; }
+.material-icons { text-rendering: optimizeLegibility; font-feature-settings: 'liga'; vertical-align: middle; }
 
 .container { margin: 0 auto; max-width: 1280px; width: 90%; }
 
@@ -5441,4 +5441,10 @@ body > header > nav h2 { text-align: center; font-size: 2.46rem; }
 
 .small-caps { font-variant: small-caps; }
 
-/*# sourceMappingURL=administration.css.map */
+.card-action button.btn-flat { color: #ffab40; }
+
+.horizontal-table-wrapper { overflow-x: auto; }
+
+.sorter { cursor: pointer; }
+
+/*# sourceMappingURL=student.css.map */

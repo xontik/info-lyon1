@@ -11,22 +11,14 @@ class Process_Group extends CI_Controller
         $this->load->model('Groups');
         $this->load->model('Semesters');
 
-        if (isset($_POST['groupName'])) {
-            $groupName = htmlspecialchars($_POST['groupName']);
-
-            //TODO add preg_match
-            if ($this->Semesters->isEditable($semesterId))
-            {
-                if ($this->Groups->create($semesterId, $groupName)) {
-                    addPageNotification('Groupe ' . $groupName . ' ajouté avec succès', 'success');
-                } else {
-                    addPageNotification('Erreur lors de la création du groupe', 'danger');
-                }
+        if ($this->Semesters->isDeletable($semesterId)) {
+            if ($groupName = $this->Groups->create($semesterId)) {
+                addPageNotification('Groupe ' . $groupName . ' ajouté avec succès', 'success');
             } else {
-                addPageNotification('Ce semestre ne peut pas être modifié', 'danger');
+                addPageNotification('Erreur lors de la création du groupe', 'danger');
             }
         } else {
-            addPageNotification('Données manquantes', 'danger');
+            addPageNotification('Ce semestre ne peut pas être modifié', 'danger');
         }
 
         redirect('Administration/Semester/' . $semesterId);
@@ -35,70 +27,83 @@ class Process_Group extends CI_Controller
     public function delete($groupId, $semesterId)
     {
         $this->load->model('Groups');
+        $this->load->model('Semesters');
 
-        if ($this->Groups->isEditable($groupId)) {
+        if ($this->Semesters->isDeletable($semesterId)) {
             if ($this->Groups->delete($groupId)) {
                 addPageNotification('Groupe supprimé', 'success');
             } else {
                 addPageNotification('Erreur lors de la suppression du groupe', 'danger');
             }
         } else {
-            addPageNotification('Ce semestre ne peut etre modifié', 'warning');
+            addPageNotification('Ce semestre ne peut etre modifié', 'danger');
         }
 
         redirect('Administration/Semester/' . $semesterId);
     }
-
+    /**
+     * AJAX
+     */
     public function add_student($semesterId)
     {
         $this->load->model('Groups');
         $this->load->model('Semesters');
+        $this->load->model('Students');
 
-        if (isset($_POST['submit'])
-            && isset($_POST['group' . $_POST['submit']])
-        ) {
-            $studentId = htmlspecialchars($_POST['group' . $_POST['submit']]);
-            $groupId = (int) htmlspecialchars($_POST['submit']);
 
+        $out = array();
+        if (isset($_POST['studentId']) && isset($_POST['groupId'])) {
+            $studentId = htmlspecialchars($_POST['studentId']);
+            $groupId = htmlspecialchars($_POST['groupId']);
             $concurrentSemesters = $this->Semesters->getConcurrent($semesterId);
 
-            if ($this->Groups->isEditable($groupId))
-            {
-                if ($group = $this->Semesters->anyHasStudent($studentId, $concurrentSemesters))
-                {
-                    addPageNotification(
-                        'Impossible d\'ajouter cet étudiant car il est déjà en '
-                        . $group->groupName . $group->courseType,
-                        'danger'
-                    );
-                }
-                else {
-                    $otherGroups = $this->Semesters->getOtherGroups($groupId);
-
-                    $delete = false;
-                    foreach ($otherGroups as $otherGroup) {
-                        if ($this->Groups->hasStudent($studentId, $otherGroup->idGroup)) {
-                            $this->Groups->removeStudent($studentId, $otherGroup->idGroup);
-                            $delete = true;
-                        }
-                    }
-
-                    if ($delete) {
-                        addPageNotification('Etudiant déplacé', 'success');
-                    } else {
-                        addPageNotification('Etudiant ajouté', 'success');
-                    }
-                    $this->Groups->addStudent($studentId, $groupId);
-
-                }
+            if (!$this->Students->get($studentId)) {
+                addPageNotification('Impossible d\'ajouter cet étudiant car il n\'existe pas','danger');
+                $out['type'] = 'danger';
             } else {
-                addPageNotification('Impossible de modifier ce groupe', 'danger');
+                if ($this->Groups->isEditable($groupId))
+                {
+                    if ($group = $this->Semesters->anyHasStudent($studentId, $concurrentSemesters))
+                    {
+                        addPageNotification('Impossible d\'ajouter cet étudiant car il est déjà en '
+                        . $group->groupName . $group->courseType,'danger');
+                        $out['type'] = 'danger';
+
+                    }
+                    else {
+                        $otherGroups = $this->Semesters->getOtherGroups($groupId);
+
+                        $delete = false;
+                        foreach ($otherGroups as $otherGroup) {
+                            if ($this->Groups->hasStudent($studentId, $otherGroup->idGroup)) {
+                                $this->Groups->removeStudent($studentId, $otherGroup->idGroup);
+                                $delete = true;
+                            }
+                        }
+
+                        if ($delete) {
+                            $out['text'] = 'Etudiant déplacé';
+                            $out['type'] = 'success';
+
+                        } else {
+                            $out['text'] = 'Etudiant ajouté';
+                            $out['type'] = 'success';
+                        }
+                        $this->Groups->addStudent($studentId, $groupId);
+
+                    }
+                } else {
+                    addPageNotification('Impossible de modifier ce groupe','danger');
+                    $out['type'] = 'danger';
+                }
             }
         } else {
-            addPageNotification('Données corrompues', 'danger');
+            addPageNotification('Données corrompues','danger');
+            $out['type'] = 'danger';
         }
 
-        redirect('Administration/Semester/' . $semesterId);
+        header('Content-Type: application/json');
+        echo json_encode($out);
     }
 
     public function delete_student($groupId, $studentId, $semesterId)
@@ -107,12 +112,30 @@ class Process_Group extends CI_Controller
 
         if ($this->Groups->isEditable($groupId))
         {
-            $this->Groups->removeStudent($studentId, $groupId);
-            addPageNotification('Etudiant supprimé du groupe', 'success');
+            if($this->Groups->removeStudent($studentId, $groupId)) {
+                $out['text'] = 'Etudiant supprimé du groupe';
+                $out['type'] = 'success';
+                if (!isset($_POST['ajax'])) {
+                    addPageNotification($out['text'],$out['type']);
+                }
+            } else {
+                $out['type'] = 'danger';
+                addPageNotification('Impossible de supprimer cet élève','danger');
+
+            }
+
         } else {
-            addPageNotification('Impossible de modifier ce groupe', 'danger');
+            $out['type'] = 'danger';
+            addPageNotification('Impossible de modifier ce groupe','danger');
         }
-        redirect('Administration/Semester/' . $semesterId);
+
+
+        if (isset($_POST['ajax'])) {
+            header('Content-Type: application/json');
+            echo json_encode($out);
+        } else {
+            redirect('Administration/Semester/' . $semesterId);
+        }
 
     }
 }

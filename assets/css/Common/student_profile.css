@@ -5445,28 +5445,6 @@ body > header > nav h2 { text-align: center; font-size: 2.46rem; }
 
 .horizontal-table-wrapper { overflow-x: auto; }
 
-#timetable .active { border-width: 3px 4px 4px 3px; border-style: outset; border-color: #b39600; }
+.expandable i:hover { cursor: pointer; }
 
-@media only screen and (min-width: 993px) { #timetable-wrapper { display: flex; flex-flow: row nowrap; justify-content: center; }
-  #timetable-wrapper > .hours { display: flex; height: 100%; flex-flow: column nowrap; margin-top: 32px; }
-  #timetable-wrapper > .hours > div { height: 10%; padding-right: 5px; border-right: 2px solid #d0d0d0; }
-  #timetable-wrapper > .hours > div:nth-of-type(odd) { font-weight: 500; }
-  #timetable-wrapper > .hours > div:nth-of-type(even) { font-size: 11px; }
-  #timetable { display: flex; flex-flow: row nowrap; justify-content: center; }
-  #timetable > .events { width: 17vw; max-width: 340px; }
-  #timetable > .events > h5 { margin: 0; padding-bottom: 5px; border-bottom: 2px solid #d0d0d0; }
-  #timetable > .events > div { overflow: auto; padding-top: 10px; }
-  #timetable > .events > div h5 { margin: 0; white-space: nowrap; overflow: hidden; font-size: 1.2rem; font-weight: 500; }
-  #timetable > .events > .fill { border-top: 2px solid #d0d0d0; border-bottom: 2px solid #d0d0d0; }
-  #timetable > .events > h5 + .fill { border-top: none; } }
-@media only screen and (max-width: 992px) { #timetable { display: flex; flex-flow: row wrap; justify-items: center; align-items: center; }
-  .events { display: flex; flex-flow: column nowrap; justify-content: center; box-sizing: border-box; width: 100vw; padding-left: 8px; padding-right: 8px; }
-  .events > h5 { margin-top: 20px; margin-bottom: 10px; }
-  .events > div { display: flex; flex-flow: row nowrap; justify-content: space-between; align-items: center; padding-top: 8px; padding-bottom: 8px; }
-  .events > div > div { font-size: 1rem; flex-grow: 1; display: inline-block; }
-  .events > div > div:first-child, .events > div > div:last-child { width: 20%; }
-  .events > div > div:nth-child(2) { box-sizing: border-box; width: 60%; }
-  .events > div > div:last-child { font-size: 1.15rem; }
-  .events > div > div > h5 { font-size: 1.3rem; margin: 0; } }
-
-/*# sourceMappingURL=timetable.css.map */
+/*# sourceMappingURL=student_profile.css.map */
