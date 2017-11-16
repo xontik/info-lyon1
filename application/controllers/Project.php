@@ -54,6 +54,12 @@ class Project extends TM_Controller
             addPageNotification('Projet introuvable', 'warning');
             redirect('Project');
         }
+
+        $members = $this->Projects->getMembers($projectId);
+        if (!count($members)) {
+            addPageNotification('Projet ne comportant aucun étudiant', 'warning');
+            redirect('Project');
+        }
         if (!$this->Teachers->isTutor($projectId, $_SESSION['id'])) {
             addPageNotification('Vous n\'avez pas accès à ce projet tuteuré', 'danger');
             redirect('Project');

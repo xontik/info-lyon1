@@ -14,6 +14,7 @@ class Teachers extends CI_Model
     {
         return $this->db->select('name, surname, email')
             ->from('Teacher')
+            ->join('User', 'idUser')
             ->where('idTeacher', $teacherId)
             ->get()
             ->row();
@@ -394,6 +395,16 @@ class Teachers extends CI_Model
             return FALSE;
         }
         return (int) $res->resource;
+    }
+
+    public function getLastProject($teacherId) {
+
+        return $this->db
+            ->from('Project')
+            ->where('idteacher', $teacherId)
+            ->order_by('idProject', 'DESC')
+            ->get()
+            ->row();
     }
 
 }

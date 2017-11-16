@@ -242,4 +242,14 @@ class Projects extends CI_Model
             ->num_rows();
     }
 
+
+    public function create($teacherId) {
+
+        $data = array('idTeacher' => $teacherId);
+        $this->db
+            ->insert('project', $data);
+
+        return $this->db->affected_rows();
+    }
+
 }

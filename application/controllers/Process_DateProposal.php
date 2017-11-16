@@ -10,8 +10,18 @@ class Process_DateProposal extends CI_Controller
 
         $this->load->model('DateProposals');
         $this->load->model('Projects');
+        $project = $this->Projects->get($projectId);
+        if ($project === FALSE) {
+            addPageNotification('Projet introuvable', 'warning');
+            redirect('Project');
+        }
 
-        if ($projectId !== 0
+        $members = $this->Projects->getMembers($projectId);
+        if (!count($members)) {
+            addPageNotification('Projet ne comportant aucun étudiant', 'warning');
+            redirect('Project');
+        }
+        if (
             && isset($_POST['date'])
             && isset($_POST['time'])
         ) {
