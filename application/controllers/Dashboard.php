@@ -17,8 +17,8 @@ class Dashboard extends TM_Controller
                 array(
                     'date' => new DateTime(),
                     'timetable' => false,
-                    'minTime' => '00:00',
-                    'maxTime' => '01:00'
+                    'minTime' => '08:00',
+                    'maxTime' => '18:00'
                 ),
                 TRUE
             );

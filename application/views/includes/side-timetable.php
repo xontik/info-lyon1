@@ -1,21 +1,14 @@
 <?php
 /**
  * DATAS NEEDED
- * DateTime $date - Date displayed, should be date of the displayed timetable
- * array $calendar - The timetable
- * array $links - The links for each event (optionnal)
- *
- * USAGE:
- * In controller:
- * $data['side-edt'] = $this->load->view(
- *      'includes/side-edt',
- *      array('date' => [...], 'timetable' => [...], 'links' = [...]),
- *      TRUE
- * );
- *
- * In view
- * <?= $data['side-edt'] ?>
+ * DateTime $date       Date displayed, should be date of the displayed timetable
+ * array    $calendar   The timetable
+ * string   $minTime    First hour
+ * string   $maxTime    Last hour
+ * array    $links      The links for each event (optionnal)
  */
+
+$empty = empty($timetable);
 
 $minFloat = timeToFloat($minTime);
 $maxFloat = timeToFloat($maxTime);
@@ -55,7 +48,7 @@ if ($hours < 10) {
                 </div>
                 <div class="content col s10">
                     <?php
-                    if (empty($timetable)) {
+                    if ($empty) {
                         ?>
                         <section class="section">
                             <?php
@@ -134,7 +127,7 @@ if ($hours < 10) {
     </div>
     <div id="side-edt-small" class="hide-on-med-and-up center-align">
         <?php
-        if (empty($timetable)) { ?>
+        if ($empty) { ?>
             <div class="card">
                 <?php
                 if ($timetable === false) {
