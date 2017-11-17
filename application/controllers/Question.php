@@ -21,8 +21,8 @@ class Question extends TM_Controller
         
         $this->load->helper('tabs');
         
-        $tabs["Questions"] = createTab("Questions", "Question");
-        $tabs["Faq"] = createTab("Faq", "Faq");
+        $tabs['Questions'] = createTab('Questions', 'Question', true);
+        $tabs['Faq'] = createTab('Faq', 'Faq');
 
         $unsortedQuestions = $this->Students->getQuestionsPerPage($_SESSION['id'],
             $page, $this->config->item('questionByPage'), $search);
@@ -36,7 +36,7 @@ class Question extends TM_Controller
 
         $questionList = $this->_computeQuestionList(
             $page, $unsortedQuestions, $questionId,
-            $nbQuestions, true, $search
+            $nbQuestions, false, $search
         );
 
         $teachers = $this->Students->getTeachers($_SESSION['id']);
