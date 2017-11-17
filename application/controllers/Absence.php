@@ -59,62 +59,70 @@ class Absence extends TM_Controller
         $this->load->helper('time');
 
         $period = $this->Semesters->getCurrentPeriod();
-        $students = $this->Students->getAllOrganized();
-        $unsortedAbsences = $this->Absences->getInPeriod($period);
 
-        // Associate absence to the student
-        $absences = array();
-        foreach ($unsortedAbsences as $absence) {
-            $absences[$absence->idStudent][] = $absence;
-        }
+        if ($period !== FALSE) {
 
-        // Associate students absences to the day it happened
-        $groups = array();
-        $assoc = array();
+            $students = $this->Students->getAllOrganized();
+            $unsortedAbsences = $this->Absences->getInPeriod($period);
 
-        foreach ($students as $student) {
-
-            if (!isset($assoc[$student->idStudent])) {
-                $student->absences = array(
-                    'total' => 0,
-                    'totalDays' => 0,
-                    'justified' => 0
-                );
-
-                $assoc[$student->idStudent] = $student;
-
-                if (isset($groups[$student->groupName])) {
-                    $groups[$student->groupName] += 1;
-                } else {
-                    $groups[$student->groupName] = 1;
-                }
+            // Associate absence to the student
+            $absences = array();
+            foreach ($unsortedAbsences as $absence) {
+                $absences[$absence->idStudent][] = $absence;
             }
 
-            if (isset($absences[$student->idStudent])) {
+            // Associate students absences to the day it happened
+            $groups = array();
+            $assoc = array();
 
-                foreach ($absences[$student->idStudent] as $absence) {
-                    $index = $period->getDays(new DateTime($absence->beginDate));
-                    $assoc[$student->idStudent]->absences[$index][] = $absence;
+            foreach ($students as $student) {
 
-                    if ($absence->justified) {
-                        $assoc[$student->idStudent]->absences['justified'] += 1;
+                if (!isset($assoc[$student->idStudent])) {
+                    $student->absences = array(
+                        'total' => 0,
+                        'totalDays' => 0,
+                        'justified' => 0
+                    );
+
+                    $assoc[$student->idStudent] = $student;
+
+                    if (isset($groups[$student->groupName])) {
+                        $groups[$student->groupName] += 1;
+                    } else {
+                        $groups[$student->groupName] = 1;
                     }
                 }
 
-                $assoc[$student->idStudent]->absences['total'] =
-                    count($absences[$student->idStudent]);
-                $assoc[$student->idStudent]->absences['totalDays'] =
-                    count($assoc[$student->idStudent]->absences) - 3;
-            }
-        }
+                if (isset($absences[$student->idStudent])) {
 
-        $this->data = array(
-            'absences' => $assoc,
-            'groups' => $groups,
-            'beginDate' => $period->getBeginDate(),
-            'dayNumber' => $period->getDays(),
-            'absenceTypes' => $this->Absences->getTypes()
-        );
+                    foreach ($absences[$student->idStudent] as $absence) {
+                        $index = $period->getDays(new DateTime($absence->beginDate));
+                        $assoc[$student->idStudent]->absences[$index][] = $absence;
+
+                        if ($absence->justified) {
+                            $assoc[$student->idStudent]->absences['justified'] += 1;
+                        }
+                    }
+
+                    $assoc[$student->idStudent]->absences['total'] =
+                        count($absences[$student->idStudent]);
+                    $assoc[$student->idStudent]->absences['totalDays'] =
+                        count($assoc[$student->idStudent]->absences) - 3;
+                }
+            }
+
+            $this->data = array(
+                'loaded' => true,
+                'absences' => $assoc,
+                'groups' => $groups,
+                'beginDate' => $period->getBeginDate(),
+                'dayNumber' => $period->getDays(),
+                'absenceTypes' => $this->Absences->getTypes()
+            );
+        }
+        else {
+            $this->data['loaded'] = false;
+        }
 
         $this->show('Absences');
     }

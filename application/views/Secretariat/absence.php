@@ -1,4 +1,7 @@
-    <main>
+<main>
+    <?php
+    if ($data['loaded']) {
+        ?>
         <div id="color-code" class="section">
             <ul class="row">
                 <li>Absence justifiée</li>
@@ -15,7 +18,7 @@
                 <div class="row">
                     <div id="table-group-list" class="col l1 no-padding">
                         <?php
-                        foreach($data['groups'] as $group => $students_number) {
+                        foreach ($data['groups'] as $group => $students_number) {
                             $height = $students_number * 22 - 1;
                             echo "<p style=\"height: ${height}px;\">$group</p>";
                         }
@@ -24,7 +27,7 @@
                     <div id="table-stud-list" class="col l11 no-padding">
                         <?php
                         $last_group = null;
-                        foreach($data['absences'] as $student) {
+                        foreach ($data['absences'] as $student) {
                             $class = '';
                             if ($last_group !== $student->groupName) {
                                 if (!is_null($last_group)) {
@@ -42,7 +45,8 @@
                                 <p><?= $student->name ?></p>
                                 <i class="material-icons">info</i>
                                 <div>
-                                    <p><?= $missCount ?> demi-journée<?= $missCount > 1 ? 's' : ''?></p>
+                                    <p><?= $missCount ?>
+                                        demi-journée<?= $missCount > 1 ? 's' : '' ?></p>
                                     <?= $missCount > 1
                                         ? '<p>' . $dayMissCount . ' jour' . ($dayMissCount > 1 ? 's' : '') . '</p>'
                                         : '' ?>
@@ -54,8 +58,7 @@
                                 </div>
                             </div>
                             <?php
-                        }
-                        ?>
+                        } ?>
                     </div>
                 </div>
             </div>
@@ -131,7 +134,7 @@
                                     if (isset($student->absences[$i])) {
                                         $justified = 0;
 
-                                        foreach($student->absences[$i] as $curr_absence) {
+                                        foreach ($student->absences[$i] as $curr_absence) {
                                             $absenceClass = 'abs-' . strtolower($curr_absence->absenceTypeName);
                                             $eventClass = $eventClass === ''
                                                 ? $absenceClass
@@ -164,10 +167,10 @@
                                     <td <?= (!empty($classes) ? ' class="' . join(' ', $classes) . '"' : '') ?>>
                                         <?php
                                         if (!empty($infos)) {
-                                            foreach($infos as $info) {
+                                            foreach ($infos as $info) {
                                                 ?>
                                                 <div id="absn<?= $info['absenceId'] ?>"
-                                                class="<?= 'abs-' . strtolower($info['absenceType']) ?>">
+                                                     class="<?= 'abs-' . strtolower($info['absenceType']) ?>">
                                                     <p>Horaires : <?= $info['timePeriod'] ?></p>
                                                     <p>Justifiée : <?= $info['justify'] ?>  </p>
                                                     <p><?= $info['absenceType'] ?></p>
@@ -208,7 +211,7 @@
                                     <select id="am-absenceType">
                                         <option value="0" disabled selected>Selectionner...</option>
                                         <?php
-                                        foreach($data['absenceTypes'] as $option) {
+                                        foreach ($data['absenceTypes'] as $option) {
                                             echo '<option value="' . $option->idAbsenceType . '">'
                                                 . $option->absenceTypeName
                                                 . '</option>';
@@ -238,7 +241,7 @@
                                     <select id="pm-absenceType">
                                         <option value="0" disabled selected>Selectionner...</option>
                                         <?php
-                                        foreach($data['absenceTypes'] as $option) {
+                                        foreach ($data['absenceTypes'] as $option) {
                                             echo '<option value="' . $option->idAbsenceType . '">'
                                                 . $option->absenceTypeName
                                                 . '</option>';
@@ -261,8 +264,20 @@
                 </div>
             </div>
         </div>
-    </main>
-    <script>
+        <?php
+    } else {
+        ?>
+        <h5 class="section center-align">Pas de semestre en cours</h5>
+        <?php
+    }
+    ?>
+</main>
+<script>
+    <?php
+    if ($data['loaded']) {
+        ?>
         // Needed for script
         var FIRST_DATE = new Date('<?= $data['beginDate']->format('Y-m-d') ?>');
-    </script>
+        <?php
+    } ?>
+</script>
