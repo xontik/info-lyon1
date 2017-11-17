@@ -27,23 +27,23 @@ $now = new DateTime();
             <span class="card-title">Rendez-vous</span>
             <div class="row">
 
-                    <div class="col s12 m6 l5 card grey lighten-4">
-                        <div class="card-content">
-                            <?php
-                            if (!is_null($data['lastAppointment']))
-                            {
-                                $date = new DateTime($data['lastAppointment']->finalDate);
-                                $diff = $now->diff($date);
-                                ?>
-                                <span class="card-title">Dernier rendez-vous</span>
-                                <p><?= readableTimeDifference($diff) ?></p>
+                <div class="col s12 m6 l5 card grey lighten-4">
+                    <div class="card-content">
+                        <?php
+                        if (!is_null($data['lastAppointment']))
+                        {
+                            $date = new DateTime($data['lastAppointment']->finalDate);
+                            $diff = $now->diff($date);
+                            ?>
+                            <span class="card-title">Dernier rendez-vous</span>
+                            <p><?= readableTimeDifference($diff) ?></p>
 
-                                <?php
-                            } else {?>
-                                <span class="card-title">Aucun ancien rendez-vous</span>
-                            <?php } ?>
-                        </div>
+                            <?php
+                        } else {?>
+                            <span class="card-title">Aucun ancien rendez-vous</span>
+                        <?php } ?>
                     </div>
+                </div>
                 <div class="col s12 m5 offset-m1 card grey lighten-4">
                     <div class="card-content">
                         <?php if (is_null($data['nextAppointment'])) { ?>
@@ -51,7 +51,7 @@ $now = new DateTime();
                             <span class="card-title">Pas de rendez-vous prévu</span>
                             <a href="<?= base_url('Process_Appointment/create/'.$data['project']->idProject) ?>" class="btn">Créer un rendez-vous</a>
 
-                    <?php } else if (is_null($data['nextAppointment']->finalDate)) {
+                        <?php } else if (is_null($data['nextAppointment']->finalDate)) {
 
                             if (empty($data['proposals'])) {
                                 ?>
@@ -82,14 +82,14 @@ $now = new DateTime();
                                                 type="submit" name="decline"> Refuser </button>
                                             </form>
                                             <?php
-                                            } else {
-                                                if ($accepted) { ?>
-                                                    <div class="orange-text">En attente</div>
-                                                    <?php
-                                                } else { ?>
-                                                    <div class="red-text">Vous avez refusé cette date</div>
-                                                <?php }
-                                            }
+                                        } else {
+                                            if ($accepted) { ?>
+                                                <div class="orange-text">En attente</div>
+                                                <?php
+                                            } else { ?>
+                                                <div class="red-text">Vous avez refusé cette date</div>
+                                            <?php }
+                                        }
                                     } ?>
 
                                 </div>
@@ -99,10 +99,14 @@ $now = new DateTime();
                         $date = new DateTime($data['nextAppointment']->finalDate);
                         $diff = $now->diff($date);
                         ?>
-                        <span class="card-title">Prochain rendez-vous</span>
+                        <span class="card-title">Prochain rendez-vous
+                            <a class="right" href="<?= base_url('/Process_Appointment/Delete/' . $data['nextAppointment']->idAppointment) ?>" data-confirm="Etes-vous sur de vouloir annuler ce rendez-vous ?">
+                                    <i class="material-icons">delete</i>
+                            </a>
+                        </span>
                         <p><?= readableTimeDifference($diff) ?></p>
-                        <p>Le <?= $date->format('d/m/Y à h:i');
-                    }?>
+                        <p>Le <?= $date->format('d/m/Y à h:i') ?> </p>
+                        <? } ?>
                 </div>
             </div>
         </div>

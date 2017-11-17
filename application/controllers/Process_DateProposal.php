@@ -22,7 +22,7 @@ class Process_DateProposal extends CI_Controller
             redirect('Project');
         }
         if (
-            && isset($_POST['date'])
+             isset($_POST['date'])
             && isset($_POST['time'])
         ) {
             $datetime = new DateTime(

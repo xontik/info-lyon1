@@ -56,8 +56,8 @@ class Project extends TM_Controller
         }
 
         $members = $this->Projects->getMembers($projectId);
-        if (!count($members)) {
-            addPageNotification('Projet ne comportant aucun étudiant', 'warning');
+        if (!count($members) || is_null($project->projectName) ) {
+            addPageNotification('Projet non configuré', 'warning');
             redirect('Project');
         }
         if (!$this->Teachers->isTutor($projectId, $_SESSION['id'])) {
@@ -65,11 +65,37 @@ class Project extends TM_Controller
             redirect('Project');
         }
 
+
+
         $this->_appointments($project);
     }
 
     public function teacher_manage($projectId) {
-        echo 'managation';
+
+        $projectId = (int) htmlspecialchars($projectId);
+
+        if ($projectId === 0) {
+            show_404();
+        }
+
+        $this->load->model('Projects');
+        $this->load->model('Teachers');
+
+        $project = $this->Projects->get($projectId);
+        if ($project === FALSE) {
+            addPageNotification('Projet introuvable', 'warning');
+            redirect('Project');
+        }
+
+        if (!$this->Teachers->isTutor($projectId, $_SESSION['id'])) {
+            addPageNotification('Vous n\'avez pas accès à ce projet tuteuré', 'danger');
+            redirect('Project');
+        }
+
+        $members = $this->Projects->getMembers($projectId);
+
+        $this->data = array('project' => $project, 'members' => $members);
+        $this->show('Projets tuteurés');
     }
 
     private function _appointments($project)

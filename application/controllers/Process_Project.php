@@ -32,4 +32,17 @@ class Process_Project extends CI_Controller
 
 
     }
+
+    /**
+     * AJAX
+     */
+
+    public function get_student_available($projectId) {
+
+        $this->load->model('Projects');
+
+        
+        header('Content-Type: application/json');
+        echo json_encode($output);
+    }
 }

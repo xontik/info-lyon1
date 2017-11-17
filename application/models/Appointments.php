@@ -37,4 +37,20 @@ class Appointments extends CI_Model
     }
 
 
+    public function get($appointmentId) {
+        return $this->db
+            ->from('Appointment')
+            ->where('idAppointment', $appointmentId)
+            ->get()
+            ->row();
+
+    }
+
+    public function delete($appointmentId) {
+        $this->db
+            ->delete('Appointment', array('idAppointment' => $appointmentId));
+        return $this->db->affected_rows();
+    }
+
+
 }

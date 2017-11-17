@@ -38,12 +38,41 @@ class Process_Appointment extends CI_Controller
             } else {
                 addPageNotification('Impossible de creer ce rendez-vous', 'danger');
             }
-
-
             redirect('Project/appointment/'.$projectId);
         }
+    }
 
+    public function delete($appointmentId) {
 
+        $this->load->model('Appointments');
+        $this->load->model('Projects');
+
+        $appointment = $this->Appointments->get($appointmentId);
+        if (is_null($appointment)) {
+            addPageNotification('Ce rendez-vous n\'existe pas', 'danger');
+            redirect('/Project');
+        }
+
+        if (!$this->Projects->isUserInProject($_SESSION['userId'], $appointment->idProject)) {
+            addPageNotification('Vous ne faites pas parti de ce projet', 'danger');
+            redirect('/Project');
+        }
+
+        $finalDate = new DateTime($appointment->finalDate);
+        $now = new DateTime();
+
+        if(!$now->diff($finalDate)->invert) {
+            if ($this->Appointments->delete($appointmentId)) {
+                addPageNotification('Rendez-vous supprimé', 'success');
+                $this->Projects->sendProjectMessage($appointment->idProject, 'Le rendez-vous a été annulé !', 'warning');
+            } else {
+                addPageNotification('Erreur de suppression du rendez-vous', 'danger');
+            }
+        } else {
+            addPageNotification('Impossible de supprimer un rendez-vous terminé', 'danger');
+        }
+
+        redirect('/Project/appointment/'.$appointment->idProject);
 
     }
 }

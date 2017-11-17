@@ -32,7 +32,7 @@
         <?php } ?>
         <div class="fixed-action-btn">
             <a class="btn-floating btn-large" href="<?= base_url('/Process_Project/create') ?>">
-                <i class="large material-icons">mode_edit</i>
+                <i class="large material-icons">add</i>
             </a>
         </div>
 
