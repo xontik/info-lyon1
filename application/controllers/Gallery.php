@@ -10,6 +10,7 @@ class Gallery extends CI_Controller
         $projects = $this->Projects->getAllPictures();
 
         $data = array(
+			'js'=>array('Public/gallery'),
             'title' => 'Galerie des projets',
             'data' => array(
                 'projects' => $projects
