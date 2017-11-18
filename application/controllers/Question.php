@@ -132,8 +132,8 @@ class Question extends TM_Controller
         $this->teacher_index($page, $questionId);
     }
 
-    private function _public($unsortedQuestions) {
-
+    private function _public($unsortedQuestions)
+    {
         $this->setData(array(
             'css' => 'Common/question'
         ));

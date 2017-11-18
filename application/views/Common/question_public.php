@@ -19,7 +19,7 @@
                     <li>
                         <div class="collapsible-header">
                             <div><?= $question->title ?></div>
-                            <div><?= $question->name ?></div>
+                            <div><?= $question->teacherName . ' - ' . $question->studentName ?></div>
                         </div>
                         <div class="collapsible-body">
                             <p class="right-align"><?= $question->content ?></p>
