@@ -9,7 +9,7 @@
         <p></p>
         <h4 class="header container">Tableau de bord</h4>
         <div class="row">
-            <div class="col s12 l5 offset-l1">
+            <div class="col s12 l6">
                 <div class="section card grey lighten-5">
                     <div class="card-content">
                         <a href="<?= base_url('Absence') ?>" class="card-title">Absences</a>
@@ -106,7 +106,7 @@
                     ?>
                 </div>
             </div>
-            <div class="col s12 l5 offset-l1">
+            <div class="col s12 l6">
                 <div class="card grey lighten-5">
                     <div class="card-content">
                         <div class="section">
