@@ -6,10 +6,9 @@
         if (count($data['courses'])):
             ?>
             <div class="card grey lighten-5">
-                <div class="card-content">
-                    <span class="card-title">Relations Parcours/UE</span>
-
-                    <form id="delete" action="<?= base_url('Process_Course/delete') ?>" method="POST">
+                <form id="delete" action="<?= base_url('Process_Course/delete') ?>" method="post">
+                    <div class="card-content">
+                        <span class="card-title">Relations Parcours/UE</span>
                         <div class="input-field row">
                             <select class="col s12 m8 l5" id="futureCourseId" name="courseId">
                                 <?php
@@ -40,18 +39,19 @@
                                 <li class="collection-header"><h5>UEs disponibles</h5></li>
                             </ul>
                         </div>
-                        <div class="btn-footer">
-                            <button type="submit" class="btn waves-effect waves-red">Supprimer ce parcours</button>
-                        </div>
-                    </form>
-                </div>
+                    </div>
+                    <div class="card-action">
+                        <button type="submit" class="btn-flat waves-effect waves-red">Supprimer ce parcours</button>
+                    </div>
+                </form>
             </div>
         <?php endif; ?>
         <div class="card grey lighten-5">
-            <div class="card-content">
-                <span class="card-title">Ajouter un parcours</span>
-                <form action="<?= base_url('Process_Course/add') ?>" method="post">
-                    <div class="row">
+            <form action="<?= base_url('Process_Course/add') ?>" method="post">
+
+                <div class="card-content">
+                    <span class="card-title">Ajouter un parcours</span>
+                    <div class="row no-margin">
                         <div class="input-field col s12 m6 l3">
                             <input type="number" name="year" id="year" min="<?= date('Y') + 1 ?>"
                                    value="<?= date('Y') + 1 ?>">
@@ -66,14 +66,12 @@
                             </select>
                             <label for="type">Type de semestre</label>
                         </div>
-                        <div class="col s12 l2 push-l4 right-align">
-                            <button class="btn" type="submit">Ajouter</button>
-                        </div>
                     </div>
-                    <div class="btn-footer">
-                    </div>
-                </form>
-            </div>
+                </div>
+                <div class="card-action">
+                    <button class="btn-flat waves-effect waves-light" type="submit">Ajouter</button>
+                </div>
+            </form>
         </div>
     </div>
     <div class="section">
@@ -121,9 +119,9 @@
             </div>
         </div>
         <div class="card grey lighten-5">
-            <div class="card-content">
-                <span class="card-title">Création</span>
-                <form action="<?= base_url('Process_Semester/add') ?>" method="post">
+            <form action="<?= base_url('Process_Semester/add') ?>" method="post">
+                <div class="card-content">
+                    <span class="card-title">Création</span>
                     <div class="row">
                         <div class="input-field col s12 m6 l5">
                             <select id="courseId" name="courseId">
@@ -145,11 +143,11 @@
                         <input type="checkbox" name="delayed" id="delayed">
                         <label for="delayed">Differé</label>
                     </p>
-                    <div class="btn-footer">
-                        <button type="submit" class="btn waves-effect">Ajouter</button>
-                    </div>
-                </form>
-            </div>
+                </div>
+                <div class="card-action">
+                    <button type="submit" class="btn-flat waves-effect waves-light">Ajouter</button>
+                </div>
+            </form>
         </div>
     </div>
 </main>
