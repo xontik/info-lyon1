@@ -99,7 +99,7 @@ class Students extends CI_Model
         return $this->db
             ->select('idQuestion, title, content, questionDate, public, CONCAT(name, \' \', surname) as name')
             ->from('Question')
-            ->join('Student', 'idStudent')
+            ->join('Teacher', 'idTeacher')
             ->join('User', 'idUser')
             ->where('idStudent', $studentId)
             ->group_start()
@@ -114,8 +114,9 @@ class Students extends CI_Model
     }
     
     /**
-     * Returns all the public questions without those who belong to the student
-     * @param int $studentId
+     * Returns all the public questions without those who belong to the student.
+     *
+     * @param string $studentId
      * @return array
      */
     public function getPublicQuestionsPerPage($studentId)
@@ -123,7 +124,7 @@ class Students extends CI_Model
         return $this->db
             ->select('idQuestion, title, content, questionDate, CONCAT(name, \' \', surname) as name')
             ->from('Question')
-            ->join('Student', 'idStudent')
+            ->join('Teacher', 'idTeacher')
             ->join('User', 'idUser')
             ->where('idStudent !=', $studentId)
             ->where('public', 1)

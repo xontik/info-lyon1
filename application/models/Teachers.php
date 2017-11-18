@@ -383,6 +383,26 @@ class Teachers extends CI_Model
     }
 
     /**
+     * Returns all the public questions without those who belong to the teacher.
+     *
+     * @param int $teacherId
+     * @return array
+     */
+    public function getPublicQuestionsPerPage($teacherId)
+    {
+        return $this->db
+            ->select('idQuestion, title, content, questionDate, CONCAT(name, \' \', surname) as name')
+            ->from('Question')
+            ->join('Student', 'idStudent')
+            ->join('User', 'idUser')
+            ->where('idTeacher !=', $teacherId)
+            ->where('public', 1)
+            ->order_by('questionDate', 'DESC')
+            ->get()
+            ->result();
+    }
+
+    /**
      * Get the page of a question.
      *
      * @param int $questionId

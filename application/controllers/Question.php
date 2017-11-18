@@ -21,8 +21,8 @@ class Question extends TM_Controller
         
         $this->load->helper('tabs');
         
-        $tabs['Questions'] = createTab('Questions', 'Question', true);
-        $tabs['Faq'] = createTab('Faq', 'Faq');
+        $tabs[] = createTab('Questions', 'Question', true);
+        $tabs[] = createTab('FAQ', 'Question/public');
 
         $unsortedQuestions = $this->Students->getQuestionsPerPage($_SESSION['id'],
             $page, $this->config->item('questionByPage'), $search);
@@ -84,6 +84,11 @@ class Question extends TM_Controller
         $this->load->model('Teachers');
         $this->load->config('Question');
 
+        $this->load->helper('tabs');
+
+        $tabs[] = createTab('Questions', 'Question', true);
+        $tabs[] = createTab('FAQ', 'Question/public');
+
         $unsortedQuestions = $this->Teachers->getQuestionsPerPage($_SESSION['id'],
             $page, $this->config->item('questionByPage'), $search);
 
@@ -100,6 +105,7 @@ class Question extends TM_Controller
         );
 
         $this->data = array(
+            'tabs' => $tabs,
             'questionList' => $questionList
         );
 
@@ -124,6 +130,57 @@ class Question extends TM_Controller
         
         $this->setData('view', 'Teacher/question');
         $this->teacher_index($page, $questionId);
+    }
+
+    private function _public($unsortedQuestions) {
+
+        $this->setData(array(
+            'css' => 'Common/question'
+        ));
+
+        $this->load->helper('tabs');
+
+        $tabs[] = createTab('Questions', 'Question');
+        $tabs[] = createTab('FAQ', 'Question/public', true);
+
+        // Answers
+        $questions = array();
+        if (!empty($unsortedQuestions)) {
+            $this->load->model('Questions');
+            $unsortedAnswers = $this->Questions->getAllAnswers($unsortedQuestions);
+
+            foreach ($unsortedQuestions as $question) {
+                $questions[$question->idQuestion] = $question;
+            }
+
+            foreach ($unsortedAnswers as $answer) {
+                $questions[$answer->idQuestion]->answers[] = $answer;
+            }
+        }
+
+        $this->data = array(
+            'tabs' => $tabs,
+            'questions' => $questions
+        );
+
+        $this->setData('view', 'Common/question_public');
+        $this->show('FAQ');
+    }
+
+    public function student_public() {
+        $this->load->model('Students');
+
+        $unsortedQuestions = $this->Students->getPublicQuestionsPerPage($_SESSION['id']);
+
+        $this->_public($unsortedQuestions);
+    }
+
+    public function teacher_public() {
+        $this->load->model('Teachers');
+
+        $unsortedQuestions = $this->Teachers->getPublicQuestionsPerPage($_SESSION['id']);
+
+        $this->_public($unsortedQuestions);
     }
 
     /**
