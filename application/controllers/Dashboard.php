@@ -73,7 +73,7 @@ class Dashboard extends TM_Controller
         $this->data['project'] = $project;
 
         // Question
-        $this->data['question'] = $this->Students->getLastAnswer($_SESSION['id'], $period);
+        $this->data['question'] = $this->Students->getLastAnswer($_SESSION['id']);
 
         $this->show('Tableau de bord');
     }

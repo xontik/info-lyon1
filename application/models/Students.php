@@ -247,11 +247,10 @@ class Students extends CI_Model
     /**
      * Returns the last answer, with its question.
      *
-     * @param string    $studentId
-     * @param Period    $period
+     * @param string $studentId
      * @return object|bool FALSE
      */
-    public function getLastAnswer($studentId, $period) {
+    public function getLastAnswer($studentId) {
         $res = $this->db
             ->select(
                 'idAnswer, Answer.content as answerContent, answerDate,'
@@ -261,32 +260,8 @@ class Students extends CI_Model
             ->join('Question', 'idQuestion')
             ->join('Teacher', 'idTeacher')
             ->where('idStudent', $studentId)
-            ->where('answerDate BETWEEN \'' . $period->getBeginDate()->format('Y-m-d')
-                . '\' AND \'' . $period->getEndDate()->format('Y-m-d') . '\'')
             ->order_by('answerDate', 'DESC')
             ->limit(1)
-            ->get()
-            ->row();
-
-        if (is_null($res)) {
-            return FALSE;
-        }
-        return $res;
-    }
-
-    /**
-     * Return the project to which the student currently or most lastly belongs.
-     *
-     * @param string $studentId
-     * @return object|bool FALSE if student has no project.
-     */
-    public function getProject($studentId)
-    {
-        $res = $this->db
-            ->from('ProjectMember')
-            ->join('Project', 'idProject')
-            ->where('idStudent', $studentId)
-            ->order_by('idProject', 'DESC')
             ->get()
             ->row();
 
@@ -317,6 +292,28 @@ class Students extends CI_Model
             ->order_by('questionDate', 'DESC')
             ->get()
             ->result();
+    }
+
+    /**
+     * Return the project to which the student currently or most lastly belongs.
+     *
+     * @param string $studentId
+     * @return object|bool FALSE if student has no project.
+     */
+    public function getProject($studentId)
+    {
+        $res = $this->db
+            ->from('ProjectMember')
+            ->join('Project', 'idProject')
+            ->where('idStudent', $studentId)
+            ->order_by('idProject', 'DESC')
+            ->get()
+            ->row();
+
+        if (is_null($res)) {
+            return FALSE;
+        }
+        return $res;
     }
 
     /**
