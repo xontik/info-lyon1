@@ -27,6 +27,7 @@ $(document).ready(function() {
 
     // Notifications
     var notificationCount = $('.notif').length / 2;
+    var notificationWrappers = $('.notification-wrapper');
 
     $(document).on('click', '.notif', deleteNotif);
     $.post('/notification/get_alerts', function(alerts) {
@@ -46,6 +47,12 @@ $(document).ready(function() {
         var notificationId = $(this).data('notif-id');
 
         if (notificationId) {
+
+            --notificationCount;
+            notificationWrappers
+                .find('.badge')
+                .text(notificationCount);
+
             // Session or seen notification
             var storage;
             if ($(this).hasClass('notif-session')) {
@@ -74,23 +81,27 @@ $(document).ready(function() {
 
             // Wait until animation end
             setTimeout(function() {
-                if (--notificationCount <= 0) {
+                if (notificationCount <= 0) {
                     var $mobileNotifications = $('#m-notifications');
                     // Change icon
-                    $('.notifications-icon').html('notifications_none');
+                    notificationWrappers.find('i').html('notifications_none');
+                    notificationWrappers.children('.badge').fadeOut(function() {
+                        this.remove();
+                    });
 
                     // Auto-close dropdown / modal
                     $('.dropdown-button[data-activates="nav-notifications"]').dropdown('close');
-                    $mobileNotifications.modal('close')
+                    $mobileNotifications.modal('close');
 
                     // Append "no result" text
                     setTimeout(function() {
                         $('#nav-notifications').append('<li><p>Pas de notifications</p></li>');
-                        $mobileNotifications.find('div.collection')
+                        $mobileNotifications.find('.collection')
                             .append('<div class="collection-item">Pas de notifications</div>')
                     }, 200);
                 }
             }, 400);
+
         } else {
             // Page notification
             $(this).fadeOut(function() {

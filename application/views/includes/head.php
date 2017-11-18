@@ -72,11 +72,20 @@
                         <?php
                     } ?>
                     <li>
-                        <a class="dropdown-button"
+                        <a class="dropdown-button notification-wrapper"
                            data-activates="nav-notifications" data-constrainwidth="false">
-                            <i class="material-icons notifications-icon">
-                                <?= empty($notifications) ? 'notifications_none' : 'notifications' ?>
-                            </i>
+                            <?php
+                            if (empty($notifications)) {
+                                ?>
+                                <i class="material-icons">notifications_none</i>
+                                <?php
+                            } else {
+                                ?>
+                                <i class="material-icons">notifications</i>
+                                <span class="badge new materialize-red lighten-2"
+                                      data-badge-caption=""><?= count($notifications) ?></span>
+                                <?php
+                            } ?>
                         </a>
                         <ul id="nav-notifications" class="dropdown-content">
                             <?php
@@ -88,8 +97,8 @@
                                 foreach ($notifications as $notif) { ?>
                                     <li data-notif-id="<?= $notif['id'] ?>"
                                         <?php
-                                        if (!empty($notif['link'])) { ?>
-                                        data-notif-link="<?= base_url($notif['link']) ?>"
+                                        if ($notif['link']) { ?>
+                                            data-notif-link="<?= base_url($notif['link']) ?>"
                                         <?php } ?>
                                         class="notif notif-<?= $notif['type'] ?> notif-<?= $notif['storage'] ?>">
                                         <div class="valign-wrapper">
@@ -124,10 +133,17 @@
                 </a>
                 <ul class="right hide-on-large-only">
                     <li>
-                        <a href="#m-notifications" class="modal-trigger">
-                            <i class="material-icons right notifications-icon">
-                                <?= empty($notifications) ? 'notifications_none' : 'notifications' ?>
-                            </i>
+                        <a href="#m-notifications" class="modal-trigger notification-wrapper">
+                            <?php
+                            if (empty($notifications)) {
+                                ?><i class="material-icons right">notifications_none</i>
+                                <?php
+                            } else {
+                                ?><i class="material-icons right">notifications</i>
+                                <span class="badge new materialize-red lighten-2"
+                                      data-badge-caption=""><?= count($notifications) ?></span>
+                                <?php
+                            } ?>
                         </a>
                     </li>
                 </ul>
@@ -161,8 +177,12 @@
                                 <?php
                             } else {
                                 foreach ($notifications as $notif) { ?>
-                                    <div data-notif-id="<?= $notif['id'] ?>" data-notif-link="<?= base_url($notif['link']) ?>"
-                                        class="collection-item notif notif-<?= $notif['type'] ?> notif-<?= $notif['storage'] ?>">
+                                    <div data-notif-id="<?= $notif['id'] ?>"
+                                         <?php
+                                         if ($notif['link']) { ?>
+                                             data-notif-link="<?= base_url($notif['link']) ?>"
+                                         <?php } ?>
+                                         class="collection-item notif notif-<?= $notif['type'] ?> notif-<?= $notif['storage'] ?>">
                                         <div class="valign-wrapper">
                                             <i class="material-icons left"><?= $notif['icon'] ?></i>
                                             <span><?= $notif['content'] ?></span>
