@@ -95,7 +95,7 @@
                                 <?php
                             } else {
                                 foreach ($notifications as $notif) { ?>
-                                    <li data-notif-id="<?= $notif['id'] ?>"
+                                    <li data-notif-id="<?= $notif['idNotification'] ?>"
                                         <?php
                                         if ($notif['link']) { ?>
                                             data-notif-link="<?= base_url($notif['link']) ?>"

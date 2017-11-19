@@ -5,7 +5,7 @@ class Teachers extends CI_Model
 {
 
     /**
-     * Get details about a teacher.
+     * Get appointments about a teacher.
      *
      * @param int $teacherId
      * @return object
@@ -14,7 +14,7 @@ class Teachers extends CI_Model
     {
         return $this->db->select('name, surname, email')
             ->from('Teacher')
-            ->join('user', 'idUser')
+            ->join('User', 'idUser')
             ->where('idTeacher', $teacherId)
             ->get()
             ->row();
@@ -331,14 +331,19 @@ class Teachers extends CI_Model
      * @param int $teacherId
      * @return array
      */
+
     public function getProjects($teacherId)
     {
-        return $this->db
-            ->select('idProject, projectName')
-            ->from('Project')
-            ->where('idTeacher', $teacherId)
-            ->get()
-            ->result();
+        $sql = 'SELECT DISTINCT idProject, projectName FROM project
+                    JOIN projectmember USING (idProject)
+                    JOIN studentgroup USING (idStudent)
+                    JOIN `group` USING (idGroup)
+                    JOIN semester USING (idSemester)
+                    WHERE idTeacher = ? && active = 1
+                UNION
+                SELECT idProject, projectName FROM project
+                    WHERE idProject NOT IN ( SELECT idProject FROM ProjectMember ) AND idTeacher = ?';
+        return $this->db->query($sql, array($teacherId,$teacherId))->result();
     }
 
     /**
@@ -412,5 +417,15 @@ class Teachers extends CI_Model
             ->result();
      }
 
+
+    public function getLastProject($teacherId) {
+
+        return $this->db
+            ->from('Project')
+            ->where('idteacher', $teacherId)
+            ->order_by('idProject', 'DESC')
+            ->get()
+            ->row();
+    }
 
 }

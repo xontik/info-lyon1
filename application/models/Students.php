@@ -12,9 +12,8 @@ class Students extends CI_Model
      */
     public function get($studentId)
     {
-        return $this->db
-            ->from('Student')
-            ->select('idStudent, surname, name, email')
+        return $this->db->select('idStudent, surname, name, email, idUser')
+            ->from('student')
             ->join('User','idUser')
             ->where('idStudent', $studentId)
             ->get()
@@ -207,6 +206,15 @@ class Students extends CI_Model
             return FALSE;
         }
         return (int) $res->resource;
+    }
+
+    public function isAvailableForProject($studentId) {
+        $sql = 'SELECT idStudent FROM projectmember
+                    JOIN studentgroup USING (idStudent)
+                    JOIN `group` USING (idGroup)
+                    JOIN semester USING (idSemester)
+                    WHERE active = 1 && idStudent = ?';
+        return $this->db->query($sql, array($studentId))->num_rows() == 0;
     }
 
     public function getSemesters($studentId) {

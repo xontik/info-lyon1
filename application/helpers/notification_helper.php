@@ -16,7 +16,7 @@ function _createNotification($id, $content, $type, $icon, $storage, $link = '', 
     }
 
     return array(
-        'id' => $id,
+        'idNotification' => $id,
         'content' => $content,
         'type' => $type,
         'icon' => $icon,

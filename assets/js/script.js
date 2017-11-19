@@ -18,8 +18,9 @@ $(document).ready(function() {
     });
 
     // Confirm modal
-    $('form[data-confirm]').submit(confirm);
-    $('a[data-confirm]').click(confirm);
+    $(document).on('click', 'a[data-confirm]', confirm);
+    $(document).on('submit', 'form[data-confirm]', confirm);
+
 
     function confirm() {
         return window.confirm(this.getAttribute('data-confirm'));
