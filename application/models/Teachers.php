@@ -341,8 +341,8 @@ class Teachers extends CI_Model
                     WHERE idTeacher = ? && active = 1
                 UNION
                 SELECT idProject, projectName FROM project
-                    WHERE idProject NOT IN ( SELECT idProject FROM ProjectMember )';
-        return $this->db->query($sql, array($teacherId))->result();
+                    WHERE idProject NOT IN ( SELECT idProject FROM ProjectMember ) AND idTeacher = ?';
+        return $this->db->query($sql, array($teacherId,$teacherId))->result();
     }
 
     /**
