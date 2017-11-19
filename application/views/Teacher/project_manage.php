@@ -1,7 +1,8 @@
 <main class="container">
     <div class="card grey lighten-5">
         <div class="card-content">
-            <div class="card-title">Gestion du projet
+            <div class="card-title">
+                Gestion du projet
                 <span class="right">
                     <a href="<?= base_url('/Process_Project/delete/' . $data['project']->idProject)?>"
                     data-confirm='Etes-vous sur de vouloir supprimer ce projet ?'>

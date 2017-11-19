@@ -176,6 +176,6 @@ class Students extends CI_Model
                     JOIN `group` USING (idGroup)
                     JOIN semester USING (idSemester)
                     WHERE active = 1 && idStudent = ?';
-        $this->db->query($sql, array($studentId))->num_rows() > 0;
+        return $this->db->query($sql, array($studentId))->num_rows() == 0;
     }
 }
