@@ -9,7 +9,7 @@
                     </a>
                 </span>
             </div>
-            <form class="" action="#!" method="post">
+            <form action="<?= base_url('/Process_Project/change_name/' . $data['project']->idProject) ?>" method="post">
                 <div class="row">
                     <div class="input-field col s12 m9">
                         <input type="text" name="projectName" id="projectName" value="<?= $data['project']->projectName ?>" >

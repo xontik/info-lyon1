@@ -143,4 +143,39 @@ class Process_Project extends CI_Controller
         }
     }
 
+
+    public function change_name($projectId) {
+
+        if (!isset($_POST['projectName'])) {
+            addPageNotification('Données corrompues', 'danger');
+            redirect('/Project/manage/' . $projectId);
+        }
+
+        $projectName = htmlspecialchars($_POST['projectName']);
+
+        $this->load->model('Projects');
+        $this->load->model('Teachers');
+        $this->load->model('Students');
+
+
+        if (!$this->Teachers->isTutor($projectId, $_SESSION['id'])) {
+            addPageNotification('Vous n\avez pas les droits sur ce projet', 'danger');
+            redirect('Project');
+        } else {
+                $project = $this->Projects->get($projectId);
+                if($projectName == $project->projectName) {
+                    redirect('Project/manage/'. $projectId);
+                }
+                
+                if ($this->Projects->changeName($projectId, $projectName)) {
+                    addPageNotification('Projet renommé !', 'success');
+                } else {
+                    addPageNotification('Erreur du changeement de nom', 'danger');
+                }
+                redirect('Project/manage/'. $projectId);
+        }
+
+
+    }
+
 }

@@ -50,6 +50,8 @@ $(document).ready(function() {
                             studentList.find('li').last().find('div').prepend(name[1] + ' ' +name[2]);
                             studentList.find('li').last().find('a').attr('href','/Process_Project/delete_member/'+studentList.data('project-id')+'/'+name[0]).data('confirm',"Etes-vous sur de vouloir supprimer cet étudiant ?");
                             Materialize.toast('<i class="material-icons">done</i>Etudiant ajouté !',  4000, 'notif-success');
+                            
+                            $('#student').val('');
                          }
 
                      },

@@ -329,14 +329,20 @@ class Teachers extends CI_Model
      * @param int $teacherId
      * @return array
      */
+     //TODO a refaire
+
     public function getProjects($teacherId)
     {
-        return $this->db
-            ->select('idProject, projectName')
-            ->from('Project')
-            ->where('idTeacher', $teacherId)
-            ->get()
-            ->result();
+        $sql = 'SELECT DISTINCT idProject, projectName FROM project
+                    JOIN projectmember USING (idProject)
+                    JOIN studentgroup USING (idStudent)
+                    JOIN `group` USING (idGroup)
+                    JOIN semester USING (idSemester)
+                    WHERE idTeacher = ? && active = 1
+                UNION
+                SELECT idProject, projectName FROM project
+                    WHERE idProject NOT IN ( SELECT idProject FROM ProjectMember )';
+        return $this->db->query($sql, array($teacherId))->result();
     }
 
     /**
