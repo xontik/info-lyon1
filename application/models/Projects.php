@@ -260,7 +260,6 @@ class Projects extends CI_Model
         return $this->db->affected_rows();
     }
 
-    //TODO a refaire
     public function getStudentsWithoutProject(){
         $sql = 'SELECT CONCAT(idStudent, " ",name, " ", surname) as name FROM student
                     JOIN user USING (idUser)
@@ -301,5 +300,7 @@ class Projects extends CI_Model
         return $this->db->affected_rows();
 
     }
+
+    
 
 }

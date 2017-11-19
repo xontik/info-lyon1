@@ -329,7 +329,6 @@ class Teachers extends CI_Model
      * @param int $teacherId
      * @return array
      */
-     //TODO a refaire
 
     public function getProjects($teacherId)
     {

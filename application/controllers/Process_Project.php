@@ -81,13 +81,18 @@ class Process_Project extends CI_Controller
                     addPageNotification('Etudiant déja membre du projet', 'danger');
                     echo json_encode(array('error' => true));
                 } else {
-                    //TODO add verification piur oir si l'etudiant a pas un autre pojet en cours
-                    if ($this->Projects->addMemeber($projectId, $studentId)) {
-                        echo json_encode(array('error' => false,'adding' => 'en cours'));
-                    } else {
-                        addPageNotification('Erreur lors de l\'ajout de l\'étudiant', 'danger');
+                    if (!$this->Students->isAvailableForProject($studentId)) {
+                        addPageNotification('Etudiant déja membre d\'un autre groupe', 'danger');
                         echo json_encode(array('error' => true));
+                    } else {
+                        if ($this->Projects->addMemeber($projectId, $studentId)) {
+                            echo json_encode(array('error' => false);
+                        } else {
+                            addPageNotification('Erreur lors de l\'ajout de l\'étudiant', 'danger');
+                            echo json_encode(array('error' => true));
+                        }
                     }
+
                 }
             }
 
@@ -166,7 +171,7 @@ class Process_Project extends CI_Controller
                 if($projectName == $project->projectName) {
                     redirect('Project/manage/'. $projectId);
                 }
-                
+
                 if ($this->Projects->changeName($projectId, $projectName)) {
                     addPageNotification('Projet renommé !', 'success');
                 } else {
