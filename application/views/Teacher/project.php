@@ -1,11 +1,15 @@
 <main class="container">
     <h4>Projets Tuteurés</h4>
-    <div class="row grid">
+    <div class="row no-margin">
         <?php
         if (count($data['projects'])) {
-            foreach ($data['projects'] as $project)
-            { ?>
-                <div class="col s12 m6 l4">
+            foreach ($data['projects'] as $key => $project)
+            {
+                if ($key > 0 && $key%3 ==0) {?>
+                </div>
+                <div class="row no-margin">
+                <?php } ?>
+                <div class="col s12 l4">
                     <div class="card grey lighten-5">
                         <div class="card-content">
                             <span class="card-title"><?= $project->projectName?$project->projectName:'Nouveau Projet'?></span>
@@ -25,7 +29,6 @@
                 </div>
 
                 <?php
-
             }
         } else { ?>
                     <p>Aucun projet</p>

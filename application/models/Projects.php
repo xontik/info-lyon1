@@ -30,7 +30,7 @@ class Projects extends CI_Model
      */
     public function getMembers($projectId)
     {
-        return $this->db->select('idUser, CONCAT(name, " ", surname) as name')
+        return $this->db->select('idUser, CONCAT(name, " ", surname) as name, idStudent')
             ->from('Project')
             ->join('ProjectMember', 'idProject')
             ->join('Student', 'idStudent')
@@ -249,6 +249,46 @@ class Projects extends CI_Model
         $this->db
             ->insert('project', $data);
 
+        return $this->db->affected_rows();
+    }
+
+    public function delete($projectId) {
+
+        $this->db
+            ->delete('project', array('idProject' => $projectId) );
+
+        return $this->db->affected_rows();
+    }
+
+    public function getStudentsWithoutProject(){
+        $sql = 'SELECT CONCAT(idStudent, " ",name, " ", surname) as name FROM student
+                    JOIN user USING (idUser)
+                    JOIN studentgroup USING (idStudent)
+                    JOIN `group` USING (idGroup)
+                    JOIN semester USING (idSemester)
+                    WHERE active = 1 AND idStudent NOT IN (
+                        SELECT idStudent FROM projectmember
+                            JOIN studentgroup USING (idStudent)
+                            JOIN `group` USING (idGroup)
+                            JOIN semester USING (idSemester)
+                            WHERE active = 1
+                    )';
+
+        return array_column($this->db->query($sql)->result_array(), 'name');
+
+    }
+
+    public function addMemeber($projectId, $studentId) {
+
+        $this->db
+            ->insert('projectmember', array('idStudent' => $studentId, 'idProject' => $projectId));
+        return $this->db->affected_rows();
+    }
+
+    public function deleteMemeber($projectId, $studentId) {
+
+        $this->db
+            ->delete('projectmember', array('idStudent' => $studentId, 'idProject' => $projectId));
         return $this->db->affected_rows();
     }
 
