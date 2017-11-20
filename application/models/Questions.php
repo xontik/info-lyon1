@@ -19,6 +19,38 @@ class Questions extends CI_Model {
     }
 
     /**
+     * Get answers to the questions.
+     *
+     * @param array $questions
+     * @return array
+     */
+    public function getAllAnswers($questions)
+    {
+        $questionsId = array();
+        foreach ($questions as $question) {
+            $questionsId[] = $question->idQuestion;
+        }
+
+        return $this->db
+            ->select('idQuestion, idAnswer, Answer.content, teacher')
+            ->from('Answer')
+            ->join('Question', 'idQuestion')
+            ->where_in('idQuestion', $questionsId)
+            ->order_by('questionDate', 'DESC')
+            ->order_by('answerDate', 'ASC')
+            ->get()
+            ->result();
+    }
+
+    public function setPublic($questionId, $isPublic = true) {
+        $data = array(
+            'public' => $isPublic
+        );
+        $this->db->where('idQuestion', $questionId)
+                ->update('Question', $data);
+    }
+
+    /**
      * Creates a questions.
      *
      * @param string $title

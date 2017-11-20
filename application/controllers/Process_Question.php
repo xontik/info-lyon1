@@ -8,9 +8,9 @@ class Process_Question extends CI_Controller
     {
         $this->load->model('Questions');
 
-        if (isset($_POST['title'])
+        if (isset($_POST['teacherId'])
+            && isset($_POST['title'])
             && isset($_POST['text'])
-            && isset($_POST['teacherId'])
             && is_numeric($_POST['teacherId'])
         ) {
             $title = htmlspecialchars($_POST['title']);
@@ -46,6 +46,16 @@ class Process_Question extends CI_Controller
         }
 
         redirect('Question');
+    }
+
+    public function set_public($questionId)
+    {
+        $this->load->model('Questions');
+
+        $idPublicQuestion = (int) htmlspecialchars($questionId);
+        $this->Questions->setPublic($idPublicQuestion, isset($_POST['checkPublic']));
+
+        redirect('Question/detail/' . $questionId);
     }
 
 }

@@ -346,22 +346,103 @@ class Teachers extends CI_Model
         return $this->db->query($sql, array($teacherId,$teacherId))->result();
     }
 
+    public function countQuestions($teacherId, $search)
+    {
+        return $this->db
+            ->from('Question')
+            ->join('Student', 'idStudent')
+            ->join('User', 'idUser')
+            ->where('idTeacher', $teacherId)
+            ->group_start()
+                ->like('title', $search, 'both')
+                ->or_like('content', $search, 'both')
+                ->or_like('CONCAT(name, \' \', surname)', $search, 'both')
+            ->group_end()
+            ->count_all_results();
+    }
+
     /**
      * Returns the questions addressed to the teacher,
      * and the student that asked it.
      *
      * @param int $teacherId
+     * @param int $currentPage
+     * @param int $nbQuestionsPerPage
+     * @param string $search
      * @return array
      */
-    public function getQuestions($teacherId) {
+    public function getQuestionsPerPage($teacherId, $currentPage, $nbQuestionsPerPage, $search)
+    {
         return $this->db
-            ->select('idQuestion, title, content, questionDate, CONCAT(name, \' \', surname) as studentName')
+            ->select('idQuestion, title, content, questionDate, public, CONCAT(name, \' \', surname) as name')
             ->from('Question')
             ->join('Student', 'idStudent')
             ->join('User', 'idUser')
             ->where('idTeacher', $teacherId)
+            ->group_start()
+                ->like('title', $search, 'both')
+                ->or_like('content', $search, 'both')
+                ->or_like('CONCAT(name, \' \', surname)', $search, 'both')
+            ->group_end()
+            ->order_by('questionDate', 'DESC')
+            ->limit($nbQuestionsPerPage, (($currentPage - 1) * $nbQuestionsPerPage))
             ->get()
             ->result();
+    }
+
+    /**
+     * Returns all the public questions without those who belong to the teacher.
+     *
+     * @param int $teacherId
+     * @return array
+     */
+    public function getPublicQuestionsPerPage($teacherId)
+    {
+        return $this->db
+            ->select(
+                'idQuestion, title, content, questionDate,'
+                . 'CONCAT(TUser.name, \' \', TUser.surname) as teacherName,'
+                . 'CONCAT(SUser.name, \' \', SUser.surname) as studentName'
+            )
+            ->from('Question')
+            ->join('Teacher', 'idTeacher')
+            ->join('Student', 'idStudent')
+            ->join('User as TUser', 'TUser.idUser = Teacher.idUser', 'left')
+            ->join('User as SUser', 'SUser.idUser = Student.idUser', 'left')
+            ->where('idTeacher !=', $teacherId)
+            ->where('public', 1)
+            ->order_by('questionDate', 'DESC')
+            ->get()
+            ->result();
+    }
+
+    /**
+     * Get the page of a question.
+     *
+     * @param int $questionId
+     * @param string $teacherId
+     * @param int $nbQuestionsPerPage
+     * @return int
+     */
+    public function getPage($questionId, $teacherId, $nbQuestionsPerPage)
+    {
+        $questions = $this->db
+            ->select('idQuestion')
+            ->from('Question')
+            ->join('Student', 'idStudent')
+            ->join('User', 'idUser')
+            ->where('idTeacher', $teacherId)
+            ->order_by('questionDate', 'DESC')
+            ->get()
+            ->result_array();
+
+        $questionsId = array_column($questions, 'idQuestion');
+        $index = array_search($questionId, $questionsId);
+        if ($index === FALSE) {
+            return FALSE;
+        }
+
+        return ceil(($index+1)/$nbQuestionsPerPage);
     }
 
     /**
@@ -370,7 +451,8 @@ class Teachers extends CI_Model
      * @param $teacherId
      * @return array
      */
-    public function getAnswers($teacherId) {
+    public function getAnswers($teacherId)
+    {
         return $this->db
             ->select('idQuestion, idAnswer, Answer.content, teacher')
             ->from('Answer')

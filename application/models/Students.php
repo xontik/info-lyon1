@@ -108,50 +108,103 @@ class Students extends CI_Model
         return $res;
     }
 
-    /**
-     * Returns the questions asked by the student,
-     * and the teacher to who they were asked.
-     *
-     * @param string $studentId
-     * @return array
-     */
-    public function getQuestions($studentId)
+    public function countQuestions($studentId, $search)
     {
         return $this->db
-            ->select(
-                'idQuestion, title, content, questionDate, idStudent, idTeacher,'
-                . 'CONCAT(name, \' \', surname) as teacherName'
-            )
+            ->from('Question')
+            ->join('Student', 'idStudent')
+            ->join('User', 'idUser')
+            ->where('idStudent', $studentId)
+            ->group_start()
+                ->like('title', $search, 'both')
+                ->or_like('content', $search, 'both')
+                ->or_like('CONCAT(name, \' \', surname)', $search, 'both')
+            ->group_end()
+            ->count_all_results();
+    }
+
+    /**
+     * Returns the questions asked by the student,
+     * and the teacher to who it was told.
+     *
+     * @param int $studentId
+     * @param int $currentPage
+     * @param int $nbQuestionsPerPage
+     * @param string $search
+     * @return array
+     */
+    public function getQuestionsPerPage($studentId, $currentPage, $nbQuestionsPerPage, $search)
+    {
+        return $this->db
+            ->select('idQuestion, title, content, questionDate, public, CONCAT(name, \' \', surname) as name')
             ->from('Question')
             ->join('Teacher', 'idTeacher')
             ->join('User', 'idUser')
             ->where('idStudent', $studentId)
+            ->group_start()
+                ->like('title', $search, 'both')
+                ->or_like('content', $search, 'both')
+                ->or_like('CONCAT(name, \' \', surname)', $search, 'both')
+            ->group_end()
+            ->order_by('questionDate', 'DESC')
+            ->limit($nbQuestionsPerPage, (($currentPage - 1) * $nbQuestionsPerPage))
+            ->get()
+            ->result();
+    }
+    
+    /**
+     * Returns all the public questions without those who belong to the student.
+     *
+     * @param string $studentId
+     * @return array
+     */
+    public function getPublicQuestionsPerPage($studentId)
+    {
+        return $this->db
+            ->select(
+                'idQuestion, title, content, questionDate,'
+                . 'CONCAT(TUser.name, \' \', TUser.surname) as teacherName,'
+                . 'CONCAT(SUser.name, \' \', SUser.surname) as studentName'
+            )
+            ->from('Question')
+            ->join('Teacher', 'idTeacher')
+            ->join('Student', 'idStudent')
+            ->join('User as TUser', 'TUser.idUser = Teacher.idUser', 'left')
+            ->join('User as SUser', 'SUser.idUser = Student.idUser', 'left')
+            ->where('idStudent !=', $studentId)
+            ->where('public', 1)
             ->order_by('questionDate', 'DESC')
             ->get()
             ->result();
     }
-
+    
     /**
-     * Returns the answers to the questions the student asked.
+     * Get the page of a question.
      *
-     * @param $studentId
-     * @return array
+     * @param int $questionId
+     * @param string $studentId
+     * @param int $nbQuestionsPerPage
+     * @return int
      */
-    public function getAnswers($studentId) {
-        return $this->db
-            ->select(
-                'idQuestion, idAnswer, Answer.content, teacher,'
-                . 'CONCAT(name, \' \', surname) as studentName'
-            )
-            ->from('Answer')
-            ->join('Question', 'idQuestion')
+    public function getPage($questionId, $studentId, $nbQuestionsPerPage)
+    {
+        $questions = $this->db
+            ->select('idQuestion')
+            ->from('Question')
             ->join('Student', 'idStudent')
             ->join('User', 'idUser')
             ->where('idStudent', $studentId)
-            ->order_by('Question.questionDate', 'DESC')
-            ->order_by('Answer.answerDate', 'DESC')
+            ->order_by('questionDate', 'DESC')
             ->get()
-            ->result();
+            ->result_array();
+
+        $questionsId = array_column($questions, 'idQuestion');
+        $index = array_search($questionId, $questionsId);
+        if ($index === FALSE) {
+            return FALSE;
+        }
+
+        return ceil(($index+1)/$nbQuestionsPerPage);
     }
 
     /**
