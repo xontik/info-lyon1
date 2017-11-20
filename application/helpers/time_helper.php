@@ -9,8 +9,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  */
 function readableTimeDifference($diff) {
     $read = $diff->invert
-        ? 'Il y a '
-        : 'Dans ';
+        ? 'il y a '
+        : 'dans ';
 
     if ($diff->y >= 1) {
         $read .= 'plus d\'un an';

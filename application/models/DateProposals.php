@@ -24,6 +24,29 @@ class DateProposals extends CI_Model
     }
 
     /**
+     * Returns the next date proposal in time.
+     *
+     * @param $appointmentId
+     * @return object|bool FALSE if there's no date proposal
+     */
+    public function getNext($appointmentId)
+    {
+        $res = $this->db
+            ->from('DateProposal')
+            ->where('idAppointment', $appointmentId)
+            ->where('date >= CURDATE()')
+            ->order_by('date', 'ASC')
+            ->limit(1)
+            ->get()
+            ->row();
+
+        if (is_null($res)) {
+            return FALSE;
+        }
+        return $res;
+    }
+
+    /**
      * Get all date proposals referenced to the appointment.
      *
      * @param int $appointmentId The appointment id
@@ -59,9 +82,9 @@ class DateProposals extends CI_Model
     /**
      * Creates a date proposal refering to an appointment.
      *
-     * @param int $appointmentId The appointment
-     * @param DateTime $datetime The time of the proposal
-     * @param int $userId The user who makes the proposal
+     * @param int       $appointmentId
+     * @param DateTime  $datetime
+     * @param int       $userId
      * @return bool
      */
     public function create($appointmentId, $datetime, $userId)

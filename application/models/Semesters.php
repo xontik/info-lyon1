@@ -100,7 +100,8 @@ class Semesters extends CI_Model
     {
         $semesterId = FALSE;
         if ($semester === '') {
-            $semesterId = $this->getStudentCurrent($studentId);
+            $this->load->model('Students');
+            $semesterId = $this->Students->getCurrentSemester($studentId)->idSemester;
         } else if (in_array($semester, array('S1', 'S2', 'S3', 'S4'))) {
             $semesterId = $this->getLastSemesterOfType($semester, $studentId);
         }
@@ -109,30 +110,6 @@ class Semesters extends CI_Model
             return FALSE;
         }
         return (int) $semesterId;
-    }
-
-    /**
-     * Computes in which semester is a student.
-     *
-     * @param string $studentId
-     * @return int
-     */
-    public function getStudentCurrent($studentId)
-    {
-        $semester = $this->db->select('idSemester')
-            ->from('StudentGroup')
-            ->join('Group', 'idGroup')
-            ->join('Semester', 'idSemester')
-            ->where('active', '1')
-            ->where('idStudent', $studentId)
-            ->order_by('idSemester', 'DESC')
-            ->get()
-            ->row();
-
-        if (empty($semester)) {
-            return FALSE;
-        }
-        return (int) $semester->idSemester;
     }
 
     /**

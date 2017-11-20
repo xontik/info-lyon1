@@ -41,6 +41,7 @@ class Projects extends CI_Model
     }
 
     /**
+<<<<<<< HEAD
      * Get the tutor of the project.
      *
      * @param int $projectId
@@ -64,6 +65,8 @@ class Projects extends CI_Model
     }
 
     /**
+=======
+>>>>>>> Dashboard
      * Computes the last appointment the project had.
      *
      * @param int $projectId
@@ -149,6 +152,12 @@ class Projects extends CI_Model
     public function sendProjectMessage($projectId, $message, $type = 'info', $icon = '')
     {
         $this->load->model('Notifications');
+        $this->load->model('Projects');
+
+        $project = $this->Projects->get($projectId);
+        if ($project === FALSE) {
+            return;
+        }
 
         // Student members
         $this->db->select('idUser')
@@ -184,7 +193,8 @@ class Projects extends CI_Model
             ->row();
 
         if (!is_null($teacher)) {
-            $this->Notifications->create($message, '/Project/appointment/' . $projectId, $teacher->idUser, $type, $icon);
+            $this->Notifications->create('Projet ' . $project->projectName . ' : ' . $message,
+                '/Project/detail/' . $projectId, $teacher->idUser, $type, $icon);
         }
     }
 
@@ -197,7 +207,8 @@ class Projects extends CI_Model
      */
     public function getProjectId($table, $idInTable)
     {
-        $this->db->select('idProject')
+        $this->db
+            ->select('idProject')
             ->from('Project');
 
         switch ($table) {
@@ -206,12 +217,13 @@ class Projects extends CI_Model
                     ->join('Appointment', 'idProject')
                     ->join('DateProposal', 'idAppointment')
                     ->join('DateAccept', 'idProposal')
-                    ->where('idDateProposal', $idInTable);
+                    ->where('idDateAccept', $idInTable);
                 break;
             case 'DateProposal':
                 $this->db
                     ->join('Appointment', 'idProject')
                     ->join('DateProposal', 'idAppointment')
+                    ->join('DateAccept', 'idDateProposal')
                     ->where('idDateProposal', $idInTable);
                 break;
             case 'Appointment':
@@ -220,14 +232,14 @@ class Projects extends CI_Model
                     ->where('idAppointment', $idInTable);
                 break;
             default:
+                trigger_error('Unknown table');
                 return FALSE;
         }
-
 
         $res = $this->db->get()
             ->row();
 
-        if (empty($res)) {
+        if (is_null($res)) {
             return FALSE;
         }
         return (int) $res->idProject;

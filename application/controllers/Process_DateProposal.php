@@ -87,18 +87,17 @@ class Process_DateProposal extends CI_Controller
                 if ($this->DateProposals->isAccepted($dateProposalId)) {
 
                     $this->Appointments->setFinalDate($dateProposalId);
-
-                    $this->Projects->sendProjectMessage($projectId
-                        ,
-                        'Un rdv a été validé !',
+                    $this->Projects->sendProjectMessage(
+                        $projectId,
+                        'Un rendez-vous a été accepté',
                         'success'
                     );
 
                 }
 
             } else {
-                $this->Projects->sendProjectMessage($projectId
-                    ,
+                $this->Projects->sendProjectMessage(
+                    $projectId,
                     'Une proposition de date à été refusée',
                     'warning'
                 );

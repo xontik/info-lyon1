@@ -9,14 +9,15 @@ class Absence extends TM_Controller
             $semester = '';
         }
 
+        $this->load->model('Students');
         $this->load->model('Semesters');
 
         $this->load->helper('tabs');
 
         // Loads the max semester type the student went to
-        $maxSemester = (int) substr($this->Semesters->getType(
-                $this->Semesters->getStudentCurrent($_SESSION['id'])
-            ), 1
+        $maxSemester = (int) substr(
+            $this->Students->getCurrentSemester($_SESSION['id'])->courseType,
+            1
         );
 
         if ($semester !== '' && $semester > 'S' . $maxSemester) {
