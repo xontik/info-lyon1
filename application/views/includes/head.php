@@ -41,22 +41,22 @@
 
         $nav = array(
             'student' => array(
-                'absences' => 'Absence',
-                'notes' => 'Mark',
-                'ptut' => 'Project',
-                'questions' => 'Question'
+                'absences' => 'absence',
+                'notes' => 'mark',
+                'ptut' => 'project',
+                'questions' => 'question'
             ),
             'teacher' => array(
-                'absences' => '/Absence',
-                'controles' => '/Control',
-                'ptut' => '/Project',
-                'questions' => '/Question',
-                'suivi' => '/Student'
+                'absences' => 'absence',
+                'controles' => 'control',
+                'ptut' => 'project',
+                'questions' => 'question',
+                'suivi' => 'student'
             ),
             'secretariat' => array(
-                'absences' => '/Absence',
-                'administration' => '/Administration',
-                'suivi' => '/Student'
+                'absences' => 'absence',
+                'administration' => 'administration',
+                'suivi' => 'student'
             )
         );
         ?><nav class="nav-extended">
@@ -65,7 +65,7 @@
                 <!-- computer nav -->
                 <ul class="right hide-on-med-and-down">
                     <?php foreach ($nav[$_SESSION['userType']] as $item => $url) {
-                        $active = strcasecmp($pageName, $url) === 0
+                        $active = $pageName === $url
                             ? ' active' : '';
                         ?>
                         <li class="small-caps <?= $active ?>"><a href="<?= base_url($url) ?>"><?= $item ?></a></li>
@@ -151,9 +151,11 @@
                     <?php
                     foreach ($nav[$_SESSION['userType']] as $item => $url)
                     {
-                        $active = '/' . ucfirst($pageName) === $url
-                            ? ' active' : '';
-                        echo '<li class="small-caps' . $active . '"><a href="' . $url . '">' . $item . '</a></li>';
+                        $active = $pageName === $url
+                            ? 'active' : '';
+                        ?>
+                        <li class="small-caps <?= $active ?>"><a href="<?= $url ?>"><?= $item ?></a></li>
+                        <?php
                     } ?>
                     <li class="divider"></li>
                     <li>
@@ -177,11 +179,12 @@
                                 <?php
                             } else {
                                 foreach ($notifications as $notif) { ?>
-                                    <div data-notif-id="<?= $notif['id'] ?>"
+                                    <div data-notif-id="<?= $notif['idNotification'] ?>"
                                          <?php
                                          if ($notif['link']) { ?>
                                              data-notif-link="<?= base_url($notif['link']) ?>"
-                                         <?php } ?>
+                                            <?php
+                                         } ?>
                                          class="collection-item notif notif-<?= $notif['type'] ?> notif-<?= $notif['storage'] ?>">
                                         <div class="valign-wrapper">
                                             <i class="material-icons left"><?= $notif['icon'] ?></i>
@@ -194,8 +197,8 @@
                             ?>
                         </div>
                     </div>
-                    <div class="modal-footer btn-footer">
-                        <button class="btn waves-effect waves-light modal-action modal-close">Fermer</button>
+                    <div class="modal-footer">
+                        <a class="btn waves-effect waves-light modal-action modal-close">Fermer</a>
                     </div>
                 </div>
             </div>
