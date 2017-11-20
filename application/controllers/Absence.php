@@ -21,7 +21,7 @@ class Absence extends TM_Controller
         );
 
         if ($semester !== '' && $semester > 'S' . $maxSemester) {
-            addPageNotification('Vous essayez d\'accéder à un semestre futur !<br>Redirection vers votre semestre courant');
+            addPageNotification('Vous essayez d\'accéder à un semestre futur<br>Redirection vers votre semestre courant');
             $semester = '';
         }
 

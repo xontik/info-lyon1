@@ -23,7 +23,7 @@ class Mark extends TM_Controller
 
         // If above max semester
         if ($semester !== '' && $semester > 'S' . $maxSemester) {
-            addPageNotification('Vous essayez d\'accéder à un semestre futur !<br>Redirection vers le semestre courant');
+            addPageNotification('Vous essayez d\'accéder à un semestre futur<br>Redirection vers le semestre courant');
             $semester = '';
         }
 

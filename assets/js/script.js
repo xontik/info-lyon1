@@ -18,9 +18,9 @@ $(document).ready(function() {
     });
 
     // Confirm modal
-    $(document).on('click', 'a[data-confirm]', confirm);
-    $(document).on('submit', 'form[data-confirm]', confirm);
-
+    $(document)
+        .on('click', 'a[data-confirm]', confirm)
+        .on('submit', 'form[data-confirm]', confirm);
 
     function confirm() {
         return window.confirm(this.getAttribute('data-confirm'));
@@ -31,9 +31,7 @@ $(document).ready(function() {
     var notificationWrappers = $('.notification-wrapper');
 
     $(document).on('click', '.notif', deleteNotif);
-    $.post('/notification/get_alerts', function(alerts) {
-        generateToasts(alerts);
-    });
+    $.post('/notification/get_alerts', generateToasts);
 
     function generateToasts(alerts) {
         $.each(alerts, function (index, notif) {
@@ -45,7 +43,8 @@ $(document).ready(function() {
     }
 
     function deleteNotif(event) {
-        var notificationId = $(this).data('notif-id');
+        var el = $(this);
+        var notificationId = el.data('notif-id');
 
         if (notificationId) {
 
@@ -56,32 +55,32 @@ $(document).ready(function() {
 
             // Session or seen notification
             var storage;
-            if ($(this).hasClass('notif-session')) {
+            if (el.hasClass('notif-session')) {
                 storage = 'session';
-            } else if ($(this).hasClass('notif-seen')) {
+            } else if (el.hasClass('notif-seen')) {
                 storage = 'seen';
             } else {
                 return;
             }
 
-            var data = {
+            $.post('/notification/remove_notification', {
                 notifId: parseInt(notificationId),
                 storage: storage
-            };
-
-            $.post('/notification/remove_notification/', data);
-
-            var link = $(this).data('notif-link');
-            if (link) {
-                window.location.href = link.toString();
-            }
+            })
+                .done(function(data) {
+                    console.log(data);
+                    var link = el.data('notif-link');
+                    if (link) {
+                        location.href = link.toString();
+                    }
+                })
+                .fail(function(jxHQR, status, errorThrown) {
+                    console.log(status, errorThrown);
+                });
 
             $('.notif[data-notif-id="' + notificationId + '"]').fadeOut(function() {
                 $(this).remove();
-            });
 
-            // Wait until animation end
-            setTimeout(function() {
                 if (notificationCount <= 0) {
                     var $mobileNotifications = $('#m-notifications');
                     // Change icon
@@ -95,18 +94,16 @@ $(document).ready(function() {
                     $mobileNotifications.modal('close');
 
                     // Append "no result" text
-                    setTimeout(function() {
-                        $('#nav-notifications').append('<li><p>Pas de notifications</p></li>');
-                        $mobileNotifications.find('.collection')
-                            .append('<div class="collection-item">Pas de notifications</div>')
-                    }, 200);
+                    $('#nav-notifications').append('<li><p>Pas de notifications</p></li>');
+                    $mobileNotifications.find('.collection')
+                        .append('<div class="collection-item">Pas de notifications</div>')
                 }
-            }, 400);
+            });
 
         } else {
             // Page notification
-            $(this).fadeOut(function() {
-                $(this).remove();
+            el.fadeOut(function() {
+                el.remove();
             });
         }
 

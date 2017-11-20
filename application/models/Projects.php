@@ -175,7 +175,7 @@ class Projects extends CI_Model
             ->result();
 
         foreach ($students as $student) {
-            $this->Notifications->create($message, '/Project', $student->idUser, $type, $icon);
+            $this->Notifications->create($message, 'Project', $student->idUser, $type, $icon);
         }
 
         // Tutor
@@ -194,7 +194,7 @@ class Projects extends CI_Model
 
         if (!is_null($teacher)) {
             $this->Notifications->create('Projet ' . $project->projectName . ' : ' . $message,
-                '/Project/detail/' . $projectId, $teacher->idUser, $type, $icon);
+                '/Project/appointment/' . $projectId, $teacher->idUser, $type, $icon);
         }
     }
 
@@ -313,6 +313,6 @@ class Projects extends CI_Model
 
     }
 
-    
+
 
 }

@@ -972,7 +972,7 @@ $(document).ready(function() {
                     case 'missing_data':
                     case 'fail':
                         Materialize.toast('Erreur de communication avec le serveur.\n'
-                            + 'Nous vous conseillons de rafraîchir la page !',
+                            + 'Nous vous conseillons de rafraîchir la page',
                             4000, 'notif notif-warning');
                         break;
                     default:
@@ -1008,7 +1008,7 @@ $(document).ready(function() {
                     case 'missing_data':
                     case 'fail':
                         Materialize.toast('Erreur de communication avec le serveur.\n'
-                            + 'Nous vous conseillons de rafraîchir la page !',
+                            + 'Nous vous conseillons de rafraîchir la page',
                             4000, 'notif notif-warning');
                         break;
                     default:

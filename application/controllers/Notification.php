@@ -73,6 +73,7 @@ class Notification extends CI_Controller {
                     unset($_SESSION['sessionNotif'][$notifId]);
                     break;
                 case 'seen':
+                    $this->load->model('Notifications');
                     $this->Notifications->delete($notifId);
                     break;
                 default:

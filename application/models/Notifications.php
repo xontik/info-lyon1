@@ -24,14 +24,21 @@ class Notifications extends CI_Model {
 
     /**
      * Creates a notification.
-     * @param string $content
-     * @param string $type
-     * @param string $icon
-     * @param string $link
-     * @param int $userId The id of the user to send it to
+     * @param string    $content
+     * @param string    $type
+     * @param string    $icon
+     * @param string    $link
+     * @param int       $userId The id of the user to send it to
      * @return int The id of the created notification
      */
-    public function create($content, $link, $userId, $type, $icon) {
+    public function create($content, $link, $userId, $type = 'info', $icon = '') {
+        $this->load->config('notification');
+
+        if (!$icon) {
+            $notificationIcons = $this->config->item('notificationIcons');
+            $icon = array_key_exists($type, $notificationIcons) ? $notificationIcons[$type] : 'info_outline';
+        }
+
         $data = array(
             'content' => $content,
             'type' => $type,
@@ -41,7 +48,7 @@ class Notifications extends CI_Model {
         );
 
         $this->db->insert('Notification', $data);
-        return (int) $this->db->insert_id();
+        return $this->db->insert_id();
     }
 
     /**
@@ -51,9 +58,10 @@ class Notifications extends CI_Model {
      * @return bool Whether the operation was successful or not
      */
     public function delete($notificationId) {
-        $this->db->delete('Notification', array('idNotification', $notificationId));
+        $this->db
+            ->where('idNotification', $notificationId)
+            ->delete('Notification');
         return $this->db->affected_rows();
-        
     }
 
 }

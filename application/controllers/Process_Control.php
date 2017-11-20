@@ -188,7 +188,7 @@ class Process_Control extends CI_Controller
         }
 
         if ($this->Controls->hasMark($controlId)) {
-            addPageNotification('Impossible de supprimer un contrôle alors que des élèves ont été notés !', 'danger');
+            addPageNotification('Impossible de supprimer un contrôle alors que des élèves ont été notés', 'danger');
             redirect('Control/edit/' . $controlId);
         }
 

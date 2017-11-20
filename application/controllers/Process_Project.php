@@ -115,7 +115,7 @@ class Process_Project extends CI_Controller
                 addPageNotification('Etudiant ne fait pas parti du projet', 'danger');
             } else {
                 if ($this->Projects->deleteMemeber($projectId, $studentId)) {
-                    addPageNotification('Etudiant supprimé !', 'success');
+                    addPageNotification('Etudiant supprimé', 'success');
                 } else {
                     addPageNotification('Erreur lors de la suppression de l\'étudiant', 'danger');
                 }
@@ -137,7 +137,7 @@ class Process_Project extends CI_Controller
             redirect('Project');
         } else {
                 if ($this->Projects->delete($projectId)) {
-                    addPageNotification('Projet supprimé !', 'success');
+                    addPageNotification('Projet supprimé', 'success');
                     redirect('Project');
                 } else {
                     addPageNotification('Erreur lors de la suppression du projet', 'danger');
@@ -173,7 +173,7 @@ class Process_Project extends CI_Controller
                 }
 
                 if ($this->Projects->changeName($projectId, $projectName)) {
-                    addPageNotification('Projet renommé !', 'success');
+                    addPageNotification('Projet renommé', 'success');
                 } else {
                     addPageNotification('Erreur du changeement de nom', 'danger');
                 }

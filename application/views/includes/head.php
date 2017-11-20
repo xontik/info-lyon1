@@ -7,12 +7,14 @@
 
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <?php
-    if ( !empty($css) ) {
-        foreach ($css as $c) {
-            echo '<link rel="stylesheet" type="text/css" href="' . css_url($c) . '">';
+    if (!empty($css)) {
+        foreach ($css as $c) { ?>
+            <link rel="stylesheet" type="text/css" href="<?= css_url($c) ?>">
+            <?php
         }
-    } else {
-        echo '<link rel="stylesheet" type="text/css" href="' . css_url('style') . '">';
+    } else { ?>
+        <link rel="stylesheet" type="text/css" href="<?= css_url('style') ?>">
+        <?php
     }
 
     $debug = ENVIRONMENT === 'development'; ?>
@@ -72,34 +74,32 @@
                         <?php
                     } ?>
                     <li>
-                        <a class="dropdown-button notification-wrapper"
-                           data-activates="nav-notifications" data-constrainwidth="false">
+                        <?php
+                        if (empty($notifications)) { ?>
+                            <a class="dropdown-button notification-wrapper"
+                               data-activates="nav-notifications" data-constrainwidth="false">
+                               <i class="material-icons">notifications_none</i>
+                            </a>
+                            <ul id="nav-notifications" class="dropdown-content">
+                                <li><p>Pas de notifications</p></li>
+                            </ul>
                             <?php
-                            if (empty($notifications)) {
-                                ?>
-                                <i class="material-icons">notifications_none</i>
-                                <?php
-                            } else {
-                                ?>
+                        } else { ?>
+                            <a class="dropdown-button notification-wrapper"
+                                data-activates="nav-notifications" data-constrainwidth="false">
                                 <i class="material-icons">notifications</i>
                                 <span class="badge new materialize-red lighten-2"
-                                      data-badge-caption=""><?= count($notifications) ?></span>
+                                    data-badge-caption=""><?= count($notifications) ?></span>
+                            </a>
+                            <ul id="nav-notifications" class="dropdown-content">
                                 <?php
-                            } ?>
-                        </a>
-                        <ul id="nav-notifications" class="dropdown-content">
-                            <?php
-                            if (empty($notifications)) {
-                                ?>
-                                <li><p>Pas de notifications</p></li>
-                                <?php
-                            } else {
                                 foreach ($notifications as $notif) { ?>
                                     <li data-notif-id="<?= $notif['idNotification'] ?>"
                                         <?php
                                         if ($notif['link']) { ?>
                                             data-notif-link="<?= base_url($notif['link']) ?>"
-                                        <?php } ?>
+                                            <?php
+                                        } ?>
                                         class="notif notif-<?= $notif['type'] ?> notif-<?= $notif['storage'] ?>">
                                         <div class="valign-wrapper">
                                             <i class="material-icons left"><?= $notif['icon'] ?></i>
@@ -107,9 +107,10 @@
                                         </div>
                                     </li>
                                     <?php
-                                }
-                            } ?>
-                        </ul>
+                                } ?>
+                            </ul>
+                            <?php
+                        } ?>
                     </li>
                     <li>
                         <a class="dropdown-button"
@@ -135,13 +136,13 @@
                     <li>
                         <a href="#m-notifications" class="modal-trigger notification-wrapper">
                             <?php
-                            if (empty($notifications)) {
-                                ?><i class="material-icons right">notifications_none</i>
+                            if (empty($notifications)) { ?>
+                                <i class="material-icons right">notifications_none</i>
                                 <?php
-                            } else {
-                                ?><i class="material-icons right">notifications</i>
+                            } else { ?>
+                                <i class="material-icons right">notifications</i>
                                 <span class="badge new materialize-red lighten-2"
-                                      data-badge-caption=""><?= count($notifications) ?></span>
+                                    data-badge-caption=""><?= count($notifications) ?></span>
                                 <?php
                             } ?>
                         </a>
@@ -173,8 +174,7 @@
                         <h4 class="center-align">Notifications</h4>
                         <div class="collection">
                             <?php
-                            if (empty($notifications)) {
-                                ?>
+                            if (empty($notifications)) { ?>
                                 <div class="collection-item">Pas de notifications</div>
                                 <?php
                             } else {
@@ -193,8 +193,7 @@
                                     </div>
                                     <?php
                                 }
-                            }
-                            ?>
+                            } ?>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -202,22 +201,22 @@
                     </div>
                 </div>
             </div>
-            <?php if (isset($data['tabs'])) {
-                ?>
+            <?php
+            if (isset($data['tabs'])) { ?>
                 <div class="nav-content">
                     <ul class="tabs tabs-transparent">
-                    <?php
-                    foreach ($data['tabs'] as $tab) {
-                        ?>
-                        <li class="tab">
-                            <a target="_self" href="<?= base_url($tab->url) ?>"
-                                <?= $tab->active ? 'class="active"' : '' ?>
-                                ><?= $tab->content ?></a>
-                        </li>
                         <?php
-                    } ?>
+                        foreach ($data['tabs'] as $tab) { ?>
+                            <li class="tab">
+                                <a target="_self" href="<?= base_url($tab->url) ?>"
+                                    <?= $tab->active ? 'class="active"' : '' ?>
+                                    ><?= $tab->content ?></a>
+                            </li>
+                            <?php
+                        } ?>
                     </ul>
                 </div>
-            <?php } ?>
+                <?php
+            } ?>
         </nav>
     </header>
