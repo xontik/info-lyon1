@@ -10,7 +10,7 @@
         <h4 class="header container">Tableau de bord</h4>
         <div class="row">
             <div class="col s12 l6">
-                <div class="section card grey lighten-5">
+                <div class="card grey lighten-5">
                     <div class="card-content">
                         <a href="<?= base_url('Absence') ?>" class="card-title">Absences</a>
                         <?php
@@ -22,11 +22,11 @@
                             $date = DateTime::createFromFormat('Y-m-d H:i:s', $data['absence']->beginDate);
                             $diff = $now->diff($date);
                             ?>
-                            <div class="section">
+                            <div>
                                 <p><?= $data['absenceCount']['unjustified'] ?> demi-journée(s) d'absence non-justifiée(s)</p>
                                 <p><?= $data['absenceCount']['justified'] ?> demi-journée(s) d'absence justifiée(s)</p>
                             </div>
-                            <div class="section">
+                            <div class="section no-pad-bot">
                                 <p>Dernière absence : <?= readableTimeDifference($diff) ?></p>
                             </div>
                             <?php
@@ -94,7 +94,8 @@
                         ?>
                         <div class="card-action">
                             <form action="<?= base_url('Process_DateProposal/choose/'
-                                . $data['nextDateProposal']->idDateProposal) ?>">
+                                . $data['nextDateProposal']->idDateProposal) ?>"
+                                method="post">
                                 <button type="submit" name="accept"
                                     class="btn-flat waves-effect waves-green">Accepter</button>
                                 <button type="submit" name="decline"
@@ -109,7 +110,7 @@
             <div class="col s12 l6">
                 <div class="card grey lighten-5">
                     <div class="card-content">
-                        <div class="section">
+                        <div>
                             <a href="<?= base_url('Mark') ?>" class="card-title">Notes</a>
                             <?php
                             if (!$data['mark']) {
@@ -129,7 +130,7 @@
                                 <?php
                             } ?>
                         </div>
-                        <div class="section">
+                        <div class="section no-pad-bot">
                             <?php
                             foreach ($data['average'] as $average) {
                                 ?>

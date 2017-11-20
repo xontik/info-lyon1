@@ -41,7 +41,7 @@ class Projects extends CI_Model
     }
 
     /**
-     * Computes the last appointement the project had.
+     * Computes the last appointment the project had.
      *
      * @param int $projectId
      * @return object
@@ -58,7 +58,7 @@ class Projects extends CI_Model
     }
 
     /**
-     * Computes the next appointement the project will have.
+     * Computes the next appointment the project will have.
      *
      * @param int $projectId
      * @return object
@@ -111,6 +111,12 @@ class Projects extends CI_Model
     public function sendProjectMessage($projectId, $message, $type = 'info', $icon = '')
     {
         $this->load->model('Notifications');
+        $this->load->model('Projects');
+
+        $project = $this->Projects->get($projectId);
+        if ($project === FALSE) {
+            return;
+        }
 
         // Student members
         $this->db->select('idUser')
@@ -146,46 +152,51 @@ class Projects extends CI_Model
             ->row();
 
         if (!is_null($teacher)) {
-            $this->Notifications->create($message, '/Project/detail/' . $projectId, $teacher, $type, $icon);
+            $this->Notifications->create('Projet ' . $project->projectName . ' : ' . $message,
+                '/Project/detail/' . $projectId, $teacher->idUser, $type, $icon);
         }
     }
 
     /**
      * Get project id from another table, related to projects
      *
-     * @param string $table The related table ('DateAccept', 'DateProposal', 'Appointement')
+     * @param string $table The related table ('DateAccept', 'DateProposal', 'Appointment')
      * @param mixed $idInTable The primary key content
      * @return int|bool FALSE if the table doesn't exist or if id doesn't exist in the table
      */
     public function getProjectId($table, $idInTable)
     {
-        $this->db->select('idProject')
-            ->from('Project');
-
         switch ($table) {
             case 'DateAccept':
-                $this->db->join('DateAccept', 'idProposal')
-                    ->where('idProposal', $idInTable);
+                $this->db->select('idProject')
+                    ->from('Project')
+                    ->join('Appointment', 'idProject')
+                    ->join('DateProposal', 'idAppointment')
+                    ->join('DateAccept', 'idDateProposal')
+                    ->where('idDateAccept', $idInTable);
+                break;
             case 'DateProposal':
-                $this->db->join('DateProposal', 'idAppointement');
-                if ($table === 'DateProposal') {
-                    $this->db->where('idProposal', $idInTable);
-                }
-            case 'Appointement':
-                $this->db->join('Appointement', 'idProject');
-                if ($table === 'Appointement') {
-                    $this->db->where('idAppointement', $idInTable);
-                }
+                $this->db->select('idProject')
+                    ->from('Project')
+                    ->join('Appointment', 'idProject')
+                    ->join('DateProposal', 'idAppointment')
+                    ->where('idDateProposal', $idInTable);
+                break;
+            case 'Appointment':
+                $this->db->select('idProject')
+                    ->from('Project')
+                    ->join('Appointment', 'idProject')
+                    ->where('idAppointment', $idInTable);
                 break;
             default:
+                trigger_error('Unknown table');
                 return FALSE;
         }
-
 
         $res = $this->db->get()
             ->row();
 
-        if (empty($res)) {
+        if (is_null($res)) {
             return FALSE;
         }
         return (int) $res->idProject;

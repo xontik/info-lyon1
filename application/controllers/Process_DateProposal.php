@@ -19,9 +19,9 @@ class Process_DateProposal extends CI_Controller
                 htmlspecialchars($_POST['date'])
                 . ' ' . htmlspecialchars($_POST['time'])
             );
-            $appointementId = $this->Projects->getNextAppointement($groupId)->idAppointement;
+            $appointmentId = $this->Projects->getNextAppointment($groupId)->idAppointment;
 
-            if ($this->DateProposals->create($appointementId, $datetime, $_SESSION['userId'])) {
+            if ($this->DateProposals->create($appointmentId, $datetime, $_SESSION['userId'])) {
                 addPageNotification('Proposition ajoutée avec succès', 'success');
             } else {
                 addPageNotification('Impossible de créer la proposition de rendez-vous', 'danger');
@@ -35,7 +35,6 @@ class Process_DateProposal extends CI_Controller
 
     public function choose($proposalId)
     {
-
         $proposalId = (int) htmlspecialchars($proposalId);
 
         $this->load->model('Projects');
@@ -49,7 +48,7 @@ class Process_DateProposal extends CI_Controller
                 $accept = false;
             } else {
                 addPageNotification('Données corrompues', 'danger');
-                redirect('/Project');
+                redirect('Project');
             }
 
             $this->DateProposals->setAccept($proposalId, $_SESSION['userId'], $accept);
@@ -58,7 +57,7 @@ class Process_DateProposal extends CI_Controller
             if ($accept) {
                 if ($this->DateProposals->isAccepted($proposalId)) {
 
-                    $this->Appointements->setFinalDate($proposalId);
+                    $this->Appointments->setFinalDate($proposalId);
                     $this->Projects->sendProjectMessage(
                         $projectId,
                         'Une proposition de date à été acceptée',
