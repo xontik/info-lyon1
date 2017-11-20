@@ -1,5 +1,11 @@
 @import '../style';
 
+main > div:first-child {
+  position: absolute;
+  left: 13%;
+  top: 7px;
+}
+
 img {
   width: auto !important;
   height: 100vh;

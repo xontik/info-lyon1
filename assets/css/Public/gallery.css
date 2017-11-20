@@ -5443,6 +5443,8 @@ body > header > nav h2 { text-align: center; font-size: 2.46rem; }
 
 .card-action button.btn-flat { color: #ffab40; }
 
+main > div:first-child { position: absolute; left: 13%; top: 7px; }
+
 img { width: auto !important; height: 100vh; }
 
 /*# sourceMappingURL=gallery.css.map */
