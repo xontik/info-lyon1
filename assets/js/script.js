@@ -35,7 +35,7 @@ $(document).ready(function() {
 
     function generateToasts(alerts) {
         $.each(alerts, function (index, notif) {
-            var $toastContent = '<i class="material-icons">' + notif.icon + '</i>'
+            var $toastContent = '<i class="material-icons white-text">' + notif.icon + '</i>'
                 + '<span>' + notif.content + '</span>';
 
             Materialize.toast($toastContent, notif.duration, 'notif notif-' + notif.type);

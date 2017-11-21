@@ -29,10 +29,10 @@
                             </ul>
                             <div class="col s12 center-align">
                                 <button type="button" class="btn" id="add">
-                                    <i class="material-icons">keyboard_arrow_up</i>
+                                    <i class="material-icons white-text">keyboard_arrow_up</i>
                                 </button>
                                 <button type="button" class="btn" id="remove">
-                                    <i class="material-icons">keyboard_arrow_down</i>
+                                    <i class="material-icons white-text">keyboard_arrow_down</i>
                                 </button>
                             </div>
                             <ul id="TUout" class="collection with-header col s12 l10 offset-l1 no-padding">
