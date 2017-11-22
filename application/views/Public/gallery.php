@@ -1,14 +1,10 @@
 <main>
-    <div>
-        <a href="<?= base_url('/') ?>"
-           class="btn waves-effect waves-light">Accueil</a>
-    </div>
     <div class="carousel carousel-slider">
         <div class="carousel-fixed-item">
-            <div class="center hide-on-med-and-down">
-                <i id="prev-slide" class="material-icons medium white-text">chevron_left</i>
-                <i id="next-slide" class="material-icons medium white-text">chevron_right</i>
-            </div>
+            <i id="prev-slide" class="material-icons medium white-text">chevron_left</i>
+            <b><a href="<?= base_url('/') ?>"
+               class="btn-flat white-text waves-effect waves-light">Accueil</a></b>
+            <i id="next-slide" class="material-icons medium white-text">chevron_right</i>
         </div>
         <?php
         if (empty($data['projects'])) { ?>
