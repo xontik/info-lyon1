@@ -82,7 +82,7 @@
                                 <th>type</th>
                                 <th>coefficient</th>
                                 <th>diviseur</th>
-                                <th>médiane</th>
+                                <th>ecart type</th>
                                 <th>moyenne</th>
                                 <th>date</th>
                                 <th>edit.</th>
@@ -101,7 +101,7 @@
                                         <td><?= $control->controlTypeName ?> </td>
                                         <td><?= (float) $control->coefficient ?></td>
                                         <td><?= (float) $control->divisor ?></td>
-                                        <td><?= is_null($control->median) ? 'Non calculée' : $control->median ?></td>
+                                        <td><?= is_null($control->standardDeviation) ? 'Non calculée' : $control->standardDeviation ?></td>
                                         <td><?= is_null($control->average) ? 'Non calculée' : $control->average ?></td>
                                         <td><?= $date->format('d/m/Y') ?></td>
                                         <td>
