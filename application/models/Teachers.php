@@ -30,11 +30,11 @@ class Teachers extends CI_Model
     {
         $sql =
             'SELECT foo.subjectCode, foo.idSubject, foo.subjectName, foo.idControl, foo.controlName,
-            foo.coefficient, foo.divisor, foo.controlTypeName, foo.idControlType, foo.median, foo.average,
+            foo.coefficient, foo.divisor, foo.controlTypeName, foo.idControlType, foo.standardDeviation, foo.average,
             foo.controlDate, foo.subjectCoefficient, foo.groupName, foo.idGroup
             FROM (
                     SELECT subjectCode, idSubject, subjectName, idControl, controlName,
-                    coefficient, divisor, idControlType, controlTypeName, median, average,
+                    coefficient, divisor, idControlType, controlTypeName, standardDeviation, average,
                     controlDate,subjectCoefficient,groupName,idGroup
                     FROM Control
                     JOIN ControlType USING (idControlType)
@@ -45,7 +45,7 @@ class Teachers extends CI_Model
                     WHERE idTeacher = ? AND active = 1
                 UNION
                     SELECT DISTINCT subjectCode, idSubject, subjectName, idControl, controlName,
-                    coefficient, divisor, idControlType, controlTypeName, median, average,
+                    coefficient, divisor, idControlType, controlTypeName, standardDeviation, average,
                     controlDate, subjectCoefficient, NULL AS groupName, NULL AS idGroup
                     FROM Control
                     JOIN ControlType USING (idControlType)
@@ -56,7 +56,7 @@ class Teachers extends CI_Model
                     WHERE idTeacher = ? AND active = 1
                 UNION
                     SELECT subjectCode, idSubject, subjectName, idControl, controlName,
-                    coefficient, divisor, idControlType, controlTypeName, median, average,
+                    coefficient, divisor, idControlType, controlTypeName, standardDeviation, average,
                     controlDate, subjectCoefficient, groupName, idGroup
                     FROM Control
                     JOIN ControlType USING (idControlType)
@@ -69,7 +69,7 @@ class Teachers extends CI_Model
                     WHERE Referent.idTeacher = ? AND active = 1
                 UNION
                     SELECT subjectCode, idSubject, subjectName, idControl, controlName,
-                    Control.coefficient, divisor, idControlType, controlTypeName, median, average,
+                    Control.coefficient, divisor, idControlType, controlTypeName, standardDeviation, average,
                     controlDate, subjectCoefficient, NULL AS groupName, NULL AS idGroup
                     FROM Control
                     JOIN ControlType USING (idControlType)
