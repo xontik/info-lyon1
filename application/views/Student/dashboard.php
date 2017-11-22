@@ -42,27 +42,24 @@
                             <?php
                             if ($data['appointment']) {
                                 $dateAppointment = DateTime::createFromFormat(
-                                        'Y-m-d H:i:s',
-                                        $data['appointment']->finalDate
+                                    'Y-m-d H:i:s',
+                                    $data['appointment']->finalDate
                                 );
                                 if ($dateAppointment === FALSE) {
                                     ?>
                                     <b>Proposition de rendez-vous</b>
                                     <?php
-                                    if (!$data['nextDateProposal']) {
+                                    if (!$data['hasDateProposal']) {
+                                        $cardAction = '<a class="btn-flat" href="'
+                                            . base_url('Project#proposeDate') . '">Proposer une date</a>';
                                         ?>
                                         <p>Pas de proposition de date</p>
-                                        <a href="<?= base_url('Project#proposeDate') ?>">Proposer une date</a>
                                         <?php
                                     } else {
-                                        $dateProposal = DateTime::createFromFormat(
-                                            'Y-m-d H:i:s',
-                                            $data['nextDateProposal']->date
-                                        );
-
-                                        $diff = $now->diff($dateProposal);
+                                        $cardAction = '<a class="btn-flat"
+                                           href="' . base_url('Project') . '">Répondre</a>';
                                         ?>
-                                        <p>le <?= $dateProposal->format('d/m/Y à H:i') ?> (<?= readableTimeDifference($diff) ?>)</p>
+                                        <p>Des propositions de date sont disponibles</p>
                                         <?php
                                     }
                                 } else {
@@ -76,10 +73,11 @@
                                     <?php
                                 }
                             } else {
+                                $cardAction = '<a class="btn-flat"
+                                    href="' . base_url('Process_Appointment/create/' . $data['project']->idProject) . '">
+                                    Proposer un rendez-vous</a>';
                                 ?>
                                 <b>Pas de rendez-vous prévu</b>
-                                <!-- TODO href="base_url('Process_Appointment/create')" -->
-                                <a>Proposer un rendez-vous</a>
                                 <?php
                             }
                         } else {
@@ -90,18 +88,9 @@
                         } ?>
                     </div>
                     <?php
-                    if (isset($dateProposal)) {
+                    if (isset($cardAction)) {
                         ?>
-                        <div class="card-action">
-                            <form action="<?= base_url('Process_DateProposal/choose/'
-                                . $data['nextDateProposal']->idDateProposal) ?>"
-                                method="post">
-                                <button type="submit" name="accept"
-                                    class="btn-flat waves-effect waves-green">Accepter</button>
-                                <button type="submit" name="decline"
-                                    class="btn-flat waves-effect waves-red">Refuser</button>
-                            </form>
-                        </div>
+                        <div class="card-action"><?= $cardAction ?></div>
                         <?php
                     }
                     ?>

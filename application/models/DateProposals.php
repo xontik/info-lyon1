@@ -24,29 +24,6 @@ class DateProposals extends CI_Model
     }
 
     /**
-     * Returns the next date proposal in time.
-     *
-     * @param $appointmentId
-     * @return object|bool FALSE if there's no date proposal
-     */
-    public function getNext($appointmentId)
-    {
-        $res = $this->db
-            ->from('DateProposal')
-            ->where('idAppointment', $appointmentId)
-            ->where('date >= CURDATE()')
-            ->order_by('date', 'ASC')
-            ->limit(1)
-            ->get()
-            ->row();
-
-        if (is_null($res)) {
-            return FALSE;
-        }
-        return $res;
-    }
-
-    /**
      * Get all date proposals referenced to the appointment.
      *
      * @param int $appointmentId The appointment id

@@ -8,7 +8,7 @@ class Dashboard extends TM_Controller
         $this->load->model('Students');
         $this->load->model('Semesters');
         $this->load->model('Projects');
-        $this->load->model('DateProposals');
+        $this->load->model('Appointments');
 
         $this->load->helper('timetable');
         $this->load->helper('time');
@@ -37,8 +37,6 @@ class Dashboard extends TM_Controller
         }
         $this->data['side-timetable'] = $sideTimetable;
 
-
-
         $semester = $this->Students->getCurrentSemester($_SESSION['id']);
         $period = $this->Semesters->getPeriodObject($semester);
         $now = new DateTime();
@@ -61,14 +59,14 @@ class Dashboard extends TM_Controller
             $this->data['appointment'] = false;
         } else {
             $appointment = $this->Projects->getNextAppointment($project->idProject);
-            $nextDateProposal = null;
+            $hasDateProposal = false;
 
-            if (is_null($appointment->finalDate)) {
-                $nextDateProposal = $this->DateProposals->getNext($appointment->idAppointment);
+            if ($appointment && is_null($appointment->finalDate)) {
+                $hasDateProposal = $this->Appointments->hasDateProposal($appointment->idAppointment);
             }
 
             $this->data['appointment'] = $appointment;
-            $this->data['nextDateProposal'] = $nextDateProposal;
+            $this->data['hasDateProposal'] = $hasDateProposal;
         }
         $this->data['project'] = $project;
 

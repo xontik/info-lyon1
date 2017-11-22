@@ -121,7 +121,7 @@ $now = new DateTime();
     <?php
     if (!is_null($data['nextAppointment']) && is_null($data['nextAppointment']->finalDate)) {
         ?>
-        <div class="card grey lighten-5">
+        <div id="proposeDate" class="card grey lighten-5">
             <form method="post"
                 action="<?= base_url('Process_DateProposal/add/' . $data['project']->idProject) ?>">
                 <div class="card-content">

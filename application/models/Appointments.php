@@ -21,10 +21,19 @@ class Appointments extends CI_Model
 
     }
 
+    public function hasDateProposal($appointmentId) {
+        return $this->db
+            ->from('DateProposal')
+            ->where('idAppointment', $appointmentId)
+            ->where('date >= CURDATE()')
+            ->get()
+            ->num_rows() > 0;
+    }
+
     public function setComment($comment, $appointmentId)
     {
         $this->db->set('comment', $comment)
-            ->where('idAppointment', $idAppointment)
+            ->where('idAppointment', $appointmentId)
             ->update('Appointment');
         return $this->db->affected_rows();
 
