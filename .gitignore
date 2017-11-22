@@ -1,6 +1,6 @@
 .DS_Store
 
-
+assets/images/projects/*
 system/*
 
 application/cache/*

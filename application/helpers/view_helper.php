@@ -1,26 +1,34 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-function show($view, $var = array())
+function show($view, $data = array())
 {
     $instance =& get_instance();
-    $instance->load->view('includes/head', $var);
-    $instance->load->view($view, $var);
-    $instance->load->view('includes/foot', $var);
-
+    $instance->load->view('includes/head', $data);
+    $instance->load->view('includes/header', $data);
+    $instance->load->view($view, $data);
+    $instance->load->view('includes/foot', $data);
 }
 
-function show_head($var = array())
+function showPublic($view, $data = array())
 {
-    get_instance()->load->view('includes/head', $var);
+    $instance =& get_instance();
+    $instance->load->view('includes/head', $data);
+    $instance->load->view('Public/' . $view, $data);
+    $instance->load->view('includes/foot', $data);
 }
 
-function show_part($view, $var = array())
+function showHead($data = array())
 {
-    get_instance()->load->view($view, $var);
+    get_instance()->load->view('includes/head', $data);
 }
 
-function show_foot($var = array())
+function showPart($view, $data = array())
 {
-    get_instance()->load->view('includes/foot', $var);
+    get_instance()->load->view($view, $data);
+}
+
+function showFoot($data = array())
+{
+    get_instance()->load->view('includes/foot', $data);
 }

@@ -23,6 +23,19 @@ class Projects extends CI_Model
     }
 
     /**
+     * Returns all projects with a picture.
+     *
+     * @return array
+     */
+    public function getAllPictures()
+    {
+        return $this->db
+            ->where('projectPicture IS NOT NULL')
+            ->get('Project')
+            ->result();
+    }
+
+    /**
      * Return the members of the project.
      *
      * @param int $projectId
