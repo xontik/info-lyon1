@@ -5447,4 +5447,6 @@ main > div:first-child { position: absolute; left: 13%; top: 7px; }
 
 img { width: auto !important; height: 100vh; }
 
+.carousel-fixed-item .material-icons { cursor: pointer; }
+
 /*# sourceMappingURL=gallery.css.map */

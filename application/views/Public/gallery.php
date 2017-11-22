@@ -1,7 +1,7 @@
 <main>
     <div>
         <a href="<?= base_url('/') ?>"
-           class="btn waves-effect waves-light">Acceuil</a>
+           class="btn waves-effect waves-light">Accueil</a>
     </div>
     <div class="carousel carousel-slider">
         <div class="carousel-fixed-item">
