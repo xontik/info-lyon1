@@ -46,14 +46,16 @@
                 'absences' => 'absence',
                 'notes' => 'mark',
                 'ptut' => 'project',
-                'questions' => 'question'
+                'questions' => 'question',
+                'emploi du temps' => 'timetable'
             ),
             'teacher' => array(
                 'absences' => 'absence',
                 'controles' => 'control',
                 'ptut' => 'project',
                 'questions' => 'question',
-                'suivi' => 'student'
+                'suivi' => 'student',
+                'emploi du temps' => 'timetable'
             ),
             'secretariat' => array(
                 'absences' => 'absence',
