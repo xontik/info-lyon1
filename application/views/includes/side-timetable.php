@@ -30,7 +30,7 @@ if ($hours < 10) {
 ?>
     <div id="side-edt-large" class="hide-on-small-and-down card center-align">
         <div class="card-content">
-            <a href="<?= base_url('Timetable') ?>" class="card-title"><?= translateAndFormat($date) ?></a>
+            <span class="card-title"><?= translateAndFormat($date) ?></span>
             <div class="row">
                 <div class="hours col s2">
                     <?php
