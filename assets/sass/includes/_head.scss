@@ -11,7 +11,7 @@
   display: none;
 }
 
-body > header > nav {
+.nav-wrapper {
   .brand-logo {
     margin-left: 8px;
   }
@@ -19,6 +19,28 @@ body > header > nav {
   h2 {
     text-align: center;
     font-size: 2.46rem;
+  }
+
+  .badge {
+    $size: 1.3rem;
+
+    position: absolute;
+    top: 20%;
+
+    width: $size;
+    min-width: $size;
+    height: $size;
+    line-height: $size;
+
+    @media #{$large-and-up} {
+      margin-left: 14px;
+    }
+
+    @media #{$medium-and-down} {
+      margin-left: 28px;
+    }
+
+    border-radius: 50% !important;
   }
 }
 
@@ -30,4 +52,8 @@ body > header > nav {
     margin-left: 8px;
     margin-right: 8px;
   }
+}
+
+#m-notifications .collection > div {
+  cursor: pointer;
 }

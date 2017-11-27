@@ -30,8 +30,9 @@ $(document).ready(function() {
     var notificationCount = $('.notif').length / 2;
     var notificationWrappers = $('.notification-wrapper');
 
+    $(document).on('click', '.clear-notif', clearNotifs);
     $(document).on('click', '.notif', deleteNotif);
-    $.post('/notification/get_alerts', generateToasts);
+    $.post('/notification/get_alerts').done(generateToasts);
 
     function generateToasts(alerts) {
         $.each(alerts, function (index, notif) {
@@ -67,8 +68,7 @@ $(document).ready(function() {
                 notifId: parseInt(notificationId),
                 storage: storage
             })
-                .done(function(data) {
-                    console.log(data);
+                .done(function() {
                     var link = el.data('notif-link');
                     if (link) {
                         location.href = link.toString();
@@ -79,24 +79,10 @@ $(document).ready(function() {
                 });
 
             $('.notif[data-notif-id="' + notificationId + '"]').fadeOut(function() {
-                $(this).remove();
+                this.remove();
 
                 if (notificationCount <= 0) {
-                    var $mobileNotifications = $('#m-notifications');
-                    // Change icon
-                    notificationWrappers.find('i').html('notifications_none');
-                    notificationWrappers.children('.badge').fadeOut(function() {
-                        this.remove();
-                    });
-
-                    // Auto-close dropdown / modal
-                    $('.dropdown-button[data-activates="nav-notifications"]').dropdown('close');
-                    $mobileNotifications.modal('close');
-
-                    // Append "no result" text
-                    $('#nav-notifications').append('<li><p>Pas de notifications</p></li>');
-                    $mobileNotifications.find('.collection')
-                        .append('<div class="collection-item">Pas de notifications</div>')
+                    resetNotifUI();
                 }
             });
 
@@ -109,5 +95,37 @@ $(document).ready(function() {
 
         // Prevent notification menu from closing
         event.stopPropagation();
+    }
+
+    function clearNotifs() {
+        $.post('/notification/remove_all')
+            .done(function() {
+                $('[data-notif-id], .clear-notif, .notification-wrapper .badge').fadeOut(function() {
+                    this.remove();
+                });
+
+                resetNotifUI();
+            })
+            .fail(function(jxHQR, status, errorThrown) {
+                console.log(status, errorThrown);
+            });
+    }
+
+    function resetNotifUI() {
+        var $mobileNotifications = $('#m-notifications');
+        // Change icon
+        notificationWrappers.find('i').html('notifications_none');
+        notificationWrappers.children('.badge').fadeOut(function() {
+            this.remove();
+        });
+
+        // Auto-close dropdown / modal
+        $('.dropdown-button[data-activates="nav-notifications"]').dropdown('close');
+        $mobileNotifications.modal('close');
+
+        // Append "no result" text
+        $('#nav-notifications').append('<li><p>Pas de notifications</p></li>');
+        $mobileNotifications.find('.collection')
+            .append('<div class="collection-item">Pas de notifications</div>');
     }
 });

@@ -5433,11 +5433,16 @@ button.picker__today:focus, button.picker__clear:focus, button.picker__close:foc
 
 #debug-toolbar { display: none; }
 
-body > header > nav .brand-logo { margin-left: 8px; }
-body > header > nav h2 { text-align: center; font-size: 2.46rem; }
+.nav-wrapper .brand-logo { margin-left: 8px; }
+.nav-wrapper h2 { text-align: center; font-size: 2.46rem; }
+.nav-wrapper .badge { position: absolute; top: 20%; width: 1.3rem; min-width: 1.3rem; height: 1.3rem; line-height: 1.3rem; border-radius: 50% !important; }
+@media only screen and (min-width: 993px) { .nav-wrapper .badge { margin-left: 14px; } }
+@media only screen and (max-width: 992px) { .nav-wrapper .badge { margin-left: 28px; } }
 
 .hide-on-med-and-down ul.dropdown-content li { line-height: 200%; }
 .hide-on-med-and-down ul.dropdown-content li > *:not(a) { margin-left: 8px; margin-right: 8px; }
+
+#m-notifications .collection > div { cursor: pointer; }
 
 .no-margin { margin: 0 !important; }
 
@@ -5446,10 +5451,6 @@ body > header > nav h2 { text-align: center; font-size: 2.46rem; }
 .card-action button.btn-flat { color: #ffab40; }
 
 .horizontal-table-wrapper { overflow-x: auto; }
-
-.nav-wrapper .badge { position: absolute; top: 20%; width: 1.3rem; min-width: 1.3rem; height: 1.3rem; line-height: 1.3rem; border-radius: 50% !important; }
-@media only screen and (min-width: 993px) { .nav-wrapper .badge { margin-left: 14px; } }
-@media only screen and (max-width: 992px) { .nav-wrapper .badge { margin-left: 28px; } }
 
 .sorter { cursor: pointer; }
 

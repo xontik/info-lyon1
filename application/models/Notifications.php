@@ -55,11 +55,24 @@ class Notifications extends CI_Model {
      * Deletes a notification.
      *
      * @param int $notificationId
-     * @return bool Whether the operation was successful or not
+     * @return int Affected rows
      */
     public function delete($notificationId) {
         $this->db
             ->where('idNotification', $notificationId)
+            ->delete('Notification');
+        return $this->db->affected_rows();
+    }
+
+    /**
+     * Deletes all the notifications of an user.
+     *
+     * @param $userId
+     * @return int Affected rows
+     */
+    public function deleteAll($userId) {
+        $this->db
+            ->where('idUser', $userId)
             ->delete('Notification');
         return $this->db->affected_rows();
     }

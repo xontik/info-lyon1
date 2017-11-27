@@ -86,4 +86,12 @@ class Notification extends CI_Controller {
         }
     }
 
+    public function remove_all() {
+        header('Content-Length: 0');
+
+        $this->load->model('Notifications');
+        $this->Notifications->deleteAll($_SESSION['userId']);
+        unset($_SESSION['sessionNotif']);
+    }
+
 }

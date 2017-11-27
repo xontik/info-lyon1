@@ -15,25 +15,3 @@
 .horizontal-table-wrapper {
   overflow-x: auto;
 }
-
-.nav-wrapper .badge {
-  $size: 1.3rem;
-
-  position: absolute;
-  top: 20%;
-
-  width: $size;
-  min-width: $size;
-  height: $size;
-  line-height: $size;
-
-  @media #{$large-and-up} {
-    margin-left: 14px;
-  }
-
-  @media #{$medium-and-down} {
-    margin-left: 28px;
-  }
-
-  border-radius: 50% !important;
-}

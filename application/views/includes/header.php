@@ -88,6 +88,7 @@
                                 </li>
                                 <?php
                             } ?>
+                            <li class="clear-notif"><i class="material-icons black-text">clear_all</i></li>
                         </ul>
                         <?php
                     } ?>
@@ -172,7 +173,9 @@
                                     </div>
                                 </div>
                                 <?php
-                            }
+                            } ?>
+                            <div class="clear-notif center"><i class="material-icons">clear_all</i></div>
+                            <?php
                         } ?>
                     </div>
                 </div>
