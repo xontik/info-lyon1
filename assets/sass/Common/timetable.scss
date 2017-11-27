@@ -1,7 +1,5 @@
 @import '../style';
 
-$hourCount: 10;
-
 #timetable .active {
   border-width: 3px 4px 4px 3px;
   border-style: outset;
@@ -22,7 +20,7 @@ $hourCount: 10;
       margin-top: 32px;
 
       > div {
-        height: 100% / $hourCount;
+        flex-grow: 1;
 
         padding-right: 5px;
         border-right: 2px solid $table-border-color;

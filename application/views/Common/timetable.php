@@ -13,7 +13,14 @@
     $maxFloat = timeToFloat($maxTime);
 
     $maxHours = $maxFloat - $minFloat;
-    $pixelPerHour = 55;
+    if ($maxHours <= 3) {
+        $pixelPerHour = 150;
+    } else if ($maxHours <= 5) {
+        $pixelPerHour = 115;
+    } else {
+        $pixelPerHour = 55;
+    }
+
 
     $activeTime = null;
     $now = new DateTime();

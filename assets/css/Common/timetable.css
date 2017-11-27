@@ -5456,7 +5456,7 @@ button.picker__today:focus, button.picker__clear:focus, button.picker__close:foc
 
 @media only screen and (min-width: 993px) { #timetable-wrapper { display: flex; flex-flow: row nowrap; justify-content: center; }
   #timetable-wrapper > .hours { display: flex; height: 100%; flex-flow: column nowrap; margin-top: 32px; }
-  #timetable-wrapper > .hours > div { height: 10%; padding-right: 5px; border-right: 2px solid #d0d0d0; }
+  #timetable-wrapper > .hours > div { flex-grow: 1; padding-right: 5px; border-right: 2px solid #d0d0d0; }
   #timetable-wrapper > .hours > div:nth-of-type(odd) { font-weight: 500; }
   #timetable-wrapper > .hours > div:nth-of-type(even) { font-size: 11px; }
   #timetable { display: flex; flex-flow: row nowrap; justify-content: center; }
