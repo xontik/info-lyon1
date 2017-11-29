@@ -890,6 +890,15 @@ $(document).ready(function() {
     // #################################
     // ########  PROGRAM START  ########
     // #################################
+    var firstDayInWeek = FIRST_DATE.getDate();
+    $('head').append(
+        '<style>'
+        + 'tbody td:nth-child(7n + ' + (6 - firstDayInWeek) + '),'
+        + 'tbody td:nth-child(7n + ' + (5 - firstDayInWeek) + ') {'
+            + 'background-color: rgba(255, 183, 77, .6);'
+        + '}'
+        + '</style>'
+    );
 
     var $absenceTable = $('#absences-table');
     var $tableWrapper = $('#table-wrapper');
@@ -931,12 +940,15 @@ $(document).ready(function() {
     // Absence table events
     $absenceTable
         .find('tbody')
-        .on('click', 'td', function(event) {
-            if (event.which === 1) {
-                activate('cell', this);
-                edition.edit(this);
-            }
-        })
+        .on('click',
+            'td:not(:nth-child(7n + ' + (6 - firstDayInWeek) + '))'
+            + ':not(:nth-child(7n + ' + (5 - firstDayInWeek) + '))',
+            function(event) {
+                if (event.which === 1) {
+                    activate('cell', this);
+                    edition.edit(this);
+                }
+            })
         .on('mouseenter', 'td.abs', function() {
             $(this).children().show(DEFAULT_ANIM_TIME);
         })
