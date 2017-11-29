@@ -10,7 +10,6 @@ class Dashboard extends TM_Controller
         $this->load->model('Projects');
         $this->load->model('Appointments');
 
-        $this->load->helper('timetable');
         $this->load->helper('time');
 
         // Timetable
@@ -28,6 +27,7 @@ class Dashboard extends TM_Controller
                 TRUE
             );
         } else {
+            $this->load->helper('timetable');
             $result = getNextTimetable($adeResource, 'day');
             $sideTimetable = $this->load->view(
                 'includes/side-timetable',

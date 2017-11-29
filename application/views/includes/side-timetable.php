@@ -5,7 +5,7 @@
  * array    $calendar   The timetable
  * string   $minTime    First hour
  * string   $maxTime    Last hour
- * array    $links      The links for each event (optionnal)
+ * array    $links      Whether to put links or not
  */
 
 $empty = empty($timetable);
@@ -14,16 +14,12 @@ $minFloat = timeToFloat($minTime);
 $maxFloat = timeToFloat($maxTime);
 $hours = $maxFloat - $minFloat;
 
-if ($hours < 10) {
-    if ($minFloat > 8) {
-        $minTime = '08:00';
-        $minFloat = 8;
-    }
+if ($hours < 5) {
+    $minFloat = $minFloat - (5 - $hours) / 2;
+    $minTime = floatToTime($minFloat);
 
-    if ($maxFloat < 18) {
-        $maxTime = '18:00';
-        $maxFloat = 18;
-    }
+    $maxFloat = $maxFloat + (5 - $hours) / 2;
+    $maxTime = floatToTime($maxFloat);
 
     $hours = $maxFloat - $minFloat;
 }

@@ -6,14 +6,14 @@ define('DATE_FORMAT', 'Y-m-d');
 /**
  * Look for the next non-empty timetable in the 3 next days.
  *
- * @param int           $resources
+ * @param int           $resource
  * @param string        $period     'day' or 'week'
  * @param DateTime|int  $datetime   Date or week number (default: today)
  * @return array Formatted timetable
  *
  * @see getTimetable()
  */
-function getNextTimetable($resources, $period, $datetime = NULL) {
+function getNextTimetable($resource, $period, $datetime = NULL) {
     global $timezone;
     $timezone = new DateTimeZone('Europe/Paris');
 
@@ -67,13 +67,13 @@ function getNextTimetable($resources, $period, $datetime = NULL) {
         }
     }
 
-    $resources = getTimetable($resources, $period, $datetime);
+    $resources = getTimetable($resource, $period, $datetime);
 
     if (strcasecmp($period, 'day') === 0) {
         // Look at next not empty timetable within 3 days
         while ($limit < 3 && empty($resources['timetable'])) {
             $datetime->modify('+1 day');
-            $resources = getTimetable($resources, $period, $datetime);
+            $resources = getTimetable($resource, $period, $datetime);
             $limit++;
         }
 
@@ -88,12 +88,12 @@ function getNextTimetable($resources, $period, $datetime = NULL) {
 /**
  * Get the timetable of a period.
  *
- * @param int       $resources
+ * @param int       $resource
  * @param string    $period     'day' or 'week'
  * @param DateTime  $datetime   (default: today)
  * @return array Formatted timetable
  */
-function getTimetable($resources, $period, $datetime = NULL)
+function getTimetable($resource, $period, $datetime = NULL)
 {
     global $timezone;
 
@@ -129,7 +129,7 @@ function getTimetable($resources, $period, $datetime = NULL)
 
     $updated = false;
 	$existedInDB = true;
-	$timetable = $CI->Timetables->getJSON($resources);
+	$timetable = $CI->Timetables->getJSON($resource);
 
     if (!empty($timetable)) {
 	    $timetable = json_decode($timetable, true);
@@ -155,7 +155,7 @@ function getTimetable($resources, $period, $datetime = NULL)
             ) {
                 $timetable = mergeArrays(
                     _icsToTimetable(
-                        _getAdeRequest($resources, $beginDate, $endDate),
+                        _getAdeRequest($resource, $beginDate, $endDate),
                         $beginDate,
                         $endDate
                     ),
@@ -173,7 +173,7 @@ function getTimetable($resources, $period, $datetime = NULL)
 	else {
 	    // Create from scratch
 		$timetable = _icsToTimetable(
-            _getAdeRequest($resources, $beginDate, $endDate),
+            _getAdeRequest($resource, $beginDate, $endDate),
             $beginDate,
             $endDate
         );
@@ -183,9 +183,9 @@ function getTimetable($resources, $period, $datetime = NULL)
 
 	if ($updated === true) {
         if ($existedInDB) {
-            $CI->Timetables->setJSON($resources, json_encode($timetable, JSON_PRETTY_PRINT));
+            $CI->Timetables->setJSON($resource, json_encode($timetable, JSON_PRETTY_PRINT));
         } else {
-            $CI->Timetables->create($resources, json_encode($timetable, JSON_PRETTY_PRINT));
+            $CI->Timetables->create($resource, json_encode($timetable, JSON_PRETTY_PRINT));
         }
     }
     
@@ -478,15 +478,15 @@ function _strToIcs($str)
 /**
  * Return the URL of the request to ADE.
  *
- * @param int       $resources
+ * @param int       $resource
  * @param DateTime  $beginDate
  * @param DateTime  $endDate
  * @return string
  */
-function _getAdeRequest($resources, $beginDate, $endDate)
+function _getAdeRequest($resource, $beginDate, $endDate)
 {
 	return 'http://adelb.univ-lyon1.fr/jsp/custom/modules/plannings/anonymous_cal.jsp?'
-        . 'resources=' . $resources
+        . 'resources=' . $resource
         . '&projectId=1&calType=ical'
         . '&firstDate=' . $beginDate->format(DATE_FORMAT)
         . '&lastDate=' . $endDate->format(DATE_FORMAT);
@@ -517,6 +517,19 @@ function timeToFloat($time) {
     $float = (float) $time->format('H');
     $float += (float) $time->format('i') / 60;
     return $float;
+}
+
+/**
+ * Converts a float to a time string
+ *
+ * @param $float
+ * @return string
+ */
+function floatToTime($float) {
+    $hours = floor($float);
+    $minutes = ($float - $hours) * 60;
+
+    return sprintf('%02d:%02d', $hours, $minutes);
 }
 
 /**
