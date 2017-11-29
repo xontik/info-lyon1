@@ -895,7 +895,7 @@ $(document).ready(function() {
         '<style>'
         + 'tbody td:nth-child(7n + ' + (6 - firstDayInWeek) + '),'
         + 'tbody td:nth-child(7n + ' + (5 - firstDayInWeek) + ') {'
-            + 'background-color: #9e9e9e;'
+            + 'background-color: rgba(255, 183, 77, .6);'
         + '}'
         + '</style>'
     );
