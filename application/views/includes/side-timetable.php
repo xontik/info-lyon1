@@ -5,7 +5,6 @@
  * array    $calendar   The timetable
  * string   $minTime    First hour
  * string   $maxTime    Last hour
- * array    $links      Whether to put links or not
  */
 
 $empty = empty($timetable);
@@ -64,7 +63,6 @@ if ($hours < 5) {
                         $timeAtDate = $date->format('H:i');
 
                         $lastTimeEnd = null;
-                        $linksPointer = 0;
 
                         foreach ($timetable as $event) {
                             // Fill time
@@ -84,30 +82,32 @@ if ($hours < 5) {
                                 unset($timeAtDate);
                             }
 
-                            if (isset($links[$linksPointer])) {
+                            $link = isset($event['link']) ? $event['link'] : false;
+                            if ($link) {
                                 $classes[] = 'hoverable';
                             }
 
                             ?>
-                                <div class="valign-wrapper <?= join(' ', $classes) ?>"
-                                    style="height: <?= computeTimeToHeight($event['timeStart'], $event['timeEnd'], $hours) ?>; ">
-                                    <?php
-                                        if (isset($links[$linksPointer])) {
-                                            $endtag = '</a>';
-                                            echo '<a href="' . base_url($links[$linksPointer]) . '" class="black-text">';
-                                        } else {
-                                            $endtag = '</div>';
-                                            echo '<div>';
-                                        }
-                                    ?>
-                                        <h5 title="<?= $event['name'] ?>" class="truncate"><?= $event['name'] ?></h5>
-                                        <div class="truncate"><?= $event['teachers'] ?></div>
-                                        <div><?= $event['groups'] ?></div>
-                                        <div><i class="tiny material-icons">location_on</i><?= $event['location'] ?></div>
-                                    <?= $endtag ?>
-                                </div>
+                            <div class="valign-wrapper <?= join(' ', $classes) ?>"
+                                style="height: <?= computeTimeToHeight($event['timeStart'], $event['timeEnd'], $hours) ?>; ">
                                 <?php
-                            $linksPointer++;
+                                    if ($link) { ?>
+                                        <a href="<?= base_url($link) ?>" class="black-text">
+                                        <?php
+                                        $endtag = '</a>';
+                                    } else { ?>
+                                        <div>
+                                        <?php
+                                        $endtag = '</div>';
+                                    }
+                                ?>
+                                    <h5 title="<?= $event['name'] ?>" class="truncate"><?= $event['name'] ?></h5>
+                                    <div class="truncate"><?= $event['teachers'] ?></div>
+                                    <div><?= $event['groups'] ?></div>
+                                    <div><i class="tiny material-icons">location_on</i><?= $event['location'] ?></div>
+                                <?= $endtag ?>
+                            </div>
+                            <?php
                         }
 
                         // Add a fill if day doesn't end at 18:00

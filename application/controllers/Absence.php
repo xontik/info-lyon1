@@ -48,7 +48,43 @@ class Absence extends TM_Controller
 
     public function teacher_index()
     {
+        $this->load->model('Teachers');
+
+        $this->load->helper('timetable');
+
+        // Timetable
+        $adeResource = $this->Teachers->getADEResource($_SESSION['id']);
+
+        if ($adeResource === FALSE) {
+            $sideTimetable = $this->load->view(
+                'includes/side-timetable',
+                array(
+                    'date' => new DateTime(),
+                    'timetable' => false,
+                    'minTime' => '08:00',
+                    'maxTime' => '18:00'
+                ),
+                TRUE
+            );
+        } else {
+            $result = getNextTimetable($adeResource, 'day');
+            $this->_computeLinks($result['timetable']);
+
+            $sideTimetable = $this->load->view(
+                'includes/side-timetable',
+                $result,
+                TRUE
+            );
+        }
+        $this->data['side-timetable'] = $sideTimetable;
+
         $this->show('Absences');
+    }
+
+    private function _computeLinks(&$timetable) {
+        foreach ($timetable as $key => $event) {
+            $timetable[$key]['link'] = true;
+        }
     }
 
     public function secretariat_index()
@@ -127,4 +163,5 @@ class Absence extends TM_Controller
 
         $this->show('Absences');
     }
+
 }
