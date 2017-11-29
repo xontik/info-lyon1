@@ -67,22 +67,28 @@ function getNextTimetable($resource, $period, $datetime = NULL) {
         }
     }
 
-    $resources = getTimetable($resource, $period, $datetime);
+    $result = getTimetable($resource, $period, $datetime);
 
     if (strcasecmp($period, 'day') === 0) {
         // Look at next not empty timetable within 3 days
-        while ($limit < 3 && empty($resources['timetable'])) {
+        while ($limit < 3 && empty($result['timetable'])) {
             $datetime->modify('+1 day');
-            $resources = getTimetable($resource, $period, $datetime);
+            $result = getTimetable($resource, $period, $datetime);
             $limit++;
         }
 
         if ($limit !== 0) {
             $datetime->setTime(0, 0);
         }
+
+        usort($result['timetable'], 'sortTimetable');
+    } else {
+        foreach ($result['timetable'] as $key => $day) {
+            usort($result['timetable'][$key], 'sortTimetable');
+        }
     }
 
-    return $resources + array('date' => $datetime);
+    return $result + array('date' => $datetime);
 }
 
 /**
@@ -502,7 +508,7 @@ function _getAdeRequest($resource, $beginDate, $endDate)
  */
 function sortTimetable($item1, $item2)
 {
-    return $item1['timeStart'] > $item2['timeStart'] ? 1 : -1 ;
+    return $item1['timeStart'] > $item2['timeStart'] ? 1 : -1;
 }
 
 /**

@@ -61,7 +61,6 @@ if ($hours < 5) {
                         </section>
                         <?php
                     } else {
-                        usort($timetable, 'sortTimetable');
                         $timeAtDate = $date->format('H:i');
 
                         $lastTimeEnd = null;

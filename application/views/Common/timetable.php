@@ -78,7 +78,6 @@
                     <h5><?= $days[$dayNum-1] . ' ' . $loopDay->format('d/m') ?></h5>
                     <?php
                     if (!$emptyDay) {
-                        usort($data['timetable'][$dayNum], 'sortTimetable');
                         $day = $data['timetable'][$dayNum];
 
                         $lastTimeEnd = null;
