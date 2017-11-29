@@ -87,8 +87,10 @@
 
                                 $curr_date->modify('+1 day');
                             }
+
                             unset($curr_month);
                             unset($last_month);
+                            unset($monthes);
                             ?>
                         </tr>
                         <tr>
@@ -106,8 +108,23 @@
                                 <?php
                                 $curr_date->modify('+1 day');
                             }
-                            unset($curr_date);
                             unset($last_month);
+                            ?>
+                        </tr>
+                        <tr>
+                            <?php
+                            $days = array('D', 'L', 'M', 'M', 'J', 'V', 'S');
+                            $curr_date = $data['beginDate']->format('w');
+
+                            for ($i = 0; $i <= $data['dayNumber']; $i++) {
+                                ?>
+                                <td><?= $days[$curr_date] ?></td>
+                                <?php
+                                $curr_date = ($curr_date + 1) % 7;
+                            }
+
+                            unset($days);
+                            unset($curr_date);
                             ?>
                         </tr>
                     </thead>
