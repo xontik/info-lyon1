@@ -21,6 +21,36 @@ class Groups extends CI_Model
     }
 
     /**
+     * Get the group id from it's name.
+     *
+     * @param string $name
+     * @return int
+     */
+    public function getIdFromName($name)
+    {
+        $this->load->model('Semesters');
+        $semesterIndex = strpos($name, 'S');
+
+        $semesterName = substr($name, $semesterIndex);
+        $groupName = substr($name, 0, $semesterIndex);
+
+        $semesterId = $this->Semesters->getIdFromName($semesterName);
+
+        $res = $this->db
+            ->select('idGroup')
+            ->from('Group')
+            ->where('idSemester', $semesterId)
+            ->where('groupName', $groupName)
+            ->get()
+            ->row();
+
+        if (is_null($res)) {
+            return FALSE;
+        }
+        return (int) $res->idGroup;
+    }
+
+    /**
      * Returns all groups in database, and the linked students.
      *
      * @return array

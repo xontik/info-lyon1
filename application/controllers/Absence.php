@@ -49,11 +49,11 @@ class Absence extends TM_Controller
     public function teacher_index()
     {
         $this->load->model('Teachers');
-
         $this->load->helper('timetable');
 
         // Timetable
         $adeResource = $this->Teachers->getADEResource($_SESSION['id']);
+        $students = null;
 
         if ($adeResource === FALSE) {
             $sideTimetable = $this->load->view(
@@ -67,8 +67,43 @@ class Absence extends TM_Controller
                 TRUE
             );
         } else {
+            $now = new DateTime();
+            if (isset($_GET['h'])
+                && preg_match('/^(([01]\d)|(2[0-3])):[0-5]\d$/', $_GET['h'])
+            ) {
+                $time = $_GET['h'];
+            } else {
+                $time = $now->format('H:i');
+            }
+
             $result = getNextTimetable($adeResource, 'day');
-            $this->_computeLinks($result['timetable']);
+
+            if ($now->format('Y-m-d') === $result['date']->format('Y-m-d')) {
+                $groupName = '';
+
+                foreach ($result['timetable'] as $key => $event) {
+                    $result['timetable'][$key]['link'] = 'Absence?h=' . $event['timeStart'];
+                    if ($time >= $event['timeStart'] && $time < $event['timeEnd']) {
+                        $groupName = $event['groups'];
+                    }
+                }
+
+                if ($groupName) {
+                    if (preg_match('/^G\d+S[1-4]$/', $groupName)) {
+                        $this->load->model('Groups');
+                        $groupId = $this->Groups->getIdFromName($groupName);
+                        if ($groupId !== FALSE) {
+                            $students = $this->Groups->getStudents($groupId);
+                        }
+                    } else if (preg_match('/^S[1-4]$/', $groupName)) {
+                        $this->load->model('Semesters');
+                        $semesterId = $this->Semesters->getIdFromName($groupName);
+                        if ($semesterId !== FALSE) {
+                            $students = $this->Semesters->getStudents($semesterId);
+                        }
+                    }
+                }
+            }
 
             $sideTimetable = $this->load->view(
                 'includes/side-timetable',
@@ -76,15 +111,11 @@ class Absence extends TM_Controller
                 TRUE
             );
         }
+
         $this->data['side-timetable'] = $sideTimetable;
+        $this->data['students'] = $students;
 
         $this->show('Absences');
-    }
-
-    private function _computeLinks(&$timetable) {
-        foreach ($timetable as $key => $event) {
-            $timetable[$key]['link'] = true;
-        }
     }
 
     public function secretariat_index()

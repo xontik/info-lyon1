@@ -8168,7 +8168,7 @@ button.picker__today:focus, button.picker__clear:focus, button.picker__close:foc
 
 @media only screen and (min-width: 601px) { html, body, main > * { height: 100%; }
   main { height: 90%; }
-  #side-edt-large { height: 100%; min-height: 40rem; margin-top: 15px; }
+  #side-edt-large { height: 100%; min-height: 40rem; }
   #side-edt-large > .card-content { height: 100%; }
   #side-edt-large .row { height: calc(100% - 32px); }
   #side-edt-large .row > .hours { display: flex; height: 100%; flex-direction: column; }

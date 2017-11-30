@@ -20,6 +20,29 @@ class Semesters extends CI_Model
     }
 
     /**
+     * Get semester id from its name.
+     *
+     * @param string $name
+     * @return int
+     */
+    public function getIdFromName($name)
+    {
+        $res = $this->db
+            ->select('idSemester')
+            ->from('Semester')
+            ->join('Course', 'idCourse')
+            ->where('active', 1)
+            ->where('courseType', $name)
+            ->get()
+            ->row();
+
+        if (is_null($res)) {
+            return FALSE;
+        }
+        return (int) $res->idSemester;
+    }
+
+    /**
      * Checks if a semester exists.
      *
      * @param int $courseId

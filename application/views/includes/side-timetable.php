@@ -6,6 +6,7 @@
  * string   $minTime    First hour
  * string   $maxTime    Last hour
  */
+define('MIN_HOURS', 5);
 
 $empty = empty($timetable);
 
@@ -13,14 +14,17 @@ $minFloat = timeToFloat($minTime);
 $maxFloat = timeToFloat($maxTime);
 $hours = $maxFloat - $minFloat;
 
-if ($hours < 5) {
-    $minFloat = $minFloat - (5 - $hours) / 2;
+if ($hours < MIN_HOURS) {
+    $padding = (MIN_HOURS - $hours) / 2;
+
+    $minFloat -= $padding;
     $minTime = floatToTime($minFloat);
 
-    $maxFloat = $maxFloat + (5 - $hours) / 2;
+    $maxFloat += $padding;
     $maxTime = floatToTime($maxFloat);
 
     $hours = $maxFloat - $minFloat;
+    unset($padding);
 }
 ?>
     <div id="side-edt-large" class="hide-on-small-and-down card center-align">
