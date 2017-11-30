@@ -582,7 +582,7 @@ function computeTimeToHeight($begin, $end, $hoursInDay)
  */
 function fillTime($from, $to, $hoursInDay) {
     ?>
-    <div class="fill hide-on-med-and-down" style="height: <?= computeTimeToHeight($from, $to, $hoursInDay)
+    <div class="fill hide-on-small-and-down" style="height: <?= computeTimeToHeight($from, $to, $hoursInDay)
     ?>"></div>
     <?php
 }

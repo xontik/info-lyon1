@@ -9,9 +9,7 @@ class Process_Absence extends CI_Controller
      */
     public function add()
     {
-        $this->load->model('Absences');
-
-        //header('Content-Type: text/plain');
+        header('Content-Type: text/plain');
 
         if (!(isset($_POST['studentId'])
             && isset($_POST['beginDate'])
@@ -34,14 +32,13 @@ class Process_Absence extends CI_Controller
             return;
         }
 
+        $this->load->model('Absences');
         $absenceId = $this->Absences->create($studentId, $beginDate, $endDate, $idAbsenceType, $justified);
         if ($absenceId === FALSE) {
             echo 'fail';
         }
 
         echo 'success ' . $absenceId;
-
-
     }
 
     /*

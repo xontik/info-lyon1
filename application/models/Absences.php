@@ -28,6 +28,28 @@ class Absences extends CI_Model
     }
 
     /**
+     * Get the absences of the students that start at the time.
+     *
+     * @param DateTime $time
+     * @param array $students
+     * @return array
+     */
+    public function getAtTime($time, $students)
+    {
+        $this->load->config('date_format');
+        $studentsId = array_map(function($item) {
+            return $item->idStudent;
+        }, $students);
+
+        return $this->db
+            ->from('Absence')
+            ->where('beginDate', $time->format($this->config->item('datetimeSystemFormat')))
+            ->where_in('idStudent', $studentsId)
+            ->get()
+            ->result();
+    }
+
+    /**
      * Returns the possible absences types.
      *
      * @return array

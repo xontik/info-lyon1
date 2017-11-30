@@ -54,6 +54,7 @@ class Absence extends TM_Controller
         // Timetable
         $adeResource = $this->Teachers->getADEResource($_SESSION['id']);
         $students = null;
+        $currEvent = null;
 
         if ($adeResource === FALSE) {
             $sideTimetable = $this->load->view(
@@ -79,27 +80,41 @@ class Absence extends TM_Controller
             $result = getNextTimetable($adeResource, 'day');
 
             if ($now->format('Y-m-d') === $result['date']->format('Y-m-d')) {
-                $groupName = '';
 
                 foreach ($result['timetable'] as $key => $event) {
                     $result['timetable'][$key]['link'] = 'Absence?h=' . $event['timeStart'];
                     if ($time >= $event['timeStart'] && $time < $event['timeEnd']) {
-                        $groupName = $event['groups'];
+                        $currEvent = $event;
                     }
                 }
 
-                if ($groupName) {
-                    if (preg_match('/^G\d+S[1-4]$/', $groupName)) {
+                if ($currEvent) {
+                    if (preg_match('/^G\d+S[1-4]$/', $currEvent['groups'])) {
                         $this->load->model('Groups');
-                        $groupId = $this->Groups->getIdFromName($groupName);
+                        $groupId = $this->Groups->getIdFromName($currEvent['groups']);
                         if ($groupId !== FALSE) {
                             $students = $this->Groups->getStudents($groupId);
                         }
-                    } else if (preg_match('/^S[1-4]$/', $groupName)) {
+                    } else if (preg_match('/^S[1-4]$/', $currEvent['groups'])) {
                         $this->load->model('Semesters');
-                        $semesterId = $this->Semesters->getIdFromName($groupName);
+                        $semesterId = $this->Semesters->getIdFromName($currEvent['groups']);
                         if ($semesterId !== FALSE) {
                             $students = $this->Semesters->getStudents($semesterId);
+                        }
+                    }
+
+                    if (!empty($students)) {
+                        $this->load->model('Absences');
+                        $timeStart = DateTime::createFromFormat('H:i', $currEvent['timeStart']);
+
+                        $absences = $this->Absences->getAtTime($timeStart, $students);
+                        foreach ($students as $oldkey => $student) {
+                            $students[$student->idStudent] = $students[$oldkey];
+                            unset($students[$oldkey]);
+                        }
+
+                        foreach ($absences as $absence) {
+                            $students[$absence->idStudent]->absence = $absence;
                         }
                     }
                 }
@@ -114,6 +129,7 @@ class Absence extends TM_Controller
 
         $this->data['side-timetable'] = $sideTimetable;
         $this->data['students'] = $students;
+        $this->data['lesson'] = $currEvent;
 
         $this->show('Absences');
     }
