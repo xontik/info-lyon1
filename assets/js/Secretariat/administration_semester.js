@@ -1,135 +1,165 @@
 $(document).ready(function() {
+    'use strict';
 
-    $(".deleter").click(function(e) {
-      return window.confirm("Êtes-vous sûr de vouloir supprimer cet étudiant ?");
-    });
-
-
-    $("td i[data-group-id]").click(function (e) {
-        var subject = $("#subjectId");
-        var groupe = $("#groupId");
-        var teacher = $("#teacherId");
-
-        var groupId = $(e.target).data('group-id');
-        var subjectId = $(e.target).data('subject-id');
-        var teacherId = $(e.target).data('teacher-id');
-
-        // console.log(groupId + ' ' + subjectId + ' ' + teacherId );
-
-        subject.find(':selected').prop('selected',false);
-        subject.find('option[value='+subjectId+']').prop('selected', true);
-        subject.material_select();
-
-        groupe.find(':selected').prop('selected',false);
-        groupe.find('option[value='+groupId+']').prop('selected', true);
-        groupe.material_select();
-
-        teacher.find(':selected').prop('selected',false);
-        teacher.find('option[value='+teacherId+']').prop('selected', true);
-        teacher.material_select();
-
-        
-        $('html, body').animate({
-            scrollTop: $("#assoctiationCard").offset().top - 100
-        }, 200);
-
-        $("#assoctiationCard").addClass('z-depth-5')
-
-        setTimeout(function(){
-            $("#assoctiationCard").removeClass('z-depth-5');
-        },1000);
-
-
-
-    })
-
-});
-
-$( function() {
     var semesterId = $('#group-semester').data('semester-id');
 
-    var params = {
-        connectWith: ".connectedSortable",
+    $('#teachers').find('.collection-item').draggable({
+        containment: '#education-wrapper',
+        appendTo: '#education-wrapper',
+        scroll: true,
+        helper: 'clone',
+        cursor: 'move',
+        cursorAt: function(event, ui) {
+            return {
+                top: ui.item.outerHeight() / 2,
+                left: ui.item.outerWidth() / 2
+            }
+        }
+    });
+
+    $('#education-association').find('td:not(:first-child)').droppable({
+        accept: '[data-teacher-id]',
+        drop: function(event, ui) {
+            var $target = $(event.target);
+            var groupId = $target.data('group-id');
+            var subjectId = $target.data('subject-id');
+            var teacherId = ui.draggable.data('teacher-id');
+
+            if (groupId === 'all') {
+                $.post(
+                    '/Process_Education/set_teacher_all/' + semesterId,
+                    {
+                        teacherId: teacherId,
+                        subjectId: subjectId
+                    }
+                )
+                        .done(function() {
+                            $target.siblings()
+                                .find('i')
+                                .html('person')
+                                .attr('data-tooltip', $('[data-teacher-id=' + teacherId + ']').text())
+                                .tooltip();
+                        })
+                        .fail(function(jqXHR, status, errorThrown) {
+                            console.log(status, errorThrown, jqXHR.responseText);
+                            Materialize.toast('Une erreur s\'est produite', 4000, 'notif notif-danger');
+                        });
+            } else {
+                $.post(
+                    '/Process_Education/set_teacher/' + semesterId,
+                    {
+                        teacherId: teacherId,
+                        groupId: groupId,
+                        subjectId: subjectId
+                    }
+                )
+                    .done(function() {
+                        $target.find('i').html('person')
+                            .attr('data-tooltip', $('[data-teacher-id=' + teacherId + ']').text())
+                            .tooltip();
+                    })
+                    .fail(function(jqXHR, status, errorThrown) {
+                        console.log(status, errorThrown, jqXHR.responseText);
+                        Materialize.toast('Une erreur s\'est produite', 4000, 'notif notif-danger');
+                    });
+            }
+        }
+    });
+
+    var sortableParams = {
+        connectWith: '.connectedSortable',
         opacity: 0.7,
-        tolerance: "pointer",
-        items: ".collection-item",
-        cursor: "move",
+        tolerance: 'pointer',
+        items: '.collection-item',
+        cursor: 'move',
         placeholder: {
             element: function(currentItem) {
                 return $('<li class="collection-item placeholder"></li>')[0];
             },
-            update: function(container, p) {
-                return;
-            }
+            update: function(container, p) {}
         },
         receive: function(event, ui ) {
+            var $uiItem = $(ui.item);
 
             //from
-            if(ui.sender.find('li').length == 1){ // 1 -> header only
-                ui.sender.append($('<li>Aucun élève</li>')
-                                    .addClass('collection-item')
-                                    .addClass('no-student'));
+            if (ui.sender.find('li').length == 1) { // 1 -> header only
+                ui.sender.append(
+                    $('<li>Aucun élève</li>')
+                        .addClass('collection-item')
+                        .addClass('no-student')
+                );
             }
-            var oldGrp = ui.item.data('group-id');
+            var oldGrp = $uiItem.data('group-id');
 
             //update the group-id
-            $(ui.item).data('group-id', $(ui.item).parent().data('group-id'));
-
+            $uiItem.data('group-id', $uiItem.parent().data('group-id'));
 
 
             //to
-            if(ui.item.parent().find('li').length == 3){ // 3 -> header | li no student | new item
-                $(ui.item).parent().find('.no-student').remove();
+            if ($uiItem.parent().find('li').length == 3) { // 3 -> header | li no student | new item
+                $uiItem.parent().find('.no-student').remove();
             }
 
             //if deleting
-            if(ui.item.data('group-id') == 0){
-                ui.item.find('a').remove();
+            if ($uiItem.data('group-id') == 0) {
+                $uiItem.find('a').remove();
                 $.ajax({
                     dataType: 'json',
-                    url: '/Process_Group/delete_student/'+oldGrp+"/"+ui.item.data('studentId')+"/"+semesterId,
+                    url: '/Process_Group/delete_student'
+                        + '/' + oldGrp
+                        + '/' + $uiItem.data('studentId')
+                        + '/' + semesterId,
                     data: {'ajax' : true},
                     type: 'POST',
                     success: function(data) {
-                        if(data.type == 'danger'){
+                        if (data.type == 'danger') {
                             window.location.reload();
                         } else {
-                            Materialize.toast(data.text,4000,data.type);
-                            ui.item
+                            Materialize.toast(data.text, 4000, data.type);
                         }
                     },
-                    error: function(data){
+                    error: function(data) {
                         window.location.reload();
                     }
-
                 });
+
             //if inserting into group
             } else {
                 //if comming from an other group dont add trash
-                if(oldGrp == 0){
-                    ui.item.find('div').prepend($('<a>')
-                                                    .attr('href','/Process_Group/delete_student/'+ui.item.data('group-id')+'/'+ui.item.data('student-id')+'/'+semesterId)
-                                                    .append($('<i>')
-                                                                .addClass('material-icons')
-                                                                .html('delete')
-                                                            )
-                                                );
+                if (oldGrp == 0) {
+                    $uiItem.find('div').prepend(
+                        $('<a>')
+                            .attr('href',
+                                '/Process_Group/delete_student'
+                                + '/' + $uiItem.data('group-id')
+                                + '/' + $uiItem.data('student-id')
+                                + '/' + semesterId
+                            )
+                            .append(
+                                $('<i>')
+                                    .addClass('material-icons')
+                                    .html('delete')
+                            )
+                    );
                 }
 
                 $.ajax({
                     dataType: 'json',
-                    data: {'groupId': ui.item.data('group-id'), 'studentId':  ui.item.data('studentId')},
-                    url: '/Process_Group/add_student/'+semesterId,
+                    data: {
+                        'groupId': $uiItem.data('group-id'),
+                        'studentId':  $uiItem.data('studentId')
+                    },
+                    url: '/Process_Group/add_student/' + semesterId,
                     type: 'POST',
                     success: function(data) {
 
-                        if(data.type == 'danger'){
+                        if (data.type == 'danger') {
                             window.location.reload();
                         }else{
                             Materialize.toast(data.text,4000,data.type);
                         }
                     },
-                    error: function(data){
+                    error: function(data) {
                         window.location.reload();
                     }
 
@@ -137,7 +167,8 @@ $( function() {
             }
 
         }
-    }
-    $( ".connectedSortable" ).sortable(params);
+    };
+    
+    $('.connectedSortable').sortable(sortableParams);
 
-  } );
+});

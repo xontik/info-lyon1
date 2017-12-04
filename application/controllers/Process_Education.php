@@ -4,34 +4,60 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Process_Education extends CI_Controller
 {
 
-    public function add_teacher($semesterId)
+    /*
+     * AJAX
+     */
+    public function set_teacher($semesterId)
     {
-        $this->load->model('Semesters');
-        $this->load->model('Educations');
-        if (isset($_POST['teacherId']) && isset($_POST['groupId']) && isset($_POST['subjectId'])) {
+        $semesterId = (int) htmlspecialchars($semesterId);
 
-            $teacherId = $_POST['teacherId'];
-            $groupId = $_POST['groupId'];
-            $subjectId = $_POST['subjectId'];
+        if (isset($_POST['teacherId'])
+            && isset($_POST['groupId'])
+            && isset($_POST['subjectId'])
+        ) {
+            $this->load->model('Semesters');
+            $this->load->model('Educations');
 
-            if( $this->Semesters->isEditable($semesterId)) {
-                if($this->Educations->create($subjectId,$groupId,$teacherId)){
-                    addPageNotification('Affectation effectuée', 'success');
-                } else {
-                    addPageNotification('Erreur lors de l\'affectation', 'danger');
+            $teacherId = (int) htmlspecialchars($_POST['teacherId']);
+            $groupId = (int) htmlspecialchars($_POST['groupId']);
+            $subjectId = (int) htmlspecialchars($_POST['subjectId']);
+
+            if ($this->Semesters->isEditable($semesterId)) {
+                if ($this->Educations->setTeacher($subjectId, $groupId, $teacherId)) {
+                    header('Content-Length: 0', true, 200);
+                    return;
                 }
-            } else {
-                addPageNotification('Ce semestre ne peut pas être modifié', 'danger');
             }
-
-        } else {
-            addPageNotification('Données corrompues','danger');
         }
-        redirect('Administration/semester/'.$semesterId);
 
+        header('Content-Lenght: 0', true, 400);
     }
 
+    /*
+     * AJAX
+     */
+    public function set_teacher_all($semesterId)
+    {
+        $semesterId = (int) htmlspecialchars($semesterId);
 
+        if (isset($_POST['teacherId'])
+            && isset($_POST['subjectId'])
+        ) {
+            $this->load->model('Semesters');
+            $this->load->model('Educations');
 
+            $teacherId = (int) htmlspecialchars($_POST['teacherId']);
+            $subjectId = (int) htmlspecialchars($_POST['subjectId']);
+
+            if ($this->Semesters->isEditable($semesterId)) {
+                if ($this->Educations->setAllTeacher($subjectId, $semesterId, $teacherId)) {
+                    header('Content-Length: 0', true, 200);
+                    return;
+                }
+            }
+        }
+
+        header('Content-Lenght: 0', true, 400);
+    }
 
 }

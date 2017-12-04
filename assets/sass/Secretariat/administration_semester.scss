@@ -1,6 +1,14 @@
 @import '../style';
 
-#association-group-teacher-subject i {
+li {
+  list-style-type: none;
+}
+
+.padding-right-3 {
+  padding-right: 3rem !important;
+}
+
+#teachers .collection-item {
   cursor: pointer;
 }
 

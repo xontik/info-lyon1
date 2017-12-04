@@ -5452,7 +5452,11 @@ button.picker__today:focus, button.picker__clear:focus, button.picker__close:foc
 
 .horizontal-table-wrapper { overflow-x: auto; }
 
-#association-group-teacher-subject i { cursor: pointer; }
+li { list-style-type: none; }
+
+.padding-right-3 { padding-right: 3rem !important; }
+
+#teachers .collection-item { cursor: pointer; }
 
 .horizontal-wrapper { display: flex; flex-direction: row; align-items: flex-start; flex-wrap: nowrap; overflow-x: auto; padding-left: 5px; padding-right: 5px; }
 .horizontal-wrapper .collection { min-width: 200px; margin-right: 1.5rem; }
