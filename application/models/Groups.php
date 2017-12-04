@@ -121,7 +121,11 @@ class Groups extends CI_Model
     public function getStudents($idGroup)
     {
         return $this->db
+            ->select('idStudent, surname, name, idGroup, groupName')
             ->from('StudentGroup')
+            ->join('Student', 'idStudent')
+            ->join('User', 'idUser')
+            ->join('Group', 'idGroup')
             ->where('idGroup', $idGroup)
             ->get()
             ->result();

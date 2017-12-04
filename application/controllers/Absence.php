@@ -109,7 +109,7 @@ class Absence extends TM_Controller
 
                         $absences = $this->Absences->getAtTime($timeStart, $students);
                         foreach ($students as $oldkey => $student) {
-                            $students[$student->idStudent] = $students[$oldkey];
+                            $students[$student->idStudent] = $student;
                             unset($students[$oldkey]);
                         }
 

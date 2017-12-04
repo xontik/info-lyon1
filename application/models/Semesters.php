@@ -376,7 +376,7 @@ class Semesters extends CI_Model
     public function getStudents($semesterId)
     {
         return $this->db
-            ->select('idStudent, surname, name, idGroup, groupName,')
+            ->select('idStudent, surname, name, idGroup, groupName')
             ->from('Group')
             ->join('StudentGroup', 'idGroup', 'left')
             ->join('Student', 'idStudent', 'left')
