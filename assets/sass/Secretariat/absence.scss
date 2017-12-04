@@ -62,6 +62,8 @@ $color-mix: #b203fd;
   position: relative;
   z-index: 2;
 
+  margin-top: 18px;
+
   border-right: 2px solid $border-color;
 }
 
@@ -124,7 +126,6 @@ $color-mix: #b203fd;
 
 table {
   table-layout: fixed;
-  margin-top: -18px;
 
   td {
     @extend .center-align, .no-padding;

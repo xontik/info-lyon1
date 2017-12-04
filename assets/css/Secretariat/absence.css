@@ -5463,7 +5463,7 @@ button.picker__today:focus, button.picker__clear:focus, button.picker__close:foc
 #color-code li:nth-child(5)::after { background-color: #02fca1; }
 #color-code li:nth-child(6)::after { background-color: #b203fd; }
 
-#table-static { position: relative; z-index: 2; border-right: 2px solid #a0a0a0; }
+#table-static { position: relative; z-index: 2; margin-top: 18px; border-right: 2px solid #a0a0a0; }
 
 #table-group-list p { max-width: 15px; margin: 0 auto; word-wrap: break-word; letter-spacing: 15px; overflow: hidden; }
 
@@ -5477,7 +5477,7 @@ button.picker__today:focus, button.picker__clear:focus, button.picker__close:foc
 
 #table-wrapper { overflow: auto; }
 
-table { table-layout: fixed; margin-top: -18px; }
+table { table-layout: fixed; }
 table td { height: 21px; width: 40rem; font-size: 1rem; border-right: 1px solid #a0a0a0; }
 table thead { border-bottom: 2px solid #a0a0a0; }
 table tbody tr { box-sizing: content-box; border-top: 1px solid #a0a0a0; }
