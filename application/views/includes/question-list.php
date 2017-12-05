@@ -108,7 +108,7 @@ if (empty($questions)) {
                             <div class="switch">
                                 <form id="<?= $question->idQuestion ?>" action ="<?= base_url('Process_Question/set_public/' . $question->idQuestion); ?>" method="POST">
                                     <label>
-                                        <input <?= $question->public ? 'checked' : '' ?> name="checkPublic" type="checkbox" onchange="document.getElementById('<?= $question->idQuestion ?>').submit()">
+                                        <input <?= $question->public ? 'checked' : '' ?> name="checkPublic" type="checkbox" onchange="document.getElementById('<?= $question->idQuestion ?>').submit();">
                                         <span class="lever"></span>
                                         Publique
                                     </label>

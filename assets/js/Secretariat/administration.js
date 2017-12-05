@@ -39,7 +39,7 @@ $(document).ready(function() {
                                             )
                                         )
                                 )
-                        )
+                        );
                     });
 
                     $.each(data['out'], function(key, TU) {
@@ -62,14 +62,14 @@ $(document).ready(function() {
                                             )
                                         )
                                 )
-                        )
+                        );
                     });
                 }
             });
         })
         .change();
 
-    $("#add").click(function(e) {
+    $("#add").click(function() {
         var ids = [];
         TUout
             .children('.collection-item')
@@ -88,7 +88,7 @@ $(document).ready(function() {
                     $.each(data, function(key, val) {
                         TUout.find('.collection-item')
                             .filter(function() {
-                                return $(this).data('tu-id') === val
+                                return $(this).data('tu-id') === val;
                             })
                             .detach()
                             .appendTo(TUin);
@@ -98,7 +98,7 @@ $(document).ready(function() {
         }
     });
 
-    $("#remove").click(function(e) {
+    $("#remove").click(function() {
         var ids = [];
         TUin
             .children('.collection-item')
@@ -117,7 +117,7 @@ $(document).ready(function() {
                     $.each(data, function(key, val) {
                         TUin.find('.collection-item')
                             .filter(function() {
-                                return $(this).data('tu-id') === val
+                                return $(this).data('tu-id') === val;
                             })
                             .detach()
                             .appendTo(TUout);
@@ -127,13 +127,13 @@ $(document).ready(function() {
         }
     });
 
-    $(document).on('click', '.collection-item', function(e) {
+    $(document).on('click', '.collection-item', function() {
         var checkbox = $(this).find(':checkbox');
         checkbox.prop('checked', !checkbox.prop('checked'));
     });
 
 
-    $('#delete').submit(function(e) {
+    $('#delete').submit(function() {
         return window.confirm("Êtes-vous sûr de vouloir supprimer ce parcours ?");
     });
 

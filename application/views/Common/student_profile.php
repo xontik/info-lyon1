@@ -12,7 +12,7 @@
                     </div>
                     <div class="row">
                             <div class="col s12">
-                                <ul class="card grey lighten-4">
+                                <div class="card grey lighten-4">
                                     <div class="card-content">
                                         <span class="card-title">Absences</span>
                                         <?php if ($data['absences'][$semester->idSemester]['justified'] == 0 && $data['absences'][$semester->idSemester]['unjustified'] == 0) {?>
@@ -22,7 +22,7 @@
                                             <p> <?= $data['absences'][$semester->idSemester]['unjustified'] ?> absence(s) injustifiée(s)</p>
                                         <?php }?>
                                     </div>
-                                </ul>
+                                </div>
                             </div>
                             <div class="col s12">
                                 <div class="card grey lighten-4">

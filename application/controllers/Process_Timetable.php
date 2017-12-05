@@ -4,6 +4,17 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Process_Timetable extends CI_Controller
 {
 
+    public function __construct()
+    {
+        parent::__construct();
+        if (!(isset($_SESSION['userType'])
+            && in_array($_SESSION['userType'], $this->config->item('userTypes')))
+        ) {
+            header('Content-Length: 0', TRUE, 403);
+            exit(0);
+        }
+    }
+
     public function edit($type = null, $who = null)
     {
         if (!is_null($type)) {

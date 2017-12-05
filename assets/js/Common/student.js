@@ -130,7 +130,7 @@ $(document).ready(function() {
                     updateList();
                 });
             } else {
-                list.append('<p class="center-align">Pas d\'étudiant à afficher</p>')
+                list.append('<p class="center-align">Pas d\'étudiant à afficher</p>');
             }
         })
         .fail(function(jqXHR) {
@@ -149,7 +149,7 @@ $(document).ready(function() {
                             .append('<div class="col s4">' + student.surname + '</div>')
                             .append('<div class="col s4">' + student.name + '</div>')
                     )
-            )
+            );
         });
     }
 });

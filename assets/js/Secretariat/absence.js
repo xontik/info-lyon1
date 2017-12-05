@@ -150,7 +150,7 @@ $(document).ready(function() {
      * @returns {jQuery} The active DOM element corresponing to the field
      */
     function getActive(field) {
-        return ACTIVE_CONTAINER[field]
+        return ACTIVE_CONTAINER[field];
     }
 
     /**

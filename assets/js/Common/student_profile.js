@@ -1,16 +1,24 @@
 $(document).ready(function() {
-    var i = $(".expandable .card-title i");
-    $('.card-content  > .row').hide();
-    $('.card-content  > .row').first().show();
-    i.first().html('expand_less');
-    i.click(function(e){
-        var row = $(e.target).parents('.card').find(".row").first();
-        row.toggle(300)
 
-        if ($(e.target).html() == 'expand_less'){
-            $(e.target).html('expand_more');
-        } else {
-            $(e.target).html('expand_less');
-        }
-    });
+    $('.expandable .card-title i')
+        .first().html('expand_less');
+
+    $('.card-content  > .row')
+        .hide()
+        .first().show();
+
+    $(document).on('click', '.expandable .card-title i', function(e) {
+            var $el = $(e.target);
+            $el.closest('.card')
+                .find('.row')
+                .first()
+                .toggle(300);
+
+            if ($el.html() === 'expand_less') {
+                $el.html('expand_more');
+            } else {
+                $el.html('expand_less');
+            }
+        });
+
 });

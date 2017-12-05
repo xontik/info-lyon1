@@ -39,7 +39,7 @@ $(document).ready(function() {
                     $('<li class="collection-item"></li>')
                         .text(teacher.name + ' ' + teacher.surname)
                         .attr('data-teacher-id', teacherId)
-                )
+                );
             });
             return $el;
         };
@@ -221,7 +221,7 @@ $(document).ready(function() {
             element: function() {
                 return $('<li class="collection-item placeholder"></li>')[0];
             },
-            update: function(container, p) {}
+            update: function() {}
         },
         receive: handleReceive
     };
@@ -236,7 +236,7 @@ $(document).ready(function() {
             return {
                 top: ui.item.outerHeight() / 2,
                 left: ui.item.outerWidth() / 2
-            }
+            };
         }
     };
 

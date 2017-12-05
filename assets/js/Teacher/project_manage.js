@@ -1,8 +1,8 @@
 $(document).ready(function() {
     "use strict";
 
-    let studentList = $('#student-list');
-    let listElement = $('<li></li>')
+    var studentList = $('#student-list');
+    var listElement = $('<li></li>')
                         .addClass('collection-item')
                         .append($('<div></div>')
                                     .append($('<span></span>')
@@ -41,14 +41,15 @@ $(document).ready(function() {
                              location.reload();
                          } else {
 
-                            let firstLi = studentList.find('li').eq(1);
+                            var firstLi = studentList.find('li').eq(1);
 
                             if (firstLi.data('no-one')  !== undefined) {
                                 firstLi.remove();
                             }
-                            let newListElement = listElement.clone();
+                            var newListElement = listElement.clone();
                             studentList.append(newListElement);
-                            let name = val.split(' ');
+
+                            var name = val.split(' ');
                             studentList.find('li').last().find('div').prepend(name[1] + ' ' +name[2]);
                             studentList.find('li').last().find('a').attr('href','/Process_Project/delete_member/'+studentList.data('project-id')+'/'+name[0]);
                             Materialize.toast('<i class="material-icons">done</i>Etudiant ajouté',  4000, 'notif-success');
@@ -60,17 +61,17 @@ $(document).ready(function() {
                      error: function(data){
                          console.log(data);
                          console.log('add error');
-                     },
+                     }
                  });
                },
-               minLength: 1,
+               minLength: 1
              });
 
 
         },
-        error: function(data){
+        error: function() {
             console.log('retrieve data error');
-        },
+        }
     });
 
 
