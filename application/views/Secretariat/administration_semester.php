@@ -149,10 +149,6 @@
                     ?>
                     <div class="col l3">
                         <span class="card-title">Professeurs</span>
-                        <div class="input-field">
-                            <input class="autocomplete" type="text" id="searchTeacher">
-                            <label for="searchTeacher">Recherche</label>
-                        </div>
                         <ul id="teachers" class="collapsible"></ul>
                     </div>
                     <?php
