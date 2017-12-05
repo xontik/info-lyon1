@@ -148,18 +148,12 @@
                 if ($data['editable']) {
                     ?>
                     <div class="col l3">
-                        <ul id="teachers" class="collection with-header">
-                            <li class="collection-header"><h5>Professeurs</h5></li>
-                            <?php
-                            foreach ($data['teachers'] as $teacher) {
-                                ?>
-                                <li class="collection-item"
-                                    data-teacher-id="<?= $teacher->idTeacher ?>">
-                                    <?= $teacher->name . ' ' . $teacher->surname ?>
-                                </li>
-                                <?php
-                            } ?>
-                        </ul>
+                        <span class="card-title">Professeurs</span>
+                        <div class="input-field">
+                            <input class="autocomplete" type="text" id="searchTeacher">
+                            <label for="searchTeacher">Recherche</label>
+                        </div>
+                        <ul id="teachers" class="collapsible"></ul>
                     </div>
                     <?php
                 } ?>

@@ -3,7 +3,7 @@ $(document).ready(function() {
 
     var semesterId = $('#group-semester').data('semester-id');
 
-    $('#teachers').find('.collection-item').draggable({
+    var draggableOptions = {
         containment: '#education-wrapper',
         appendTo: '#education-wrapper',
         scroll: true,
@@ -15,9 +15,9 @@ $(document).ready(function() {
                 left: ui.item.outerWidth() / 2
             }
         }
-    });
+    };
 
-    $('#education-association').find('td:not(:first-child)').droppable({
+    var droppableOptions = {
         accept: '[data-teacher-id]',
         drop: function(event, ui) {
             var $target = $(event.target);
@@ -33,17 +33,17 @@ $(document).ready(function() {
                         subjectId: subjectId
                     }
                 )
-                        .done(function() {
-                            $target.siblings()
-                                .find('i')
-                                .html('person')
-                                .attr('data-tooltip', $('[data-teacher-id=' + teacherId + ']').text())
-                                .tooltip();
-                        })
-                        .fail(function(jqXHR, status, errorThrown) {
-                            console.log(status, errorThrown, jqXHR.responseText);
-                            Materialize.toast('Une erreur s\'est produite', 4000, 'notif notif-danger');
-                        });
+                    .done(function() {
+                        $target.siblings()
+                            .find('i')
+                            .html('person')
+                            .attr('data-tooltip', $('[data-teacher-id=' + teacherId + ']').text())
+                            .tooltip();
+                    })
+                    .fail(function(jqXHR, status, errorThrown) {
+                        console.log(status, errorThrown, jqXHR.responseText);
+                        Materialize.toast('Une erreur s\'est produite', 4000, 'notif notif-danger');
+                    });
             } else {
                 $.post(
                     '/Process_Education/set_teacher/' + semesterId,
@@ -64,9 +64,9 @@ $(document).ready(function() {
                     });
             }
         }
-    });
+    };
 
-    var sortableParams = {
+    var sortableOptions = {
         connectWith: '.connectedSortable',
         opacity: 0.7,
         tolerance: 'pointer',
@@ -78,55 +78,52 @@ $(document).ready(function() {
             },
             update: function(container, p) {}
         },
-        receive: function(event, ui ) {
+        receive: function(event, ui) {
             var $uiItem = $(ui.item);
+            var oldGroupId = $uiItem.data('group-id');
 
-            //from
-            if (ui.sender.find('li').length == 1) { // 1 -> header only
+            // if there are no more students in old group
+            if (ui.sender.find('li').length === 1) { // there is : header only
                 ui.sender.append(
-                    $('<li>Aucun élève</li>')
-                        .addClass('collection-item')
-                        .addClass('no-student')
+                    '<li class="collection-item no-student">Aucun élève</li>'
                 );
             }
-            var oldGrp = $uiItem.data('group-id');
 
-            //update the group-id
-            $uiItem.data('group-id', $uiItem.parent().data('group-id'));
-
-
-            //to
-            if ($uiItem.parent().find('li').length == 3) { // 3 -> header | li no student | new item
+            // if there was no student in the new group
+            if ($uiItem.parent().find('li').length === 3) { // there is : header, li.no-student and the new item
                 $uiItem.parent().find('.no-student').remove();
             }
 
-            //if deleting
-            if ($uiItem.data('group-id') == 0) {
+            // update the group-id
+            $uiItem.data('group-id', $uiItem.parent().data('group-id'));
+
+            // if deleting (=> moving to "students without group")
+            if ($uiItem.data('group-id') === 0) {
                 $uiItem.find('a').remove();
                 $.ajax({
                     dataType: 'json',
                     url: '/Process_Group/delete_student'
-                        + '/' + oldGrp
-                        + '/' + $uiItem.data('studentId')
-                        + '/' + semesterId,
-                    data: {'ajax' : true},
-                    type: 'POST',
-                    success: function(data) {
-                        if (data.type == 'danger') {
+                    + '/' + oldGroupId
+                    + '/' + $uiItem.data('studentId')
+                    + '/' + semesterId,
+                    data: {'ajax': true},
+                    type: 'POST'
+                })
+                    .done(function(data) {
+                        if (data.type === 'danger') {
                             window.location.reload();
                         } else {
                             Materialize.toast(data.text, 4000, data.type);
                         }
-                    },
-                    error: function(data) {
+                    })
+                    .fail(function(data) {
                         window.location.reload();
-                    }
-                });
+                    });
 
-            //if inserting into group
+            // if inserting into group
             } else {
                 //if comming from an other group dont add trash
-                if (oldGrp == 0) {
+                if (oldGroupId === 0) {
                     $uiItem.find('div').prepend(
                         $('<a>')
                             .attr('href',
@@ -147,28 +144,86 @@ $(document).ready(function() {
                     dataType: 'json',
                     data: {
                         'groupId': $uiItem.data('group-id'),
-                        'studentId':  $uiItem.data('studentId')
+                        'studentId': $uiItem.data('studentId')
                     },
                     url: '/Process_Group/add_student/' + semesterId,
-                    type: 'POST',
-                    success: function(data) {
+                    type: 'POST'
+                })
+                    .done(function(data) {
 
-                        if (data.type == 'danger') {
+                        if (data.type === 'danger') {
                             window.location.reload();
                         }else{
                             Materialize.toast(data.text,4000,data.type);
                         }
-                    },
-                    error: function(data) {
+                    })
+                    .fail(function(data) {
                         window.location.reload();
-                    }
+                    });
 
-                });
             }
 
         }
     };
-    
-    $('.connectedSortable').sortable(sortableParams);
+
+    $('.connectedSortable').sortable(sortableOptions);
+    $('#education-association').find('td:not(:first-child)').droppable(droppableOptions);
+
+    $.post('/Process_Teacher/get_teachers_subjects/' + semesterId)
+        .done(function(data) {
+            var $teachers = $('#teachers');
+            var $search = $('#searchTeacher');
+
+            var teachers = data.teachers;
+            var teachersNoSubject = data.teachersNoSubject;
+            var subjects = data.subjects;
+
+            var autocomplete = {};
+
+            var createGroupTeachers = function(groupedTeachers) {
+                var $el = $('<ul></ul>')
+                    .addClass('collapsible-body collection no-padding');
+
+                $.each(groupedTeachers, function(index, teacherId) {
+                    var teacher = teachers[teacherId];
+                    $el.append(
+                        $('<li class="collection-item"></li>')
+                        .text(teacher.name + ' ' + teacher.surname)
+                        .attr('data-teacher-id', teacherId)
+                    )
+                });
+                return $el;
+            };
+
+            $.each(subjects, function(index, subject) {
+                var $el = $('<li></li>')
+                    .append(
+                        $('<div></div>')
+                            .addClass('collapsible-header valign-wrapper tooltipped')
+                            .text(subject.subjectName)
+                            .tooltip({
+                                tooltip: subject.subjectCode + ' ' + subject.moduleName,
+                                delay: 300
+                            })
+                    )
+                    .append(createGroupTeachers(subject.teachers));
+
+                $teachers.append($el);
+            });
+
+            if (teachersNoSubject) {
+                $teachers.append(
+                    $('<li></li>')
+                        .append('<div class="collapsible-header">Pas de matières enseignées</div>')
+                        .append(createGroupTeachers(teachersNoSubject))
+                );
+            }
+
+            $teachers.find('.collection-item').draggable(draggableOptions);
+        })
+        .fail(function(jqXHR, status, errorThrown) {
+            console.log(status, errorThrown, jqXHR.responseText);
+            Materialize.toast('Impossible de charger les professeurs', Infinity, 'notif notif-danger');
+        });
 
 });
