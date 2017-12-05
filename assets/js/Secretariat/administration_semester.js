@@ -2,15 +2,32 @@ $(document).ready(function() {
     'use strict';
 
     var $educationWrapper = $('#education-wrapper');
+    var $teachers = $('#teachers');
+
     var semesterId = $('#group-semester').data('semester-id');
+
+    var subjects;
+
+    function showNextSubject(subjectId) {
+        var subjectIndex;
+        $.each(subjects, function(index, subject) {
+            if (+subject.idSubject === subjectId) {
+                subjectIndex = index;
+                return false;
+            }
+        });
+
+        if (subjectIndex) {
+            $teachers.collapsible('open', subjectIndex);
+        }
+    }
 
     function handleTeachersData(data) {
 
-        var $teachers = $('#teachers');
-
         var teachers = data.teachers;
         var teachersNoSubject = data.teachersNoSubject;
-        var subjects = data.subjects;
+
+        subjects = data.subjects;
 
         var createGroupTeachers = function(groupedTeachers) {
             var $el = $('<ul></ul>')
@@ -70,12 +87,13 @@ $(document).ready(function() {
                 }
             )
                 .done(function() {
-                    console.log($('[data-teacher-id=' + teacherId + ']').first());
                     $target.siblings()
                         .find('i')
                         .html('person')
                         .attr('data-tooltip', $('[data-teacher-id=' + teacherId + ']').first().text())
                         .tooltip();
+
+                    showNextSubject(+subjectId);
                 })
                 .fail(function(jqXHR, status, errorThrown) {
                     console.log(status, errorThrown, jqXHR.responseText);
@@ -94,6 +112,10 @@ $(document).ready(function() {
                     $target.find('i').html('person')
                         .attr('data-tooltip', $('[data-teacher-id=' + teacherId + ']').text())
                         .tooltip();
+
+                    if ($target.siblings('[data-teacher-id=0]').length === 0) {
+                        showNextSubject(+subjectId);
+                    }
                 })
                 .fail(function(jqXHR, status, errorThrown) {
                     console.log(status, errorThrown, jqXHR.responseText);

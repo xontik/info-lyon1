@@ -175,7 +175,7 @@
                                     . ($subject->subjectName !== ''
                                         ? ' : ' . $subject->subjectName : '');
                                 ?>
-                                <tr>
+                                <tr data-subject-id="<?= $subject->idSubject ?>">
                                     <td><?= $subjectDescription ?></td>
                                     <?php
                                     foreach ($data['groupsWithStudent'] as $group) {
