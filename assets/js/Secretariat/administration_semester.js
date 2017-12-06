@@ -10,15 +10,15 @@ $(document).ready(function() {
 
     function showNextSubject(subjectId) {
         var subjectIndex;
-        $.each(subjects, function(index, subject) {
-            if (+subject.idSubject === subjectId) {
-                subjectIndex = index;
-                return false;
+        for (var i = 0; i < subjects.length; i++) {
+            if (+subjects[i].idSubject === subjectId) {
+                subjectIndex = i;
+                break;
             }
-        });
+        }
 
         if (subjectIndex) {
-            $teachers.collapsible('open', subjectIndex);
+            $teachers.collapsible('open', subjectIndex + 1);
         }
     }
 

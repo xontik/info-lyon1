@@ -49,6 +49,7 @@ class Process_Teacher extends CI_Controller
             $subjects[$subject->idSubject]->teachers[] = $subject->idTeacher;
             unset($teachersNoSubject[$subject->idTeacher]);
         }
+        $subjects = array_values($subjects);
 
         echo json_encode(array(
             'teachers' => $teachers,
