@@ -5454,7 +5454,7 @@ button.picker__today:focus, button.picker__clear:focus, button.picker__close:foc
 
 li { list-style-type: none; }
 
-.padding-right-3 { padding-right: 3rem !important; }
+#education-wrapper div:last-child { padding-right: 3rem; }
 
 #teachers .collection-item { cursor: pointer; }
 

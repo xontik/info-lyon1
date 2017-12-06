@@ -153,18 +153,22 @@
                     </div>
                     <?php
                 } ?>
-                <div <?= $data['editable'] ? 'class="col l9 padding-right-3"' : '' ?>>
+                <div <?= $data['editable'] ? 'class="col l9"' : '' ?>>
                     <span class="card-title">Tableau des affectations</span>
                     <table id="education-association" class="bordered">
                         <thead>
                             <tr>
                                 <th></th>
                                 <?php
-                                foreach ($data['groupsWithStudent'] as $group) { ?>
-                                    <th><?= $group->groupName ?></th>
+                                if (!empty($data['groupsWithStudent'])) {
+                                    foreach ($data['groupsWithStudent'] as $group) { ?>
+                                        <th><?= $group->groupName ?></th>
+                                        <?php
+                                    }
+                                    ?>
+                                    <th>Tous</th>
                                     <?php
                                 } ?>
-                                <th>Tous</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -178,32 +182,36 @@
                                 <tr data-subject-id="<?= $subject->idSubject ?>">
                                     <td><?= $subjectDescription ?></td>
                                     <?php
-                                    foreach ($data['groupsWithStudent'] as $group) {
-                                        if (isset($data['educations'][$group->idGroup][$subject->idSubject])) {
-                                            $education = $data['educations'][$group->idGroup][$subject->idSubject];
-                                            $tooltip = $education->name . ' ' . $education->surname;
-                                            $icon = 'person';
-                                        } else {
-                                            $education = new stdClass;
-                                            $education->idTeacher = 0;
-                                            $tooltip = 'Assigner au groupe';
-                                            $icon = 'error_outline';
-                                        } ?>
-                                        <td data-group-id="<?= $group->idGroup ?>"
-                                            data-subject-id="<?= $subject->idSubject ?>"
-                                            data-teacher-id="<?= $education->idTeacher ?>">
+                                    if (!empty($data['groupsWithStudent'])) {
+                                        foreach ($data['groupsWithStudent'] as $group) {
+                                            if (isset($data['educations'][$group->idGroup][$subject->idSubject])) {
+                                                $education = $data['educations'][$group->idGroup][$subject->idSubject];
+                                                $tooltip = $education->name . ' ' . $education->surname;
+                                                $icon = 'person';
+                                            } else {
+                                                $education = new stdClass;
+                                                $education->idTeacher = 0;
+                                                $tooltip = 'Assigner au ' . $group->groupName;
+                                                $icon = 'error_outline';
+                                            } ?>
+                                            <td data-group-id="<?= $group->idGroup ?>"
+                                                data-subject-id="<?= $subject->idSubject ?>"
+                                                data-teacher-id="<?= $education->idTeacher ?>">
+                                                <i class="small material-icons tooltipped"
+                                                   data-tooltip="<?= $tooltip ?>"
+                                                   data-delay="0"><?= $icon ?></i>
+                                            </td>
+                                            <?php
+                                        }
+                                        ?>
+                                        <td data-group-id="all"
+                                            data-subject-id="<?= $subject->idSubject ?>">
                                             <i class="small material-icons tooltipped"
-                                               data-tooltip="<?= $tooltip ?>"
-                                               data-delay="0"><?= $icon ?></i>
+                                               data-tooltip="Assigner à tous les groupes"
+                                               data-delay="0">select_all</i>
                                         </td>
                                         <?php
                                     } ?>
-                                    <td data-group-id="all"
-                                        data-subject-id="<?= $subject->idSubject ?>">
-                                        <i class="small material-icons tooltipped"
-                                           data-tooltip="Assigner à tous les groupes"
-                                           data-delay="0">select_all</i>
-                                    </td>
                                 </tr>
                                 <?php
                             } ?>
