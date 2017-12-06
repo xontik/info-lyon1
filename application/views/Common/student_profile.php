@@ -48,7 +48,7 @@
                                                                 </div>
 
                                                                 <div class="col s3 right-align">
-                                                                    <span>Eleve : <?=$data['averageTUBySemester'][$semester->idSemester][$average->idTeachingUnit]->average?>/20 <br>
+                                                                    <span>Eleve : <?=$data['averageTUBySemester'][$semester->idSemester][$average->idTeachingUnit]->average?>/20<br>
                                                                         Groupe : <?= $data['averageTUBySemester'][$semester->idSemester][$average->idTeachingUnit]->groupAverage ?>/20</span>
                                                                 </div>
                                                             </div>

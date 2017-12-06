@@ -21,7 +21,8 @@ li {
   padding-left: 5px;
   padding-right: 5px;
 
-  .collection {
+  > .collection {
+    flex-shrink: 0;
     min-width: 200px;
     margin-right: 1.5rem;
   }

@@ -5459,7 +5459,7 @@ li { list-style-type: none; }
 #teachers .collection-item { cursor: pointer; }
 
 .horizontal-wrapper { display: flex; flex-direction: row; align-items: flex-start; flex-wrap: nowrap; overflow-x: auto; padding-left: 5px; padding-right: 5px; }
-.horizontal-wrapper .collection { min-width: 200px; margin-right: 1.5rem; }
+.horizontal-wrapper > .collection { flex-shrink: 0; min-width: 200px; margin-right: 1.5rem; }
 .horizontal-wrapper .collection-item { white-space: nowrap; overflow: visible; }
 .horizontal-wrapper .connectedSortable .collection-item:not(.no-student):hover { cursor: pointer; }
 

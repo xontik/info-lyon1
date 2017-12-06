@@ -1,21 +1,22 @@
 <main>
     <div class="container">
+        <h4 class="header">
+            Gestion du semestre: <?= $data['semester']->courseType
+            . ' - ' . $data['semester']->schoolYear
+            . ' ' . ($data['semester']->delayed ? ' différé' : '') ?>
+            <?php
+            if ($data['deletable']) {
+                ?>
+                <a href="<?= base_url('Process_Semester/delete/' . $data['semester']->idSemester) ?>"
+                   class="right" data-confirm="Êtes-vous sûr de vouloir supprimer ce semestre ?">
+                    <i class="material-icons small">delete</i>
+                </a>
+                <?php
+            } ?>
+        </h4>
         <div id="group-semester" class="card grey lighten-5" data-semester-id="<?= $data['semester']->idSemester  ?>">
             <div class="card-content">
-                <span class="card-title">
-                    Gestion du semestre: <?= $data['semester']->courseType
-                    . ' - ' . $data['semester']->schoolYear
-                    . ' ' . ($data['semester']->delayed ? ' différé' : '') ?>
-                    <?php
-                    if ($data['deletable']) {
-                        ?>
-                        <a href="<?= base_url('Process_Semester/delete/' . $data['semester']->idSemester) ?>"
-                           class="right" data-confirm="Êtes-vous sûr de vouloir supprimer ce semestre ?">
-                            <i class="material-icons small">delete</i>
-                        </a>
-                        <?php
-                    } ?>
-                </span>
+                <span class="card-title">Groupes</span>
                 <?php
                 if ($groupCount = count($data['groups'])) {
                     ?>
@@ -114,7 +115,7 @@
                         <form action="<?= base_url('Process_Administration/importGroups/' . $data['semester']->idSemester) ?>"
                             method="post" enctype="multipart/form-data">
                             <div class="card-content">
-                                <span class="card-title" >Importer un fichier .csv de groupe </span>
+                                <span class="card-title" >Importer un fichier de groupe</span>
                                 <div class="file-field input-field">
                                     <div class="btn waves-effects">
                                         <span>Fichier</span>
