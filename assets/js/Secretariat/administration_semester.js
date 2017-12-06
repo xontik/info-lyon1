@@ -45,6 +45,12 @@ $(document).ready(function() {
             return $el;
         };
 
+        $('<li data-teacher-id="0"></li>')
+            .append('<div class="collapsible-header">Désassigner un professeur</div>')
+            .draggable(draggableOptions)
+            .appendTo($teachers);
+
+
         $.each(subjects, function(index, subject) {
             var $el = $('<li></li>')
                 .append(
@@ -53,7 +59,7 @@ $(document).ready(function() {
                         .text(subject.subjectName)
                         .tooltip({
                             tooltip: subject.subjectCode + ' ' + subject.moduleName,
-                            delay: 300
+                            delay: 400
                         })
                 )
                 .append(createGroupTeachers(subject.teachers));
@@ -65,7 +71,7 @@ $(document).ready(function() {
             $teachers.append(
                 $('<li></li>')
                     .append('<div class="collapsible-header">Pas de matières enseignées</div>')
-                    .append(createGroupTeachers(teachersNoSubject))
+                    .append(createGroupTeachers(Object.keys(teachersNoSubject)))
             );
         }
         $teachers.find('.collection-item').draggable(draggableOptions);
@@ -90,13 +96,21 @@ $(document).ready(function() {
                 }
             )
                 .done(function() {
-                    $target.siblings()
-                        .find('i')
-                        .html('person')
-                        .attr('data-tooltip', teacher.name + ' ' + teacher.surname)
-                        .tooltip();
+                    if (teacher) {
+                        $target.siblings()
+                            .find('i')
+                            .html('person')
+                            .attr('data-tooltip', teacher.name + ' ' + teacher.surname)
+                            .tooltip();
 
-                    showNextSubject(+subjectId);
+                        showNextSubject(+subjectId);
+                    } else {
+                        $target.siblings()
+                            .find('i')
+                            .html('error_outline')
+                            .attr('data-tooltip', 'Assigner au groupe')
+                            .tooltip();
+                    }
                 })
                 .fail(function(jqXHR, status, errorThrown) {
                     console.log(status, errorThrown, jqXHR.responseText);
@@ -112,14 +126,22 @@ $(document).ready(function() {
                 }
             )
                 .done(function() {
-                    $target
-                        .find('i')
-                        .html('person')
-                        .attr('data-tooltip', teacher.name + ' ' + teacher.surname)
-                        .tooltip();
+                    if (teacher) {
+                        $target
+                            .find('i')
+                            .html('person')
+                            .attr('data-tooltip', teacher.name + ' ' + teacher.surname)
+                            .tooltip();
 
-                    if ($target.siblings('[data-teacher-id=0]').length === 0) {
-                        showNextSubject(+subjectId);
+                        if ($target.siblings('[data-teacher-id=0]').length === 0) {
+                            showNextSubject(+subjectId);
+                        }
+                    } else {
+                        $target
+                            .find('i')
+                            .html('error_outline')
+                            .attr('data-tooltip', 'Assigner au groupe')
+                            .tooltip();
                     }
                 })
                 .fail(function(jqXHR, status, errorThrown) {

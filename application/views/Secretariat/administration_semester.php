@@ -192,7 +192,7 @@
                                             } else {
                                                 $education = new stdClass;
                                                 $education->idTeacher = 0;
-                                                $tooltip = 'Assigner au ' . $group->groupName;
+                                                $tooltip = 'Assigner au groupe';
                                                 $icon = 'error_outline';
                                             } ?>
                                             <td data-group-id="<?= $group->idGroup ?>"

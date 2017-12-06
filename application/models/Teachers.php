@@ -65,6 +65,7 @@ class Teachers extends CI_Model
             ->join('Group', 'idGroup')
             ->join('Semester', 'idSemester')
             ->join('Course', 'idCourse')
+            ->where('idTeacher IS NOT NULL')
             ->where('courseType', $course->courseType)
             ->order_by('subjectCode', 'ASC')
             ->get()

@@ -53,7 +53,7 @@ class Process_Teacher extends CI_Controller
 
         echo json_encode(array(
             'teachers' => $teachers,
-            'teacherNoSubject' => $teachersNoSubject,
+            'teachersNoSubject' => $teachersNoSubject,
             'subjects' => $subjects
         ));
     }
