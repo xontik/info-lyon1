@@ -91,22 +91,19 @@ class Process_Course extends CI_Controller
             $this->load->model('Courses');
 
             $course = $this->Courses->get($courseId);
-
-            $thisYear = (int) date('Y');
             if ($course === FALSE) {
-                $ouput = array('year' => $thisYear + 1);
-            } else {
-                $courseYear = (int) $course->creationYear;
-
-                if ($courseYear < $thisYear) {
-                    $ouput = array('year' => $thisYear + 1);
-                } else {
-                    $ouput = array('year' => $courseYear);
-                }
+                header('Content-Length: 0', TRUE, 400);
+                exit(0);
             }
 
+            $thisYear = (int) date('Y');
+            $courseYear = (int) $course->creationYear;
+
+            $year = $courseYear < $thisYear ? $thisYear + 1 : $courseYear;
+
             header('Content-Type: application/json');
-            echo json_encode($ouput);
+            echo json_encode(array( 'year' => $year ));
+            exit(0);
         }
 
         header('Content-Length: 0', TRUE, 400);
