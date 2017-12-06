@@ -6,7 +6,7 @@ $(document).ready(function() {
 
     var semesterId = $('#group-semester').data('semester-id');
 
-    var subjects;
+    var teachers, subjects;
 
     function showNextSubject(subjectId) {
         var subjectIndex;
@@ -24,9 +24,10 @@ $(document).ready(function() {
 
     function handleTeachersData(data) {
 
-        var teachers = data.teachers;
-        var teachersNoSubject = data.teachersNoSubject;
+        var teachersNoSubject;
 
+        teachers = data.teachers;
+        teachersNoSubject = data.teachersNoSubject;
         subjects = data.subjects;
 
         var createGroupTeachers = function(groupedTeachers) {
@@ -78,6 +79,8 @@ $(document).ready(function() {
         var subjectId = $target.data('subject-id');
         var teacherId = ui.draggable.data('teacher-id');
 
+        var teacher = teachers[teacherId];
+
         if (groupId === 'all') {
             $.post(
                 '/Process_Education/set_teacher_all/' + semesterId,
@@ -90,7 +93,7 @@ $(document).ready(function() {
                     $target.siblings()
                         .find('i')
                         .html('person')
-                        .attr('data-tooltip', $('[data-teacher-id=' + teacherId + ']').first().text())
+                        .attr('data-tooltip', teacher.name + ' ' + teacher.surname)
                         .tooltip();
 
                     showNextSubject(+subjectId);
@@ -109,8 +112,10 @@ $(document).ready(function() {
                 }
             )
                 .done(function() {
-                    $target.find('i').html('person')
-                        .attr('data-tooltip', $('[data-teacher-id=' + teacherId + ']').text())
+                    $target
+                        .find('i')
+                        .html('person')
+                        .attr('data-tooltip', teacher.name + ' ' + teacher.surname)
                         .tooltip();
 
                     if ($target.siblings('[data-teacher-id=0]').length === 0) {
