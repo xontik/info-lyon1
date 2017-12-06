@@ -25,7 +25,7 @@ class Process_Semester extends CI_Controller
             $courseId = (int) htmlspecialchars($_POST['courseId']);
             $schoolYear = (int) htmlspecialchars($_POST['schoolYear']);
 
-            if ($this->Courses->exists($courseId))
+            if ($this->Courses->get($courseId) !== FALSE)
             {
 
                 $semester = (object) array(

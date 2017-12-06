@@ -27,15 +27,17 @@ class Courses extends CI_Model
     /**
      * Checks if a course exists.
      *
-     * @param int $courseId
+     * @param string $type
+     * @param int $creationYear
      * @return bool
      */
-    public function exists($courseId)
+    public function exists($type, $creationYear)
     {
         return $this->db
-                ->where('idCourse', $courseId)
-                ->get('Course')
-                ->num_rows() > 0;
+            ->where('courseType', $type)
+            ->where('creationYear', $creationYear)
+            ->get('Course')
+            ->num_rows() > 0;
     }
 
     /**

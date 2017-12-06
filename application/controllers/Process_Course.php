@@ -123,10 +123,14 @@ class Process_Course extends CI_Controller
             $type = htmlspecialchars($_POST['type']);
 
             if ($year !== 0 && strlen($type) === 2) {
-                if ($this->Courses->create($year, $type)) {
-                    addPageNotification('Parcours créé avec succès', 'success');
+                if (!$this->Courses->exists($type, $year)) {
+                    if ($this->Courses->create($year, $type)) {
+                        addPageNotification('Parcours créé avec succès', 'success');
+                    } else {
+                        addPageNotification('Erreur lors de la création du parcours', 'danger');
+                    }
                 } else {
-                    addPageNotification('Erreur lors de la création du parcours', 'danger');
+                    addPageNotification('Un parcours de ce type existe déjà', 'warning');
                 }
             } else {
                 addPageNotification('Données corrompues', 'danger');
