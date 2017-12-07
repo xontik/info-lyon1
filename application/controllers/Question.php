@@ -74,7 +74,7 @@ class Question extends TM_Controller
     {
         $page = (int) htmlspecialchars($page);
         $questionId = (int) htmlspecialchars($questionId);
-
+        
         $search = isset($_GET['s']) ? htmlspecialchars($_GET['s']) : '';
 
         if ($page <= 0) {
@@ -103,10 +103,13 @@ class Question extends TM_Controller
             $page, $unsortedQuestions, $questionId,
             $nbQuestions, true, $search
         );
+        
+        $groups = $this->Teachers->getGroups($_SESSION['id']);
 
         $this->data = array(
             'tabs' => $tabs,
-            'questionList' => $questionList
+            'questionList' => $questionList,
+            'groups' => $groups
         );
 
         $this->show('Questions / Réponses');
