@@ -18,7 +18,7 @@ $(function() {
         monthsShort: months,
         weekdaysFull: weekdays,
         weekdaysShort: weekdays,
-        weekdaysLetter: weekdays.map(function(e) { return e.substr(0, 3) }),
+        weekdaysLetter: weekdays.map(function(e) { return e.substr(0, 3); }),
         firstDay: 1,
         today: 'Aujourd\'hui',
         clear: 'Effacer',

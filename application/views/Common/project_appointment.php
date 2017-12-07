@@ -9,7 +9,7 @@ $now = new DateTime();
             <span class="card-title"><?= $data['project']->projectName ?></span>
             <p>Tuteur : <?= $data['tutor']->name ?></p>
             <p>
-                <span>Membres : </span>
+                <span>Membres :</span>
                 <?php
                 $count = count($data['members']);
                 for ($i = 0; $i < $count; $i++)
@@ -81,9 +81,9 @@ $now = new DateTime();
                                                       action="<?= base_url('Process_DateProposal/choose'
                                                           . '/' . $proposition['proposal']->idDateProposal) ?>">
                                                     <button class="btn-flat waves-effect waves-green"
-                                                        type="submit" name="accept"> Accepter </button>
+                                                        type="submit" name="accept">Accepter</button>
                                                     <button class="btn-flat waves-effect waves-red"
-                                                        type="submit" name="decline"> Refuser </button>
+                                                        type="submit" name="decline">Refuser</button>
                                                 </form>
                                                 <?php
                                             } else {

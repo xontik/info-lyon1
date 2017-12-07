@@ -6,7 +6,9 @@
         if (count($data['courses'])):
             ?>
             <div class="card grey lighten-5">
-                <form id="delete" action="<?= base_url('Process_Course/delete') ?>" method="post">
+                <form action="<?= base_url('Process_Course/delete') ?>"
+                      method="post"
+                      data-confirm="Êtes-vous sûr de vouloir supprimer ce parcours ?">
                     <div class="card-content">
                         <span class="card-title">Relations Parcours/UE</span>
                         <div class="input-field row">
@@ -125,11 +127,13 @@
                     <div class="row">
                         <div class="input-field col s12 m6 l5">
                             <select id="courseId" name="courseId">
-                                <?php foreach ($data['courseTypes'] as $course): ?>
+                                <?php
+                                foreach ($data['courseTypes'] as $course) { ?>
                                     <option value="<?= $course->idCourse ?>"
-                                        ><?= $course->courseType ?> - PPN <?= $course->creationYear ?>
+                                    ><?= $course->courseType ?> - PPN <?= $course->creationYear ?>
                                     </option>
-                                <?php endforeach; ?>
+                                    <?php
+                                } ?>
                             </select>
                             <label for="courseId">Parcours</label>
                         </div>

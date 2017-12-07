@@ -21,6 +21,58 @@ class Teachers extends CI_Model
     }
 
     /**
+     * Get all teachers.
+     *
+     * @return array
+     */
+    public function getAll()
+    {
+       return $this->db
+           ->select('idTeacher, name, surname, email')
+           ->from('Teacher')
+           ->join('User', 'idUser')
+           ->get()
+           ->result();
+    }
+
+    /**
+     * Get subjects and teachers in a semester.
+     *
+     * @param $semesterId
+     * @return array
+     */
+    public function getAllSubjects($semesterId)
+    {
+        $course = $this->db
+            ->select('courseType')
+            ->from('Semester')
+            ->join('Course', 'idCourse')
+            ->where('idSemester', $semesterId)
+            ->get()
+            ->row();
+
+        if (is_null($course)) {
+            return array();
+        }
+
+        return $this->db
+            ->distinct()
+            ->select('idTeacher, idSubject, subjectCode, moduleName, subjectName')
+            ->from('Education')
+            ->join('Subject', 'idSubject')
+            ->join('SubjectOfModule', 'idSubject')
+            ->join('Module', 'idModule')
+            ->join('Group', 'idGroup')
+            ->join('Semester', 'idSemester')
+            ->join('Course', 'idCourse')
+            ->where('idTeacher IS NOT NULL')
+            ->where('courseType', $course->courseType)
+            ->order_by('subjectCode', 'ASC')
+            ->get()
+            ->result();
+    }
+
+    /**
      * Get the controls a teacher has rights on.
      *
      * @param int $teacherId
@@ -485,20 +537,6 @@ class Teachers extends CI_Model
         }
         return (int) $res->resource;
     }
-
-    /**
-     * Gets all teachers
-     *
-     * @return array
-     */
-     public function getAll(){
-         return $this->db
-            ->from('teacher')
-            ->join('user', 'idUser')
-            ->get()
-            ->result();
-     }
-
 
     public function getLastProject($teacherId) {
 

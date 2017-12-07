@@ -78,11 +78,7 @@ class Administration extends TM_Controller
         $unsortedGroups = $this->Semesters->getGroups($semesterId);
         $unsortedStudent = $this->Semesters->getStudents($semesterId);
 
-        // false pour récuperer ceux qui non pas du tout de groupe sachant qu'on a déjà ceux du semestre
         $freeStudents = $deletable ? null : $this->Semesters->getStudentsWithoutGroup($semesterId, false);
-
-        $groups = array();
-        $maxStudents = 0;
 
         $groupsWithStudent = array();
         foreach ($unsortedGroups as $group) {
@@ -95,14 +91,13 @@ class Administration extends TM_Controller
         }
 
         $subjects = $this->Semesters->getSubjects($semesterId);
-        $AllEducations = $this->Semesters->getEducations($semesterId);
-        $teachers = $this->Teachers->getAll();
+        $allEducations = $this->Semesters->getEducations($semesterId);
 
         $educations = array();
         foreach ($unsortedGroups as $group) {
             $educations[$group->idGroup] = array();
         }
-        foreach ($AllEducations as $education) {
+        foreach ($allEducations as $education) {
             $educations[$education->idGroup][$education->idSubject] = $education;
         }
 
@@ -115,11 +110,8 @@ class Administration extends TM_Controller
             'subjects' => $subjects,
             'educations' => $educations,
             'freeStudents' => $freeStudents,
-            'maxStudents' => $maxStudents,
-            'teachers' => $teachers,
             'deletable' => $deletable,
             'editable' => $editable
-
         );
 
         $this->setData('js');
@@ -128,8 +120,6 @@ class Administration extends TM_Controller
         $this->setData('js', 'Secretariat/administration_semester');
         $this->setData('css', 'jquery-ui/jquery-ui.structure.min');
         $this->setData('css', 'jquery-ui/jquery-ui.min');
-
-
 
         $this->show('Gestion de semestre');
     }

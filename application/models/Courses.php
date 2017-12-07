@@ -5,17 +5,39 @@ class Courses extends CI_Model
 {
 
     /**
-     * Checks if a course exists.
+     * Return the course
      *
      * @param int $courseId
+     * @return object|false FALSE if the course doesn't exist
+     */
+    public function get($courseId)
+    {
+        $res = $this->db
+            ->from('Course')
+            ->where('idCourse', $courseId)
+            ->get()
+            ->row();
+
+        if (is_null($res)) {
+            return FALSE;
+        }
+        return $res;
+    }
+
+    /**
+     * Checks if a course exists.
+     *
+     * @param string $type
+     * @param int $creationYear
      * @return bool
      */
-    public function exists($courseId)
+    public function exists($type, $creationYear)
     {
         return $this->db
-                ->where('idCourse', $courseId)
-                ->get('Course')
-                ->num_rows() > 0;
+            ->where('courseType', $type)
+            ->where('creationYear', $creationYear)
+            ->get('Course')
+            ->num_rows() > 0;
     }
 
     /**
@@ -181,20 +203,6 @@ class Courses extends CI_Model
 
         return $this->db->query($sql, array($courseId))
             ->result();
-    }
-
-    /**
-     * Return the course
-     *
-     * @param int $courseId
-     * @return ArrayAccess
-     */
-    public function get($courseId){
-        return $this->db
-            ->from('Course')
-            ->where('idCourse', $courseId)
-            ->get()
-            ->row();
     }
 
 }
