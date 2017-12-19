@@ -100,8 +100,10 @@
                     </a>
                     <ul id="nav-user" class="dropdown-content">
                         <li>
-                            <div><?= $_SESSION['surname'] ?></div>
-                            <div><?= $_SESSION['name'] ?></div>
+                            <a href="<?= base_url('Profile') ?>" class="black-text">
+                                <div><?= $_SESSION['surname'] ?></div>
+                                <div><?= $_SESSION['name'] ?></div>
+                            </a>
                         </li>
                         <li class="divider"></li>
                         <li class="small-caps"><a href="/user/disconnect">Déconnexion</a></li>
