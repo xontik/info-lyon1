@@ -8,7 +8,7 @@
         foreach ($data['rooms'] as $room) {
             ?>
             <div class="card grey lighten-3 col s12 m3 l2 offset-s1 offset-m1 offset-l1 center-align">
-                <a href="<?= base_url('Timetable/room/' . $room->roomName) ?>"
+                <a href="<?= base_url('Timetable/room/' . $room->idTimetable) ?>"
                    class="card-title teal-text">
                     <div class="card-content"><?= $room->roomName ?></div>
                 </a>

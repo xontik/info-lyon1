@@ -26,7 +26,7 @@ class Timetable extends TM_Controller
 
         $this->data['menu'] = array(
             'Revenir à aujourd\'hui' => $this->data['pageUrl'],
-            'Mettre à jour' => 'Process_Timetable/update/' . $adeResource . '/' . $weekNum,
+            'Mettre à jour' => "Process_Timetable/update/$adeResource/$weekNum",
             'Modifier' => 'Timetable/edit',
             'Salles' => 'Timetable/room'
         );
@@ -49,10 +49,8 @@ class Timetable extends TM_Controller
                 break;
             case 'group':
             case 'teacher':
-                $who = (int) htmlspecialchars($who);
-                break;
             case 'room':
-                $who = htmlspecialchars($who);
+                $who = (int) htmlspecialchars($who);
                 break;
             default:
                 addPageNotification('Données corrompues', 'danger');
@@ -68,11 +66,11 @@ class Timetable extends TM_Controller
         $this->show('Modification de l\'emploi du temps');
     }
 
-    private function _room($roomName, $weekNum) {
-        if ($roomName === '') {
+    private function _room($roomId, $weekNum) {
+        if ($roomId === 0) {
             $this->_roomDashboard();
         } else {
-            $this->_roomDetails($roomName, $weekNum);
+            $this->_roomDetails($roomId, $weekNum);
         }
     }
 
@@ -85,42 +83,33 @@ class Timetable extends TM_Controller
         $this->show('Emploi du temps de salles');
     }
 
-    private function _roomDetails($roomName, $weekNum) {
+    private function _roomDetails($roomId, $weekNum) {
         $this->load->model('Rooms');
 
-        $roomName = htmlspecialchars($roomName);
+        $roomId = (int) htmlspecialchars($roomId);
         $weekNum = (int) htmlspecialchars($weekNum);
 
-        $adeResource = $this->Rooms->getAdeResource($roomName);
+        $room = $this->Rooms->get($roomId);
 
-        if ($adeResource === FALSE) {
+        if ($room === FALSE) {
             addPageNotification('Salle inconnue', 'warning');
             redirect('Timetable/room');
         }
 
         $this->load->helper('timetable');
 
-        if ($adeResource === FALSE) {
-            $this->data = array(
-                'date' => new DateTime(),
-                'timetable' => false,
-                'minTime' => '00:00',
-                'maxTime' => '01:00'
-            );
-            $this->data['loaded'] = false;
-        } else {
-            $timetableDate = $weekNum ? $weekNum : new DateTime();
-            $this->data = getNextTimetable($adeResource, 'week', $timetableDate);
-            $this->data['loaded'] = true;
-        }
+        $timetableDate = $weekNum ? $weekNum : new DateTime();
+        $this->data = getNextTimetable($room->resource, 'week', $timetableDate);
+        $this->data['loaded'] = true;
+
         $this->data['weekNum'] = $this->data['date']->format('W');
-        $this->data['resource'] = $adeResource;
-        $this->data['pageUrl'] = "Timetable/room/$roomName/";
+        $this->data['resource'] = $room->resource;
+        $this->data['pageUrl'] = "Timetable/room/$roomId/";
 
         $this->data['menu'] = array(
             'Revenir à aujourd\'hui' => $this->data['pageUrl'],
-            'Mettre à jour' => "Process_Timetable/update/$adeResource/$weekNum/$roomName",
-            'Modifier' => "Timetable/edit/room/$roomName",
+            'Mettre à jour' => "Process_Timetable/update/$room->resource/$weekNum/$roomId",
+            'Modifier' => "Timetable/edit/room/$roomId",
             'Retour' => 'Timetable/room'
         );
 
@@ -129,7 +118,7 @@ class Timetable extends TM_Controller
             'css' => 'Common/timetable',
             'js' => 'Common/timetable'
         ));
-        $this->show('Salle ' . $roomName);
+        $this->show('Salle ' . $room->roomName);
 
     }
 
@@ -147,8 +136,8 @@ class Timetable extends TM_Controller
        $this->_edit($type, $who);
     }
 
-    public function student_room($roomName = '', $weekNum = 0) {
-        $this->_room($roomName, $weekNum);
+    public function student_room($roomId = 0, $weekNum = 0) {
+        $this->_room($roomId, $weekNum);
     }
 
     public function teacher_index($weekNum = '')
@@ -165,7 +154,7 @@ class Timetable extends TM_Controller
         $this->_edit($type, $who);
     }
 
-    public function teacher_room($roomName = '', $weekNum = 0) {
-        $this->_room($roomName, $weekNum);
+    public function teacher_room($roomId = 0, $weekNum = 0) {
+        $this->_room($roomId, $weekNum);
     }
 }

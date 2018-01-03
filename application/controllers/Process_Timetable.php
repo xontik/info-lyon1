@@ -25,10 +25,8 @@ class Process_Timetable extends CI_Controller
                     break;
                 case 'group':
                 case 'teacher':
-                    $who = (int) htmlspecialchars($who);
-                    break;
                 case 'room':
-                    $who = htmlspecialchars($who);
+                    $who = (int) htmlspecialchars($who);
                     break;
                 default:
                     addPageNotification('Données corrompues', 'danger');
@@ -43,11 +41,10 @@ class Process_Timetable extends CI_Controller
             // Decode URL
             $url = htmlspecialchars($_POST['url']);
 
-            // If resource number sent
+            // If data received is resource number
             if (is_numeric($url)) {
                 $resource = (int) $url;
             } else {
-
                 // Remove URL useless parts
                 $url = substr($url, strpos($url, '?') + 1);
                 $url = explode('/', $url);

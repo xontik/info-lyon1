@@ -136,27 +136,19 @@ class Timetables extends CI_Model
      */
     public function update($resource, $who, $type)
     {
+        $typeToField = array(
+            'group' => 'idGroup',
+            'teacher' => 'idTeacher',
+            'room' => 'idTimetable'
+        );
+
         $json = $this->getJSON($resource);
         if (is_null($json)) {
             $json = '';
         }
 
-        switch($type) {
-            case 'group':
-                $typeField = 'idGroup';
-                $who = (int) $who;
-                break;
-            case 'teacher':
-                $typeField = 'idTeacher';
-                $who = (int) $who;
-                break;
-            case 'room':
-                $typeField = 'roomName';
-                break;
-            default:
-                trigger_error('Type is not valid');
-                return false;
-        }
+        $typeField = $typeToField[$type];
+        $who = (int) $who;
 
         $this->db
             ->set('resource', $resource)
