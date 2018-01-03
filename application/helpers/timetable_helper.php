@@ -70,18 +70,22 @@ function getNextTimetable($resource, $period, $datetime = NULL) {
     $result = getTimetable($resource, $period, $datetime);
 
     if (strcasecmp($period, 'day') === 0) {
+        $datetimeClone = clone $datetime;
         // Look at next not empty timetable within 3 days
         while ($limit < 3 && empty($result['timetable'])) {
-            $datetime->modify('+1 day');
-            $result = getTimetable($resource, $period, $datetime);
+            $datetimeClone->modify('+1 day');
+            $result = getTimetable($resource, $period, $datetimeClone);
             $limit++;
         }
 
-        if ($limit !== 0) {
-            $datetime->setTime(0, 0);
-        }
+        if (!empty($result['timetable'])) {
+            if ($limit !== 0) {
+                $datetimeClone->setTime(0, 0);
+            }
 
-        usort($result['timetable'], 'sortTimetable');
+            $datetime = $datetimeClone;
+            usort($result['timetable'], 'sortTimetable');
+        }
     } else {
         foreach ($result['timetable'] as $key => $day) {
             usort($result['timetable'][$key], 'sortTimetable');
