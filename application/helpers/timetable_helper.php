@@ -16,6 +16,9 @@ define('DATE_FORMAT', 'Y-m-d');
 function getNextTimetable($resource, $period, $datetime = NULL) {
     global $timezone;
     $timezone = new DateTimeZone('Europe/Paris');
+    $instance = &get_instance();
+
+    $instance->load->config('timetable');
 
     if ($datetime === NULL) {
         $datetime = new DateTime();
@@ -27,13 +30,13 @@ function getNextTimetable($resource, $period, $datetime = NULL) {
         $datetime->setTimezone($timezone);
     }
 
-    $limit = 0;
+    $dayOffset = 0;
 
     // If hour >= 18:00, take next day timetable
     if ($datetime->format('H') >= 18) {
         $datetime->modify('+1 day');
         $datetime->setTime(0, 0);
-        $limit = 1;
+        $dayOffset = 1;
     }
 
     $dayNum = $datetime->format('N');
@@ -63,25 +66,31 @@ function getNextTimetable($resource, $period, $datetime = NULL) {
             $nextMondayDiff = 8 - $dayNum;
             $datetime->modify('+' . $nextMondayDiff . ' day');
             $datetime->setTime(0, 0);
-            $limit += $nextMondayDiff;
+            $dayOffset += $nextMondayDiff;
         }
     }
 
     $result = getTimetable($resource, $period, $datetime);
 
     if (strcasecmp($period, 'day') === 0) {
+        $datetimeClone = clone $datetime;
+        $daySearchLimit = $instance->config->item('daySearchLimit');
+
         // Look at next not empty timetable within 3 days
-        while ($limit < 3 && empty($result['timetable'])) {
-            $datetime->modify('+1 day');
-            $result = getTimetable($resource, $period, $datetime);
-            $limit++;
+        while ($dayOffset < $daySearchLimit && empty($result['timetable'])) {
+            $datetimeClone->modify('+1 day');
+            $result = getTimetable($resource, $period, $datetimeClone);
+            $dayOffset++;
         }
 
-        if ($limit !== 0) {
-            $datetime->setTime(0, 0);
-        }
+        if (!empty($result['timetable'])) {
+            if ($dayOffset !== 0) {
+                $datetimeClone->setTime(0, 0);
+            }
 
-        usort($result['timetable'], 'sortTimetable');
+            $datetime = $datetimeClone;
+            usort($result['timetable'], 'sortTimetable');
+        }
     } else {
         foreach ($result['timetable'] as $key => $day) {
             usort($result['timetable'][$key], 'sortTimetable');

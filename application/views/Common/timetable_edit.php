@@ -15,7 +15,9 @@
                     <li><i class="material-icons">warning</i> Cette opération est a effectuer à chaque changement d'emploi du temps</li>
                 </ol>
                 <form action="<?= base_url('Process_Timetable/edit'
-                        . (isset($data['type']) && isset($data['who']) ? '/' . $data['type'] . '/' . $data['who'] : '')) ?>"
+                        . (isset($data['type']) && isset($data['who'])
+                        ? '/' . $data['type'] . '/' . $data['who']
+                        : '')) ?>"
                       method="post">
                     <div class="input-field">
                         <input type="text" name="url" id="url">
