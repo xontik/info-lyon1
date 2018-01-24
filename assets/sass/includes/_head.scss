@@ -1,0 +1,59 @@
+@import '../materialize';
+@import '../components/notifications';
+
+#debug {
+  @extend .grey, .lighten-2;
+  display: none;
+  margin-left: 7px;
+}
+
+#debug-toolbar {
+  display: none;
+}
+
+.nav-wrapper {
+  .brand-logo {
+    margin-left: 8px;
+  }
+
+  h2 {
+    text-align: center;
+    font-size: 2.46rem;
+  }
+
+  .badge {
+    $size: 1.3rem;
+
+    position: absolute;
+    top: 20%;
+
+    width: $size;
+    min-width: $size;
+    height: $size;
+    line-height: $size;
+
+    @media #{$large-and-up} {
+      margin-left: 14px;
+    }
+
+    @media #{$medium-and-down} {
+      margin-left: 28px;
+    }
+
+    border-radius: 50% !important;
+  }
+}
+
+.hide-on-med-and-down ul.dropdown-content li {
+  @extend .center-align;
+  line-height: 200%;
+
+  & > *:not(a) {
+    margin-left: 8px;
+    margin-right: 8px;
+  }
+}
+
+#m-notifications .collection > div {
+  cursor: pointer;
+}

@@ -23,7 +23,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | a PHP script and you can easily do that on your own.
 |
 */
-$config['base_url'] = 'info-lyon1';
+$config['base_url'] = 'http://teckmeb.dev';
 
 /*
 |--------------------------------------------------------------------------
@@ -35,7 +35,7 @@ $config['base_url'] = 'info-lyon1';
 | variable so that it is blank.
 |
 */
-$config['index_page'] = 'index.php';
+$config['index_page'] = '';
 
 /*
 |--------------------------------------------------------------------------
@@ -521,3 +521,13 @@ $config['rewrite_short_tags'] = FALSE;
 | Array:		array('10.0.1.200', '192.168.5.0/24')
 */
 $config['proxy_ips'] = '';
+
+/* 
+ * Native PHP function. 
+ * Permits to load base controller. 
+ */ 
+function __autoload($class) { 
+    if (strpos($class, 'CI_') !== 0) { 
+        require_once( APPPATH . 'core/'. $class . '.php' ); 
+    } 
+}

@@ -1,0 +1,13 @@
+@import '../style';
+
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+}
+.row.grid .col {
+  // flex: auto;
+  // flex: 0;
+  // flex: 1; 
+  margin-left: 0;
+}

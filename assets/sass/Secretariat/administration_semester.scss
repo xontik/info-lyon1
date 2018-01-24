@@ -1,0 +1,39 @@
+@import '../style';
+
+li {
+  list-style-type: none;
+}
+
+#education-wrapper div:last-of-type {
+  padding-right: 3rem;
+}
+
+#teachers .collection-item {
+  cursor: pointer;
+}
+
+.horizontal-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  padding-left: 5px;
+  padding-right: 5px;
+
+  > .collection {
+    flex-shrink: 0;
+    min-width: 200px;
+    margin-right: 1.5rem;
+  }
+
+  .collection-item {
+    white-space: nowrap;
+    overflow: visible;
+  }
+
+  .connectedSortable .collection-item:not(.no-student):hover {
+    cursor: pointer;
+  }
+
+}

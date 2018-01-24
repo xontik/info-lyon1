@@ -1,0 +1,16 @@
+@import '../style';
+
+img {
+  width: auto !important;
+  height: 100vh;
+}
+
+.carousel-fixed-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .material-icons {
+    cursor: pointer;
+  }
+}

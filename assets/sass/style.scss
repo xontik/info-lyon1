@@ -1,0 +1,17 @@
+@import 'includes/head';
+
+.no-margin {
+  margin: 0 !important;
+}
+
+.small-caps {
+  font-variant: small-caps;
+}
+
+.card-action button.btn-flat {
+  color: $card-link-color;
+}
+
+.horizontal-table-wrapper {
+  overflow-x: auto;
+}

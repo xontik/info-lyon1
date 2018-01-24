@@ -1,0 +1,76 @@
+@import '../materialize';
+
+@media #{$medium-and-up} {
+
+  html, body, main > * {
+    height: 100%;
+  }
+
+  main {
+    height: 90%;
+  }
+
+  #side-edt-large {
+    height: 100%;
+    min-height: 40rem;
+
+    > .card-content {
+      height: 100%;
+    }
+
+    $hourCount: 10;
+    .row {
+      height: calc(100% - 32px);
+
+      > .hours {
+        display: flex;
+        height: 100%;
+        flex-direction: column;
+
+        > * {
+          height: 100% / $hourCount;
+
+          &:nth-child(odd) {
+            font-weight: 500;
+          }
+
+          &:nth-child(even) {
+            font-size: 11px;
+          }
+        }
+      }
+
+      > .content {
+        height: 100%;
+        padding-bottom: 50% / $hourCount;
+
+        > div {
+          overflow: hidden;
+          padding: 5px 8px;
+          border-bottom: 1px solid $table-border-color;
+
+          font-size: 1em;
+
+          &:first-child {
+            border-top: 1px solid $table-border-color;
+          }
+
+          > a, > div {
+            display: block;
+            width: 100%;
+          }
+
+          h5 {
+            margin: 0;
+            white-space: nowrap;
+            overflow: hidden;
+
+            font-size: 1.2em;
+            font-weight: 500;
+          }
+        }
+      }
+
+    }
+  }
+}

@@ -1,6 +1,6 @@
 .DS_Store
 
-
+assets/images/projects/*
 system/*
 
 application/cache/*
@@ -142,3 +142,6 @@ fabric.properties
 *.css.map
 
 # End of https://www.gitignore.io/api/phpstorm,aptanastudio,sass
+
+application/**/*test.*
+application/**/test*.*
