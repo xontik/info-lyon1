@@ -56,7 +56,7 @@ class Process_Question extends CI_Controller
             addPageNotification('Erreur lors de l\'envoi de la réponse', 'danger');
         }
 
-        redirect('Question');
+        redirect('Question/detail/' . $questionId);
     }
 
     public function set_public($questionId)
