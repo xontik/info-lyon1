@@ -42,18 +42,11 @@ defined('BASEPATH') OR exit('No direct script access allowed'); ?>
                     </div>
                 </section>
                 <section id="projects_block" class="col s12 l6 pull-l6 valign-wrapper">
-                    <div>
-                        <div>Lorem ipsum dolor sit amet, consectetur adipisicing elit. A, ad aut deserunt,
-                            dolore dolorem, eius eligendi esse eum exercitationem molestias mollitia
-                            nesciunt perferendis quaerat qui repellendus sunt tempore ullam velit.
-                        </div>
-                        <div>Ad autem beatae commodi consequatur debitis dicta dignissimos earum eius
-                            eligendi eos facilis fuga, id inventore magni maiores necessitatibus nobis
-                            officia perspiciatis porro quam recusandae, rerum sit soluta, tempora unde.
-                        </div>
-                        <p>
-                            <a href="<?= base_url('Gallery') ?>">Accéder à la galerie des projets</a>
-                        </p>
+                    <div class="center-block">
+                        <h1>
+                            <i class="material-icons large">view_carousel</i>
+                            <a href="<?= base_url('Gallery') ?>">Galerie</a>
+                        </h1>
                     </div>
                 </section>
             </div>
