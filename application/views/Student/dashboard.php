@@ -102,17 +102,18 @@
                         <div>
                             <a href="<?= base_url('Mark') ?>" class="card-title">Notes</a>
                             <?php
-                            if (!$data['mark']) {
+                            if (empty($data['average'])) {
                                 ?>
                                 <p>Vous n'avez pas encore eu de note</p>
                                 <?php
-                            } else {
+                            } else if ($data['mark']) {
                                 $date = DateTime::createFromFormat('Y-m-d', $data['mark']->controlDate);
                                 $diff = $now->diff($date);
                                 ?>
                                 <b><?= $data['mark']->controlName ?></b>
                                 <div class="section">
-                                    <span><?= $data['mark']->value ?></span><small>/<?= $data['mark']->divisor?></small>
+                                    <span><?= $data['mark']->value ?></span>
+                                    <small>/<?= $data['mark']->divisor ?></small>
                                     <p>Coefficient: <?= $data['mark']->coefficient ?></p>
                                 </div>
                                 <p><?= ucfirst(readableTimeDifference($diff)) ?></p>
