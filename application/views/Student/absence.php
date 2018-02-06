@@ -25,12 +25,14 @@
                         <td><?= $absence->absenceTypeName ?></td>
                         <td><?= $absence->justified ? 'Justifiée' : 'Injustifiée' ?></td>
                     </tr>
-                <?php }
+                    <?php
+                }
             } else { ?>
                 <tr>
                     <td colspan="99">Aucune absence</td>
                 </tr>
-            <?php } ?>
+                <?php
+            } ?>
         </tbody>
     </table>
 </main>

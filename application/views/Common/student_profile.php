@@ -1,26 +1,31 @@
 <main>
     <div class="container">
         <h4>Profil de : <?= $data['student']->name . ' ' . $data['student']->surname?></h4>
-        <?php foreach ($data['semesters'] as $key => $semester): ?>
+        <?php
+        foreach ($data['semesters'] as $key => $semester) { ?>
             <div class="card grey lighten-5 expandable">
                 <div class="card-content">
                     <div class="card-title"><?= $semester->groupName . $semester->courseType . ' '
-                        . ($semester->delayed?'différé':'') . ' de '
+                        . ($semester->delayed ? 'différé' : '') . ' de '
                         . $semester->schoolYear . '-' . ($semester->schoolYear + 1) ?>
                         <span class='right'><i class="material-icons medium">expand_more</i></span>
-
                     </div>
                     <div class="row">
                             <div class="col s12">
                                 <div class="card grey lighten-4">
                                     <div class="card-content">
                                         <span class="card-title">Absences</span>
-                                        <?php if ($data['absences'][$semester->idSemester]['justified'] == 0 && $data['absences'][$semester->idSemester]['unjustified'] == 0) {?>
-                                            <p>Des absences mais pas encore affichées</p>
-                                        <?php } else { ?>
-                                            <p> <?= $data['absences'][$semester->idSemester]['justified'] ?> absence(s) justifiée(s)</p>
-                                            <p> <?= $data['absences'][$semester->idSemester]['unjustified'] ?> absence(s) injustifiée(s)</p>
-                                        <?php }?>
+                                        <?php
+                                        if ($data['absences'][$semester->idSemester]['justified'] === 0
+                                            && $data['absences'][$semester->idSemester]['unjustified'] === 0
+                                        ) { ?>
+                                            <p>Pas d'absences</p>
+                                            <?php
+                                        } else { ?>
+                                            <p><?= $data['absences'][$semester->idSemester]['unjustified'] ?> absence(s) injustifiée(s)</p>
+                                            <p><?= $data['absences'][$semester->idSemester]['justified'] ?> absence(s) justifiée(s)</p>
+                                            <?php
+                                        }?>
                                     </div>
                                 </div>
                             </div>
@@ -67,8 +72,7 @@
                     </div>
                 </div>
             </div>
-
-        <?php endforeach; ?>
-
+            <?php
+        } ?>
     </div>
 </main>
