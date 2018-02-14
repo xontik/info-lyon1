@@ -3,7 +3,7 @@ if (empty($questions)) {
     ?>
     <div id="card-alert" class="card grey lighten-4">
         <div class="card-content">
-            <p class="flow-text">Vous n'avez pas de question</p>
+            <p class="flow-text">Vous n'avez pas posé de question</p>
         </div>
     <div>
     <?php
@@ -86,35 +86,45 @@ if (empty($questions)) {
                         <div><?= $question->name ?></div>
                     </div>
                     <div class="collapsible-body">
-                        <p class="right-align"><?= $question->content ?></p>
+                        <p <?= $teacher ? 'class="right-align"' : '' ?>><?= $question->content ?></p>
                         <?php
                         if (!empty($question->answers)) {
                             ?>
                             <ul>
                                 <?php
                                 foreach ($question->answers as $answer) {
-                                    $isTeacher = !$answer->teacher ? 'right-align' : '';
+                                    $isRight = $teacher
+                                        ? ($answer->teacher ? '' : 'right-align')
+                                        : ($answer->teacher ? 'right-align' : '');
                                     ?>
                                     <li class="divider"></li>
-                                    <li><p class="<?= $isTeacher ?>"><?= $answer->content ?></p></li>
+                                    <li><p class="<?= $isRight?>"><?= $answer->content ?></p></li>
                                     <?php
                                 }
                                 ?>
                             </ul>
                             <?php
                         }
-                        if ($choosePublic) {
+                        if ($teacher) {
                             ?>
                             <div class="switch">
-                                <form id="<?= $question->idQuestion ?>" action ="<?= base_url('Process_Question/set_public/' . $question->idQuestion); ?>" method="POST">
+                                <form id="<?= $question->idQuestion ?>"
+                                      action ="<?= base_url('Process_Question/set_public/' . $question->idQuestion); ?>"
+                                      method="post">
                                     <label>
-                                        <input <?= $question->public ? 'checked' : '' ?> name="checkPublic" type="checkbox" onchange="document.getElementById('<?= $question->idQuestion ?>').submit();">
+                                        <input
+                                            name="checkPublic"
+                                            type="checkbox"
+                                            <?= $question->public ? 'checked' : '' ?>
+                                            onchange="document.getElementById('<?= $question->idQuestion ?>').submit();"
+                                        >
                                         <span class="lever"></span>
                                         Publique
                                     </label>
                                 </form>
                             </div>
-                        <?php }
+                            <?php
+                        }
                         ?>
                         <form action="<?= base_url('Process_Question/answer/' . $question->idQuestion) ?>" method="POST">
                             <div class="input-field">

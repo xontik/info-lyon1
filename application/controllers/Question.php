@@ -190,12 +190,12 @@ class Question extends TM_Controller
      * @param array     $unsortedQuestions
      * @param int       $activeQuestion
      * @param int       $userQuestionCount
-     * @param boolean   $choosePublic
+     * @param boolean   $teacher
      * @param string    $search
      * @return string
      */
     private function _computeQuestionList($page, $unsortedQuestions, $activeQuestion,
-                                          $userQuestionCount, $choosePublic, $search)
+                                          $userQuestionCount, $teacher, $search)
     {
         $this->load->model('Questions');
         $this->setData(array(
@@ -243,7 +243,7 @@ class Question extends TM_Controller
             'includes/question-list',
             array(
                 'activeQuestion' => $activeQuestion,
-                'choosePublic' => $choosePublic,
+                'teacher' => $teacher,
                 'questions' => $questions,
                 'search' => $search,
                 'nbPages' => $nbPages,
