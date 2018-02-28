@@ -1,5 +1,5 @@
+'use strict';
 $(document).ready(function() {
-    'use strict';
 
     var DEFAULT_ANIM_TIME = 100;
     var ACTIVE_CONTAINER = {};
@@ -8,7 +8,7 @@ $(document).ready(function() {
 
     /**
      * Absence class
-     * @param {number} absenceId
+     * @param {Number|null} absenceId
      * @param {Student} student
      * @param {Date} beginTime
      * @param {Date} endTime
@@ -226,8 +226,6 @@ $(document).ready(function() {
             .find('div')
             .children();
 
-        var justifyIndex, justifiedAbs;
-
         // always add halfday, as we add an absence
         var halfDays = parseInt($datas.eq(0).text()) - 1;
         $datas.eq(0).text(halfDays + ' demi-journée' + (halfDays > 1 ? 's' : ''));
@@ -237,11 +235,8 @@ $(document).ready(function() {
             // if there's more than one absence
             var days = parseInt($datas.eq(1).text()) - !(cell.children().length - 1);
             $datas.eq(1).text(days + ' jour' + (days > 1 ? 's' : ''));
-
-            justifyIndex = 2;
         } else {
             // if no or one absence left
-            justifyIndex = 1;
             if (halfDays === 1) {
                 $datas.eq(1).remove();
             }
@@ -685,6 +680,30 @@ $(document).ready(function() {
         return true;
     }
 
+    function createDayAbsence(cell) {
+        var $cell = $(cell);
+        var date = getDateFromColumn($(cell).index());
+        var student = getStudentFromRow($(cell).parent().index());
+
+        sendAbsence($cell, new Absence(
+            null,
+            student,
+            new Date(date.getTime() + (8 * 3600 * 1000)),
+            new Date(date.getTime() + (12 * 3600 * 1000)),
+            false,
+            1
+        ));
+
+        sendAbsence($cell, new Absence(
+           null,
+           student,
+           new Date(date.getTime() + (14 * 3600 * 1000)),
+           new Date(date.getTime() + (18 * 3600 * 1000)),
+           false,
+           1
+        ));
+    }
+
     /**
      * This function takes the old classes of a cell and
      * the new absence to be added or modified and produce
@@ -703,7 +722,7 @@ $(document).ready(function() {
         cellClasses.push('abs');
 
         var htmlId = '#absn' + absence.absenceId;
-        var $otherChild = $(htmlId).siblings('div:not(' + htmlId + ')');
+        var $otherChild = $(htmlId).siblings('div');
 
         var newClass = 'abs-' + absence.absenceType.name.toLowerCase();
 
@@ -944,8 +963,10 @@ $(document).ready(function() {
             'td:not(:nth-child(7n + ' + (6 - firstDayInWeek) + '))'
             + ':not(:nth-child(7n + ' + (5 - firstDayInWeek) + '))',
             function(event) {
-                if (event.which === 1) {
-                    activate('cell', this);
+                activate('cell', this);
+                if (event.shiftKey) {
+                    createDayAbsence(this);
+                } else {
                     edition.edit(this);
                 }
             })
