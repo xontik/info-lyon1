@@ -160,6 +160,7 @@ function getTimetable($resource, $period, $datetime = NULL)
             $week = $temp->format('W');
             $dayOfWeek = $temp->format('N');
 
+			// TODO This condition must cause problems, spread it !
             // If one day isn't up-to-date, update entire period
             if (!(array_key_exists($year, $timetable)
                 && array_key_exists($week, $timetable[$year])
