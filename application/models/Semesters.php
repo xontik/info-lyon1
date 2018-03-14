@@ -125,11 +125,11 @@ class Semesters extends CI_Model
         if ($semester === '') {
             $this->load->model('Students');
             $semesterId = $this->Students->getCurrentSemester($studentId)->idSemester;
-        } else if (in_array($semester, array('S1', 'S2', 'S3', 'S4'))) {
+        } else if (preg_match('/^S[1-4]$/', $semester)) {
             $semesterId = $this->getLastSemesterOfType($semester, $studentId);
         }
 
-        if ($semesterId === FALSE) {
+        if ($semesterId === FALSE || $semesterId === 0) {
             return FALSE;
         }
         return (int) $semesterId;
@@ -144,7 +144,7 @@ class Semesters extends CI_Model
      */
     public function getLastSemesterOfType($semesterType, $studentId)
     {
-        if (!in_array($semesterType, array('S1', 'S2', 'S3', 'S4'))) {
+        if (!preg_match('/^S[1-4]$/', $semesterType)) {
             return FALSE;
         }
 
@@ -153,7 +153,7 @@ class Semesters extends CI_Model
             ->join('Course', 'idCourse')
             ->where('courseType', $semesterType)
             ->get_compiled_select();
-
+        
         $semester = $this->db->select_max('idSemester')
             ->from('Group')
             ->join('StudentGroup', 'idGroup')

@@ -8,39 +8,43 @@
                 <h5 id="time" class="col"><?= $data['lesson']['timeStart'] . ' - ' . $data['lesson']['timeEnd'] ?></h5>
             </div>
             <?php
-        }
-
-        if (!is_null($data['students'])) {
-            ?>
-            <div class="row small-caps">
-                <div class="col s8"><h5>élève</h5></div>
-                <div class="col s3 center-align"><h5>présent</h5></div>
-            </div>
-            <div id="studentList">
-                <?php
-                foreach ($data['students'] as $student) {
-                    ?>
-                    <div class="row no-margin">
-                        <div class="col s8"><?= $student->surname . ' ' . $student->name ?></div>
-                        <div class="col s3 center-align">
-                            <input type="checkbox" class="filled-in"
-                                   id="stud<?= $student->idStudent ?>"
-                                   data-student-id="<?= $student->idStudent ?>"
-                                   <?php
-                                   if (isset($student->absence)) { ?>
-                                       data-absence-id="<?= $student->absence->idAbsence?>"
-                                       <?php
-                                   } else { ?>
-                                       checked
-                                       <?php
-                                   } ?>>
-                            <label for="stud<?= $student->idStudent ?>"></label>
-                        </div>
-                    </div>
+            if (!is_null($data['students'])) {
+                ?>
+                <div class="row small-caps">
+                    <div class="col s8"><h5>élève</h5></div>
+                    <div class="col s3 center-align"><h5>présent</h5></div>
+                </div>
+                <div id="studentList">
                     <?php
-                } ?>
-            </div>
-            <?php
+                    foreach ($data['students'] as $student) {
+                        ?>
+                        <div class="row no-margin">
+                            <div class="col s8"><?= $student->surname . ' ' . $student->name ?></div>
+                            <div class="col s3 center-align">
+                                <input type="checkbox" class="filled-in"
+                                       id="stud<?= $student->idStudent ?>"
+                                       data-student-id="<?= $student->idStudent ?>"
+                                       <?php
+                                       if (isset($student->absence)) { ?>
+                                           data-absence-id="<?= $student->absence->idAbsence?>"
+                                           <?php
+                                       } else { ?>
+                                           checked
+                                           <?php
+                                       } ?>>
+                                <label for="stud<?= $student->idStudent ?>"></label>
+                            </div>
+                        </div>
+                        <?php
+                    } ?>
+                </div>
+                <?php
+            } else { ?>
+              <div>
+                <h5>Aucun élève à afficher</h5>
+              </div>
+              <?php
+            }
         } ?>
     </div>
     <div class="col s12 m5 l4">

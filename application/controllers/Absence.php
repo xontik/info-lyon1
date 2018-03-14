@@ -20,8 +20,9 @@ class Absence extends TM_Controller
             1
         );
 
-        if ($semester !== '' && $semester > 'S' . $maxSemester) {
-            addPageNotification('Vous essayez d\'accéder à un semestre futur<br>Redirection vers votre semestre courant');
+        if ($semester !== '' && $semester > "S$maxSemester") {
+            addPageNotification('Vous essayez d\'accéder à un semestre futur<br />
+              Redirection vers votre semestre courant');
             $semester = '';
         }
 
@@ -32,7 +33,14 @@ class Absence extends TM_Controller
         }
 
         $semesterId = $this->Semesters->getSemesterId($semester, $_SESSION['id']);
-
+        
+        if ($semesterId === FALSE) {
+          addPageNotification('Nous n\'avons pas d\'informations sur ce semestre<br />
+            Vous avez été redirigé vers votre semestre courant');
+          redirect('Absence');
+          return;
+        }
+        
         $semesterType = $this->Semesters->getType($semesterId);
         $tabs[$semesterType]->active = true;
 
@@ -108,6 +116,7 @@ class Absence extends TM_Controller
                         $timeStart = DateTime::createFromFormat('H:i', $currEvent['timeStart']);
 
                         $absences = $this->Absences->getAtTime($timeStart, $students);
+                        
                         foreach ($students as $oldkey => $student) {
                             $students[$student->idStudent] = $student;
                             unset($students[$oldkey]);
