@@ -95,7 +95,7 @@
                                 foreach ($data['controls'] as $control) {
                                     $date = DateTime::createFromFormat('Y-m-d', $control->controlDate); ?>
                                     <tr>
-                                        <td><?= $control->subjectCode . '-' . $control->subjectName ?></td>
+                                        <td><?= $control->subjectCode . ' - ' . $control->subjectName ?></td>
                                         <td><?= $control->controlName ?></td>
                                         <td><?= $control->groupName ?></td>
                                         <td><?= $control->controlTypeName ?> </td>
@@ -118,7 +118,8 @@
                                 <?php }
                             } else { ?>
                                 <td colspan="99">Pas de contrôles</td>
-                            <?php } ?>
+                                <?php
+                            } ?>
                         </tbody>
                     </table>
                 </div>

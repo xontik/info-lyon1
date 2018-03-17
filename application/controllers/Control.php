@@ -33,6 +33,10 @@ class Control extends TM_Controller
                 )
             ) {
                 unset($controls[$key]);
+            } else {
+                if (empty($control->subjectName)) {
+                  $controls[$key]->subjectName = $control->moduleName;
+                }
             }
         }
 

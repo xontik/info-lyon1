@@ -80,61 +80,59 @@ class Teachers extends CI_Model
      */
     public function getControls($teacherId)
     {
-        $sql =
-            'SELECT foo.subjectCode, foo.idSubject, foo.subjectName, foo.idControl, foo.controlName,
-            foo.coefficient, foo.divisor, foo.controlTypeName, foo.idControlType, foo.standardDeviation, foo.average,
-            foo.controlDate, foo.subjectCoefficient, foo.groupName, foo.idGroup
-            FROM (
-                    SELECT subjectCode, idSubject, subjectName, idControl, controlName,
-                    coefficient, divisor, idControlType, controlTypeName, standardDeviation, average,
-                    controlDate,subjectCoefficient,groupName,idGroup
-                    FROM Control
-                    JOIN ControlType USING (idControlType)
-                    JOIN Education USING (idEducation)
-                    JOIN Subject USING (idSubject)
-                    JOIN `Group` USING (idGroup)
-                    JOIN Semester USING (idSemester)
-                    WHERE idTeacher = ? AND active = 1
-                UNION
-                    SELECT DISTINCT subjectCode, idSubject, subjectName, idControl, controlName,
-                    coefficient, divisor, idControlType, controlTypeName, standardDeviation, average,
-                    controlDate, subjectCoefficient, NULL AS groupName, NULL AS idGroup
-                    FROM Control
-                    JOIN ControlType USING (idControlType)
-                    JOIN Promo USING (idPromo)
-                    JOIN Subject USING (idSubject)
-                    JOIN Education USING (idSubject)
-                    JOIN Semester USING (idSemester)
-                    WHERE idTeacher = ? AND active = 1
-                UNION
-                    SELECT subjectCode, idSubject, subjectName, idControl, controlName,
-                    coefficient, divisor, idControlType, controlTypeName, standardDeviation, average,
-                    controlDate, subjectCoefficient, groupName, idGroup
-                    FROM Control
-                    JOIN ControlType USING (idControlType)
-                    JOIN Education USING (idEducation)
-                    JOIN Subject USING (idSubject)
-                    JOIN `Group` USING (idGroup)
-                    JOIN SubjectOfModule USING (idSubject)
-                    JOIN Referent USING (idModule, idSemester)
-                    JOIN Semester USING (idSemester)
-                    WHERE Referent.idTeacher = ? AND active = 1
-                UNION
-                    SELECT subjectCode, idSubject, subjectName, idControl, controlName,
-                    Control.coefficient, divisor, idControlType, controlTypeName, standardDeviation, average,
-                    controlDate, subjectCoefficient, NULL AS groupName, NULL AS idGroup
-                    FROM Control
-                    JOIN ControlType USING (idControlType)
-                    JOIN Promo USING (idPromo)
-                    JOIN Subject USING (idSubject)
-                    JOIN SubjectOfModule USING (idSubject)
-                    JOIN Module USING (idModule)
-                    JOIN Referent USING (idModule,idSemester)
-                    JOIN Semester USING (idSemester)
-                    WHERE idTeacher = ? AND active = 1
-            ) AS foo ';
+        $sql =' SELECT subjectCode, idSubject, moduleName, subjectName, idControl, controlName,
+                  coefficient, divisor, idControlType, controlTypeName, standardDeviation, average,
+                  controlDate, subjectCoefficient, groupName, idGroup
+                FROM Control
+                JOIN ControlType USING (idControlType)
+                JOIN Education USING (idEducation)
+                JOIN Subject USING (idSubject)
+                JOIN SubjectOfModule USING (idSubject)
+                JOIN Module USING (idModule)
+                JOIN `Group` USING (idGroup)
+                JOIN Semester USING (idSemester)
+                WHERE idTeacher = ? AND active = 1
+            UNION
+                SELECT DISTINCT subjectCode, idSubject, moduleName, subjectName, idControl, controlName,
+                  coefficient, divisor, idControlType, controlTypeName, standardDeviation, average,
+                  controlDate, subjectCoefficient, NULL AS groupName, NULL AS idGroup
+                FROM Control
+                JOIN ControlType USING (idControlType)
+                JOIN Promo USING (idPromo)
+                JOIN Subject USING (idSubject)
+                JOIN SubjectOfModule USING (idSubject)
+                JOIN Module USING (idModule)
+                JOIN Education USING (idSubject)
+                JOIN Semester USING (idSemester)
+                WHERE idTeacher = ? AND active = 1
+            UNION
+                SELECT subjectCode, idSubject, moduleName, subjectName, idControl, controlName,
+                  coefficient, divisor, idControlType, controlTypeName, standardDeviation, average,
+                  controlDate, subjectCoefficient, groupName, idGroup
+                FROM Control
+                JOIN ControlType USING (idControlType)
+                JOIN Education USING (idEducation)
+                JOIN Subject USING (idSubject)
+                JOIN `Group` USING (idGroup)
+                JOIN SubjectOfModule USING (idSubject)
+                JOIN Module USING (idModule)
+                JOIN Referent USING (idModule, idSemester)
+                JOIN Semester USING (idSemester)
+                WHERE Referent.idTeacher = ? AND active = 1
+            UNION
+                SELECT subjectCode, idSubject, moduleName, subjectName, idControl, controlName,
+                  Control.coefficient, divisor, idControlType, controlTypeName, standardDeviation, average,
+                  controlDate, subjectCoefficient, NULL AS groupName, NULL AS idGroup
+                FROM Control
+                JOIN ControlType USING (idControlType)
+                JOIN Promo USING (idPromo)
+                JOIN Subject USING (idSubject)
+                JOIN SubjectOfModule USING (idSubject)
+                JOIN Module USING (idModule)
+                JOIN Referent USING (idModule,idSemester)
+                JOIN Semester USING (idSemester)
+                WHERE idTeacher = ? AND active = 1';
 
-        //TODO continuer de verifier les different cas pour les ds surtout via Referent
         return $this->db->query($sql, array_fill(0, 4, $teacherId))
             ->result();
     }
