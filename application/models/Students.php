@@ -315,9 +315,7 @@ class Students extends CI_Model
     }
     
     /**
-<<<<<<< HEAD
      * Returns all the public questions without those who belong to the student.
-=======
      * Return the project to which the student currently or most lastly belongs.
      *
      * @param string $studentId
@@ -341,7 +339,6 @@ class Students extends CI_Model
 
     /**
      * Returns the answers to the questions the student asked.
->>>>>>> Dashboard
      *
      * @param string $studentId
      * @return array
@@ -412,7 +409,9 @@ class Students extends CI_Model
             ->where('active', '1')
             ->get_compiled_select();
 
-        return $this->db->select('idTeacher, CONCAT(name, \' \', surname) as name')
+        return $this->db
+            ->distinct()
+            ->select('idTeacher, CONCAT(name, \' \', surname) as name')
             ->from('Teacher')
             ->join('User', 'idUser')
             ->join('Education', 'idTeacher')
