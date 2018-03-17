@@ -109,7 +109,6 @@ class Absences extends CI_Model
         );
 
         return $this->db
-            ->set($data)
             ->where('idAbsence', $absenceId)
             ->update('Absence', $data);
     }

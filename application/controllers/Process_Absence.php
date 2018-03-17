@@ -36,7 +36,7 @@ class Process_Absence extends CI_Controller
         $beginDate = htmlspecialchars($_POST['beginDate']);
         $endDate = htmlspecialchars($_POST['endDate']);
         $idAbsenceType = (int) htmlspecialchars($_POST['absenceTypeId']);
-        $justified = htmlspecialchars($_POST['justified']);
+        $justified = htmlspecialchars($_POST['justified']) === "true";
 
         if (!$this->_checkAbsenceData($beginDate, $endDate, $idAbsenceType, $justified)) {
             echo 'wrong_data';
@@ -76,7 +76,7 @@ class Process_Absence extends CI_Controller
         $beginDate = htmlspecialchars($_POST['beginDate']);
         $endDate = htmlspecialchars($_POST['endDate']);
         $idAbsenceType = (int) htmlspecialchars($_POST['absenceTypeId']);
-        $justified = htmlspecialchars($_POST['justified']);
+        $justified = htmlspecialchars($_POST['justified']) === "true";
 
         if (!$this->_checkAbsenceData($beginDate, $endDate, $idAbsenceType, $justified)) {
             echo 'wrong_data';
