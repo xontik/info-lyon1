@@ -155,15 +155,15 @@ class Students extends CI_Model
                         JOIN Control USING (idControl)
                         JOIN Education USING (idEducation)
                         JOIN `Group` USING (idGroup) 
-                        WHERE idStudent = \'p0000001\'
-                        AND idSemester = 2
+                        WHERE idStudent = \'' . $studentId . '\'
+                        AND idSemester = \'' . $semesterId . '\'
                     UNION
                         SELECT value, controlName, coefficient, divisor, controlDate
                         FROM Mark
                         JOIN Control USING (idControl)
                         JOIN Promo USING (idPromo)
-                        WHERE idStudent = \'p0000001\'
-                        AND idSemester = 2
+                        WHERE idStudent = \'' . $studentId . '\'
+                        AND idSemester = \'' . $semesterId . '\'
                 ) AS foo
                 ORDER BY controlDate DESC
                 LIMIT 1',
