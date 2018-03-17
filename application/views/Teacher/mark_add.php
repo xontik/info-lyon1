@@ -22,7 +22,8 @@
                             <div class="col s6 m3 pull-m3">
                                 <input type="number" name="<?= $mark->idStudent ?>" id="<?= $mark->idStudent ?>"
                                        value="<?= !is_null($mark->value) ? $mark->value : '' ?>"
-                                        min="0" step="0.25"/>
+                                        min="0" step="0.01"
+                                        max="<?= $data['control']->divisor ?>" />
                             </div>
                         </div>
                         <?php

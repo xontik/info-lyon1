@@ -20,6 +20,7 @@
                     <div class="input-field col s6 m2">
                         <input type="number" id="divisor" name="divisor"
                                min="1" value="<?= $data['control']->divisor ?>"
+                               step="1"
                                 <?= $data['hasMark'] ? 'disabled' : '' ?>/>
                         <label for="divisor">Diviseur</label>
                     </div>
