@@ -66,12 +66,16 @@ class Mark extends TM_Controller
         }
 
         if (!$this->Teachers->hasRightOn($controlId, $_SESSION['id'])) {
-            addPageNotification('Vous n\'avez pas les droit sur ce contrôle', 'danger');
+            addPageNotification('Vous n\'avez pas les droits sur ce contrôle', 'danger');
             redirect('/Control');
         }
 
         $marks = $this->Controls->getMarks($control, $_SESSION['id']);
         $subject = $this->Controls->getSubject($controlId);
+        
+        if (empty($subject->subjectName)) {
+          $subject->subjectName = $subject->moduleName;
+        }
 
         $this->data = array(
             'control' => $control,

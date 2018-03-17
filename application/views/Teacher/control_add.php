@@ -55,7 +55,7 @@
                                 foreach ($data['select'] as $subject)
                                 { ?>
                                     <option value="<?= $subject->idSubject ?>"
-                                        ><?= $subject->subjectCode . ' - ' . $subject->subjectName ?>
+                                        ><?= $subject->subjectName ?>
                                     </option>
                                     <?php
                                 } ?>

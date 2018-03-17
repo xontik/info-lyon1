@@ -261,16 +261,20 @@ class Teachers extends CI_Model
     public function getSubjects($teacherId)
     {
         $sql =
-            'SELECT DISTINCT idSubject, subjectCode, subjectName
+            'SELECT DISTINCT idSubject, moduleName, subjectName
                 FROM Education
                 JOIN `Group` USING (idGroup)
                 JOIN Subject USING (idSubject)
+                JOIN SubjectOfModule USING (idSubject)
+                JOIN Module USING (idModule)
                 JOIN Semester USING (idSemester)
                 WHERE idTeacher = ? AND active = 1
             UNION
-                SELECT DISTINCT idSubject,subjectCode,subjectName FROM Referent
+                SELECT DISTINCT idSubject, moduleName, subjectName
+                FROM Referent
                 JOIN SubjectOfModule USING ( idModule)
                 JOIN Subject USING (idSubject)
+                JOIN Module USING (idModule)
                 JOIN Semester USING (idSemester)
                 WHERE idTeacher = ? AND active = 1';
 
@@ -324,18 +328,21 @@ class Teachers extends CI_Model
     {
         $sql =
             'SELECT DISTINCT * FROM (
-                    SELECT groupName, courseType, subjectName, idEducation
+                    SELECT groupName, courseType, moduleName, subjectName, idEducation
                     FROM Education
                     JOIN `Group` USING (idGroup)
                     JOIN Subject USING (idSubject)
+                    JOIN SubjectOfModule USING (idSubject)
+                    JOIN Module USING (idModule)
                     JOIN Semester USING (idSemester)
                     JOIN Course USING (idCourse)
                     WHERE idTeacher = ? AND active = 1
                 UNION
-                    SELECT groupName, courseType, subjectName, idEducation
+                    SELECT groupName, courseType, moduleName, subjectName, idEducation
                     FROM Referent
                     JOIN SubjectOfModule USING (idModule)
                     JOIN Subject USING (idSubject)
+                    JOIN Module USING (idModule)
                     JOIN Education USING (idSubject)
                     JOIN Semester USING (idSemester)
                     JOIN Course USING (idCourse)

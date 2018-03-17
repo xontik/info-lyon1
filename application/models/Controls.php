@@ -117,16 +117,20 @@ class Controls extends CI_Model
     public function getSubject($controlId)
     {
         $sql = 'SELECT DISTINCT * FROM (
-                    SELECT subjectCode, subjectName
+                    SELECT subjectCode, subjectName, moduleName
                     FROM Control
                     JOIN Promo USING (idPromo)
                     JOIN Subject USING (idSubject)
+                    JOIN SubjectOfModule USING (idSubject)
+                    JOIN Module USING (idModule)
                     WHERE idControl = ?
                 UNION
-                    SELECT subjectCode, subjectName
+                    SELECT subjectCode, subjectName, moduleName
                     FROM Control
                     JOIN Education USING (idEducation)
                     JOIN Subject USING (idSubject)
+                    JOIN SubjectOfModule USING (idSubject)
+                    JOIN Module USING (idModule)
                     WHERE idControl = ?
             ) AS foo';
 

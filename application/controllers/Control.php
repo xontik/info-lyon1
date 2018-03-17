@@ -62,6 +62,12 @@ class Control extends TM_Controller
             show_404();
             return;
         }
+        
+        foreach ($select as $key => $selectItem) {
+            $select[$key]->subjectName = empty($selectItem->subjectName)
+                ? $selectItem->moduleName
+                : $selectItem->subjectName;
+        }
 
         $controlTypes = $this->Controls->getTypes();
 
