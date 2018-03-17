@@ -23,13 +23,13 @@ class Student extends TM_Controller
         $this->load->model('Semesters');
 
         $student = $this->Students->get($studentId);
-
         $semesters = $this->Students->getSemesters($studentId);
 
         $averageBySemester = array();
         $averageTUBySemester = array();
         $absences = array();
         $totalAvgs = array();
+        
         foreach ($semesters as $semester) {
             $averageBySemester[$semester->idSemester] = $this->Students->getSubjectsAverage($studentId, $semester->idSemester);
 
@@ -44,8 +44,8 @@ class Student extends TM_Controller
             $sumCoeff = 0;
             foreach ($tus as $tu) {
                 $averageTUBySemester[$semester->idSemester][$tu->idTeachingUnit] = $tu;
-                $sumTU += $tu->average*$tu->coefficient;
-                $sumTUGroup += $tu->groupAverage*$tu->coefficient;
+                $sumTU += $tu->average * $tu->coefficient;
+                $sumTUGroup += $tu->groupAverage * $tu->coefficient;
                 $sumCoeff += $tu->coefficient;
             }
 
@@ -53,24 +53,26 @@ class Student extends TM_Controller
             if ($sumCoeff > 0) {
                 $totalAvg = $sumTU / $sumCoeff;
                 $totalAvgGroup = $sumTUGroup / $sumCoeff;
-
             } else {
                 $totalAvg = null;
                 $totalAvgGroup = null;
             }
-            $totalAvgs[$semester->idSemester] = array('student' => $totalAvg, 'group' => $totalAvgGroup);
-
+            
+            $totalAvgs[$semester->idSemester] = array(
+              'student' => $totalAvg,
+              'group' => $totalAvgGroup
+            );
         }
 
-
-
-        $this->data = array(    'semesters' => $semesters,
-                                'student' => $student,
-                                'averageBySemester' => $averageBySemester,
-                                'absences' => $absences,
-                                'averageTUBySemester' => $averageTUBySemester,
-                                'totalAvgs' => $totalAvgs
-                                );
+        $this->data = array(
+            'semesters' => $semesters,
+            'student' => $student,
+            'averageBySemester' => $averageBySemester,
+            'absences' => $absences,
+            'averageTUBySemester' => $averageTUBySemester,
+            'totalAvgs' => $totalAvgs
+        );
+        
         $this->setData(array(
             'view' => 'Common/student_profile.php',
             'js' => 'Common/student_profile',

@@ -34,7 +34,7 @@
                                     <div class="card-content">
                                         <div class="card-title">
                                             Notes
-                                            <span class='right'><?= is_null($data['totalAvgs'][$semester->idSemester]['student'])?'':'Moyenne au semestre : ' . number_format($data['totalAvgs'][$semester->idSemester]['student'], 2) . '/20'?></span>
+                                            <span class='right'><?= is_null($data['totalAvgs'][$semester->idSemester]['student'])?'':'Moyenne du semestre : ' . number_format($data['totalAvgs'][$semester->idSemester]['student'], 2) . '/20'?></span>
                                         </div>
                                         <?php if (count($data['averageBySemester'][$semester->idSemester])){ ?>
                                         <ul class="collection with-header">
@@ -53,8 +53,10 @@
                                                                 </div>
 
                                                                 <div class="col s3 right-align">
-                                                                    <span>Eleve : <?=$data['averageTUBySemester'][$semester->idSemester][$average->idTeachingUnit]->average?>/20<br>
-                                                                        Groupe : <?= $data['averageTUBySemester'][$semester->idSemester][$average->idTeachingUnit]->groupAverage ?>/20</span>
+                                                                    <span>
+                                                                        Eleve : <?=$data['averageTUBySemester'][$semester->idSemester][$average->idTeachingUnit]->average?>/20<br>
+                                                                        Groupe : <?= $data['averageTUBySemester'][$semester->idSemester][$average->idTeachingUnit]->groupAverage ?>/20
+                                                                    </span>
                                                                 </div>
                                                             </div>
                                                     <?php } ?>
