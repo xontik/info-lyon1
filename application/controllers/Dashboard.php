@@ -39,12 +39,7 @@ class Dashboard extends TM_Controller
 
         $semester = $this->Students->getCurrentSemester($_SESSION['id']);
         $period = $this->Semesters->getPeriodObject($semester);
-        $now = new DateTime();
-
-        if (!$now->diff($period->getEndDate())->invert) {
-            $period->setEndDate($now);
-        }
-
+        
         // Absence
         $this->data['absence'] = $this->Students->getLastAbsence($_SESSION['id'], $period);
         $this->data['absenceCount'] = $this->Students->getAbsencesCount($_SESSION['id'], $period);

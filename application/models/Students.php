@@ -121,7 +121,7 @@ class Students extends CI_Model
             ->where('idStudent', $studentId)
             ->where('beginDate BETWEEN "' . $period->getBeginDate()->format('Y-m-d')
                 . '" AND "' . $period->getEndDate()->format('Y-m-d') . '"')
-            ->where('justified','1')
+            ->where('justified', true)
             ->get()
             ->num_rows();
         $unjustified = $this->db
@@ -129,11 +129,14 @@ class Students extends CI_Model
             ->where('idStudent', $studentId)
             ->where('beginDate BETWEEN "' . $period->getBeginDate()->format('Y-m-d')
                 . '" AND "' . $period->getEndDate()->format('Y-m-d') . '"')
-            ->where('justified','0')
+            ->where('justified', false)
             ->get()
             ->num_rows();
 
-        return array('justified' => $justified, 'unjustified' => $unjustified);
+        return array(
+          'justified' => $justified,
+          'unjustified' => $unjustified
+        );
 
     }
 
@@ -155,15 +158,15 @@ class Students extends CI_Model
                         JOIN Control USING (idControl)
                         JOIN Education USING (idEducation)
                         JOIN `Group` USING (idGroup) 
-                        WHERE idStudent = \'' . $studentId . '\'
-                        AND idSemester = \'' . $semesterId . '\'
+                        WHERE idStudent = "' . $studentId . '"
+                        AND idSemester = "' . $semesterId . '"
                     UNION
                         SELECT value, controlName, coefficient, divisor, controlDate
                         FROM Mark
                         JOIN Control USING (idControl)
                         JOIN Promo USING (idPromo)
-                        WHERE idStudent = \'' . $studentId . '\'
-                        AND idSemester = \'' . $semesterId . '\'
+                        WHERE idStudent = "' . $studentId . '"
+                        AND idSemester = "' . $semesterId . '"
                 ) AS foo
                 ORDER BY controlDate DESC
                 LIMIT 1',
