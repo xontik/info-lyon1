@@ -12,7 +12,7 @@ $(document).ready(function() {
         var subjectIndex;
         for (var i = 0; i < subjects.length; i++) {
             if (+subjects[i].idSubject === subjectId) {
-                subjectIndex = i;
+                subjectIndex = i + 1;
                 break;
             }
         }
