@@ -111,7 +111,6 @@ class Project extends TM_Controller
         $lastAppointment = $this->Projects->getLastAppointment($project->idProject);
         $nextAppointment = $this->Projects->getNextAppointment($project->idProject);
 
-
         $proposals = array();
 
         if (!is_null($nextAppointment)) {

@@ -35,12 +35,13 @@ $now = new DateTime();
                             $diff = $now->diff($date);
                             ?>
                             <span class="card-title">Dernier rendez-vous</span>
-                            <p><?= readableTimeDifference($diff) ?></p>
+                            <p><?= ucfirst(readableTimeDifference($diff)) ?></p>
 
                             <?php
-                        } else {?>
+                        } else { ?>
                             <span class="card-title">Aucun ancien rendez-vous</span>
-                        <?php } ?>
+                            <?php
+                        } ?>
                     </div>
                 </div>
                 <div class="col s12 m5 offset-m1 card grey lighten-4">
@@ -109,7 +110,7 @@ $now = new DateTime();
                                     <i class="material-icons">delete</i>
                                 </a>
                             </span>
-                            <p><?= readableTimeDifference($diff) ?></p>
+                            <p><?= ucfirst(readableTimeDifference($diff)) ?></p>
                             <p>Le <?= $date->format('d/m/Y à h:i') ?></p>
                             <?php
                         } ?>

@@ -54,7 +54,6 @@ class Projects extends CI_Model
     }
 
     /**
-<<<<<<< HEAD
      * Get the tutor of the project.
      *
      * @param int $projectId
@@ -78,8 +77,6 @@ class Projects extends CI_Model
     }
 
     /**
-=======
->>>>>>> Dashboard
      * Computes the last appointment the project had.
      *
      * @param int $projectId
@@ -90,7 +87,7 @@ class Projects extends CI_Model
         return $this->db->from('Appointment')
             ->where('idProject', $projectId)
             ->where('finalDate IS NOT NULL')
-            ->where('finalDate <= CURDATE()')
+            ->where('finalDate <= NOW()')
             ->order_by('finalDate', 'DESC')
             ->get()
             ->row();
@@ -108,7 +105,7 @@ class Projects extends CI_Model
             ->where('idProject', $projectId)
             ->group_start()
             ->where('finalDate IS NULL')
-            ->or_where('finalDate >= CURDATE()')
+            ->or_where('finalDate > NOW()')
             ->group_end()
             ->order_by('finalDate', 'ASC')
             ->get()
