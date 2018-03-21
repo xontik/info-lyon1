@@ -42,7 +42,11 @@
 
                             ?>
                             <div id="<?= $student->idStudent ?>" <?= $class ?>>
-                                <p><?= $student->name ?></p>
+                                <p>
+                                  <a class="black-text" href="<?= base_url('Student/profile/' . $student->idStudent) ?>">
+                                    <?= $student->name ?>
+                                  </a>
+                                </p>
                                 <i class="material-icons">info</i>
                                 <div>
                                     <p><?= $missCount ?>
