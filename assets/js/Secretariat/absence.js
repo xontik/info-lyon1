@@ -909,11 +909,12 @@ $(document).ready(function() {
     // #################################
     // ########  PROGRAM START  ########
     // #################################
-    var firstDayInWeek = FIRST_DATE.getDate();
+    var firstDayInWeek = FIRST_DATE.getDay();
+
     $('head').append(
         '<style>'
-        + 'tbody td:nth-child(7n + ' + (6 - firstDayInWeek) + '),'
-        + 'tbody td:nth-child(7n + ' + (5 - firstDayInWeek) + ') {'
+        + 'tbody td:nth-child(7n + ' + (8 - firstDayInWeek) + '),'
+        + 'tbody td:nth-child(7n + ' + (7 - firstDayInWeek) + ') {'
             + 'background-color: rgba(255, 183, 77, .6);'
         + '}'
         + '</style>'
