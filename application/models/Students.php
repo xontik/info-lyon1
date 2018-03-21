@@ -183,7 +183,7 @@ class Students extends CI_Model
     public function getSubjectsAverage($studentId, $semesterId) {
         $sql = 'SELECT idSubject, subjectCode, subjectName, subjectCoefficient, moduleName, idTeachingUnit, teachingUnitName, teachingUnitCode, idSemester,
                         ROUND(SUM((value/divisor)*20*coefficient)/SUM(coefficient), 2) AS average,
-                        ROUND(SUM(average*coefficient)/SUM(coefficient), 2) AS groupAverage
+                        ROUND(SUM((average/divisor)*20*coefficient)/SUM(coefficient), 2) AS groupAverage
                 FROM (
                 SELECT idSubject, idControl, idStudent, idSemester FROM mark
                     JOIN control using (idControl)
