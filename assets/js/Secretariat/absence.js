@@ -961,8 +961,8 @@ $(document).ready(function() {
     $absenceTable
         .find('tbody')
         .on('click',
-            'td:not(:nth-child(7n + ' + (6 - firstDayInWeek) + '))'
-            + ':not(:nth-child(7n + ' + (5 - firstDayInWeek) + '))',
+            'td:not(:nth-child(7n + ' + (8 - firstDayInWeek) + '))'
+            + ':not(:nth-child(7n + ' + (7 - firstDayInWeek) + '))',
             function(event) {
                 activate('cell', this);
                 if (event.shiftKey) {
