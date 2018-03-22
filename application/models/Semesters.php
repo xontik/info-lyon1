@@ -462,7 +462,7 @@ class Semesters extends CI_Model
         $sql =
             'SELECT *
             FROM (
-                SELECT subjectCode, subjectName, controlName,
+                SELECT subjectCode, moduleName, subjectName, controlName,
                 coefficient, divisor, controlTypeName, median, average,
                 controlDate, idSubject, subjectCoefficient, value, idPromo
                 FROM Mark
@@ -470,10 +470,12 @@ class Semesters extends CI_Model
                 JOIN ControlType USING (idControlType)
                 JOIN Education USING (idEducation)
                 JOIN Subject USING (idSubject)
+                JOIN SubjectOfModule USING (idSubject)
+                JOIN Module USING (idModule)
                 JOIN `Group` USING  (idGroup)
                 WHERE idStudent = ? AND idSemester = ?
             UNION
-                SELECT DISTINCT subjectCode, subjectName, controlName,
+                SELECT DISTINCT subjectCode, moduleName, subjectName, controlName,
                 coefficient, divisor, controlTypeName, median, average,
                 controlDate, idSubject, subjectCoefficient, value, idPromo
                 FROM Mark
@@ -481,6 +483,8 @@ class Semesters extends CI_Model
                 JOIN ControlType USING (idControlType)
                 JOIN Promo USING (idPromo)
                 JOIN Subject USING (idSubject)
+                JOIN SubjectOfModule USING (idSubject)
+                JOIN Module USING (idModule)
                 JOIN Education USING (idSubject)
                 WHERE idStudent = ? AND idSemester = ?
             ) AS foo

@@ -9,7 +9,7 @@
 
             foreach ($data['marks'] as $mark):
                 // If new subject, put header
-                if ($mark->subjectCode !== $last_subject):
+                if ($mark->subjectCode !== $last_subject) {
                     if (!is_null($last_subject))
                     { ?>
                                 <div class="divider clearfix"></div>
@@ -33,7 +33,9 @@
                             <div class="card-title row">
                                 <div class="col s12 m6">
                                     <i class="material-icons small left">school</i>
-                                    <h5><?= $mark->subjectCode . ' - ' . $mark->subjectName ?></h5>
+                                    <h5>
+                                      <?= $mark->subjectCode . ' - ' . (empty($mark->subjectName) ? $mark->moduleName : $mark->subjectName) ?>
+                                    </h5>
                                 </div>
                                 <div class="col s12 m6 right-align">
                                     <span>Coefficient : <?= (float) $mark->subjectCoefficient ?></span>
@@ -42,7 +44,7 @@
                             <div class="divider row"></div>
                             <div class="row center-align">
                                 <?php
-                endif; // if change subject
+                } // if change subject
 
                 $subjectSum += $mark->value / $mark->divisor * 20 * $mark->coefficient;
                 $subjectCount += $mark->coefficient;
